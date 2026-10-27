@@ -44,7 +44,7 @@ Specify whether failure leaves output unchanged, empty, partial, or invalid. Val
 
 Foreign interfaces specify types, counts, ownership, destruction, errors, callback context, and identity validity. Keep language-specific layouts and ownership behind the interface. Contain exceptions where they cannot cross. Use thin wrappers to restore native resource conventions.
 
-Give each state a shape that holds only that state. A result is its value or its failure, never both: a tagged record built only through named factories, one per state, each setting the tag and the fields that state carries. A flag beside the value it qualifies, a status beside a payload, and fields that belong to an inactive phase can disagree; do not declare them. Whatever the shape cannot exclude goes to the state machine's one fallback.
+Give each state a shape that holds only that state. A result is its value or its failure, never both. Store the states in a `std::variant` whose alternatives each carry their own state's data, so a contradictory state cannot be represented. Build the record only through named factories, one per state, and read it only through named queries, which may use `std::holds_alternative` and `std::get_if`; `std::visit` with a lambda stays out (§11). A flag beside the value it qualifies, a status beside a payload, and fields that belong to an inactive phase can disagree; do not declare them. Whatever the shape cannot exclude goes to the state machine's one fallback.
 
 A switch over a closed set still has a default, and a state machine still says what an unexpected input does in each state. Send those cases, including ones believed impossible, to one defined fallback: a named failure, a reset, or an input ignored for a stated reason. Do not add checks along the way to compensate. A switch that names every enumerator, leaves from each case, and reaches its fallback directly after the switch also qualifies; omitting `default` there keeps the compiler's warning for a new enumerator.
 
@@ -168,7 +168,7 @@ Fix the language mode and permitted subset.
 | Other exclusions | No structured bindings, coroutines, or ranges/views pipelines in the default subset. |
 | Type machinery | Keep `decltype(expression)` in named private traits, outside ordinary declarations and public signatures. |
 | Compile-time work | Admit templates, `constexpr`, `consteval`, `if constexpr`, packs, and folds. Require explicit protocol opt-in; member detection must not choose architecture. |
-| States and borrows | Admit `std::span`, `std::optional`, and `std::variant`. State lifetime and alternative semantics; name visitors. |
+| States and borrows | Admit `std::span`, `std::optional`, and `std::variant`. State lifetime and alternative semantics. Keep a result's or state's `std::variant` behind named factories and named queries (§2); read it with `std::holds_alternative` and `std::get_if`, and name any visitor. |
 | Ownership | Admit `std::unique_ptr`. Use `std::shared_ptr` and `std::weak_ptr` for shared lifetime and observation. |
 | Callables | Admit `std::function` for owning callables. Name targets; account for copies, allocation, and retained state. |
 | Type erasure | No general `std::any` architecture. Confine inert-metadata compatibility fields to their existing contract. |
