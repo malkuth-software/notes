@@ -358,7 +358,7 @@ style and the docking model.
 ### 5.2 The model's records
 
 ```text
-DiagramItemId      stable string ID, one namespace per model (house style §1:
+DiagramItemId      stable string ID, one namespace per model (house style §3:
                    an identity, never an index)
 DiagramNode        id, kind (a declared NodeKind), bounds (model units),
                    container (parent node or none), layer, z order within the

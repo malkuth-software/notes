@@ -72,10 +72,10 @@ the document, so the familiar file still appears.
 - Keep themes and forms separate. A form says what exists and where; a theme
   says how it looks. Inline style in a form uses the T3 syntax and sits at
   its place in the cascade (T2).
-- House style: the parser fills caller-owned node tables (§4); stable IDs,
-  node indices and byte offsets are distinct types (§1); failure leaves the
-  previous document model intact (§9); generated code follows the stricter
-  generated-code profile of house style §10 (named listeners, typed
+- House style: the parser fills caller-owned node tables (§6); stable IDs,
+  node indices and byte offsets are distinct types (§3); failure leaves the
+  previous document model intact (§2); generated code follows the stricter
+  generated-code profile of house style §11 (named listeners, typed
   identities, deterministic initialization and connection order, no
   capture-backed callables).
 

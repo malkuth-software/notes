@@ -82,10 +82,10 @@ typography and 32 over raster.
 - Keep the oracle's honesty: a difference stays visible in the report and is
   never laundered into a parity claim (`FIDELITY_ORACLE_001.md`).
 - House style: tracks, lines and items are named records with explicit
-  capacity versus live length (§1); the layout pass fills caller-owned
-  geometry arrays (§4); no allocation per item in the arrange loop (§3);
+  capacity versus live length (§3); the layout pass fills caller-owned
+  geometry arrays (§6); no allocation per item in the arrange loop (§8);
   sizes are wrapped logical units, never bare doubles mixed with device
-  pixels (§1).
+  pixels (§3).
 
 ## Gate
 

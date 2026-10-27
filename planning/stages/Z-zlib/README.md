@@ -662,8 +662,8 @@ a substitute for the accepted executable verification.
      "Power of Ten" rules (bounded loops, no allocation after
      initialization, no recursion, every return checked, every parameter
      validated, impossible states still handled), and its record is part of
-     stage Z-S. It cites the house style's §1 (shapes that cannot hold
-     contradictory values) and §9 (a switch or state machine keeps a default
+     stage Z-S. It cites the house style's §3 (shapes that cannot hold
+     contradictory values) and §2 (a switch or state machine keeps a default
      that reaches one defined fallback, without compensating checks).
   2. **Evidence instead of campaigns:**
      - deterministic malformed-input sweeps in the normal suite, run under

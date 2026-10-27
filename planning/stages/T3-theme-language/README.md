@@ -113,9 +113,9 @@ grammar must express shape as an engine parameter.
 - Treat every theme as hostile input: bounded nesting, token and rule counts,
   string lengths and expression sizes; no recursion depth that input
   controls. Add a fuzz target beside `fuzz/png_registry_fuzz.cpp`.
-- House style: the parser fills caller-owned rule tables (§4); token, offset
-  and line types are distinct (§1); failure states say what they leave
-  behind (§9); no lambdas in the parser (§2, §10).
+- House style: the parser fills caller-owned rule tables (§6); token, offset
+  and line types are distinct (§3); failure states say what they leave
+  behind (§2); no lambdas in the parser (§9, §11).
 - Theme collections are immutable data assemblies with a manifest, coverage
   table and content hashes (`planning/interview/GUI_FORMS_RESOURCES_AND_CONFIGURATION.md`
   §2.1, §3). The owner settled RC001: data only.

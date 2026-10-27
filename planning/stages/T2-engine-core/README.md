@@ -151,19 +151,19 @@ description (control, part role, bounds, states, content).
   declared damage extent. No GPU API may be compiled, linked or probed. Skia
   stays behind `src/render/skia/`.
 - House style matters most here:
-  - §3 kernels: choose primitive, format and implementation before the pixel
+  - §8 kernels: choose primitive, format and implementation before the pixel
     loop; handle empty parts and edges apart from the interior; validate the
     destination buffer once; no allocation, logging, locking or callbacks per
     pixel.
-  - §1, §3 numerics: one precision per primitive; no fast-math; identical
+  - §3, §8 numerics: one precision per primitive; no fast-math; identical
     output across hosts is a gate.
-  - §5: part framebuffers and caches have one owner and an invalidation
+  - §1: part framebuffers and caches have one owner and an invalidation
     generation; reuse storage.
   - §7: the primitive registry is an explicit protocol, not a universal
     callable framework or a map of `std::function`.
-  - §8: timers, settling and damage publication run on the UI thread;
+  - §5: timers, settling and damage publication run on the UI thread;
     cancellation and shutdown are named.
-  - §10: no lambdas, `auto` or `->`.
+  - §11: no lambdas, `auto` or `->`.
 - The ribbon-button bulge and its dithered form are specified precisely in
   [`../T4-default-theme/RENDERING_REFERENCE.md`](../T4-default-theme/RENDERING_REFERENCE.md);
   implement them as primitives with reference images.

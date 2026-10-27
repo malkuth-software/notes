@@ -63,7 +63,7 @@ Prior art to study, for what to take from each:
 - The builder is also one of the native consumers for the 1.0 ABI
   conformance condition (stage C): build it against the installed SDK.
 - Generated code passes the house-style check and follows the generated-code
-  profile of house style §10.
+  profile of house style §11.
 - Hand-written handlers stay outside generated regions; a regex rewrite of
   arbitrary C++ is never a preservation guarantee
   (`planning/CONCISE_AUTHORING_AVAILABILITY.md` delivery E).

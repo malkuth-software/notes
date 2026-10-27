@@ -69,8 +69,8 @@ host cannot provide it.
   theme, not the capability.
 - Linux: the X11 host, also under XWayland, is the supported path. Do not
   add a Wayland-native adapter or describe its absence as a gap.
-- House style §8: compositor notifications state their thread and reach the
-  UI thread through the dispatcher; §9: requesting an unsupported material
+- House style §5: compositor notifications state their thread and reach the
+  UI thread through the dispatcher; §2: requesting an unsupported material
   returns an explicit result, not a silent no-op.
 
 ## Gate

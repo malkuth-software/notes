@@ -1,5 +1,7 @@
 # State-machine hunt, first report (2026-10-21)
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 The first full run of `tools/check_state_machines.py`, the checker for house
 style section 9 (a switch over a closed set still has a default; every
 unexpected input goes to one defined fallback) and section 1 (prefer a shape

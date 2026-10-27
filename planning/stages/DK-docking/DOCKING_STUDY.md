@@ -746,7 +746,7 @@ Rules (Inferred; each one an interview point where marked):
    area; option C2).
 5. Identities: `PanelId` is the application's stable string for a panel (for
    example `tools.properties`, `doc:file:///…`); `StackId` and `SiteId` are
-   workspace-assigned stable strings saved in the layout. House style §1
+   workspace-assigned stable strings saved in the layout. House style §3
    requires distinct wrapper types for these and for tree indices.
 
 ### 4.3 Panels: documents and tool windows
@@ -1070,7 +1070,7 @@ concept is compared in section 1):
 2. **Validate.** Apply the edits to a copy of the model; check restrictions
    (4.4), minimum sizes, tree invariants (4.2 rules), window limits. Any
    failure rejects the whole transaction with a reason; the model and
-   screen are untouched (house style §9: validate before mutating).
+   screen are untouched (house style §2: validate before mutating).
 3. **Commit the model.** Swap the copy in; prune; bump the layout generation.
 4. **Reconcile windows.** Before any control moves: create the floating
    windows the new model needs, hidden (G-STATE-1). Open an `UpdateScope` on

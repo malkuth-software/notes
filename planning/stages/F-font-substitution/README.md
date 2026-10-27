@@ -72,9 +72,9 @@ Candidates to evaluate, not decisions:
   files; record their version and hash in the result instead.
 - Fallback still resolves per cluster inside the substituted face; a missing
   cluster never restyles the whole control (interview GF004).
-- House style: the table is a fixed, named record set (§1, §7: precompute
+- House style: the table is a fixed, named record set (§3, §7: precompute
   stable tables); the metric comparison is a kernel with whole-buffer
-  validation up front (§3).
+  validation up front (§8).
 
 ## Gate
 

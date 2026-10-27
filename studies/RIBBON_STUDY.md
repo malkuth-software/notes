@@ -631,7 +631,7 @@ the MSAA column applies; UIA is stage A's deliverable 4.
   ordered list of reduction steps, each naming one group and the size it moves
   to (UIR-SCALE). A step must move its group to a strictly smaller size than
   the group's current one; a policy that violates this is rejected when the
-  ribbon definition is validated, before anything is built (house style §9).
+  ribbon definition is validated, before anything is built (house style §2).
 - Measured widths: each command's width at each image size and label state,
   from the text engine at the current font, text scale and display scale.
 
@@ -671,7 +671,7 @@ arrange(available):
 - **Cost.** `width[]` is computed once per (tab content generation, font,
   text scale, display scale, theme metrics generation) and cached; a resize
   is a binary search plus one placement, with no allocation per step (house
-  style §3). Command state changes that alter width (label text, visibility)
+  style §8). Command state changes that alter width (label text, visibility)
   bump the tab content generation (GF007: declared invalidation). Changes
   that do not (enabled, checked) invalidate paint only.
 - **Layout timing.** The ribbon's measure and arrange run inside the existing
@@ -993,7 +993,7 @@ Missing:
 
 House style shapes the API: callbacks are named delegates with explicit
 context (`Delegate<...>::bind`, as `ToolStrip` uses), not a universal callable
-framework (house style §7, §8); a command shared by many presentations is
+framework (house style §5, §7); a command shared by many presentations is
 held by `std::shared_ptr` with one owner (GF017), as `ToolStrip` and
 `MenuItemSpec` do; `CommandBar`'s borrowed `Command*` is the older pattern.
 

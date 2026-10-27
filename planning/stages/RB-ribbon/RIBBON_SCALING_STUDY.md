@@ -518,7 +518,7 @@ Commands carry, besides their shared `Command`, an authored *importance*
 (`primary` or `secondary`, default `secondary`) used only by the default layout
 generator (UX7: the most used large commands are the last to become small).
 
-### 5.2 Validation (before anything is built; house style §9)
+### 5.2 Validation (before anything is built; house style §2)
 
 A tab definition is rejected, with a diagnostic and the previous ribbon kept,
 when:
@@ -850,7 +850,7 @@ Each with options and a recommendation.
 Recommendation: 1, as planned; it keeps the tabs usable as the way back.
 
 **7.2 An authored reduction order names an unknown group or over-shrinks one.**
-1. Reject the ribbon definition with a diagnostic (house style §9).
+1. Reject the ribbon definition with a diagnostic (house style §2).
 2. Ignore the bad entries (WPF).
 
 Recommendation: 1.

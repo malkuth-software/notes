@@ -94,9 +94,9 @@ meaningless if presentation always takes the union.
   attachment; it never advertises a degraded mode.
 - Platform present paths stay in their host directories: AppKit, Win32 DIB,
   X11.
-- House style §3: the per-rectangle replay chooses its clip and kernel before
+- House style §8: the per-rectangle replay chooses its clip and kernel before
   the loop, handles empty and degenerate rectangles first, and never
-  allocates per rectangle; §5: the rectangle set has a fixed capacity, stated
+  allocates per rectangle; §1: the rectangle set has a fixed capacity, stated
   with its live length.
 
 ## Gate

@@ -1,5 +1,7 @@
 # State-machine hunt, second run, and the gate (2026-10-25)
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 This is the second full run of `tools/check_state_machines.py`, the checker
 for house style sections 9 and 1. The first run is
 [2026-10-21-state-machine-hunt](../2026-10-21-state-machine-hunt/README.md),

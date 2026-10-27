@@ -166,28 +166,28 @@ not be listed as a gap. FreeBSD is a desired, untested target.
 
 ## House style for code
 
-All first-party C++ and Objective-C++ follows
-`planning/PROGRAMMING_HOUSE_STYLE.md`. Read it in full before writing code;
-`AGENTS.md` has a one-line summary per section. The points below are the ones
-that most often decide a design in this programme, with the section number.
+All first-party C++ and Objective-C++ follows `HOUSE_STYLE.md` on this
+repository's `main` branch. Read it in full before writing code; `AGENTS.md`
+has a one-line summary per section. The points below are the ones that most
+often decide a design in this programme, with the section number.
 
 | Rule | Section | What it means here |
 |---|---|---|
-| Spell every type; no `auto`, trailing returns, structured bindings | 1, 10 | Part geometry, rule records and handles are named types at every declaration |
-| Wrapper types for confusable quantities | 1 | Logical px and device px, part role and part index, stable ID and tree index, byte offset and character position are distinct types with stated conversions |
-| One numeric precision per computation | 1, 3 | Effect kernels pick double (or a declared fixed-point) once; identical pixels on every host depend on it; no blanket fast-math |
-| No lambdas or anonymous callbacks | 2, 8, 10 | Predicates, visitors, listeners and engine primitives are named types or functions |
-| Calculate, then return; one operation per expression | 2 | Paint and layout code names its intermediate rectangles and colours |
-| Choose mode before the loop; edges apart from the interior; no per-element allocation | 3 | Raster effects (bulge, dither, blur, gradients) select their kernel per part, then run a clean inner loop |
-| State inputs, outputs and permitted mutation; fill caller storage | 4 | Engine passes fill caller-owned buffers; parsers fill caller-owned rule tables |
-| Every datum has an owner and lifetime; reuse storage | 5 | Per-part framebuffers belong to the engine's part cache with a stated invalidation generation |
-| Parents own children; back links observe; reject stale identities | 6 | Generational handles across the C ABI (interview GF017); themes never hold controls |
+| Spell every type; no `auto`, trailing returns, structured bindings | 3, 11 | Part geometry, rule records and handles are named types at every declaration |
+| Wrapper types for confusable quantities | 3 | Logical px and device px, part role and part index, stable ID and tree index, byte offset and character position are distinct types with stated conversions |
+| One numeric precision per computation | 3, 8 | Effect kernels pick double (or a declared fixed-point) once; identical pixels on every host depend on it; no blanket fast-math |
+| No lambdas or anonymous callbacks | 5, 9, 11 | Predicates, visitors, listeners and engine primitives are named types or functions |
+| Calculate, then return; one operation per expression | 9 | Paint and layout code names its intermediate rectangles and colours |
+| Choose mode before the loop; edges apart from the interior; no per-element allocation | 8 | Raster effects (bulge, dither, blur, gradients) select their kernel per part, then run a clean inner loop |
+| State inputs, outputs and permitted mutation; fill caller storage | 6 | Engine passes fill caller-owned buffers; parsers fill caller-owned rule tables |
+| Every datum has an owner and lifetime; reuse storage | 1 | Per-part framebuffers belong to the engine's part cache with a stated invalidation generation |
+| Parents own children; back links observe; reject stale identities | 4 | Generational handles across the C ABI (interview GF017); themes never hold controls |
 | Named registration protocols, explicit opt-in; no universal callable frameworks | 7 | The engine's primitive registry is an explicit protocol, not a map of `std::function` |
-| Name event order, reentrancy, revocation, execution context | 8 | Accessibility callbacks, animation timers and compositor notifications state which thread they run on and how they reach the UI thread |
-| Say what failure leaves behind; validate before mutating | 9 | An invalid theme rule is dropped with a diagnostic; the old theme stays until the new one is fully built |
-| Foreign interfaces state types, counts, ownership, errors | 9 | The C ABI, platform accessibility APIs and the C# bindings |
-| `(*pointer).member`, not `->`; hand-written comparisons, no `= default` | 10 | See `include/gui_forms/theme/types/theme_types.hpp` for the house form of `operator==` |
-| Meaningful source boundaries; no accessors that add no invariant; remove stale comments | 11 | One substantial type per directory, as the tree already does (`src/controls/<family>/<control>/`) |
+| Name event order, reentrancy, revocation, execution context | 5 | Accessibility callbacks, animation timers and compositor notifications state which thread they run on and how they reach the UI thread |
+| Say what failure leaves behind; validate before mutating | 2 | An invalid theme rule is dropped with a diagnostic; the old theme stays until the new one is fully built |
+| Foreign interfaces state types, counts, ownership, errors | 2 | The C ABI, platform accessibility APIs and the C# bindings |
+| `(*pointer).member`, not `->`; hand-written comparisons, no `= default` | 11 | See `include/gui_forms/theme/types/theme_types.hpp` for the house form of `operator==` |
+| Meaningful source boundaries; no accessors that add no invariant; remove stale comments | 10 | One substantial type per directory, as the tree already does (`src/controls/<family>/<control>/`) |
 
 Shape of house code (illustrative names, not an existing API):
 

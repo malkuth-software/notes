@@ -1,5 +1,7 @@
 # State-machine and Power-of-Ten audit of the input-reading code
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 Date: 2026-10-21. Branch `claude/z-s-safety` (stage Z-S). This audit is the
 owner's revision of decision 6A (2026-10-20, recorded in [README §11](README.md)).
 The decision replaces sustained fuzz campaigns with three things: a

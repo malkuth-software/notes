@@ -69,12 +69,12 @@ eventual stable C ABI".
 
 ## How
 
-- House style §9 governs every function: state types, counts, ownership,
+- House style §2 governs every function: state types, counts, ownership,
   destruction, errors, callback context and identity validity; contain
   exceptions at the boundary; keep language-specific layouts behind it.
 - No C++ standard-library type, compiler-specific layout or Skia type in the
   ABI (`AGENTS.md`; resources record §1).
-- Callbacks (house style §8): a callback is a function pointer plus an
+- Callbacks (house style §5): a callback is a function pointer plus an
   explicit context; registration returns a token; revocation during emission
   is defined; callbacks run on the UI thread of the owning window, and
   calling from another thread fails with a status, never undefined

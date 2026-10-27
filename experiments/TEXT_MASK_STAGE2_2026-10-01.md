@@ -1,5 +1,7 @@
 # Logical wrapped mask development: native layout and rasterization
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 Status: **MEASURED on Shadow Windows in the named development fixtures**.
 Stage 1 was independently accepted and committed as `4d24f43`. The coordinator
 assigned Stage 2 under the existing reconciled profile. This source-only slice

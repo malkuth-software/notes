@@ -1118,21 +1118,21 @@ Per the brief, recorded under `results/`:
 
 ## 7. House-style points
 
-- **Caller-owned tables** (§4): the tokenizer, parser, lowering and
+- **Caller-owned tables** (§6): the tokenizer, parser, lowering and
   diagnostics each fill storage their caller owns and sizes once; nothing
   allocates per token or per node in the inner loops.
-- **Distinct types** (§1): `ByteOffset`, `ByteLength`, `TokenIndex`,
+- **Distinct types** (§3): `ByteOffset`, `ByteLength`, `TokenIndex`,
   `NodeIndex`, `LineNumber` and `ColumnNumber` are wrapper types; a byte
   offset is never passed as a column, and the column counts scalar values,
   not bytes.
-- **No lambdas** (§2, §10): the parser's states are a named enumeration and
+- **No lambdas** (§9, §11): the parser's states are a named enumeration and
   a loop over the token buffer; predicates (sorting rules, matching names)
   are named function objects.
-- **Bounded loops** (§3): every loop is over a buffer whose length was
+- **Bounded loops** (§8): every loop is over a buffer whose length was
   validated up front, or an explicit stack of fixed depth; no recursion
   follows the input. Limits are checked before the storage they bound is
   touched.
-- **Failure states** (§9): a refused compilation leaves the caller's
+- **Failure states** (§2): a refused compilation leaves the caller's
   previous theme, and the caller's buffers hold nothing that the next
   compilation reads; an error never leaves a partial `ThemeRuleSheet`
   reachable.
@@ -1140,9 +1140,9 @@ Per the brief, recorded under `results/`:
   nesting, instructions, imports); no wall-clock timeout anywhere in the
   compiler. Only perceptual durations in the language (transitions,
   keyframes) are in time (C2).
-- **Spelling** (§10): no `auto`, `->`, structured bindings or `= default`
+- **Spelling** (§11): no `auto`, `->`, structured bindings or `= default`
   comparisons; `(*pointer).member`.
-- **Foreign data** (§9): the manifest and sheets are untrusted input; the
+- **Foreign data** (§2): the manifest and sheets are untrusted input; the
   JSON reader states its limits as the XML reader does.
 
 ## 8. Decisions and open questions

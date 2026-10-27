@@ -490,7 +490,7 @@ depth-32 visual recorded per desktop measured. Every state must end in a rendere
 - **Types.** `CompositorGeneration` is its own wrapper, never compared
   with the backplane's damage generation. `WindowBackdrop` and the grant
   reasons are closed enums; every switch over them has its fallback
-  (house style §9). A grant is a record with named fields, never a bare
+  (house style §2). A grant is a record with named fields, never a bare
   boolean.
 - **One decision point.** Grant resolution is one pure core function.
   Adapters report state and apply grants; they never decide policy
@@ -509,7 +509,7 @@ depth-32 visual recorded per desktop measured. Every state must end in a rendere
 - **Callbacks.** The macOS observer is a named selector on the host's
   window controller, not a block; X11 and Windows notifications are
   handled in the existing event loops. Each posts one host event through
-  the dispatcher (§8); none mutates a window in place.
+  the dispatcher (§5); none mutates a window in place.
 - **Validate before mutating.** A material is applied only after the
   request is resolved; a failed native call leaves the previous grant and
   native state.

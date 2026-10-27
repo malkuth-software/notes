@@ -1,5 +1,7 @@
 # Track: stx_zlib and stx_png (owned compression and PNG)
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 Written 2026-10-21, when the first worker on this track retired (context about 880k tokens).
 
 ## Where it stands

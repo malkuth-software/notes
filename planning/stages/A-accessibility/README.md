@@ -126,12 +126,12 @@ is never turned off (accessibility round A3).
   M4 allow it. If only in-process NSAccessibility queries are possible on CI,
   that is weaker evidence; raise it with the owner as an option list rather
   than quietly downgrading the gate.
-- **Threading (house style §8):** UI Automation can call a provider on a
+- **Threading (house style §5):** UI Automation can call a provider on a
   thread other than the UI thread unless the provider opts into COM
   threading (`ProviderOptions_UseComThreading`). Decide deliberately and
   write down which execution context touches the semantic tree; the tree has
   one owner, the UI thread. AT-SPI and AX calls arrive on the main loop.
-- **Foreign interfaces (house style §9):** every provider states the types,
+- **Foreign interfaces (house style §2):** every provider states the types,
   counts, ownership and error results it returns, and how a stale element is
   rejected after its control is disposed (generational identity, interview
   GF017). A client holding an element for a destroyed control gets an error,

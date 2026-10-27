@@ -1,5 +1,7 @@
 # Docking and PageView interview, round 001
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 Date: 2026-10-17
 
 Status: **in progress.** Round 1 asks scope and structure: docking A1 to A4

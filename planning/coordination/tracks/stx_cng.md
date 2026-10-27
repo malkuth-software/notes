@@ -1,5 +1,7 @@
 # Track: stx_cng (CNG, Computational Network Graphics)
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 Worker workspace: D:\gui_forms_w5 (checkout /d/gui_forms_w5/gui_forms). Scripts
 and logs in D:\gui_forms_w5\dev\ (CNG work under dev\cng\).
 

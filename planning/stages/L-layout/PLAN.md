@@ -423,7 +423,7 @@ struct LayoutConstraint final {
 - Storage: the container owns a workspace (item records, line records,
   track records) with explicit capacity and live length, reserved when the
   child count or track count changes and reused across passes. Nothing
-  allocates per item in the measure or arrange loops (house style §3).
+  allocates per item in the measure or arrange loops (house style §8).
   `FlowLayoutPanel`'s per-pass line vectors go when it is rebased.
 - Limits, checked before storage is touched, each a count: at most 65,536
   children per container; at most 10,000 explicit or `repeat()`-generated
@@ -742,7 +742,7 @@ answered (b) with "warn on this behavior, but allow", and 10, answered
 
 ## 10. House-style points
 
-- **Distinct types** (§1): `LogicalLength` for layout lengths and
+- **Distinct types** (§3): `LogicalLength` for layout lengths and
   `DevicePixels` only at snapping; `FlexFactor` and `FractionFactor` for
   grow, shrink and `fr`, never added to lengths; `ItemIndex`, `LineIndex`,
   `TrackIndex` and `GridLine` (one-based, possibly negative) distinct from
@@ -750,24 +750,24 @@ answered (b) with "warn on this behavior, but allow", and 10, answered
   `Size` in logical units, as the surrounding code does. L1 added
   `LogicalLength`, the one type its contract uses; the others arrive with
   the solvers that use them.
-- **Records with capacity and live length** (§1, §5): item, line and track
+- **Records with capacity and live length** (§1, §3): item, line and track
   workspaces state both; indexing never grows them.
-- **Caller-owned output** (§4): solvers fill the caller's `Rect` span and
+- **Caller-owned output** (§6): solvers fill the caller's `Rect` span and
   resolution record; the span's length is checked against the item count
   before the first write.
-- **No per-item allocation** (§3): workspaces are reserved when counts
+- **No per-item allocation** (§8): workspaces are reserved when counts
   change, before the loops.
-- **Choose before the loop** (§3): direction, wrap and axis mapping are
+- **Choose before the loop** (§8): direction, wrap and axis mapping are
   resolved once into a named axis record; the inner loop works in main and
   cross (or inline and block) coordinates and mirrors once at output.
-- **Named predicates** (§2, §7): the order sort uses a named comparator;
+- **Named predicates** (§7, §9): the order sort uses a named comparator;
   no lambdas.
-- **Failure** (§9): a refused declaration leaves the previous style in
+- **Failure** (§2): a refused declaration leaves the previous style in
   place; limits are checked before storage is touched; a measurement that
   returns a non-finite size is clamped to zero as today, and counted.
 - **Effort, not time**: every bound is a count (items, tracks, cells,
   freeze rounds, passes); no timeout anywhere in layout.
-- **Spelling** (§10): no `auto`, `->`, structured bindings or `= default`
+- **Spelling** (§11): no `auto`, `->`, structured bindings or `= default`
   comparisons; `(*pointer).member`.
 
 ## 11. Size

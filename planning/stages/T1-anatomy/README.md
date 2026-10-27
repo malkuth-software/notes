@@ -114,10 +114,10 @@ cue set on one role reaches every control (the owner's "paint-fill").
   (T3 relies on this).
 - Keep painting where it is for now. T1 publishes anatomy; T2 and T4 move
   paint onto the engine. Do not change any control's look in this stage.
-- House style: part identity and part index are distinct types (§1); part
+- House style: part identity and part index are distinct types (§3); part
   rectangles are value records with named fields; the registry is an explicit
   registration protocol, opt-in per control type, with no member detection
-  choosing behaviour (§7); no lambdas in registration (§2, §10).
+  choosing behaviour (§7); no lambdas in registration (§9, §11).
 - The registry is renderer-neutral: no Skia type in any public header or in
   the schema (`AGENTS.md`).
 

@@ -317,7 +317,7 @@ Every mode decomposes into the same concepts (Inferred from 1.2):
 4. **Repeated allocation per tab.** `tab_bounds` calls `page_count()`, which
    rebuilds the live page vector (`pages()`, 36–46); `on_paint` and the
    item publishers call `tab_bounds` once per tab, so painting n tabs builds
-   n + 1 vectors (house style §3: no per-element allocation in a repeated
+   n + 1 vectors (house style §8: no per-element allocation in a repeated
    kernel).
 5. **No hot state, images, tooltips, disabled pages or hidden pages**; the
    item system declares only `selected` (531–533) though
@@ -342,7 +342,7 @@ Every mode decomposes into the same concepts (Inferred from 1.2):
 
 | Need | Exists | Gap |
 |---|---|---|
-| Stable page identity separate from index | no | `PageId` wrapper (house style §1) |
+| Stable page identity separate from index | no | `PageId` wrapper (house style §3) |
 | Shared page model usable by several presenters | no | `PageSet` (3.2) |
 | Headers without a content area (auto-hide) | no | `PageStrip` (3.3) |
 | Vertical text for side strips and the collapsed Outlook caption | no; `PartPaint` has no orientation | vocabulary decision (DK J4; P35.3) |
@@ -637,7 +637,7 @@ Proposed rules (Inferred):
    (P14).
 5. Layout is one pass over measured widths into caller-supplied storage,
    with the overflow decision made before the placement loop (house style
-   §3); measuring uses real text widths, not the estimate of 2.2 item 2.
+   §8); measuring uses real text widths, not the estimate of 2.2 item 2.
 
 ### 5.2 Close behaviour
 
