@@ -17,5 +17,5 @@ git worktree add ../notes-gui_forms gui_forms
 
 ## Status
 
-- `HOUSE_STYLE.md` is the programming house style, as copied from GUI.Forms on 2026-10-27. The canonical text is still `falseywinchnet/EpistemicGPT` `programming-house-style.md` until it is reshaped and moved here.
+- `HOUSE_STYLE.md` on this branch is the canonical programming house style (owner, 2026-10-27). Its sections are ordered by importance, most important first. Change it here; repositories that summarise it follow this text.
 - The agent directions, and the contributing and new-app guides, arrive with `template_harness`.
