@@ -7,6 +7,7 @@ isn't needed to build it. The layout follows the `gui_forms` branch.
 | Folder | What | From (File Manager, reset `main` 028a3f96 unless named) |
 |---|---|---|
 | `planning/` | charter, program and experiment maps, evidence register, question atlas, interview round 002, reassessments, resume and shutdown records, the GUI.Forms 0.2 consumption record, and the `gui_forms/` and `search/` planning sets (their interviews included) | `planning/`, without `PROGRAMMING_HOUSE_STYLE.md` (the house style is `HOUSE_STYLE.md` on `main`) |
+| `planning/frontend/` | the frontend's charter, dependency gates, dogfood and acceptance audits, owner directions and corrections, and the visual set (`visual/`: design DNA, briefs, icon audit, atlases and renders) | `frontend/planning/` |
 | `decisions/` | File Manager's decision records | `decisions/` |
 | `studies/` | `zeta_search/`: the search-algorithm study and its File Manager applicability; `PRV_package.zip`, its source package | `research/` |
 | `experiments/` | experiment reports: `jpeg_decode/` and `preview_admission/` (their code stays in the product under `frontend/experiments/`); `copy_metadata/` and `preview_paint/` in full | see below |
