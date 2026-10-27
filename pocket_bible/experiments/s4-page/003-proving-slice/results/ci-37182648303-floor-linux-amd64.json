@@ -1,0 +1,162 @@
+{
+  "label": "linux-amd64",
+  "environment": {
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "logical_processors": 2,
+    "runner": "GitHub Actions 1000005092",
+    "runner_image": "ubuntu24 20260927.320.1",
+    "display": ":99"
+  },
+  "sizes": {
+    "executable_bytes": 3115312,
+    "toolkit_library_bytes": {
+      "libgui_forms_application.so.0": 12192760
+    },
+    "installed_bundle_bytes": 18739894,
+    "package_bytes": {
+      "pocket-bible-0.0.1-linux-amd64.tar.gz": 7684969,
+      "pocket-bible-0.0.1-linux-amd64.deb": 6171058
+    }
+  },
+  "launch_runs": [
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1060,
+      "client_height": 680,
+      "first_paint_ms": 22.0817,
+      "first_frame_observed_ms": 38.6437,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 30075000,
+      "cpu_kernel_ns": 7017000,
+      "private_bytes": 24883200,
+      "resident_bytes": 32022528,
+      "spawn_to_report_wall_ms": 43.72
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1060,
+      "client_height": 680,
+      "first_paint_ms": 29.4156,
+      "first_frame_observed_ms": 45.2799,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 30058000,
+      "cpu_kernel_ns": 7013000,
+      "private_bytes": 24694784,
+      "resident_bytes": 31842304,
+      "spawn_to_report_wall_ms": 51.316
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1060,
+      "client_height": 680,
+      "first_paint_ms": 28.4054,
+      "first_frame_observed_ms": 44.8945,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 28439000,
+      "cpu_kernel_ns": 8826000,
+      "private_bytes": 24719360,
+      "resident_bytes": 31830016,
+      "spawn_to_report_wall_ms": 50.997
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1060,
+      "client_height": 680,
+      "first_paint_ms": 29.5822,
+      "first_frame_observed_ms": 46.1513,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 33733000,
+      "cpu_kernel_ns": 4088000,
+      "private_bytes": 24776704,
+      "resident_bytes": 31920128,
+      "spawn_to_report_wall_ms": 53.152
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1060,
+      "client_height": 680,
+      "first_paint_ms": 30.5558,
+      "first_frame_observed_ms": 47.4939,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 33001000,
+      "cpu_kernel_ns": 4853000,
+      "private_bytes": 24702976,
+      "resident_bytes": 31780864,
+      "spawn_to_report_wall_ms": 53.316
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1060,
+      "client_height": 680,
+      "first_paint_ms": 28.0721,
+      "first_frame_observed_ms": 44.1479,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 30412000,
+      "cpu_kernel_ns": 6082000,
+      "private_bytes": 24739840,
+      "resident_bytes": 31772672,
+      "spawn_to_report_wall_ms": 50.31
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1060,
+      "client_height": 680,
+      "first_paint_ms": 30.4623,
+      "first_frame_observed_ms": 46.9257,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 27714000,
+      "cpu_kernel_ns": 10264000,
+      "private_bytes": 24846336,
+      "resident_bytes": 31977472,
+      "spawn_to_report_wall_ms": 53.075
+    }
+  ],
+  "idle": {
+    "counters_valid": true,
+    "window_scale": 1,
+    "client_width": 1060,
+    "client_height": 680,
+    "sample_ms": 10004.5,
+    "cpu_user_ns": 13714000,
+    "cpu_kernel_ns": 1059000,
+    "private_bytes": 24723456,
+    "resident_bytes": 31793152,
+    "page_paints": 0,
+    "paint_passes": 1,
+    "measure_passes": 0,
+    "arrange_passes": 0,
+    "frames_presented": 0,
+    "frame_deadlines_fired": 0,
+    "scheduler_wakes": 0,
+    "active_surface_ticks": 0,
+    "cpu_percent_of_one_core": 0.1477
+  },
+  "idle_long": {
+    "counters_valid": true,
+    "window_scale": 1,
+    "client_width": 1060,
+    "client_height": 680,
+    "sample_ms": 30019.9,
+    "cpu_user_ns": 14775000,
+    "cpu_kernel_ns": 90000,
+    "private_bytes": 24752128,
+    "resident_bytes": 31891456,
+    "page_paints": 0,
+    "paint_passes": 1,
+    "measure_passes": 0,
+    "arrange_passes": 0,
+    "frames_presented": 0,
+    "frame_deadlines_fired": 0,
+    "scheduler_wakes": 0,
+    "active_surface_ticks": 0,
+    "cpu_percent_of_one_core": 0.0495
+  }
+}

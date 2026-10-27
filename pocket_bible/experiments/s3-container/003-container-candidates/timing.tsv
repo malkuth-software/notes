@@ -1,0 +1,21 @@
+open (dictionary expanded, every work's models read)	103.879 ms
+verify every section's SHA-256	127.283 ms
+private bytes added by reading the file and opening it	69640192	of which the file itself	38649240
+work	blocks	median ms	95th percentile ms	maximum ms	largest block, decoded bytes
+bsb	1255	0.0526	0.1164	0.2611	17015
+web	1485	0.1173	0.2762	0.5704	63140
+tagnt	287	0.3956	0.8321	1.1427	126237
+tahot	968	0.2158	0.4757	1.1035	66301
+berean-tables	1255	0.2989	0.6558	1.2095	90880
+greek-alignment	150	0.0999	0.1463	0.1826	20356
+tbesg	173	0.5603	1.1042	2.4516	118915
+tbesh	183	0.044	0.0589	0.1778	5013
+tflsj	174	2.7423	6.7302	15.6875	989726
+tvtms	90	0.7098	1.1147	1.539	78938
+strongs-greek	85	0.3224	0.4067	0.553	37572
+strongs-hebrew	215	0.4733	0.668	0.7926	38232
+oshb-lexicon	427	0.2812	0.3717	0.5028	27837
+abbott-smith	268	0.3106	0.4462	0.5282	26962
+enoch	23	0.1694	0.2356	0.252	16645
+jubilees	51	0.0739	0.1131	0.1624	8791
+lightfoot	205	0.0112	0.0239	0.0435	2954

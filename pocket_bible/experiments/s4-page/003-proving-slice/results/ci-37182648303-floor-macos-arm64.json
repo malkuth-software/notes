@@ -1,0 +1,162 @@
+{
+  "label": "macos-arm64",
+  "environment": {
+    "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "logical_processors": 3,
+    "runner": "GitHub Actions 1000005093",
+    "runner_image": "macos15 20260907.0337.1",
+    "display": ""
+  },
+  "sizes": {
+    "executable_bytes": 3068336,
+    "toolkit_library_bytes": {
+      "Contents/Frameworks/libgui_forms_application.0.dylib": 7958848
+    },
+    "installed_bundle_bytes": 15921004,
+    "package_bytes": {
+      "pocket-bible-0.0.1-macos-arm64.zip": 6775193,
+      "pocket-bible-0.0.1-macos-arm64.pkg": 6766288
+    }
+  },
+  "launch_runs": [
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1024,
+      "client_height": 656,
+      "first_paint_ms": 235.147,
+      "first_frame_observed_ms": 257.196,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 85791000,
+      "cpu_kernel_ns": 27283000,
+      "private_bytes": 33523904,
+      "resident_bytes": 97304576,
+      "spawn_to_report_wall_ms": 267.483
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1024,
+      "client_height": 656,
+      "first_paint_ms": 146.233,
+      "first_frame_observed_ms": 154.377,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 88335000,
+      "cpu_kernel_ns": 27753000,
+      "private_bytes": 33933760,
+      "resident_bytes": 97271808,
+      "spawn_to_report_wall_ms": 172.73
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1024,
+      "client_height": 656,
+      "first_paint_ms": 143.502,
+      "first_frame_observed_ms": 151.219,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 87839000,
+      "cpu_kernel_ns": 34158000,
+      "private_bytes": 33802624,
+      "resident_bytes": 97157120,
+      "spawn_to_report_wall_ms": 166.625
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1024,
+      "client_height": 656,
+      "first_paint_ms": 200.922,
+      "first_frame_observed_ms": 208.841,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 101601000,
+      "cpu_kernel_ns": 36433000,
+      "private_bytes": 33786112,
+      "resident_bytes": 97091584,
+      "spawn_to_report_wall_ms": 224.483
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1024,
+      "client_height": 656,
+      "first_paint_ms": 189.861,
+      "first_frame_observed_ms": 197.616,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 98996000,
+      "cpu_kernel_ns": 33908000,
+      "private_bytes": 33474816,
+      "resident_bytes": 96993280,
+      "spawn_to_report_wall_ms": 209.418
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1024,
+      "client_height": 656,
+      "first_paint_ms": 147.339,
+      "first_frame_observed_ms": 172.296,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 99183000,
+      "cpu_kernel_ns": 37531000,
+      "private_bytes": 33540416,
+      "resident_bytes": 97501184,
+      "spawn_to_report_wall_ms": 198.514
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1024,
+      "client_height": 656,
+      "first_paint_ms": 145.499,
+      "first_frame_observed_ms": 153.683,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 94676000,
+      "cpu_kernel_ns": 27931000,
+      "private_bytes": 33098048,
+      "resident_bytes": 96747520,
+      "spawn_to_report_wall_ms": 168.586
+    }
+  ],
+  "idle": {
+    "counters_valid": true,
+    "window_scale": 1,
+    "client_width": 1024,
+    "client_height": 656,
+    "sample_ms": 10009.6,
+    "cpu_user_ns": 7999000,
+    "cpu_kernel_ns": 6993000,
+    "private_bytes": 33327360,
+    "resident_bytes": 96976896,
+    "page_paints": 0,
+    "paint_passes": 0,
+    "measure_passes": 0,
+    "arrange_passes": 0,
+    "frames_presented": 0,
+    "frame_deadlines_fired": 0,
+    "scheduler_wakes": 0,
+    "active_surface_ticks": 0,
+    "cpu_percent_of_one_core": 0.1498
+  },
+  "idle_long": {
+    "counters_valid": true,
+    "window_scale": 1,
+    "client_width": 1024,
+    "client_height": 656,
+    "sample_ms": 30090,
+    "cpu_user_ns": 12525000,
+    "cpu_kernel_ns": 7794000,
+    "private_bytes": 33327424,
+    "resident_bytes": 97075200,
+    "page_paints": 0,
+    "paint_passes": 0,
+    "measure_passes": 0,
+    "arrange_passes": 0,
+    "frames_presented": 0,
+    "frame_deadlines_fired": 0,
+    "scheduler_wakes": 0,
+    "active_surface_ticks": 0,
+    "cpu_percent_of_one_core": 0.0675
+  }
+}

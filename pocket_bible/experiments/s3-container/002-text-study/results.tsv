@@ -1,0 +1,58 @@
+stream	work	text class	tokens	distinct	singletons	share of tokens in the 10 commonest	in the 100 commonest	in the 1000 commonest	bits per token alone	bits per token given the one before	distinct pairs
+stream	bsb	verse text	892566	14663	4450	0.327142	0.658191	0.879198	8.59273	5.59494	156050
+stream	bsb	headings and front matter	23913	2524	1183	0.577259	0.727847	0.922009	6.70157	3.64117	6463
+stream	bsb	notes	89836	4130	1901	0.45297	0.777806	0.943831	7.2227	3.62917	17022
+stream	bsb	references	42301	245	6	0.54299	0.965604	1	5.4624	3.43759	3948
+stream	web	verse text	1925256	14991	4837	0.601979	0.802849	0.93788	5.8985	4.76957	102060
+stream	web	headings and front matter	9829	1615	928	0.399329	0.679316	0.93743	7.72125	3.19157	4901
+stream	web	notes	38858	2139	1194	0.445957	0.782156	0.970688	7.07315	3.10122	7232
+stream	tagnt	references	509561	3639	1218	0.622139	0.935825	0.988518	5.10968	3.25254	13012
+stream	tagnt	Greek	162862	19125	10884	0.256315	0.542386	0.758127	9.89645	4.948	78455
+stream	tagnt	prose	199066	10661	6690	0.502155	0.843595	0.926813	6.67912	3.1015	28999
+stream	tahot	references	7900	1194	765	0.609241	0.78962	0.975443	6.19425	2.798	2759
+stream	tahot	prose	53669	4714	3454	0.581173	0.830442	0.925954	6.43007	3.08471	10634
+stream	berean-tables	aligned English	1866006	14619	4400	0.670477	0.838706	0.942384	5.21271	4.09699	88814
+stream	tbesg	prose	2239049	33717	17327	0.586482	0.888329	0.954399	6.31774	3.142	137839
+stream	tbesh	prose	17665	6099	3633	0.23572	0.326974	0.605151	10.561	2.75509	13114
+stream	tflsj	prose	11898471	149825	83600	0.466434	0.855522	0.932418	7.01007	not computed	
+stream	tvtms	references	512497	638	69	0.631686	0.963297	1	5.20182	2.80779	6101
+stream	tvtms	prose	1963465	788	67	0.576967	0.961359	1	5.51731	2.35847	4734
+stream	strongs-greek	prose	346830	34760	26253	0.551423	0.751829	0.836021	7.48177	4.32216	95414
+stream	strongs-hebrew	prose	1869356	65391	37597	0.716293	0.853434	0.90076	5.01065	2.55073	221905
+stream	oshb-lexicon	prose	1776264	80812	33790	0.629798	0.795106	0.866213	7.00827	3.6182	305243
+stream	abbott-smith	prose	1345242	35424	20223	0.571771	0.860435	0.943528	6.54982	3.55011	122278
+stream	enoch	verse text	69896	3932	1682	0.461071	0.714905	0.92785	7.48075	4.07289	22019
+stream	jubilees	verse text	61611	3050	1245	0.356251	0.697246	0.945903	7.89402	4.42431	19275
+stream	lightfoot	verse text	44189	3178	1539	0.425581	0.736179	0.93349	7.43503	4.1605	16772
+stream	lightfoot	headings and front matter	78	27	21	0.782051	1	1	3.74222	1.18435	34
+rendering	side	rows	distinct Strong numbers	distinct phrases	bits per phrase alone	bits per phrase given the Strong number
+rendering	Hebrew and Aramaic	302997	8539	83807	13.2207	4.89522
+rendering	Greek	138125	5337	25493	10.3507	3.46956
+rules	work	text class	tokens	capital flags	lower-case flags	join flags	explicit spaces
+rules	bsb	verse text	892566	27947	267	385	17258
+rules	bsb	headings and front matter	23913	6296	0	68	709
+rules	bsb	notes	89836	4499	14	5947	11955
+rules	bsb	references	42301	245	0	6544	0
+rules	web	verse text	1925256	17903	181	3107	810592
+rules	web	headings and front matter	9829	718	72	72	1107
+rules	web	notes	38858	1154	199	3074	3297
+rules	tagnt	references	509561	0	0	41049	127
+rules	tagnt	Greek	162862	0	0	0	1
+rules	tagnt	prose	199066	4481	501	2	32151
+rules	tahot	references	7900	175	0	0	1
+rules	tahot	prose	53669	1428	1873	1690	8645
+rules	berean-tables	aligned English	1866006	61204	13749	327	923293
+rules	tbesg	prose	2239049	7872	29267	184685	166300
+rules	tbesh	prose	17665	339	154	32	8
+rules	tflsj	prose	11898471	24904	65799	802681	670567
+rules	tvtms	references	512497	875	2427	95429	752
+rules	tvtms	prose	1963465	11960	72	253980	221632
+rules	strongs-greek	prose	346830	505	5520	3371	67810
+rules	strongs-hebrew	prose	1869356	1329	12833	17754	1030626
+rules	oshb-lexicon	prose	1776264	10115	82629	76760	95595
+rules	abbott-smith	prose	1345242	9815	29502	134122	172766
+rules	enoch	verse text	69896	2402	205	45	11101
+rules	jubilees	verse text	61611	1548	136	61	517
+rules	lightfoot	verse text	44189	1365	8	0	8095
+rules	lightfoot	headings and front matter	78	0	0	0	0
+capitalized forms stored as their lower-case word	4459

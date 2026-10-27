@@ -1,0 +1,162 @@
+{
+  "label": "windows-x64",
+  "environment": {
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "machine": "AMD64",
+    "logical_processors": 2,
+    "runner": "GitHub Actions 1000005091",
+    "runner_image": "win22 20260927.320.1",
+    "display": ""
+  },
+  "sizes": {
+    "executable_bytes": 5358807,
+    "toolkit_library_bytes": {
+      "libgui_forms_application.dll": 6192514
+    },
+    "installed_bundle_bytes": 17885512,
+    "package_bytes": {
+      "pocket-bible-0.0.1-windows-x64.zip": 7349805,
+      "pocket-bible-0.0.1-windows-x64-setup.exe": 7559274
+    }
+  },
+  "launch_runs": [
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1028,
+      "client_height": 680,
+      "first_paint_ms": 27.3929,
+      "first_frame_observed_ms": 30.3393,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 0,
+      "cpu_kernel_ns": 15625000,
+      "private_bytes": 11595776,
+      "resident_bytes": 25673728,
+      "spawn_to_report_wall_ms": 43.067
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1028,
+      "client_height": 680,
+      "first_paint_ms": 27.67,
+      "first_frame_observed_ms": 28.2609,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 0,
+      "cpu_kernel_ns": 46875000,
+      "private_bytes": 11595776,
+      "resident_bytes": 25559040,
+      "spawn_to_report_wall_ms": 37.533
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1028,
+      "client_height": 680,
+      "first_paint_ms": 27.9816,
+      "first_frame_observed_ms": 28.4673,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 0,
+      "cpu_kernel_ns": 0,
+      "private_bytes": 11595776,
+      "resident_bytes": 25550848,
+      "spawn_to_report_wall_ms": 36.867
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1028,
+      "client_height": 680,
+      "first_paint_ms": 30.2892,
+      "first_frame_observed_ms": 30.8144,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 0,
+      "cpu_kernel_ns": 0,
+      "private_bytes": 11595776,
+      "resident_bytes": 25550848,
+      "spawn_to_report_wall_ms": 40.496
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1028,
+      "client_height": 680,
+      "first_paint_ms": 38.437,
+      "first_frame_observed_ms": 39.1479,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 15625000,
+      "cpu_kernel_ns": 0,
+      "private_bytes": 11575296,
+      "resident_bytes": 25534464,
+      "spawn_to_report_wall_ms": 55.829
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1028,
+      "client_height": 680,
+      "first_paint_ms": 27.1074,
+      "first_frame_observed_ms": 30.4661,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 0,
+      "cpu_kernel_ns": 31250000,
+      "private_bytes": 11603968,
+      "resident_bytes": 25686016,
+      "spawn_to_report_wall_ms": 42.076
+    },
+    {
+      "counters_valid": true,
+      "window_scale": 1,
+      "client_width": 1028,
+      "client_height": 680,
+      "first_paint_ms": 36.6846,
+      "first_frame_observed_ms": 37.2249,
+      "poll_interval_ms": 1,
+      "cpu_user_ns": 15625000,
+      "cpu_kernel_ns": 15625000,
+      "private_bytes": 11587584,
+      "resident_bytes": 25542656,
+      "spawn_to_report_wall_ms": 47.759
+    }
+  ],
+  "idle": {
+    "counters_valid": true,
+    "window_scale": 1,
+    "client_width": 1028,
+    "client_height": 680,
+    "sample_ms": 10003.4,
+    "cpu_user_ns": 0,
+    "cpu_kernel_ns": 0,
+    "private_bytes": 11587584,
+    "resident_bytes": 25710592,
+    "page_paints": 0,
+    "paint_passes": 0,
+    "measure_passes": 0,
+    "arrange_passes": 0,
+    "frames_presented": 0,
+    "frame_deadlines_fired": 0,
+    "scheduler_wakes": 0,
+    "active_surface_ticks": 0,
+    "cpu_percent_of_one_core": 0.0
+  },
+  "idle_long": {
+    "counters_valid": true,
+    "window_scale": 1,
+    "client_width": 1028,
+    "client_height": 680,
+    "sample_ms": 30005.4,
+    "cpu_user_ns": 0,
+    "cpu_kernel_ns": 0,
+    "private_bytes": 11554816,
+    "resident_bytes": 25690112,
+    "page_paints": 0,
+    "paint_passes": 0,
+    "measure_passes": 0,
+    "arrange_passes": 0,
+    "frames_presented": 0,
+    "frame_deadlines_fired": 0,
+    "scheduler_wakes": 0,
+    "active_surface_ticks": 0,
+    "cpu_percent_of_one_core": 0.0
+  }
+}

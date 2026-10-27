@@ -1,0 +1,98 @@
+comparison	book	fallback words	displayed words	paired	fallback only	displayed only
+Nestle 1904 against TAGNT (N side)	MAT	18299	18346	18095	204	251
+Nestle 1904 against TAGNT (N side)	MRK	11277	11099	10921	356	178
+Nestle 1904 against TAGNT (N side)	LUK	19456	19482	19208	248	274
+Nestle 1904 against TAGNT (N side)	JHN	15643	15466	15237	406	229
+Nestle 1904 against TAGNT (N side)	ACT	18393	18450	18176	217	274
+Nestle 1904 against TAGNT (N side)	ROM	7100	7111	7026	74	85
+Nestle 1904 against TAGNT (N side)	1CO	6820	6829	6759	61	70
+Nestle 1904 against TAGNT (N side)	2CO	4469	4477	4424	45	53
+Nestle 1904 against TAGNT (N side)	GAL	2228	2230	2207	21	23
+Nestle 1904 against TAGNT (N side)	EPH	2419	2422	2400	19	22
+Nestle 1904 against TAGNT (N side)	PHP	1630	1629	1606	24	23
+Nestle 1904 against TAGNT (N side)	COL	1575	1582	1563	12	19
+Nestle 1904 against TAGNT (N side)	1TH	1473	1481	1463	10	18
+Nestle 1904 against TAGNT (N side)	2TH	822	823	816	6	7
+Nestle 1904 against TAGNT (N side)	1TI	1588	1591	1580	8	11
+Nestle 1904 against TAGNT (N side)	2TI	1237	1238	1223	14	15
+Nestle 1904 against TAGNT (N side)	TIT	658	659	654	4	5
+Nestle 1904 against TAGNT (N side)	PHM	335	335	334	1	1
+Nestle 1904 against TAGNT (N side)	HEB	4955	4953	4912	43	41
+Nestle 1904 against TAGNT (N side)	JAS	1739	1742	1727	12	15
+Nestle 1904 against TAGNT (N side)	1PE	1676	1684	1663	13	21
+Nestle 1904 against TAGNT (N side)	2PE	1098	1099	1089	9	10
+Nestle 1904 against TAGNT (N side)	1JN	2136	2141	2128	8	13
+Nestle 1904 against TAGNT (N side)	2JN	245	245	240	5	5
+Nestle 1904 against TAGNT (N side)	3JN	219	219	218	1	1
+Nestle 1904 against TAGNT (N side)	JUD	457	461	448	9	13
+Nestle 1904 against TAGNT (N side)	REV	9832	9852	9774	58	78
+Nestle 1904 against TAGNT (N side)	ALL	137779	137646	135891	1888	1755
+SBLGNT against TAGNT (N side)	MAT	18329	18346	18125	204	221
+SBLGNT against TAGNT (N side)	MRK	11286	11099	10941	345	158
+SBLGNT against TAGNT (N side)	LUK	19446	19482	19198	248	284
+SBLGNT against TAGNT (N side)	JHN	15625	15466	15232	393	234
+SBLGNT against TAGNT (N side)	ACT	18412	18450	18181	231	269
+SBLGNT against TAGNT (N side)	ROM	7055	7111	6934	121	177
+SBLGNT against TAGNT (N side)	1CO	6812	6829	6708	104	121
+SBLGNT against TAGNT (N side)	2CO	4473	4477	4380	93	97
+SBLGNT against TAGNT (N side)	GAL	2226	2230	2188	38	42
+SBLGNT against TAGNT (N side)	EPH	2416	2422	2392	24	30
+SBLGNT against TAGNT (N side)	PHP	1626	1629	1607	19	22
+SBLGNT against TAGNT (N side)	COL	1580	1582	1560	20	22
+SBLGNT against TAGNT (N side)	1TH	1473	1481	1453	20	28
+SBLGNT against TAGNT (N side)	2TH	820	823	802	18	21
+SBLGNT against TAGNT (N side)	1TI	1591	1591	1572	19	19
+SBLGNT against TAGNT (N side)	2TI	1235	1238	1216	19	22
+SBLGNT against TAGNT (N side)	TIT	659	659	650	9	9
+SBLGNT against TAGNT (N side)	PHM	334	335	331	3	4
+SBLGNT against TAGNT (N side)	HEB	4935	4953	4854	81	99
+SBLGNT against TAGNT (N side)	JAS	1739	1742	1723	16	19
+SBLGNT against TAGNT (N side)	1PE	1678	1684	1651	27	33
+SBLGNT against TAGNT (N side)	2PE	1098	1099	1081	17	18
+SBLGNT against TAGNT (N side)	1JN	2137	2141	2097	40	44
+SBLGNT against TAGNT (N side)	2JN	245	245	238	7	7
+SBLGNT against TAGNT (N side)	3JN	219	219	216	3	3
+SBLGNT against TAGNT (N side)	JUD	459	461	449	10	12
+SBLGNT against TAGNT (N side)	REV	9833	9852	9733	100	119
+SBLGNT against TAGNT (N side)	ALL	137741	137646	135512	2229	2134
+Open Scriptures Hebrew Bible against TAHOT	GEN	20612	20614	20500	112	114
+Open Scriptures Hebrew Bible against TAHOT	EXO	16713	16713	16534	179	179
+Open Scriptures Hebrew Bible against TAHOT	LEV	11950	11950	11840	110	110
+Open Scriptures Hebrew Bible against TAHOT	NUM	16413	16413	16243	170	170
+Open Scriptures Hebrew Bible against TAHOT	DEU	14294	14300	14102	192	198
+Open Scriptures Hebrew Bible against TAHOT	JOS	10051	10051	9925	126	126
+Open Scriptures Hebrew Bible against TAHOT	JDG	9885	9900	9770	115	130
+Open Scriptures Hebrew Bible against TAHOT	RUT	1294	1293	1280	14	13
+Open Scriptures Hebrew Bible against TAHOT	1SA	13264	13321	13019	245	302
+Open Scriptures Hebrew Bible against TAHOT	2SA	11039	11053	10805	234	248
+Open Scriptures Hebrew Bible against TAHOT	1KI	13140	13140	12986	154	154
+Open Scriptures Hebrew Bible against TAHOT	2KI	12281	12281	12122	159	159
+Open Scriptures Hebrew Bible against TAHOT	1CH	10747	10774	10444	303	330
+Open Scriptures Hebrew Bible against TAHOT	2CH	13316	13313	13099	217	214
+Open Scriptures Hebrew Bible against TAHOT	EZR	3754	3755	3580	174	175
+Open Scriptures Hebrew Bible against TAHOT	NEH	5312	5319	5170	142	149
+Open Scriptures Hebrew Bible against TAHOT	EST	3045	3052	3009	36	43
+Open Scriptures Hebrew Bible against TAHOT	JOB	8343	8343	8251	92	92
+Open Scriptures Hebrew Bible against TAHOT	PSA	19587	19595	19517	70	78
+Open Scriptures Hebrew Bible against TAHOT	PRO	6915	6915	6791	124	124
+Open Scriptures Hebrew Bible against TAHOT	ECC	2987	2988	2971	16	17
+Open Scriptures Hebrew Bible against TAHOT	SNG	1251	1249	1223	28	26
+Open Scriptures Hebrew Bible against TAHOT	ISA	16932	16930	16666	266	264
+Open Scriptures Hebrew Bible against TAHOT	JER	21836	21832	21388	448	444
+Open Scriptures Hebrew Bible against TAHOT	LAM	1542	1540	1429	113	111
+Open Scriptures Hebrew Bible against TAHOT	EZK	18730	18729	18403	327	326
+Open Scriptures Hebrew Bible against TAHOT	DAN	5919	5920	5769	150	151
+Open Scriptures Hebrew Bible against TAHOT	HOS	2381	2381	2356	25	25
+Open Scriptures Hebrew Bible against TAHOT	JOL	957	957	950	7	7
+Open Scriptures Hebrew Bible against TAHOT	AMO	2042	2042	2009	33	33
+Open Scriptures Hebrew Bible against TAHOT	OBA	291	291	290	1	1
+Open Scriptures Hebrew Bible against TAHOT	JON	688	688	685	3	3
+Open Scriptures Hebrew Bible against TAHOT	MIC	1396	1396	1376	20	20
+Open Scriptures Hebrew Bible against TAHOT	NAM	558	558	551	7	7
+Open Scriptures Hebrew Bible against TAHOT	HAB	671	671	660	11	11
+Open Scriptures Hebrew Bible against TAHOT	ZEP	767	767	760	7	7
+Open Scriptures Hebrew Bible against TAHOT	HAG	600	600	592	8	8
+Open Scriptures Hebrew Bible against TAHOT	ZEC	3128	3128	3084	44	44
+Open Scriptures Hebrew Bible against TAHOT	MAL	876	876	869	7	7
+Open Scriptures Hebrew Bible against TAHOT	ALL	305507	305638	301018	4489	4620
+Open Scriptures Hebrew Bible: words inside notes, not compared		1278
