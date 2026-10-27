@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "interview": "Plan Paint icon production",
+  "exportedAt": "2026-10-20T20:32:19.656Z",
+  "given": [
+    "Broad icon production including batch tools and asset browsing",
+    "No layers",
+    "Preserve the classic Paint ribbon and existing creative tools",
+    "No proprietary appearance, binary or output replication"
+  ],
+  "answers": [
+    {
+      "id": "Q01",
+      "question": "Where should icon commands live?",
+      "choice": "A",
+      "choiceText": "contextual Icon tab for ICO; reuse Atlas data and Gallery machinery. Generic drawing stays on Home/Pencil.",
+      "comment": ""
+    },
+    {
+      "id": "Q02",
+      "question": "How should multiple sizes relate?",
+      "choice": "A",
+      "choiceText": "independent bitmap representations. Explicit Generate/Replace updates only chosen targets.",
+      "comment": ""
+    },
+    {
+      "id": "Q03",
+      "question": "What does indexed-color editing mean?",
+      "choice": "B",
+      "choiceText": "True palette/index editing, including changing a palette entry to recolor every pixel using it.",
+      "comment": ""
+    },
+    {
+      "id": "Q04",
+      "question": "How much palette control?",
+      "choice": "B",
+      "choiceText": "A plus a shared palette across a batch and palette file import/export.",
+      "comment": ""
+    },
+    {
+      "id": "Q05",
+      "question": "Which ICO delivery profiles?",
+      "choice": "A",
+      "choiceText": "modern RGBA sizes 16/24/32/48/64/128/256; optional legacy 4/8-bit variants; custom dimensions within the verified profile.",
+      "comment": ""
+    },
+    {
+      "id": "Q06",
+      "question": "How should generation choose a source?",
+      "choice": "A",
+      "choiceText": "explicit source per target; default to the selected source; show any upscaling.",
+      "comment": ""
+    },
+    {
+      "id": "Q07",
+      "question": "What protects manually edited sizes?",
+      "choice": "A",
+      "choiceText": "“Keep existing” default; replacements individually checked in a before/after list.",
+      "comment": ""
+    },
+    {
+      "id": "Q08",
+      "question": "Which alpha tools belong in the first release?",
+      "choice": "A",
+      "choiceText": "alpha view, alpha-preserving paint, opacity, copy/paste alpha, threshold/matte export preview.",
+      "comment": ""
+    },
+    {
+      "id": "Q09",
+      "question": "How should reusable objects work without layers?",
+      "choice": "A",
+      "choiceText": "existing stamp tool plus one temporary placement preview; Apply flattens into the current image, Escape cancels.",
+      "comment": ""
+    },
+    {
+      "id": "Q10",
+      "question": "Which effects should be promoted?",
+      "choice": "A",
+      "choiceText": "brightness/contrast, hue/saturation, grayscale, opacity, blur, sharpen and shadow; remaining filters under Advanced.",
+      "comment": ""
+    },
+    {
+      "id": "Q11",
+      "question": "How should shadows handle clipping?",
+      "choice": "A",
+      "choiceText": "keep icon dimensions; preview clipped pixels and offer “Fit artwork within image” as a separate explicit operation.",
+      "comment": ""
+    },
+    {
+      "id": "Q12",
+      "question": "What should “disabled” and “hot” mean?",
+      "choice": "A",
+      "choiceText": "named adjustable presets, previewed across all selected sizes/depths, exported to separate files.",
+      "comment": ""
+    },
+    {
+      "id": "Q13",
+      "question": "Should generic transforms gain precise controls?",
+      "choice": "A",
+      "choiceText": "numeric offset, scale, angle and sampling, using existing Paint transform commands.",
+      "comment": ""
+    },
+    {
+      "id": "Q14",
+      "question": "Which comparison view?",
+      "choice": "A",
+      "choiceText": "owned popup with actual-size rows on light, dark, checker and chosen color; optional enlarged pixel inspection.",
+      "comment": ""
+    },
+    {
+      "id": "Q15",
+      "question": "How should contact sheets be delivered?",
+      "choice": "A",
+      "choiceText": "create a new ordinary image with labels; optional direct PNG export.",
+      "comment": ""
+    },
+    {
+      "id": "Q16",
+      "question": "Which validation feedback is useful?",
+      "choice": "A",
+      "choiceText": "missing profile sizes, duplicate size/depth entries, upscaling, clipped effects, transparent/opaque output change and consumer compatibility notes.",
+      "comment": ""
+    },
+    {
+      "id": "Q17",
+      "question": "What is the asset library?",
+      "choice": "A",
+      "choiceText": "ordinary folders, bookmarks and an optional open metadata index; owned browser popup.",
+      "comment": ""
+    },
+    {
+      "id": "Q18",
+      "question": "How much file management belongs here?",
+      "choice": "A",
+      "choiceText": "open, preview, copy path, reveal in file manager, select for jobs and import as stamp.",
+      "comment": ""
+    },
+    {
+      "id": "Q19",
+      "question": "What should a batch window expose?",
+      "choice": "A",
+      "choiceText": "source list, operation, profile, per-target manifest, warnings, destination, collision policy, progress and report.",
+      "comment": ""
+    },
+    {
+      "id": "Q20",
+      "question": "Default destination and collisions?",
+      "choice": "A",
+      "choiceText": "a new output folder; skip or rename collisions unless replace is explicitly selected.",
+      "comment": ""
+    },
+    {
+      "id": "Q21",
+      "question": "How should normalization behave?",
+      "choice": "A",
+      "choiceText": "“Add missing” and “Exact profile” are separate modes; Exact profile lists removals before running.",
+      "comment": ""
+    },
+    {
+      "id": "Q22",
+      "question": "Which batch operations are first-class?",
+      "choice": "A",
+      "choiceText": "images to ICO, representation export, normalization, state variants and fixed-image stamping.",
+      "comment": ""
+    },
+    {
+      "id": "Q23",
+      "question": "How should toolbar strips integrate?",
+      "choice": "A",
+      "choiceText": "reuse Atlas cell editing; explicit ordering, cell size, spacing, alpha/matte and PNG/BMP export.",
+      "comment": ""
+    },
+    {
+      "id": "Q24",
+      "question": "Platform coverage?",
+      "choice": "A",
+      "choiceText": "ICO and general PNG bundles first; optional ICNS later after native macOS validation.",
+      "comment": ""
+    },
+    {
+      "id": "Q25",
+      "question": "SVG input?",
+      "choice": "A",
+      "choiceText": "rasterize source independently at each requested size, then edit ordinary pixels.",
+      "comment": ""
+    },
+    {
+      "id": "Q26",
+      "question": "External-app integration?",
+      "choice": "A",
+      "choiceText": "ordinary files, external-change detection and explicit reload; clipboard tested where available.",
+      "comment": ""
+    },
+    {
+      "id": "Q27",
+      "question": "Resource extraction and application patching?",
+      "choice": "A",
+      "choiceText": "defer both from this icon release.",
+      "comment": "is a second program ie resource hacker that could embed us as an inline editor but beyond scope of plan paint"
+    },
+    {
+      "id": "Q28",
+      "question": "Which ribbon rendering variant should the study show?",
+      "choice": "A",
+      "choiceText": "preserve current Paint proportions and blue/gold identity; leave flat/smooth/dithered command rendering to the selected GUI.Forms theme.",
+      "comment": "this is temporary. eventually we will do a plan paint retool to gui.forms stable paradigm. "
+    }
+  ]
+}
