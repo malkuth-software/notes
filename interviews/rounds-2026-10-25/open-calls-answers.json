@@ -1,0 +1,176 @@
+{
+  "interview": "Open calls, 2026-10-26",
+  "saved": "2026-10-26T01:54:55.315Z",
+  "answers": {
+    "RT-Q1": {
+      "choice": 1,
+      "note": "stx_rtf2md",
+      "at": "2026-10-26T01:52:54.538Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:52:32.397Z"
+        }
+      ]
+    },
+    "RT-Q2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:52:59.861Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:52:59.861Z"
+        }
+      ]
+    },
+    "RT-Q3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:53:09.564Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:53:09.564Z"
+        }
+      ]
+    },
+    "RT-Q4": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:53:12.736Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:53:12.736Z"
+        }
+      ]
+    },
+    "RT-Q5": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:53:16.114Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:53:16.114Z"
+        }
+      ]
+    },
+    "RT-Q6": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:53:21.253Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:53:21.253Z"
+        }
+      ]
+    },
+    "W-Q5": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:53:28.924Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:53:28.924Z"
+        }
+      ]
+    },
+    "W-Q6": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:53:38.694Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:53:38.694Z"
+        }
+      ]
+    },
+    "T3-C1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:53:57.785Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:53:57.785Z"
+        }
+      ]
+    },
+    "T3-C2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:54:02.191Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:54:02.191Z"
+        }
+      ]
+    },
+    "T3-C3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:54:04.884Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:54:04.884Z"
+        }
+      ]
+    },
+    "T3-C4": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:54:07.233Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:54:07.233Z"
+        }
+      ]
+    },
+    "T3-C5": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:54:11.065Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:54:11.065Z"
+        }
+      ]
+    },
+    "T3-C6": {
+      "choice": 2,
+      "note": "",
+      "at": "2026-10-26T01:54:34.128Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:54:13.548Z"
+        },
+        {
+          "choice": 2,
+          "at": "2026-10-26T01:54:34.128Z"
+        }
+      ]
+    },
+    "T3-C7": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T01:54:36.744Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T01:54:36.744Z"
+        }
+      ]
+    }
+  },
+  "record": "Open calls, 2026-10-26\nRT-Q1: 1 (stx_rtf) — note: stx_rtf2md\nRT-Q2: 1 (Attribute spans [text]{u color=#c00000} and block lines {align=center})\nRT-Q3: 1 (1252 only; another code page is refused only when a byte actually needs it)\nRT-Q4: 1 (First-party authored files now; real saves from Word or TextEdit later, when you ask)\nRT-Q5: 1 (Import only: an RTF file opens as a new untitled Markdown document)\nRT-Q6: 1 (Admit them)\nW-Q5: 1 (Two families, link and visited_link; the link's visited flag picks which one)\nW-Q6: 1 (The program draws only the item's content, with our painter; plate, selection and focus stay theme-drawn)\nT3-C1: 1 (Keep both limits; exceeding either is an error and the theme refuses to load)\nT3-C2: 1 (Each expanded selector keeps the specificity :is() gives it (its most specific argument), as in CSS)\nT3-C3: 1 (Add them)\nT3-C4: 1 (Load it at the running version: what this engine understands applies, and the rest is warned)\nT3-C5: 1 (The part's own family recipe (engine version 0.3))\nT3-C6: 2 (Combine them as CSS does (colour under image))\nT3-C7: 1 (Selects the material primitive implicitly)"
+}

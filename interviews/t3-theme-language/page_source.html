@@ -1,0 +1,541 @@
+<meta charset="utf-8">
+<title>T3 Theme Language Interview</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*FONTS*/
+/* Layout: one reading column of question cards under a sticky section rail; visuals break wider inside their own scroll boxes. */
+:root {
+  --paper: #F4F5F7;
+  --card: #FFFFFF;
+  --ink: #16263A;
+  --ink-2: #4B5B70;
+  --rule: #D3DCE8;
+  --accent: #173F79;
+  --accent-soft: #E3EDFB;
+  --rec: #A9720F;
+  --rec-soft: #FBF1DC;
+  --done: #2F7A4B;
+  --chip: #E8EEF6;
+  --series-1: #2F68C7;
+  --series-2: #B8860B;
+  --series-3: #B5476F;
+  --face-display: "Portsmouth Rapids", "Segoe UI", Tahoma, Arial, sans-serif;
+  --face-body: "Portsmouth Rapids", "Segoe UI", Tahoma, Arial, sans-serif;
+  --face-mono: "Portsmouth Mono", "Cascadia Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #050706; --card: #0E1310; --ink: #E2EADF; --ink-2: #A3B39D; --rule: #26322A;
+    --accent: #82B361; --accent-soft: #17241A; --rec: #D98AAB; --rec-soft: #2A1620;
+    --done: #82B361; --chip: #18211B; --series-1: #82B361; --series-2: #E0B860; --series-3: #D98AAB;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #050706; --card: #0E1310; --ink: #E2EADF; --ink-2: #A3B39D; --rule: #26322A;
+  --accent: #82B361; --accent-soft: #17241A; --rec: #D98AAB; --rec-soft: #2A1620;
+  --done: #82B361; --chip: #18211B; --series-1: #82B361; --series-2: #E0B860; --series-3: #D98AAB;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--face-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+.wrap { max-width: 860px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--face-display); font-weight: 700; text-wrap: balance; line-height: 1.2; }
+h1 { font-size: 2.1rem; margin: 0 0 8px; letter-spacing: -0.01em; }
+h2 { font-size: 1.35rem; margin: 0; }
+h3 { font-size: 1.08rem; margin: 0; }
+p { margin: 0; }
+.lede { color: var(--ink-2); max-width: 65ch; }
+.mono { font-family: var(--face-mono); }
+header.top { padding-block: 32px 18px; display: grid; gap: 14px; }
+.eyebrow { font-family: var(--face-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.status-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; color: var(--ink-2); }
+.meter { flex: 1 1 220px; height: 8px; background: var(--chip); border-radius: 4px; overflow: hidden; min-width: 160px; }
+.meter > i { display: block; height: 100%; width: 0; background: var(--done); transition: width 200ms ease; }
+.store-note { font-size: 0.85rem; }
+nav.rail {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--paper); border-bottom: 1px solid var(--rule);
+  padding-block: 10px; margin-bottom: 18px;
+}
+nav.rail .chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.rail a {
+  flex: 0 0 auto; text-decoration: none; color: var(--ink); background: var(--chip);
+  font-size: 0.84rem; padding: 5px 10px; border-radius: 999px; white-space: nowrap;
+}
+nav.rail a:focus-visible, button:focus-visible, textarea:focus-visible, .opt input:focus-visible + .opt-body { outline: 2px solid var(--accent); outline-offset: 2px; }
+nav.rail a .count { font-family: var(--face-mono); color: var(--ink-2); margin-left: 4px; }
+nav.rail a.complete { background: var(--accent-soft); }
+.context { display: grid; gap: 14px; margin-bottom: 28px; }
+.panel { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 18px; display: grid; gap: 10px; min-width: 0; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; vertical-align: top; padding: 7px 8px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--face-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); font-weight: 400; }
+section.group { display: grid; gap: 16px; margin-bottom: 36px; scroll-margin-top: 64px; }
+section.group > header { display: grid; gap: 4px; padding-top: 6px; border-top: 2px solid var(--accent); }
+section.group > header .eyebrow { margin-top: 10px; }
+article.q { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 18px; display: grid; gap: 12px; scroll-margin-top: 64px; min-width: 0; }
+article.q.answered { border-left: 4px solid var(--done); }
+.q-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.q-id { font-family: var(--face-mono); font-size: 0.82rem; color: var(--accent); }
+.q-context { color: var(--ink-2); font-size: 0.95rem; max-width: 70ch; }
+.opts { display: grid; gap: 8px; }
+.opt { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; cursor: pointer; }
+.opt input { margin-top: 5px; accent-color: var(--accent); width: 17px; height: 17px; }
+.opt-body { border: 1px solid var(--rule); border-radius: 5px; padding: 10px 12px; display: grid; gap: 4px; min-width: 0; }
+.opt input:checked + .opt-body { border-color: var(--accent); background: var(--accent-soft); }
+.opt-title { font-weight: 700; }
+.opt-why { color: var(--ink-2); font-size: 0.92rem; }
+.rec { display: inline-block; font-family: var(--face-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rec); background: var(--rec-soft); border-radius: 3px; padding: 1px 6px; margin-left: 6px; vertical-align: 1px; }
+.note-row { display: grid; gap: 4px; }
+.note-row label { font-size: 0.84rem; color: var(--ink-2); }
+textarea { width: 100%; min-height: 56px; resize: vertical; font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 5px; padding: 8px 10px; }
+.saved { font-size: 0.8rem; color: var(--ink-2); min-height: 1.2em; }
+.visual { border: 1px dashed var(--rule); border-radius: 6px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.visual .cap { font-size: 0.85rem; color: var(--ink-2); max-width: 70ch; }
+.vis-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.vis-cell { display: grid; gap: 6px; justify-items: start; min-width: 0; }
+.vis-cell .lbl { font-size: 0.82rem; font-family: var(--face-mono); color: var(--ink-2); }
+.vis-cell .lbl b { color: var(--ink); font-weight: 700; }
+canvas.px { image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; height: auto; background: #fff; }
+.vis-scroll { overflow-x: auto; }
+button.act { font: inherit; font-size: 0.88rem; color: var(--card); background: var(--accent); border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+button.ghost { font: inherit; font-size: 0.88rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+.motion-note { font-size: 0.82rem; color: var(--rec); }
+.tiles { position: relative; width: 168px; height: 168px; background: #22262B; border-radius: 4px; }
+.tiles .tile { position: absolute; width: 40px; height: 40px; border: 2px solid #0B0E12; background: #3F7FE0; border-radius: 3px; box-shadow: inset 0 0 0 2px #9CC2FF; }
+.tiles .tile.off { opacity: 0; }
+.tiles.fade .tile { transition: opacity 100ms linear; }
+.diagram { display: grid; gap: 8px; }
+.layer { border: 1px solid var(--rule); border-radius: 5px; padding: 8px 10px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.layer .who { font-family: var(--face-mono); font-size: 0.78rem; color: var(--ink-2); }
+.layer.covered { background: var(--accent-soft); border-color: var(--accent); }
+.press-zone { display: grid; gap: 6px; justify-items: center; }
+.press-frame { outline: 1px dashed var(--ink-2); outline-offset: 0; display: inline-block; line-height: 0; }
+.press-frame canvas { transition: transform 60ms ease-out; touch-action: none; cursor: pointer; }
+#summary pre { white-space: pre-wrap; font-family: var(--face-mono); font-size: 0.82rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 5px; padding: 12px; margin: 0; max-height: 420px; overflow: auto; }
+.sum-table td:first-child { font-family: var(--face-mono); white-space: nowrap; }
+.pending { color: var(--rec); }
+footer.next { display: grid; gap: 10px; }
+@media (max-width: 520px) {
+  h1 { font-size: 1.7rem; }
+  article.q, .panel { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .meter > i, .press-frame canvas { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">GUI.Forms · stage T3 · theme language · interview round 1</div>
+    <h1>T3 Theme Language Interview</h1>
+    <p class="lede">T3 is the theme language: the text people write to style GUI.Forms, and the parser that turns it into the engine's rules. Much is already decided (below). These questions settle the rest before any parser code is written. Each explains its options and my recommendation. Your answers are kept in this browser; save them to a file or copy the record and give it to the coordinating session, which records them in the T3 brief.</p>
+    <div class="status-row">
+      <span id="progress-text">0 of 0 answered</span>
+      <span class="meter" aria-hidden="true"><i id="progress-bar"></i></span>
+      <span id="store-note" class="store-note">Answers are kept in this browser. Save them to a file to keep them anywhere else.</span>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Sections"><div class="chips" id="rail"></div></nav>
+
+  <div class="context">
+    <div class="panel">
+      <h2>Already decided</h2>
+      <p>Themes are a CSS-syntax subset addressed to the named anatomy (::part(), :state(), stable IDs), not a document tree. No combinators. No layout properties. Inheritance only for text and colour roles. Engine inputs are custom properties only the engine sets. Expressions are T2's bounded grammar. New effects are C++ engine primitives, never theme code. Shape is an engine parameter; themes never set geometry or hit regions. Images are named resources (CNG native, PNG for interchange). Themes are data only, may be swapped live, and need a content hash, not a signature. Names are kebab-case. Form documents share this syntax and parser. An untouched file round-trips byte for byte.</p>
+      <p>The engine side is built: T2's rules, cascade, primitives and CSS coverage table (planning/stages/T2-engine-core/CSS_COVERAGE.md). Its blueprint is sealed; its optimisation and full population continue alongside T3.</p>
+    </div>
+  </div>
+
+  <main id="groups"></main>
+
+  <section class="group" id="summary">
+    <header><div class="eyebrow">Record</div><h2>Your answers</h2></header>
+    <div class="panel">
+      <p class="lede" id="summary-lede">Answered questions appear here as you go. Save the answers to a file (you can load it back here later, in any browser), or copy the record and paste it into the conversation.</p>
+      <div class="table-scroll"><table class="sum-table"><thead><tr><th>Question</th><th>Choice</th><th>Note</th></tr></thead><tbody id="summary-rows"></tbody></table></div>
+      <div class="vis-row"><button class="act" id="save-btn" type="button">Save answers to a file</button><button class="ghost" id="load-btn" type="button">Load answers from a file</button><button class="ghost" id="copy-btn" type="button">Copy the record</button><input type="file" id="load-file" accept=".json,application/json" hidden><span class="saved" id="copy-state"></span></div>
+      <pre id="summary-text" hidden></pre>
+    </div>
+  </section>
+
+  <footer class="next panel">
+    <h2>What happens with your answers</h2>
+    <p>They become owner decisions in <span class="mono">planning/stages/T3-theme-language/README.md</span>. Then a worker writes the T3 plan (grammar, phases and the gate) for your review before the parser is built: conformance fixtures for every selector and property form, hostile-input tests and a fuzz target, and the byte-for-byte round trip.</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+// ---------------------------------------------------------------- questions
+const GROUPS = [
+  { key: "A", title: "What a theme says", blurb: "T2's engine already holds themes as rules: a selector, a cascade level, and declarations that name an engine primitive and set its parameters (fills, shadows, radii, shape, filters, motion). T3 is the text a person writes and the parser that turns it into those rules. These questions decide how that text reads.", questions: [
+    { id: "T3-A1", q: "Property names: CSS's, the engine's, or both?",
+      ctx: "The engine's parameters do not have CSS names. A rounded, shadowed button face is the material primitive with a fill, an outer shadow and corner radii. CSS_COVERAGE.md maps every CSS visual property the engine can carry onto those parameters.",
+      opts: [
+        { t: "CSS names, lowered onto engine parameters, plus engine names for what CSS lacks", w: "A theme writes background, border-radius, box-shadow, filter, transition and the rest the way any CSS author would. The parser lowers each onto the engine's parameters. Things CSS has no word for (shape: pill, finish, the glow placements, procedural materials) use engine-named properties. Anyone who knows CSS can read a theme, and nothing the engine can do is out of reach.", rec: true },
+        { t: "Engine names only", w: "One property per engine parameter, so the text and the engine match exactly and the theme designer has nothing to translate. But a CSS author has to learn a new vocabulary, which loses the main reason for CSS syntax." },
+        { t: "CSS names only", w: "Most familiar, but engine capabilities without a CSS property (finish, glow placement, procedural materials, shape) could not be written at all." } ] },
+    { id: "T3-A2", q: "Shorthands such as background, border and transition?",
+      ctx: "CSS lets one property set several: `border: 1px solid red`, `transition: scale 90ms ease`. The parser must also give back identical bytes for an untouched file (the round-trip rule).",
+      opts: [
+        { t: "Accept the common shorthands", w: "background, border, border-radius, box-shadow lists, transition and animation. Each expands to longhands inside the parser; the original text is kept for the round trip, so a hand-written shorthand survives untouched.", rec: true },
+        { t: "Longhands only", w: "Simpler parser and one way to write each thing, but themes get long and read unlike ordinary CSS." } ] },
+    { id: "T3-A3", q: "Which units?",
+      ctx: "Themes set no layout (stage L owns layout), so units only size effects: radii, shadow offsets and blurs, keylines, translate distances.",
+      opts: [
+        { t: "Logical pixels, plus percentages where CSS defines them", w: "px means one logical unit, scaled by the engine for each display, as everywhere else in GUI.Forms. Percentages only where CSS gives them a meaning (gradient stops, radii). No em, rem or viewport units, because they tie effects to layout.", rec: true },
+        { t: "Also em, relative to the part's text role size", w: "Lets an effect follow the text size, for example a focus ring that grows with large text. One more dependency between text and effects." } ] },
+    { id: "T3-A4", q: "Colours: literal values, colour roles, or both?",
+      ctx: "GUI.Forms colours come in relational roles (surface, ink, accent and their pairs), and high contrast replaces the roles. A literal like #3a6ea5 bypasses that.",
+      opts: [
+        { t: "Both, roles first", w: "role(accent) and its pairs are the normal way, so high contrast and dark variants keep working. Literals (hex, rgb(), hsl(), color-mix()) are allowed for decoration, and the diagnostics flag a literal used as text or edge colour, since forced high contrast cannot remap it.", rec: true },
+        { t: "Roles only", w: "Every colour stays remappable, which is the safest for accessibility, but a theme cannot pick an exact decorative tint without adding a role." },
+        { t: "Literals only", w: "Plain CSS, but high contrast and dark variants have nothing to remap." } ] },
+    { id: "T3-A5", q: "Can a theme define its own variables?",
+      ctx: "The scenario writes var(--face-light) and sets --glow. The engine's inputs (--pointer-x, --pointer-y, application values such as --level) are custom properties too, and a theme must never set those.",
+      opts: [
+        { t: "Yes, with the engine's inputs in a reserved namespace", w: "Themes may define --anything for their own reuse (a palette, a radius used everywhere). Engine inputs keep their names and are read-only: a theme that tries to set one gets a diagnostic and the declaration is dropped.", rec: true },
+        { t: "No theme variables", w: "Only engine inputs exist as custom properties. Simpler, but every repeated value is written out, and palettes cannot be shared across rules." } ] } ] },
+
+  { key: "B", title: "Selectors and errors", blurb: "Already decided: control type, stable ID (#id), class, ::part(name), :state(name) and the standard state pseudo-classes, with no combinators. The cascade is the engine's (built-in recipe, theme sheet, class rule, stable-ID rule, inline style, forced high contrast; within a level the more specific selector, then the later rule).", questions: [
+    { id: "T3-B1", q: "Any selector forms beyond the decided set?",
+      ctx: ":is() and :not() let one rule cover several states or exclude one, without combinators.",
+      opts: [
+        { t: "None in the first version", w: "The decided set covers every rule the default and Windows-familiar themes need. :is() and :not() can come later without breaking anything.", rec: true },
+        { t: ":is() only", w: "Shortens rules that repeat across states, for example button:is(:hover, :focus)::part(face)." },
+        { t: ":is() and :not()", w: "Most expressive; :not() makes specificity and the theme designer's view harder to reason about." } ] },
+    { id: "T3-B2", q: "What does an invalid value drop?",
+      ctx: "The brief says an invalid rule is dropped, not fatal. CSS itself drops only the bad declaration and keeps the rest of the rule.",
+      opts: [
+        { t: "Only the bad declaration", w: "As CSS does: one mistyped value loses one property, and the rest of the rule still applies. Each drop is a diagnostic naming the file, line and property.", rec: true },
+        { t: "The whole rule", w: "Stricter, so a half-applied rule never shows. But one typo then removes a whole part's look." } ] },
+    { id: "T3-B3", q: "A theme written for a newer engine?",
+      ctx: "A theme declares the engine version it needs. On an older engine it may use a property or primitive that engine does not know.",
+      opts: [
+        { t: "Unknown names are dropped with a diagnostic; the rest applies", w: "A part keeps every declaration its engine understands, and falls back to the built-in recipe only where no primitive survives. Tools warn when a theme asks for a newer engine than the one running.", rec: true },
+        { t: "Any part using an unknown name falls back whole", w: "A part never shows a partial look, but a theme meant for a newer engine shows mostly built-in recipes on an older one." } ] } ] },
+
+  { key: "C", title: "States and motion", blurb: "The engine already runs transitions, settling primitives, in-between frames and the presentational state machine. These questions decide how a theme writes them.", questions: [
+    { id: "T3-C1", q: "Can a theme declare states of its own?",
+      ctx: "Today a theme keys its looks on the states controls publish (hover, pressed, checked and so on). A pop, for example, could want a short-lived 'risen' state between pressed and rest. T2 rules that theme states never become observable to the program and never delay behaviour.",
+      opts: [
+        { t: "Not in the first version: transitions and keyframes on published states only", w: "CSS transitions and @keyframes, keyed on the published states, cover the scenario (pop, sheen, glow). A theme-declared state machine can come later as its own rule kind.", rec: true },
+        { t: "Yes, through an @-rule that declares presentational states", w: "More expressive motion now, at the cost of a second, non-CSS construct in the language and in the theme designer." } ] },
+    { id: "T3-C2", q: "How are follow(), spring() and decay() written?",
+      ctx: "They are the engine's settling primitives, for momentum and pop.",
+      opts: [
+        { t: "As timing functions in transition", w: "transition: scale spring(0.6, 12) reads like any easing curve, and lowers onto the engine's settling primitive. Durations stay in time, since they are what the user sees.", rec: true },
+        { t: "As their own property", w: "motion: spring(...) beside transition. Keeps them apart from CSS easing, but a CSS author will not find them where they expect." } ] },
+    { id: "T3-C3", q: "Reduced motion?",
+      ctx: "The engine already turns motion primitives off when the system asks for reduced motion (a T2 gate).",
+      opts: [
+        { t: "Automatic, plus @media (prefers-reduced-motion) for themes that want a different calm look", w: "Every theme is safe without doing anything, and a theme can still choose, say, a cross-fade instead of a pop.", rec: true },
+        { t: "Automatic only", w: "Nothing to write, and no theme can get it wrong, but no theme can choose its calmer look either." } ] } ] },
+
+  { key: "D", title: "Variants and packs", blurb: "Already decided: a theme collection is immutable data with a manifest, a coverage table and content hashes; it can be swapped while a program runs; external packs need a content hash, not a signature.", questions: [
+    { id: "T3-D1", q: "Light, dark, high contrast and display scale: one sheet or several?",
+      ctx: "Dark is an admitted variant of the default theme; high contrast and display scale apply to every theme.",
+      opts: [
+        { t: "One sheet, with @media blocks", w: "@media (prefers-color-scheme: dark), (forced-colors: active) and (resolution) inside one sheet, as on the web. Shared rules are written once.", rec: true },
+        { t: "Separate sheets per variant, chosen by the manifest", w: "Each variant reads on its own, but rules shared between variants are repeated or need imports." } ] },
+    { id: "T3-D2", q: "Can a theme build on another?",
+      ctx: "Plan Paint builds its look as overrides of windows-professional. A Windows-familiar theme may want the default theme's rules with a different surface.",
+      opts: [
+        { t: "Yes: @import of another installed theme by name", w: "A theme names a base theme and overrides what differs. The import is resolved within installed, hash-checked packs only: no paths, no network.", rec: true },
+        { t: "No: every pack is complete", w: "No dependency between packs, but every variant repeats its whole base." } ] },
+    { id: "T3-D3", q: "Where do the manifest and the engine version live?",
+      ctx: "The manifest holds identity, version, compatible engine versions, coverage and content hashes.",
+      opts: [
+        { t: "A JSON manifest beside the CSS sheets", w: "Like the repository's other manifests: tools read it without parsing CSS, and the hashes cover the sheets themselves.", rec: true },
+        { t: "An @theme block inside the main sheet", w: "One file per theme, but the hashes can no longer cover the file that declares them." } ] } ] },
+
+  { key: "E", title: "Inline styles, limits and the parser", blurb: "How styles reach a single control, how hostile input is bounded, and who may call the parser.", questions: [
+    { id: "T3-E1", q: "Where do inline styles come from?",
+      ctx: "Your first idea was theming 'both by inline effects as well as by the use of a theme style sheet'. The cascade already has an inline level, just under forced high contrast.",
+      opts: [
+        { t: "Two sources, one parser: a C++ call on the control, and a style attribute in form documents", w: "control.set_style(\"::part(face) { ... }\") for programs, and style=\"...\" in FD documents, both parsed by the same T3 parser into the inline level.", rec: true },
+        { t: "Form documents only", w: "Keeps styling out of program code, so a theme always wins outside forms; programs cannot style one control without a document." } ] },
+    { id: "T3-E2", q: "Accept these limits for hostile input?",
+      ctx: "Every theme is treated as hostile input: bounded sizes and counts, no recursion depth that input controls, and a fuzz target beside the PNG one. The proposed limits, each counted in effort or size, never in time:",
+      opts: [
+        { t: "1 MiB per sheet, 10,000 rules, 64 declarations per rule, nesting 32 deep, 4 KiB per string, 16 imports, expressions within T2's operation budget", w: "Generous for any real theme; the default theme is far under each. Hitting a limit drops what is past it, with a diagnostic, never a crash.", rec: true },
+        { t: "Accept, with changes in the note", w: "Name the limit to change." } ] },
+    { id: "T3-E3", q: "Is the parser public API?",
+      ctx: "The theme designer (V) and interface builder (D) need to parse, edit and re-serialize theme text without clobbering hand edits.",
+      opts: [
+        { t: "Internal now, with a documented seam; public when V starts", w: "The parse, round-trip and structured-edit API settles against real use in V before it becomes a promise.", rec: true },
+        { t: "Public from the start", w: "Tools outside the repository can use it now, but its shape is frozen before anything real uses it." } ] } ] }
+];
+
+const VISUALS = {};
+
+// ---------------------------------------------------------------- answers
+const answers = {};
+
+function allQuestions() {
+  const list = [];
+  for (const g of GROUPS) for (const q of g.questions) list.push({ g: g, q: q });
+  return list;
+}
+function localKey() { return "t3-theme-language-round-1"; }
+function loadLocal() {
+  try { const raw = localStorage.getItem(localKey()); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
+}
+function saveLocal() {
+  try { localStorage.setItem(localKey(), JSON.stringify(answers)); } catch (e) { /* storage unavailable */ }
+}
+function setSaved(id, text) {
+  const el = document.getElementById("saved-" + id);
+  if (el) el.textContent = text;
+}
+function persist(id) {
+  saveLocal();
+  setSaved(id, "Saved in this browser");
+}
+function record(id, choice, note) {
+  const now = new Date().toISOString();
+  const prev = answers[id] || { choice: 0, note: "", history: [] };
+  const history = (prev.history || []).slice(-19);
+  if (choice !== prev.choice) history.push({ choice: choice, at: now });
+  answers[id] = { choice: choice, note: note, at: now, history: history };
+  refreshQuestion(id);
+  refreshProgress();
+  persist(id);
+}
+function applyRemote(id, data) {
+  answers[id] = { choice: Number(data.choice) || 0, note: String(data.note || ""), at: String(data.at || ""), history: Array.isArray(data.history) ? data.history.slice(-20) : [] };
+  const radios = document.querySelectorAll("input[name='opt-" + id + "']");
+  for (const r of radios) r.checked = Number(r.value) === answers[id].choice;
+  const ta = document.getElementById("note-" + id);
+  if (ta && document.activeElement !== ta) ta.value = answers[id].note;
+  refreshQuestion(id);
+}
+
+// ---------------------------------------------------------------- page
+function buildPage() {
+  const rail = document.getElementById("rail");
+  const main = document.getElementById("groups");
+  for (const g of GROUPS) {
+    const a = document.createElement("a");
+    a.href = "#group-" + g.key;
+    a.id = "rail-" + g.key;
+    a.innerHTML = g.key + " · " + g.title + "<span class=\"count\"></span>";
+    rail.appendChild(a);
+    const sec = document.createElement("section");
+    sec.className = "group";
+    sec.id = "group-" + g.key;
+    const head = document.createElement("header");
+    head.innerHTML = "<div class=\"eyebrow\">Section " + g.key + "</div><h2>" + g.title + "</h2><p class=\"lede\">" + g.blurb + "</p>";
+    sec.appendChild(head);
+    for (const q of g.questions) sec.appendChild(buildQuestion(q));
+    main.appendChild(sec);
+  }
+  const s = document.createElement("a");
+  s.href = "#summary"; s.textContent = "Record";
+  rail.appendChild(s);
+}
+function buildQuestion(q) {
+  const art = document.createElement("article");
+  art.className = "q";
+  art.id = q.id;
+  const head = document.createElement("div");
+  head.className = "q-head";
+  head.innerHTML = "<span class=\"q-id\">" + q.id + "</span><h3>" + q.q + "</h3>";
+  art.appendChild(head);
+  const ctx = document.createElement("p");
+  ctx.className = "q-context";
+  ctx.textContent = q.ctx;
+  art.appendChild(ctx);
+  let visualBox = null;
+  if (q.visual) {
+    visualBox = document.createElement("div");
+    visualBox.className = "visual";
+    art.appendChild(visualBox);
+    VISUALS[q.visual](visualBox);
+  }
+  const opts = document.createElement("div");
+  opts.className = "opts";
+  opts.setAttribute("role", "radiogroup");
+  opts.setAttribute("aria-label", q.q);
+  q.opts.forEach(function (o, index) {
+    const n = index + 1;
+    const label = document.createElement("label");
+    label.className = "opt";
+    const input = document.createElement("input");
+    input.type = "radio"; input.name = "opt-" + q.id; input.value = String(n); input.id = "opt-" + q.id + "-" + n;
+    input.addEventListener("change", function () {
+      const note = (answers[q.id] && answers[q.id].note) || "";
+      record(q.id, n, note);
+      if (visualBox && visualBox.highlight) visualBox.highlight(n);
+    });
+    const body = document.createElement("div");
+    body.className = "opt-body";
+    const title = document.createElement("div");
+    title.className = "opt-title";
+    title.textContent = n + ". " + o.t;
+    if (o.rec) { const r = document.createElement("span"); r.className = "rec"; r.textContent = "Recommended"; title.appendChild(r); }
+    const why = document.createElement("div");
+    why.className = "opt-why";
+    why.textContent = o.w;
+    body.appendChild(title); body.appendChild(why);
+    label.appendChild(input); label.appendChild(body);
+    opts.appendChild(label);
+  });
+  art.appendChild(opts);
+  const noteRow = document.createElement("div");
+  noteRow.className = "note-row";
+  const nl = document.createElement("label");
+  nl.setAttribute("for", "note-" + q.id);
+  nl.textContent = "Note (optional): a qualification, or your own answer";
+  const ta = document.createElement("textarea");
+  ta.id = "note-" + q.id;
+  let timer = 0;
+  function commitNote() {
+    clearTimeout(timer);
+    const cur = answers[q.id] || { choice: 0, note: "" };
+    if (cur.note === ta.value) return;
+    record(q.id, cur.choice || 0, ta.value);
+  }
+  ta.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(commitNote, 900); });
+  ta.addEventListener("blur", commitNote);
+  noteRow.appendChild(nl); noteRow.appendChild(ta);
+  art.appendChild(noteRow);
+  const saved = document.createElement("div");
+  saved.className = "saved";
+  saved.id = "saved-" + q.id;
+  art.appendChild(saved);
+  art.visualBox = visualBox;
+  return art;
+}
+function refreshQuestion(id) {
+  const art = document.getElementById(id);
+  if (!art) return;
+  const a = answers[id];
+  const isAnswered = !!(a && (a.choice > 0 || (a.note && a.note.trim())));
+  art.classList.toggle("answered", isAnswered);
+  if (art.visualBox && art.visualBox.highlight) art.visualBox.highlight(a ? a.choice : 0);
+}
+function refreshProgress() {
+  const list = allQuestions();
+  let done = 0;
+  const perGroup = {};
+  for (const item of list) {
+    const a = answers[item.q.id];
+    const isDone = !!(a && a.choice > 0);
+    if (isDone) done++;
+    perGroup[item.g.key] = perGroup[item.g.key] || [0, 0];
+    perGroup[item.g.key][1]++;
+    if (isDone) perGroup[item.g.key][0]++;
+  }
+  document.getElementById("progress-text").textContent = done + " of " + list.length + " answered";
+  document.getElementById("progress-bar").style.width = (100 * done / list.length) + "%";
+  for (const g of GROUPS) {
+    const chip = document.getElementById("rail-" + g.key);
+    const c = perGroup[g.key];
+    chip.querySelector(".count").textContent = c[0] + "/" + c[1];
+    chip.classList.toggle("complete", c[0] === c[1]);
+  }
+  refreshSummary(list);
+}
+function refreshSummary(list) {
+  const rows = document.getElementById("summary-rows");
+  rows.textContent = "";
+  const lines = ["T3 theme language, round 1"];
+  for (const item of list) {
+    const a = answers[item.q.id];
+    const tr = document.createElement("tr");
+    const tdId = document.createElement("td"); tdId.textContent = item.q.id;
+    const tdC = document.createElement("td");
+    const tdN = document.createElement("td");
+    if (a && a.choice > 0) {
+      const o = item.q.opts[a.choice - 1];
+      tdC.textContent = a.choice + ". " + o.t;
+      lines.push(item.q.id + ": " + a.choice + " (" + o.t + ")" + (a.note ? " — note: " + a.note : ""));
+    } else {
+      tdC.textContent = "Not answered"; tdC.className = "pending";
+      lines.push(item.q.id + ": not answered" + (a && a.note ? " — note: " + a.note : ""));
+    }
+    tdN.textContent = (a && a.note) || "";
+    tr.appendChild(tdId); tr.appendChild(tdC); tr.appendChild(tdN);
+    rows.appendChild(tr);
+  }
+  document.getElementById("summary-text").textContent = lines.join("\n");
+}
+function setStoreNote(text) { document.getElementById("store-note").textContent = text; }
+
+document.getElementById("copy-btn").addEventListener("click", function () {
+  const pre = document.getElementById("summary-text");
+  const text = pre.textContent;
+  const state = document.getElementById("copy-state");
+  function fallback() {
+    pre.hidden = false;
+    const range = document.createRange();
+    range.selectNodeContents(pre);
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(range);
+    state.textContent = "Selected below; copy it with your keyboard.";
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { state.textContent = "Copied."; }, fallback);
+  } else { fallback(); }
+});
+
+buildPage();
+const local = loadLocal();
+for (const id in local) { answers[id] = local[id]; }
+for (const id in answers) applyRemote(id, answers[id]);
+refreshProgress();
+
+// Saving to and loading from a file: the answers travel as JSON beside the readable record.
+function saveToFile() {
+  const payload = { interview: "T3 theme language, round 1", saved: new Date().toISOString(), answers: answers, record: document.getElementById("summary-text").textContent };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "t3-interview-answers.json";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+  document.getElementById("copy-state").textContent = "Saved t3-interview-answers.json to your downloads.";
+}
+function loadFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = function () {
+    const state = document.getElementById("copy-state");
+    let payload = null;
+    try { payload = JSON.parse(String(reader.result)); } catch (e) { payload = null; }
+    if (!payload || typeof payload.answers !== "object" || payload.answers === null) {
+      state.textContent = "That file is not a saved T3 interview; nothing was loaded.";
+      return;
+    }
+    let loaded = 0;
+    for (const id in payload.answers) {
+      if (!document.getElementById(id)) continue;
+      applyRemote(id, payload.answers[id]);
+      loaded++;
+    }
+    saveLocal();
+    refreshProgress();
+    state.textContent = "Loaded " + loaded + " answers from " + file.name + ".";
+  };
+  reader.readAsText(file);
+}
+document.getElementById("save-btn").addEventListener("click", saveToFile);
+document.getElementById("load-btn").addEventListener("click", function () { document.getElementById("load-file").click(); });
+document.getElementById("load-file").addEventListener("change", function (ev) {
+  const files = ev.target.files;
+  if (files && files.length > 0) loadFromFile(files[0]);
+  ev.target.value = "";
+});
+</script>

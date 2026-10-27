@@ -1,0 +1,51 @@
+{
+  "interview": "W controls, round 1",
+  "saved": "2026-10-26T00:46:39.682Z",
+  "answers": {
+    "W-Q1": {
+      "choice": 1,
+      "note": "lets not do it how they did it. lets do it something like an inline markdown system. its a rich text field, but it relies on a parser that converts rtf to markdown that can be shared with swiftedit and done by a swiftedit worker and dogfed on that program.",
+      "at": "2026-10-26T00:46:12.787Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T00:44:30.428Z"
+        }
+      ]
+    },
+    "W-Q2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T00:46:30.100Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T00:46:30.100Z"
+        }
+      ]
+    },
+    "W-Q3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T00:46:33.249Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T00:46:33.249Z"
+        }
+      ]
+    },
+    "W-Q4": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-26T00:46:36.554Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-26T00:46:36.554Z"
+        }
+      ]
+    }
+  },
+  "record": "W controls, round 1\nW-Q1: 1 (Styled runs over our TextBox engine, with RTF reading and writing for that subset; no embedded objects) — note: lets not do it how they did it. lets do it something like an inline markdown system. its a rich text field, but it relies on a parser that converts rtf to markdown that can be shared with swiftedit and done by a swiftedit worker and dogfed on that program.\nW-Q2: 1 (A thin migration facade: a Splitter docked between dock children resizes its neighbour, built on our Dock layout)\nW-Q3: 1 (The host's message dialog, as the file and colour dialogs do; TaskDialog stays for themed, richer dialogs)\nW-Q4: 1 (Add a link role with normal, hover, visited and disabled states; LinkLabel moves onto it too)"
+}

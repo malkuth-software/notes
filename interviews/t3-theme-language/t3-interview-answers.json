@@ -1,0 +1,198 @@
+{
+  "interview": "T3 theme language, round 1",
+  "saved": "2026-10-25T18:58:44.141Z",
+  "answers": {
+    "T3-A1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:50:18.618Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:50:18.618Z"
+        }
+      ]
+    },
+    "T3-A2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:50:27.002Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:50:27.002Z"
+        }
+      ]
+    },
+    "T3-A3": {
+      "choice": 2,
+      "note": "",
+      "at": "2026-10-25T18:50:36.294Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:50:33.006Z"
+        },
+        {
+          "choice": 2,
+          "at": "2026-10-25T18:50:36.294Z"
+        }
+      ]
+    },
+    "T3-A4": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:50:48.995Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:50:48.995Z"
+        }
+      ]
+    },
+    "T3-A5": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:51:01.430Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:51:01.430Z"
+        }
+      ]
+    },
+    "T3-B1": {
+      "choice": 2,
+      "note": "",
+      "at": "2026-10-25T18:51:14.033Z",
+      "history": [
+        {
+          "choice": 2,
+          "at": "2026-10-25T18:51:14.033Z"
+        }
+      ]
+    },
+    "T3-B2": {
+      "choice": 1,
+      "note": "the engine not only runs themes, but \"compiles\" them with a parser. this throws warnings or errors the same as anything else. a warning is nonfatal. an error is. a theme with an error thus notifies the developer in the console correctly, and refuses to execute.",
+      "at": "2026-10-25T18:53:42.250Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:52:05.699Z"
+        }
+      ]
+    },
+    "T3-B3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:53:54.718Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:53:54.718Z"
+        }
+      ]
+    },
+    "T3-C1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:54:07.962Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:54:07.962Z"
+        }
+      ]
+    },
+    "T3-C2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:54:12.681Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:54:12.681Z"
+        }
+      ]
+    },
+    "T3-C3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:54:17.923Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:54:17.923Z"
+        }
+      ]
+    },
+    "T3-D1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:54:30.508Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:54:30.508Z"
+        }
+      ]
+    },
+    "T3-D2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:54:36.412Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:54:36.412Z"
+        }
+      ]
+    },
+    "T3-D3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:54:42.080Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:54:42.080Z"
+        }
+      ]
+    },
+    "T3-E1": {
+      "choice": 1,
+      "note": "a warning is issued if the engine determines that a program is loading with both a theme and inline, if !important is used in one place and not the other, the important overrides, otherwise- if neither or both are important- the inline wins-  attached styles or restyling by a system is overridden by local controls, and a program designer can always be sure inlined !important rules are honored.",
+      "at": "2026-10-25T18:58:25.002Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:54:45.630Z"
+        }
+      ]
+    },
+    "T3-E2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:58:30.185Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:58:30.185Z"
+        }
+      ]
+    },
+    "T3-E3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T18:58:38.135Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T18:58:38.135Z"
+        }
+      ]
+    }
+  },
+  "record": "T3 theme language, round 1\nT3-A1: 1 (CSS names, lowered onto engine parameters, plus engine names for what CSS lacks)\nT3-A2: 1 (Accept the common shorthands)\nT3-A3: 2 (Also em, relative to the part's text role size)\nT3-A4: 1 (Both, roles first)\nT3-A5: 1 (Yes, with the engine's inputs in a reserved namespace)\nT3-B1: 2 (:is() only)\nT3-B2: 1 (Only the bad declaration) — note: the engine not only runs themes, but \"compiles\" them with a parser. this throws warnings or errors the same as anything else. a warning is nonfatal. an error is. a theme with an error thus notifies the developer in the console correctly, and refuses to execute.\nT3-B3: 1 (Unknown names are dropped with a diagnostic; the rest applies)\nT3-C1: 1 (Not in the first version: transitions and keyframes on published states only)\nT3-C2: 1 (As timing functions in transition)\nT3-C3: 1 (Automatic, plus @media (prefers-reduced-motion) for themes that want a different calm look)\nT3-D1: 1 (One sheet, with @media blocks)\nT3-D2: 1 (Yes: @import of another installed theme by name)\nT3-D3: 1 (A JSON manifest beside the CSS sheets)\nT3-E1: 1 (Two sources, one parser: a C++ call on the control, and a style attribute in form documents) — note: a warning is issued if the engine determines that a program is loading with both a theme and inline, if !important is used in one place and not the other, the important overrides, otherwise- if neither or both are important- the inline wins-  attached styles or restyling by a system is overridden by local controls, and a program designer can always be sure inlined !important rules are honored.\nT3-E2: 1 (1 MiB per sheet, 10,000 rules, 64 declarations per rule, nesting 32 deep, 4 KiB per string, 16 imports, expressions within T2's operation budget)\nT3-E3: 1 (Internal now, with a documented seam; public when V starts)"
+}

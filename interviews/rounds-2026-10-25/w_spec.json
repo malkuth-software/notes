@@ -1,0 +1,12 @@
+{
+  "groups": "w_groups.js",
+  "out": "w-controls-interview.html",
+  "title": "W Controls Interview",
+  "eyebrow": "GUI.Forms · stage W · Windows Forms controls · interview round 1",
+  "lede": "Four calls hold the next Windows Forms controls. The survey is planning/stages/W-winforms-controls/README.md (PR #319). Your answers are kept in this browser; save them to a file or copy the record back to the coordinating session.",
+  "context_html": "      <h2>Where W stands</h2>\n      <p>Of the 93 Windows Forms types surveyed, 68 are done, 18 partial and 7 missing. This batch adds OpenFileDialog (#327), SaveFileDialog (#330), FolderBrowserDialog, ColorDialog and DataGridViewImageColumn (#335). Dialogs are shown by the host, with no in-window fallback, and there are no public CommonDialog or FileDialog bases yet.</p>",
+  "footer_html": "They become owner decisions in <span class=\"mono\">planning/stages/W-winforms-controls/README.md</span>, and the W worker builds the next controls.",
+  "key": "w-controls-round-1",
+  "download": "w-interview-answers.json",
+  "record": "W controls, round 1"
+}

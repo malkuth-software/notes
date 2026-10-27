@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T2 Engine Specimen</title>
+<style>
+:root {
+  --page: #d9dce1;
+  --card: #f4f5f7;
+  --ink: #1d2128;
+  --muted: #5a616d;
+  --rule: #b9bec7;
+  --accent: #2f6fb5;
+  --mono: "Cascadia Mono", Consolas, "SF Mono", monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 14px/1.45 "Segoe UI", system-ui, sans-serif;
+}
+header {
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+h1 { margin: 0 0 4px; font-size: 20px; }
+h2 { margin: 28px 0 6px; font-size: 17px; }
+h3 { margin: 0 0 4px; font-size: 14px; }
+.meta { color: var(--muted); font-size: 12.5px; }
+.controls { margin-top: 10px; display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+.controls label { margin-right: 8px; cursor: pointer; }
+.controls b { font-weight: 600; margin-right: 6px; }
+main { padding: 4px 24px 48px; max-width: 1900px; }
+.lede { color: var(--muted); max-width: 980px; margin: 0 0 10px; }
+.grid { display: flex; flex-wrap: wrap; gap: 14px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 10px 12px 12px;
+}
+.card .note { color: var(--muted); font-size: 12.5px; margin: 0 0 6px; max-width: 760px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; }
+.tile { margin: 0; }
+.tile img { display: block; border: 1px solid var(--rule); image-rendering: pixelated; }
+.tile figcaption { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.3; }
+.tile figcaption .frame { color: var(--ink); font-weight: 600; }
+.strip { display: flex; gap: 4px; flex-wrap: wrap; }
+.bp { font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 6px 0 2px; }
+.tokens { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+.card.wide { grid-column: 1 / -1; }
+.token-value { font-size: 22px; font-weight: 600; color: var(--accent); }
+#finish { overflow-x: auto; }
+table.finish { border-collapse: collapse; }
+table.finish th, table.finish td { padding: 4px 6px; text-align: left; vertical-align: top; }
+table.finish th { font-size: 12px; color: var(--muted); font-weight: 600; }
+.k { font-family: var(--mono); font-size: 11.5px; }
+svg text { font-family: "Segoe UI", system-ui, sans-serif; }
+@media (max-width: 700px) {
+  header, main { padding-left: 16px; padding-right: 16px; }
+  .tile img { max-width: 100%; height: auto; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>T2 engine specimen sheet</h1>
+  <div class="meta">
+    Rendered by <span class="k">gui_forms_engine_gate_tests</span> with
+    <span class="k">GUI_FORMS_ENGINE_GATE_SPECIMEN</span> set, from main's engine (main 8e9be54a; engine sources as #295, 5d627f7f),
+    composited through the engine's one blend (<span class="k">detail::composite_part_raster</span>).
+    Each tile is the whole 176&times;108 sample window. The hash under each light tile is the gate's own manifest hash; dark tiles use the same rule on the dark backplane, which the gate does not hash.
+  </div>
+  <div class="controls" id="controls">
+    <span><b>Scale</b>
+      <label><input type="radio" name="scale" value="1"> 1</label>
+      <label><input type="radio" name="scale" value="2" checked> 2</label>
+      <label><input type="radio" name="scale" value="both"> both</label>
+    </span>
+    <span><b>Backplane</b>
+      <label><input type="radio" name="backplane" value="light"> light</label>
+      <label><input type="radio" name="backplane" value="dark"> dark</label>
+      <label><input type="radio" name="backplane" value="both" checked> both</label>
+    </span>
+    <span><b>Size</b>
+      <label><input type="radio" name="size" value="device" checked> device pixels</label>
+      <label><input type="radio" name="size" value="logical"> logical (176 wide)</label>
+    </span>
+  </div>
+</header>
+<main>
+  <h2>Starting tokens</h2>
+  <p class="lede">The accepted starting tokens, each as the engine holds it. The motion strips and the blur sweep are drawn by the engine at scale 2, on both backplanes; the light angle and the ambient budget are diagrams of their values.</p>
+  <div class="tokens" id="tokens"></div>
+
+  <h2>Finish sweep</h2>
+  <p class="lede" id="finish-lede"></p>
+  <div class="card" id="finish"></div>
+
+  <h2>Primitives at their defaults</h2>
+  <p class="lede">Every registered primitive at rest with its default parameters, on the gate's subject part (96&times;28 at (20, 20), radius 4). The light hash is the gate's primitive row: the part rasters' extents and bytes.</p>
+  <div class="grid" id="primitives"></div>
+
+  <h2>Feature samples</h2>
+  <p class="lede">All 46 feature samples. A sample driven by the pointer shows rest then the pointer at (88, 34); a motion sample shows rest, the frames at 32, 80, 144 and 224 ms after the part turns hot, then hot at rest. The light hash is the gate's sample row: every command placed, to 1/4096 of a unit.</p>
+  <div class="grid" id="samples"></div>
+</main>
+<script src="specimen.js"></script>
+<script>
+(function () {
+  "use strict";
+  var data = window.SPECIMEN;
+  var constants = data.constants;
+  var tiles = data.tiles;
+
+  function chosen(name) {
+    var input = document.querySelector('input[name="' + name + '"]:checked');
+    return input ? input.value : "";
+  }
+  function scales() {
+    var value = chosen("scale");
+    if (value === "both") return [1, 2];
+    return [Number(value)];
+  }
+  function backplanes() {
+    var value = chosen("backplane");
+    if (value === "both") return ["light", "dark"];
+    return [value];
+  }
+  function select(group, name, scale, backplane) {
+    var found = [];
+    for (var index = 0; index < tiles.length; index++) {
+      var tile = tiles[index];
+      if (tile.group === group && tile.name === name && tile.scale === scale && tile.backplane === backplane) found.push(tile);
+    }
+    return found;
+  }
+  function names(group) {
+    var seen = [];
+    for (var index = 0; index < tiles.length; index++) {
+      var tile = tiles[index];
+      if (tile.group === group && seen.indexOf(tile.name) < 0) seen.push(tile.name);
+    }
+    return seen;
+  }
+  function element(tag, className, text) {
+    var made = document.createElement(tag);
+    if (className) made.className = className;
+    if (text !== undefined) made.textContent = text;
+    return made;
+  }
+  function figure(tile, label) {
+    var made = element("figure", "tile");
+    var image = document.createElement("img");
+    image.src = tile.file;
+    image.alt = tile.name + " " + tile.frame + " at " + tile.scale + ", " + tile.backplane;
+    image.title = tile.file;
+    if (chosen("size") === "logical") {
+      image.style.width = "176px";
+      image.style.imageRendering = "auto";
+    }
+    made.appendChild(image);
+    var caption = element("figcaption");
+    var frame = element("span", "frame", label !== undefined ? label : tile.frame);
+    caption.appendChild(frame);
+    caption.appendChild(document.createTextNode(" @" + tile.scale + " " + tile.backplane));
+    caption.appendChild(document.createElement("br"));
+    caption.appendChild(document.createTextNode(tile.hash));
+    made.appendChild(caption);
+    return made;
+  }
+  // One strip per chosen scale and backplane: the tiles in their order.
+  function strips(group, name, labels) {
+    var holder = element("div");
+    var scaleList = scales();
+    var planeList = backplanes();
+    for (var s = 0; s < scaleList.length; s++) {
+      for (var b = 0; b < planeList.length; b++) {
+        var found = select(group, name, scaleList[s], planeList[b]);
+        if (found.length === 0) continue;
+        var strip = element("div", "strip");
+        for (var t = 0; t < found.length; t++) {
+          var label = labels ? labels[found[t].frame] : undefined;
+          strip.appendChild(figure(found[t], label));
+        }
+        holder.appendChild(strip);
+      }
+    }
+    return holder;
+  }
+
+  function renderPrimitives() {
+    var holder = document.getElementById("primitives");
+    holder.textContent = "";
+    var list = names("primitive");
+    for (var index = 0; index < list.length; index++) {
+      var card = element("section", "card");
+      card.appendChild(element("h3", "", list[index]));
+      card.appendChild(strips("primitive", list[index]));
+      holder.appendChild(card);
+    }
+  }
+
+  function renderSamples() {
+    var holder = document.getElementById("samples");
+    holder.textContent = "";
+    var list = names("sample");
+    for (var index = 0; index < list.length; index++) {
+      var card = element("section", "card");
+      var title = element("h3", "", list[index]);
+      card.appendChild(title);
+      var frames = select("sample", list[index], 1, "light").length;
+      if (frames > 2) card.appendChild(element("p", "note", "motion: " + frames + " frames"));
+      else if (frames === 2) card.appendChild(element("p", "note", "pointer"));
+      card.appendChild(strips("sample", list[index]));
+      holder.appendChild(card);
+    }
+  }
+
+  function finishLabel(f) {
+    var lift = constants.finish_lift * f;
+    var dark = constants.finish_break_darkening * f;
+    var shine = Math.round(constants.finish_shine_alpha * f);
+    return "f " + f.toFixed(2) + " · lift " + lift.toFixed(4).replace(/0+$/, "").replace(/\.$/, "") +
+      " · break " + dark.toFixed(4).replace(/0+$/, "").replace(/\.$/, "") + " · shine " + shine;
+  }
+
+  function renderFinish() {
+    document.getElementById("finish-lede").textContent =
+      "The surface finish (E9.6, owner option A1) at f = 0, 0.25, 0.5, 0.75 and 1 on three linear faces, at scale 2. " +
+      "At f the top half lifts " + constants.finish_lift + "·f toward white, the break darkens " +
+      constants.finish_break_darkening + "·f, and the shine's alpha is " + constants.finish_shine_alpha + "·f " +
+      "(finish_lift, finish_break_darkening, finish_shine_alpha). Each caption gives the three values at its f.";
+    var holder = document.getElementById("finish");
+    holder.textContent = "";
+    var bases = names("finish");
+    var planeList = backplanes();
+    var table = element("table", "finish");
+    for (var b = 0; b < bases.length; b++) {
+      for (var p = 0; p < planeList.length; p++) {
+        var found = select("finish", bases[b], 2, planeList[p]);
+        var row = element("tr");
+        var head = element("th", "", bases[b] + " · " + planeList[p]);
+        row.appendChild(head);
+        for (var t = 0; t < found.length; t++) {
+          var cell = element("td");
+          cell.appendChild(figure(found[t], finishLabel(Number(found[t].frame))));
+          row.appendChild(cell);
+        }
+        table.appendChild(row);
+      }
+    }
+    holder.appendChild(table);
+  }
+
+  function tokenCard(title, value, note) {
+    var card = element("section", "card");
+    card.appendChild(element("h3", "", title));
+    card.appendChild(element("div", "token-value", value));
+    card.appendChild(element("p", "note", note));
+    return card;
+  }
+  // Tiles of a token at scale 2 on the chosen backplanes.
+  function tokenTiles(name, labels) {
+    var holder = element("div");
+    var planeList = backplanes();
+    for (var p = 0; p < planeList.length; p++) {
+      var found = select("token", name, 2, planeList[p]);
+      var strip = element("div", "strip");
+      for (var t = 0; t < found.length; t++) {
+        var label = labels ? labels(found[t].frame) : found[t].frame;
+        strip.appendChild(figure(found[t], label));
+      }
+      holder.appendChild(strip);
+    }
+    return holder;
+  }
+  var svgNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attributes, text) {
+    var made = document.createElementNS(svgNS, tag);
+    for (var key in attributes) made.setAttribute(key, attributes[key]);
+    if (text !== undefined) made.textContent = text;
+    return made;
+  }
+
+  function lightAngle() {
+    var card = tokenCard("Light angle", "135°",
+      "Key light upper left: azimuth 135° from +x (design language §3.3, proposed). It is a design-language token: the engine has no constant for it; " +
+      "the bulge, the shadows and the finish draw it in their own geometry. Arrow: where the light comes from.");
+    var drawing = svg("svg", {width: 320, height: 150, viewBox: "0 0 320 150", role: "img", "aria-label": "Light from the upper left at 135 degrees"});
+    drawing.appendChild(svg("rect", {x: 0, y: 0, width: 320, height: 150, fill: "#e9ecf0", rx: 4}));
+    drawing.appendChild(svg("line", {x1: 150, y1: 95, x2: 300, y2: 95, stroke: "#9aa1ab", "stroke-dasharray": "3 3"}));
+    drawing.appendChild(svg("text", {x: 290, y: 110, "font-size": 11, fill: "#5a616d"}, "+x"));
+    var radians = 135 * Math.PI / 180;
+    var x2 = 150 + Math.cos(radians) * 110;
+    var y2 = 95 - Math.sin(radians) * 110;
+    drawing.appendChild(svg("path", {d: "M 190 95 A 40 40 0 0 0 " + (150 + Math.cos(radians) * 40).toFixed(1) + " " + (95 - Math.sin(radians) * 40).toFixed(1), fill: "none", stroke: "#2f6fb5"}));
+    drawing.appendChild(svg("text", {x: 172, y: 58, "font-size": 12, fill: "#2f6fb5"}, "135°"));
+    drawing.appendChild(svg("line", {x1: x2, y1: y2, x2: 150 + Math.cos(radians) * 14, y2: 95 - Math.sin(radians) * 14, stroke: "#d08a1e", "stroke-width": 2.5}));
+    drawing.appendChild(svg("circle", {cx: x2, cy: y2, r: 7, fill: "#f1c24a", stroke: "#d08a1e"}));
+    drawing.appendChild(svg("rect", {x: 120, y: 85, width: 70, height: 26, rx: 4, fill: "#c9d9ec", stroke: "#3a4a5c"}));
+    card.appendChild(drawing);
+    var row = element("div", "strip");
+    var bulge = select("primitive", "bulge", 2, backplanes()[0]);
+    if (bulge.length) row.appendChild(figure(bulge[0], "bulge"));
+    var shadows = select("sample", "shadows_outer_inset", 2, backplanes()[0]);
+    if (shadows.length) row.appendChild(figure(shadows[0], "shadows_outer_inset"));
+    card.appendChild(row);
+    return card;
+  }
+
+  function ambient() {
+    var fps = constants.maximum_ambient_frames_per_second;
+    var fraction = constants.maximum_ambient_window_fraction;
+    var card = tokenCard("Ambient budget", fps + " fps over ≤ " + Math.round(fraction * 100) + " % of the window",
+      "maximum_ambient_frames_per_second " + fps + ", maximum_ambient_window_fraction " + fraction +
+      ". Drawn to scale for the sample window (176×108): the shaded square is the largest region an ambient effect may animate; " +
+      "the ticks are one second of ambient frames against the 60 Hz display.");
+    var drawing = svg("svg", {width: 340, height: 190, viewBox: "0 0 340 190", role: "img", "aria-label": "Ambient budget diagram"});
+    var area = 176 * 108 * fraction;
+    var side = Math.sqrt(area);
+    drawing.appendChild(svg("rect", {x: 10, y: 10, width: 176, height: 108, fill: "#e9ecf0", stroke: "#3a4a5c"}));
+    drawing.appendChild(svg("rect", {x: 30, y: 30, width: side, height: side, fill: "#f1c24a", "fill-opacity": 0.7, stroke: "#d08a1e"}));
+    drawing.appendChild(svg("text", {x: 34, y: 30 + side + 14, "font-size": 11, fill: "#1d2128"}, side.toFixed(1) + "² = " + Math.round(fraction * 100) + " %"));
+    drawing.appendChild(svg("text", {x: 196, y: 24, "font-size": 11, fill: "#5a616d"}, "window 176 × 108"));
+    var top = 140;
+    drawing.appendChild(svg("text", {x: 10, y: top - 4, "font-size": 11, fill: "#5a616d"}, "1 s: display 60 Hz (grey), ambient " + fps + " fps (gold)"));
+    for (var tick = 0; tick < 60; tick++) {
+      var x = 10 + tick * 5.3;
+      drawing.appendChild(svg("line", {x1: x, y1: top + 2, x2: x, y2: top + 12, stroke: "#9aa1ab"}));
+    }
+    var step = 60 / fps;
+    for (var frame = 0; frame < fps; frame++) {
+      var at = 10 + frame * step * 5.3;
+      drawing.appendChild(svg("line", {x1: at, y1: top + 16, x2: at, y2: top + 32, stroke: "#d08a1e", "stroke-width": 2}));
+    }
+    card.appendChild(drawing);
+    return card;
+  }
+
+  function renderTokens() {
+    var holder = document.getElementById("tokens");
+    holder.textContent = "";
+    holder.appendChild(lightAngle());
+    holder.appendChild(ambient());
+
+    var overshoot = tokenCard("Overshoot", Math.round(constants.maximum_motion_overshoot * 100) + " %",
+      "maximum_motion_overshoot " + constants.maximum_motion_overshoot +
+      ": a spring may pass its target by at most 8 % of the move. Here translate_y moves 6 units on spring(160 ms, 0.08) as the part turns hot, so it may reach 6.48 before it settles.");
+    overshoot.classList.add("wide");
+    overshoot.appendChild(tokenTiles("overshoot"));
+    holder.appendChild(overshoot);
+
+    var ceiling = tokenCard("Motion ceiling", constants.motion_duration_ceiling_ms + " ms",
+      "motion_duration_ceiling: every duration is clamped to it. Here translate_x asks for 600 ms (linear, 8 units): " +
+      "it starts on the first frame after the change (16 ms), so the frames from 96 to 384 ms move, 416 ms is at rest, " +
+      "and 592 ms is still at rest where an unclamped 600 ms move would still be moving. The hashes of t416 and t592 match.");
+    ceiling.classList.add("wide");
+    ceiling.appendChild(tokenTiles("ceiling"));
+    holder.appendChild(ceiling);
+
+    var blur = tokenCard("Blur cap", "reach " + constants.maximum_filter_reach + " px (logical)",
+      "maximum_filter_reach " + constants.maximum_filter_reach + " (glows: maximum_glow_reach " + constants.maximum_glow_reach +
+      "). A filter blur reaches 1.5 × filter_blur outside the box, so the largest blur the outsets hold is filter_blur " +
+      (constants.maximum_filter_reach / 1.5).toFixed(2) + ". Sweep: filter_blur 1, 2, 4 and the cap.");
+    blur.classList.add("wide");
+    blur.appendChild(tokenTiles("blur", function (frame) { return "filter_blur " + frame; }));
+    holder.appendChild(blur);
+  }
+
+  function render() {
+    renderTokens();
+    renderFinish();
+    renderPrimitives();
+    renderSamples();
+  }
+  var inputs = document.querySelectorAll("#controls input");
+  for (var index = 0; index < inputs.length; index++) inputs[index].addEventListener("change", render);
+  render();
+}());
+</script>
+</body>
+</html>

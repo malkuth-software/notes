@@ -1,0 +1,195 @@
+{
+  "interview": "T5 compositor, round 1",
+  "saved": "2026-10-25T21:21:59.700Z",
+  "answers": {
+    "T5-Q1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:18:50.291Z",
+      "history": [
+        {
+          "choice": 3,
+          "at": "2026-10-25T21:18:39.316Z"
+        },
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:18:50.291Z"
+        }
+      ]
+    },
+    "T5-Q3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:18:53.485Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:18:53.485Z"
+        }
+      ]
+    },
+    "T5-Q5": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:19:25.881Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:19:25.881Z"
+        }
+      ]
+    },
+    "T5-Q6": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:19:35.051Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:19:35.051Z"
+        }
+      ]
+    },
+    "T5-Q7": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:19:53.206Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:19:41.811Z"
+        },
+        {
+          "choice": 2,
+          "at": "2026-10-25T21:19:49.486Z"
+        },
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:19:53.206Z"
+        }
+      ]
+    },
+    "T5-Q16": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:19:59.876Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:19:59.876Z"
+        }
+      ]
+    },
+    "T5-Q14": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:20:02.423Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:20:02.423Z"
+        }
+      ]
+    },
+    "T5-Q15": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:20:08.230Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:20:08.230Z"
+        }
+      ]
+    },
+    "T5-Q2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:20:24.332Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:20:24.332Z"
+        }
+      ]
+    },
+    "T5-Q4": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:20:28.472Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:20:28.472Z"
+        }
+      ]
+    },
+    "T5-Q8": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:20:31.484Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:20:31.484Z"
+        }
+      ]
+    },
+    "T5-Q9": {
+      "choice": 1,
+      "note": "wayland is growing in popularity. we shipped on x11 because as we understood x11 programs work on wayland. linux is fragmented here, and i am not entirely confident how to proceed.",
+      "at": "2026-10-25T21:21:18.168Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:20:35.503Z"
+        }
+      ]
+    },
+    "T5-Q10": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:21:19.453Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:21:19.453Z"
+        }
+      ]
+    },
+    "T5-Q11": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:21:40.220Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:21:40.220Z"
+        }
+      ]
+    },
+    "T5-Q12": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:21:44.820Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:21:44.820Z"
+        }
+      ]
+    },
+    "T5-Q13": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:21:49.827Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:21:49.827Z"
+        }
+      ]
+    }
+  },
+  "record": "T5 compositor, round 1\nT5-Q1: 1 (A small portable set: opaque, transparent, window_material, transient_material)\nT5-Q3: 1 (Both: the application allows a window to be non-opaque, and the theme chooses the backdrop)\nT5-Q5: 1 (A declared fallback chain ending at opaque, drawn by GUI.Forms)\nT5-Q6: 1 (The whole window receives input; no click-through in T5)\nT5-Q7: 1 (T5 builds a general preference signal: high contrast and reduced transparency)\nT5-Q16: 1 (Glass flattened to its tint over the background colour; reflections omitted)\nT5-Q14: 1 (The part's own engine raster only: face, material, glow; not its text)\nT5-Q15: 1 (8 logical units, the same cap as blur and glow)\nT5-Q2: 1 (Documented interfaces only)\nT5-Q4: 1 (Declared when the window is created; only the theme's grant changes at run time)\nT5-Q8: 1 (Through T3's @media, per window)\nT5-Q9: 1 (Link libXfixes and libXrender) — note: wayland is growing in popularity. we shipped on x11 because as we understood x11 programs work on wayland. linux is fragmented here, and i am not entirely confident how to proceed.\nT5-Q10: 1 (None in T5: X11 offers transparent only)\nT5-Q11: 1 (Not in T5)\nT5-Q12: 1 (Install xcompmgr in the Linux CI job; the gate test starts and stops it under Xvfb)\nT5-Q13: 1 (A renderer service every renderer implements, reported in its capabilities)"
+}

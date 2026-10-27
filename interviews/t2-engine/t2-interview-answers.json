@@ -1,0 +1,301 @@
+{
+  "interview": "T2 engine core, round 1",
+  "saved": "2026-10-20T00:31:49.039Z",
+  "answers": {
+    "T2-A1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:23:50.998Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:23:50.998Z"
+        }
+      ]
+    },
+    "T2-A2": {
+      "choice": 2,
+      "note": "",
+      "at": "2026-10-20T00:24:01.183Z",
+      "history": [
+        {
+          "choice": 2,
+          "at": "2026-10-20T00:24:01.183Z"
+        }
+      ]
+    },
+    "T2-A3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:24:22.323Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:24:22.323Z"
+        }
+      ]
+    },
+    "T2-B1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:24:32.260Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:24:32.260Z"
+        }
+      ]
+    },
+    "T2-B2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:25:28.575Z",
+      "history": [
+        {
+          "choice": 2,
+          "at": "2026-10-20T00:25:16.506Z"
+        },
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:25:28.575Z"
+        }
+      ]
+    },
+    "T2-B3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:25:48.085Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:25:48.085Z"
+        }
+      ]
+    },
+    "T2-B4": {
+      "choice": 2,
+      "note": "",
+      "at": "2026-10-20T00:26:16.742Z",
+      "history": [
+        {
+          "choice": 2,
+          "at": "2026-10-20T00:26:16.742Z"
+        }
+      ]
+    },
+    "T2-C1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:26:19.828Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:26:19.828Z"
+        }
+      ]
+    },
+    "T2-C2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:26:40.516Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:26:40.516Z"
+        }
+      ]
+    },
+    "T2-D1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:26:43.683Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:26:43.683Z"
+        }
+      ]
+    },
+    "T2-D2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:26:53.324Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:26:53.324Z"
+        }
+      ]
+    },
+    "T2-D3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:27:35.584Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:27:35.584Z"
+        }
+      ]
+    },
+    "T2-D4": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:27:42.617Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:27:42.617Z"
+        }
+      ]
+    },
+    "T2-D5": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:28:01.854Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:28:01.854Z"
+        }
+      ]
+    },
+    "T2-E1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:28:17.212Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:28:17.212Z"
+        }
+      ]
+    },
+    "T2-E2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:28:19.945Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:28:19.945Z"
+        }
+      ]
+    },
+    "T2-F1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:28:25.750Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:28:25.750Z"
+        }
+      ]
+    },
+    "T2-F2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:28:30.535Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:28:30.535Z"
+        }
+      ]
+    },
+    "T2-G1": {
+      "choice": 3,
+      "note": "",
+      "at": "2026-10-20T00:28:51.063Z",
+      "history": [
+        {
+          "choice": 3,
+          "at": "2026-10-20T00:28:51.063Z"
+        }
+      ]
+    },
+    "T2-G2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:29:22.798Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:29:22.798Z"
+        }
+      ]
+    },
+    "T2-G3": {
+      "choice": 3,
+      "note": "",
+      "at": "2026-10-20T00:30:28.482Z",
+      "history": [
+        {
+          "choice": 2,
+          "at": "2026-10-20T00:30:23.482Z"
+        },
+        {
+          "choice": 3,
+          "at": "2026-10-20T00:30:28.482Z"
+        }
+      ]
+    },
+    "T2-G4": {
+      "choice": 1,
+      "note": "when a mouse isnt hovering over, the button goes away- the bulge flattens. ",
+      "at": "2026-10-20T00:31:20.484Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:31:03.101Z"
+        }
+      ]
+    },
+    "T2-H1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:31:27.519Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:31:27.519Z"
+        }
+      ]
+    },
+    "T2-H2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:31:33.506Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:31:33.506Z"
+        }
+      ]
+    },
+    "T2-H3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:31:40.072Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:31:40.072Z"
+        }
+      ]
+    },
+    "T2-Z1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-20T00:31:43.821Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-20T00:31:43.821Z"
+        }
+      ]
+    }
+  },
+  "record": "T2 interview, round 1\nT2-A1: 1 (Kernels and the composite (E1, E2), then motion (E3))\nT2-A2: 2 (Raster bytes, plus the composite through each host's painter)\nT2-A3: 1 (Keep them as drafts and revise them after the interview)\nT2-B1: 1 (The brief's set)\nT2-B2: 1 (Part-local logical units)\nT2-B3: 1 (A ceremonial flag on a surface, set by the application)\nT2-B4: 2 (Leave it until stage L or T4 needs it)\nT2-C1: 1 (An engine presentational property driven by transitions)\nT2-C2: 1 (Yes, by the built-in rules once transitions exist (E7))\nT2-D1: 1 (Motion values the control owns, on one clock per window)\nT2-D2: 1 (§9.5 governs)\nT2-D3: 1 (Exponential approach)\nT2-D4: 1 (Every transition jumps to its end and nothing is scheduled)\nT2-D5: 1 (Allow it as a capability only)\nT2-E1: 1 (Move it to an engine primitive with a first-party blur (E9))\nT2-E2: 1 (The engine draws content colour exactly as given)\nT2-F1: 1 (At most 512 declared operations per device pixel, and 4 million per frame for an animated part)\nT2-F2: 1 (At most 8 MB per window, evicting the least recently painted parts first)\nT2-G1: 3 (Rescale quantization to the field's actual tone range)\nT2-G2: 1 (Keep the formula as the approved studies drew it)\nT2-G3: 3 (Draw dithered parts at the nearest integer scale)\nT2-G4: 1 (No hover change) — note: when a mouse isnt hovering over, the button goes away- the bulge flattens. \nT2-H1: 1 (Admit an image role)\nT2-H2: 1 (A grip primitive that fills its part's box with the dot pattern)\nT2-H3: 1 (The control's stable ID, the declared part, and the item's stable ID)\nT2-Z1: 1 (Accept E1 to E11 as the T2 plan)"
+}

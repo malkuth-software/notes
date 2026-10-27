@@ -1,0 +1,559 @@
+<meta charset="utf-8">
+<title>T3 Theme Language, Round 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*FONTS*/
+/* Layout: one reading column of question cards under a sticky section rail; visuals break wider inside their own scroll boxes. */
+:root {
+  --paper: #F4F5F7;
+  --card: #FFFFFF;
+  --ink: #16263A;
+  --ink-2: #4B5B70;
+  --rule: #D3DCE8;
+  --accent: #173F79;
+  --accent-soft: #E3EDFB;
+  --rec: #A9720F;
+  --rec-soft: #FBF1DC;
+  --done: #2F7A4B;
+  --chip: #E8EEF6;
+  --series-1: #2F68C7;
+  --series-2: #B8860B;
+  --series-3: #B5476F;
+  --face-display: "Portsmouth Rapids", "Segoe UI", Tahoma, Arial, sans-serif;
+  --face-body: "Portsmouth Rapids", "Segoe UI", Tahoma, Arial, sans-serif;
+  --face-mono: "Portsmouth Mono", "Cascadia Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #050706; --card: #0E1310; --ink: #E2EADF; --ink-2: #A3B39D; --rule: #26322A;
+    --accent: #82B361; --accent-soft: #17241A; --rec: #D98AAB; --rec-soft: #2A1620;
+    --done: #82B361; --chip: #18211B; --series-1: #82B361; --series-2: #E0B860; --series-3: #D98AAB;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #050706; --card: #0E1310; --ink: #E2EADF; --ink-2: #A3B39D; --rule: #26322A;
+  --accent: #82B361; --accent-soft: #17241A; --rec: #D98AAB; --rec-soft: #2A1620;
+  --done: #82B361; --chip: #18211B; --series-1: #82B361; --series-2: #E0B860; --series-3: #D98AAB;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--face-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+.wrap { max-width: 860px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--face-display); font-weight: 700; text-wrap: balance; line-height: 1.2; }
+h1 { font-size: 2.1rem; margin: 0 0 8px; letter-spacing: -0.01em; }
+h2 { font-size: 1.35rem; margin: 0; }
+h3 { font-size: 1.08rem; margin: 0; }
+p { margin: 0; }
+.lede { color: var(--ink-2); max-width: 65ch; }
+.mono { font-family: var(--face-mono); }
+header.top { padding-block: 32px 18px; display: grid; gap: 14px; }
+.eyebrow { font-family: var(--face-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.status-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; color: var(--ink-2); }
+.meter { flex: 1 1 220px; height: 8px; background: var(--chip); border-radius: 4px; overflow: hidden; min-width: 160px; }
+.meter > i { display: block; height: 100%; width: 0; background: var(--done); transition: width 200ms ease; }
+.store-note { font-size: 0.85rem; }
+nav.rail {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--paper); border-bottom: 1px solid var(--rule);
+  padding-block: 10px; margin-bottom: 18px;
+}
+nav.rail .chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+nav.rail a {
+  flex: 0 0 auto; text-decoration: none; color: var(--ink); background: var(--chip);
+  font-size: 0.84rem; padding: 5px 10px; border-radius: 999px; white-space: nowrap;
+}
+nav.rail a:focus-visible, button:focus-visible, textarea:focus-visible, .opt input:focus-visible + .opt-body { outline: 2px solid var(--accent); outline-offset: 2px; }
+nav.rail a .count { font-family: var(--face-mono); color: var(--ink-2); margin-left: 4px; }
+nav.rail a.complete { background: var(--accent-soft); }
+.context { display: grid; gap: 14px; margin-bottom: 28px; }
+.panel { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 18px; display: grid; gap: 10px; min-width: 0; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; vertical-align: top; padding: 7px 8px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--face-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); font-weight: 400; }
+section.group { display: grid; gap: 16px; margin-bottom: 36px; scroll-margin-top: 64px; }
+section.group > header { display: grid; gap: 4px; padding-top: 6px; border-top: 2px solid var(--accent); }
+section.group > header .eyebrow { margin-top: 10px; }
+article.q { background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 18px; display: grid; gap: 12px; scroll-margin-top: 64px; min-width: 0; }
+article.q.answered { border-left: 4px solid var(--done); }
+.q-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.q-id { font-family: var(--face-mono); font-size: 0.82rem; color: var(--accent); }
+.q-context { color: var(--ink-2); font-size: 0.95rem; max-width: 70ch; }
+.opts { display: grid; gap: 8px; }
+.opt { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; cursor: pointer; }
+.opt input { margin-top: 5px; accent-color: var(--accent); width: 17px; height: 17px; }
+.opt-body { border: 1px solid var(--rule); border-radius: 5px; padding: 10px 12px; display: grid; gap: 4px; min-width: 0; }
+.opt input:checked + .opt-body { border-color: var(--accent); background: var(--accent-soft); }
+.opt-title { font-weight: 700; }
+.opt-why { color: var(--ink-2); font-size: 0.92rem; }
+.rec { display: inline-block; font-family: var(--face-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rec); background: var(--rec-soft); border-radius: 3px; padding: 1px 6px; margin-left: 6px; vertical-align: 1px; }
+.note-row { display: grid; gap: 4px; }
+.note-row label { font-size: 0.84rem; color: var(--ink-2); }
+textarea { width: 100%; min-height: 56px; resize: vertical; font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 5px; padding: 8px 10px; }
+.saved { font-size: 0.8rem; color: var(--ink-2); min-height: 1.2em; }
+.visual { border: 1px dashed var(--rule); border-radius: 6px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.visual .cap { font-size: 0.85rem; color: var(--ink-2); max-width: 70ch; }
+.vis-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+.vis-cell { display: grid; gap: 6px; justify-items: start; min-width: 0; }
+.vis-cell .lbl { font-size: 0.82rem; font-family: var(--face-mono); color: var(--ink-2); }
+.vis-cell .lbl b { color: var(--ink); font-weight: 700; }
+canvas.px { image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; height: auto; background: #fff; }
+.vis-scroll { overflow-x: auto; }
+button.act { font: inherit; font-size: 0.88rem; color: var(--card); background: var(--accent); border: 0; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+button.ghost { font: inherit; font-size: 0.88rem; color: var(--accent); background: transparent; border: 1px solid var(--accent); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+.motion-note { font-size: 0.82rem; color: var(--rec); }
+.tiles { position: relative; width: 168px; height: 168px; background: #22262B; border-radius: 4px; }
+.tiles .tile { position: absolute; width: 40px; height: 40px; border: 2px solid #0B0E12; background: #3F7FE0; border-radius: 3px; box-shadow: inset 0 0 0 2px #9CC2FF; }
+.tiles .tile.off { opacity: 0; }
+.tiles.fade .tile { transition: opacity 100ms linear; }
+.diagram { display: grid; gap: 8px; }
+.layer { border: 1px solid var(--rule); border-radius: 5px; padding: 8px 10px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.layer .who { font-family: var(--face-mono); font-size: 0.78rem; color: var(--ink-2); }
+.layer.covered { background: var(--accent-soft); border-color: var(--accent); }
+.press-zone { display: grid; gap: 6px; justify-items: center; }
+.press-frame { outline: 1px dashed var(--ink-2); outline-offset: 0; display: inline-block; line-height: 0; }
+.press-frame canvas { transition: transform 60ms ease-out; touch-action: none; cursor: pointer; }
+#summary pre { white-space: pre-wrap; font-family: var(--face-mono); font-size: 0.82rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 5px; padding: 12px; margin: 0; max-height: 420px; overflow: auto; }
+.sum-table td:first-child { font-family: var(--face-mono); white-space: nowrap; }
+.pending { color: var(--rec); }
+footer.next { display: grid; gap: 10px; }
+@media (max-width: 520px) {
+  h1 { font-size: 1.7rem; }
+  article.q, .panel { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .meter > i, .press-frame canvas { transition: none; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">GUI.Forms · stage T3 · theme language · interview round 2</div>
+    <h1>T3 Theme Language, Round 2</h1>
+    <p class="lede">Round 2 settles the questions the T3 plan raised (PLAN.md, PR #316). Section A holds the decisions only you can make; section B holds smaller technical calls where I would accept the plan’s recommendations. Your answers are kept in this browser; save them to a file or copy the record back to the coordinating session.</p>
+    <div class="status-row">
+      <span id="progress-text">0 of 0 answered</span>
+      <span class="meter" aria-hidden="true"><i id="progress-bar"></i></span>
+      <span id="store-note" class="store-note">Answers are kept in this browser. Save them to a file to keep them anywhere else.</span>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Sections"><div class="chips" id="rail"></div></nav>
+
+  <div class="context">
+    <div class="panel">
+      <h2>Where T3 stands</h2>
+      <p>Round 1 is recorded in the T3 brief: CSS property names lowered onto engine parameters plus engine names for what CSS lacks; shorthands; px, percentages and em; colour roles first; theme variables with engine inputs read-only; :is(); themes compiled, where unknown properties warn and bad values refuse the theme; transitions and keyframes on published states; one sheet with @media; @import by name; a JSON manifest; inline styles from C++ and form documents with your !important rule, high contrast still winning on colour; the hostile-input limits; the parser internal until stage V.</p>
+      <p>The plan found six engine changes T3 needs, each its own phase. The biggest: the material primitive takes only a recipe and a shape, so CSS backgrounds, borders and shadows have nothing to land on yet. Colour roles don't exist in code yet either. Plan size: 11 phases, about 20 to 24 PRs.</p>
+    </div>
+  </div>
+
+  <main id="groups"></main>
+
+  <section class="group" id="summary">
+    <header><div class="eyebrow">Record</div><h2>Your answers</h2></header>
+    <div class="panel">
+      <p class="lede" id="summary-lede">Answered questions appear here as you go. Save the answers to a file (you can load it back here later, in any browser), or copy the record and paste it into the conversation.</p>
+      <div class="table-scroll"><table class="sum-table"><thead><tr><th>Question</th><th>Choice</th><th>Note</th></tr></thead><tbody id="summary-rows"></tbody></table></div>
+      <div class="vis-row"><button class="act" id="save-btn" type="button">Save answers to a file</button><button class="ghost" id="load-btn" type="button">Load answers from a file</button><button class="ghost" id="copy-btn" type="button">Copy the record</button><input type="file" id="load-file" accept=".json,application/json" hidden><span class="saved" id="copy-state"></span></div>
+      <pre id="summary-text" hidden></pre>
+    </div>
+  </section>
+
+  <footer class="next panel">
+    <h2>What happens with your answers</h2>
+    <p>They become owner decisions in <span class="mono">planning/stages/T3-theme-language/README.md</span>. Then a worker writes the T3 plan (grammar, phases and the gate) for your review before the parser is built: conformance fixtures for every selector and property form, hostile-input tests and a fuzz target, and the byte-for-byte round trip.</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+// ---------------------------------------------------------------- questions
+const GROUPS = [
+  { key: "A", title: "Decisions only you can make", blurb: "These shape what a theme author sees, or add vocabulary atoms. The plan (planning/stages/T3-theme-language/PLAN.md, PR #316) explains each in full.", questions: [
+    { id: "T3-2-03", q: "Colour roles: what are they, and where does a theme's palette live?",
+      ctx: "Round 1 chose colour roles first. No colour-role atom exists in the code yet; the design language §5.4 proposes a set of pairs (ink on paper, accent on surface and so on).",
+      opts: [
+        { t: "§5.4's pairs become colour-role atoms; the palette is a :root block in the sheet", w: "A theme writes ink-on-paper: #1b2733 on #ffffff; in :root. role(ink-on-paper) gives the ink in color and the paper in background, and role(ink-on-paper foreground) picks one side anywhere. The palette stays in the sheet the designer edits. Adding the atoms is a one-time vocabulary decision.", rec: true },
+        { t: "The same atoms, with the palette in the manifest JSON", w: "The palette sits beside the sheets, not in them; tools read it without parsing CSS, but the designer edits two files." },
+        { t: "No new atoms: role() reads only the recipe's existing colours", w: "text, muted-text, glyph, focus-ring, default-ring, accent(n). Nothing new to admit, but themes get only those few names." } ] },
+    { id: "T3-2-02", q: "How does a rule carry a material (fills, borders, shadows)?",
+      ctx: "Today the material primitive takes only a built-in recipe and a shape, so CSS backgrounds have nothing to land on. This is the biggest engine change T3 needs.",
+      opts: [
+        { t: "Each material field cascades on its own", w: "As CSS does: a :hover rule that changes only the background leaves the border and shadow from the base rule alone. The engine assembles each part's material from the winning fields, cached by the assembly.", rec: true },
+        { t: "A rule carries a whole material", w: "Simpler engine change, but a :hover rule must restate every layer, which surprises every CSS author." },
+        { t: "CSS writes into the theme's recipe table by family and state", w: "Reuses today's recipe table, but addresses whole recipe families, not individual parts." } ] },
+    { id: "T3-2-04", q: "Can a selector address a part by its role?",
+      ctx: "Appearance is bound to part role and state (design language §8.2), and the engine's selector already has a role field, but round 1's selector set has no way to write it. ::part() names a part by its declared name.",
+      opts: [
+        { t: "Yes, with ::role(name)", w: "::role(face) styles every part whose role is face, whatever its name. Explicit, and kept apart from ::part().", rec: true },
+        { t: "::part() matches a name or a role", w: "One form, but ambiguous wherever a part's name is also another part's role." },
+        { t: "Not in the first version", w: "Parts are addressed by name only." } ] },
+    { id: "T3-2-10", q: "Inline styles: what can they contain, and what is the C++ call named?",
+      ctx: "Round 1 admitted inline styles from C++ and from form documents.",
+      opts: [
+        { t: "Declarations plus optional part blocks; named set_inline_style()", w: "control.set_inline_style(\"background: role(accent); ::part(glyph) { ... }\"): declarations for the control, then blocks for its parts, with the control implied. The control owns the result, so it needs no stable ID and survives theme swaps. The name avoids clashing with the existing WinForms set_style(ControlStyles, bool).", rec: true },
+        { t: "The same, named set_style()", w: "What you wrote in round 1; it overloads the WinForms-compatible set_style(ControlStyles, bool)." },
+        { t: "Declarations only, applied to every part", w: "Simpler, but one control's parts cannot differ." } ] },
+    { id: "T3-2-07", q: "Engine-named properties: plain names or a prefix?",
+      ctx: "Properties CSS lacks (shape, finish, glow placement and so on).",
+      opts: [
+        { t: "Plain names, versioned with the engine", w: "shape: circle, as in the scenario you saw. A keyword the engine lacks is an error, or a warning when the sheet declares a newer engine, so newer themes still load on older engines.", rec: true },
+        { t: "A -gf- prefix on each", w: "-gf-shape: circle. Marks what is not CSS, but reads worse and differs from the agreed scenario." } ] },
+    { id: "T3-2-01", q: "File extension and media type?",
+      ctx: "Left open since 2026-10-13.",
+      opts: [
+        { t: ".theme.css sheets, theme.json manifest, the dialect named in the manifest", w: "Editors highlight .theme.css as CSS; the inner suffix says what it is; the manifest's format field (\"gui-forms-theme/1\") names the dialect and lists the sheets, so nothing is found by extension. text/css on the wire.", rec: true },
+        { t: ".css and text/css", w: "Highlighted everywhere, but looks like browser CSS." },
+        { t: ".gftheme and text/x.gui-forms.theme", w: "Unambiguous, but no editor highlights it." } ] },
+    { id: "T3-2-18", q: "Transitions declared on one rule, states set on another?",
+      ctx: "In CSS, `button { transition: scale 90ms }` animates a scale set by `.primary:hover { scale: 1.05 }`. The engine keeps a transition's states and curve in one record, so it can't yet join them across rules.",
+      opts: [
+        { t: "First version: a transition covers refinements of its own rule; later, an engine change if themes need more", w: "button { transition } animates button:hover and button:active states. A state value set by an unrelated rule (.primary:hover) changes instantly, with a warning.", rec: true },
+        { t: "Engine change now: cascade curves and state values separately and join them per part", w: "Full CSS behaviour from the start; one more engine phase before T3 lands." } ] } ] },
+
+  { key: "B", title: "Technical calls (I'd accept the recommendations)", blurb: "Smaller choices with a clear best answer. Change any you disagree with; otherwise choosing the recommendation for each is fine.", questions: [
+    { id: "T3-2-05", q: "Scope of a theme's own variables?",
+      ctx: "",
+      opts: [
+        { t: "Global plus rule-local", w: "Defined in :root and used everywhere; a rule's own --x shadows the global one inside that rule. Full per-part CSS cascading later, only if a real theme needs it. The scenario's --glow is this kind.", rec: true },
+        { t: "Global only", w: "Simplest; the scenario's per-rule --glow would not work." },
+        { t: "Full CSS cascade per part", w: "Needs the engine to carry deferred values." } ] },
+    { id: "T3-2-06", q: "How does a theme declare the application values it reads?",
+      ctx: "Values such as --level that a program publishes.",
+      opts: [
+        { t: "Listed in the manifest", w: "Explicit and checked; var(--level) then reads one.", rec: true },
+        { t: "A reserved prefix (--app-level)", w: "No manifest entry, but every name carries the prefix." },
+        { t: "Any var() the theme doesn't define", w: "No declaration, but a typo silently becomes an input." } ] },
+    { id: "T3-2-08", q: "Classifying cases the round-1 rule didn't name",
+      ctx: "Round 1: unknown properties warn, bad values fail.",
+      opts: [
+        { t: "As the plan proposes", w: "An unknown control, part, state or pseudo-class is a warning that drops the rule (an unknown name). A known primitive on a part role it cannot paint is an error (a bad value). A primitive over the effort budget is a warning, since the author can't fix it and the part falls back. A property refused by decision (clip-path, rotate, layout) is a warning.", rec: true },
+        { t: "Change some (note)", w: "Name which." } ] },
+    { id: "T3-2-09", q: "Does a theme's !important survive forced high contrast?",
+      ctx: "Round 1: high contrast wins on colour; inline !important is honoured for everything else.",
+      opts: [
+        { t: "No: only inline !important non-colour declarations survive", w: "Your guarantee is to the program designer's inline rules.", rec: true },
+        { t: "Theme !important non-colour declarations survive too", w: "" } ] },
+    { id: "T3-2-11", q: "Percentage radii?",
+      ctx: "The engine draws circular corners only.",
+      opts: [
+        { t: "A percentage of the shorter side", w: "50% on any box is a pill, a stated difference from CSS's ellipse; shape keywords cover circles and pills exactly.", rec: true },
+        { t: "Percentage radii are a bad value", w: "" } ] },
+    { id: "T3-2-12", q: "Hash for the manifest's content hashes?",
+      ctx: "",
+      opts: [
+        { t: "SHA-256, first-party, with the standard test vectors", w: "Any tool can produce the manifest's hashes; no new dependency.", rec: true },
+        { t: "BLAKE3", w: "Faster, less universal tooling." } ] },
+    { id: "T3-2-13", q: "States declared by custom controls?",
+      ctx: "Custom controls may declare their own states (T1), but the engine's selector holds only the built-in set.",
+      opts: [
+        { t: "Defer: a custom state is an unknown name (a warning) for now", w: "Consistent with round 1's 'no theme-declared states' first version.", rec: true },
+        { t: "Extend the selector in this stage", w: "" } ] },
+    { id: "T3-2-14", q: "The derived limits?",
+      ctx: "32 :is() arguments, 1,024 custom properties, 4,096 tokens per substituted value, 64 @keyframes, 1,000 diagnostic records. Each exceeded limit is an error, like round 1's.",
+      opts: [
+        { t: "Accept as starting values", w: "", rec: true },
+        { t: "Change some (note)", w: "" } ] },
+    { id: "T3-2-15", q: "Selector lists (a, b { })?",
+      ctx: "",
+      opts: [
+        { t: "Admit them, one rule per selector, each with its own specificity", w: "Every CSS author writes them.", rec: true },
+        { t: "Refuse; :is() covers the need", w: "" } ] },
+    { id: "T3-2-16", q: "Escapes?",
+      ctx: "",
+      opts: [
+        { t: "Only inside strings; names are plain kebab-case ASCII", w: "Names are registered words; escapes in names only hide them.", rec: true },
+        { t: "Full CSS escapes everywhere", w: "" } ] },
+    { id: "T3-2-17", q: "ease-in and ease-out?",
+      ctx: "The engine has no easing of those names.",
+      opts: [
+        { t: "Lower to their exact CSS cubic-bezier()", w: "Exact, and no engine change.", rec: true },
+        { t: "The nearest built-in easing", w: "" } ] },
+    { id: "T3-2-19", q: "Where is @media evaluated?",
+      ctx: "",
+      opts: [
+        { t: "Per window: each rule carries its condition, re-resolved on a change", w: "Windows share a theme but not a display scale.", rec: true },
+        { t: "One compiled rule set per environment, swapped", w: "" } ] },
+    { id: "T3-2-20", q: "Counting the 16 imports?",
+      ctx: "",
+      opts: [
+        { t: "Over a theme's whole import closure, each installed theme once", w: "Bounds the total work, which is the limit's purpose.", rec: true },
+        { t: "Per sheet", w: "" } ] },
+    { id: "T3-2-21", q: "Smaller proposals, as one set?",
+      ctx: "Named colours other than transparent and currentcolor are not admitted; initial means the built-in recipe's value; isolation is accepted and changes nothing; non-default animation-direction and animation-fill-mode are errors in the first version; the diagnostic log line format; the inline-with-theme warning once per window.",
+      opts: [
+        { t: "Accept the set", w: "", rec: true },
+        { t: "Accept, except items in the note", w: "" } ] } ] }
+];
+
+const VISUALS = {};
+
+// ---------------------------------------------------------------- answers
+const answers = {};
+
+function allQuestions() {
+  const list = [];
+  for (const g of GROUPS) for (const q of g.questions) list.push({ g: g, q: q });
+  return list;
+}
+function localKey() { return "t3-theme-language-round-2"; }
+function loadLocal() {
+  try { const raw = localStorage.getItem(localKey()); return raw ? JSON.parse(raw) : {}; } catch (e) { return {}; }
+}
+function saveLocal() {
+  try { localStorage.setItem(localKey(), JSON.stringify(answers)); } catch (e) { /* storage unavailable */ }
+}
+function setSaved(id, text) {
+  const el = document.getElementById("saved-" + id);
+  if (el) el.textContent = text;
+}
+function persist(id) {
+  saveLocal();
+  setSaved(id, "Saved in this browser");
+}
+function record(id, choice, note) {
+  const now = new Date().toISOString();
+  const prev = answers[id] || { choice: 0, note: "", history: [] };
+  const history = (prev.history || []).slice(-19);
+  if (choice !== prev.choice) history.push({ choice: choice, at: now });
+  answers[id] = { choice: choice, note: note, at: now, history: history };
+  refreshQuestion(id);
+  refreshProgress();
+  persist(id);
+}
+function applyRemote(id, data) {
+  answers[id] = { choice: Number(data.choice) || 0, note: String(data.note || ""), at: String(data.at || ""), history: Array.isArray(data.history) ? data.history.slice(-20) : [] };
+  const radios = document.querySelectorAll("input[name='opt-" + id + "']");
+  for (const r of radios) r.checked = Number(r.value) === answers[id].choice;
+  const ta = document.getElementById("note-" + id);
+  if (ta && document.activeElement !== ta) ta.value = answers[id].note;
+  refreshQuestion(id);
+}
+
+// ---------------------------------------------------------------- page
+function buildPage() {
+  const rail = document.getElementById("rail");
+  const main = document.getElementById("groups");
+  for (const g of GROUPS) {
+    const a = document.createElement("a");
+    a.href = "#group-" + g.key;
+    a.id = "rail-" + g.key;
+    a.innerHTML = g.key + " · " + g.title + "<span class=\"count\"></span>";
+    rail.appendChild(a);
+    const sec = document.createElement("section");
+    sec.className = "group";
+    sec.id = "group-" + g.key;
+    const head = document.createElement("header");
+    head.innerHTML = "<div class=\"eyebrow\">Section " + g.key + "</div><h2>" + g.title + "</h2><p class=\"lede\">" + g.blurb + "</p>";
+    sec.appendChild(head);
+    for (const q of g.questions) sec.appendChild(buildQuestion(q));
+    main.appendChild(sec);
+  }
+  const s = document.createElement("a");
+  s.href = "#summary"; s.textContent = "Record";
+  rail.appendChild(s);
+}
+function buildQuestion(q) {
+  const art = document.createElement("article");
+  art.className = "q";
+  art.id = q.id;
+  const head = document.createElement("div");
+  head.className = "q-head";
+  head.innerHTML = "<span class=\"q-id\">" + q.id + "</span><h3>" + q.q + "</h3>";
+  art.appendChild(head);
+  const ctx = document.createElement("p");
+  ctx.className = "q-context";
+  ctx.textContent = q.ctx;
+  art.appendChild(ctx);
+  let visualBox = null;
+  if (q.visual) {
+    visualBox = document.createElement("div");
+    visualBox.className = "visual";
+    art.appendChild(visualBox);
+    VISUALS[q.visual](visualBox);
+  }
+  const opts = document.createElement("div");
+  opts.className = "opts";
+  opts.setAttribute("role", "radiogroup");
+  opts.setAttribute("aria-label", q.q);
+  q.opts.forEach(function (o, index) {
+    const n = index + 1;
+    const label = document.createElement("label");
+    label.className = "opt";
+    const input = document.createElement("input");
+    input.type = "radio"; input.name = "opt-" + q.id; input.value = String(n); input.id = "opt-" + q.id + "-" + n;
+    input.addEventListener("change", function () {
+      const note = (answers[q.id] && answers[q.id].note) || "";
+      record(q.id, n, note);
+      if (visualBox && visualBox.highlight) visualBox.highlight(n);
+    });
+    const body = document.createElement("div");
+    body.className = "opt-body";
+    const title = document.createElement("div");
+    title.className = "opt-title";
+    title.textContent = n + ". " + o.t;
+    if (o.rec) { const r = document.createElement("span"); r.className = "rec"; r.textContent = "Recommended"; title.appendChild(r); }
+    const why = document.createElement("div");
+    why.className = "opt-why";
+    why.textContent = o.w;
+    body.appendChild(title); body.appendChild(why);
+    label.appendChild(input); label.appendChild(body);
+    opts.appendChild(label);
+  });
+  art.appendChild(opts);
+  const noteRow = document.createElement("div");
+  noteRow.className = "note-row";
+  const nl = document.createElement("label");
+  nl.setAttribute("for", "note-" + q.id);
+  nl.textContent = "Note (optional): a qualification, or your own answer";
+  const ta = document.createElement("textarea");
+  ta.id = "note-" + q.id;
+  let timer = 0;
+  function commitNote() {
+    clearTimeout(timer);
+    const cur = answers[q.id] || { choice: 0, note: "" };
+    if (cur.note === ta.value) return;
+    record(q.id, cur.choice || 0, ta.value);
+  }
+  ta.addEventListener("input", function () { clearTimeout(timer); timer = setTimeout(commitNote, 900); });
+  ta.addEventListener("blur", commitNote);
+  noteRow.appendChild(nl); noteRow.appendChild(ta);
+  art.appendChild(noteRow);
+  const saved = document.createElement("div");
+  saved.className = "saved";
+  saved.id = "saved-" + q.id;
+  art.appendChild(saved);
+  art.visualBox = visualBox;
+  return art;
+}
+function refreshQuestion(id) {
+  const art = document.getElementById(id);
+  if (!art) return;
+  const a = answers[id];
+  const isAnswered = !!(a && (a.choice > 0 || (a.note && a.note.trim())));
+  art.classList.toggle("answered", isAnswered);
+  if (art.visualBox && art.visualBox.highlight) art.visualBox.highlight(a ? a.choice : 0);
+}
+function refreshProgress() {
+  const list = allQuestions();
+  let done = 0;
+  const perGroup = {};
+  for (const item of list) {
+    const a = answers[item.q.id];
+    const isDone = !!(a && a.choice > 0);
+    if (isDone) done++;
+    perGroup[item.g.key] = perGroup[item.g.key] || [0, 0];
+    perGroup[item.g.key][1]++;
+    if (isDone) perGroup[item.g.key][0]++;
+  }
+  document.getElementById("progress-text").textContent = done + " of " + list.length + " answered";
+  document.getElementById("progress-bar").style.width = (100 * done / list.length) + "%";
+  for (const g of GROUPS) {
+    const chip = document.getElementById("rail-" + g.key);
+    const c = perGroup[g.key];
+    chip.querySelector(".count").textContent = c[0] + "/" + c[1];
+    chip.classList.toggle("complete", c[0] === c[1]);
+  }
+  refreshSummary(list);
+}
+function refreshSummary(list) {
+  const rows = document.getElementById("summary-rows");
+  rows.textContent = "";
+  const lines = ["T3 theme language, round 2"];
+  for (const item of list) {
+    const a = answers[item.q.id];
+    const tr = document.createElement("tr");
+    const tdId = document.createElement("td"); tdId.textContent = item.q.id;
+    const tdC = document.createElement("td");
+    const tdN = document.createElement("td");
+    if (a && a.choice > 0) {
+      const o = item.q.opts[a.choice - 1];
+      tdC.textContent = a.choice + ". " + o.t;
+      lines.push(item.q.id + ": " + a.choice + " (" + o.t + ")" + (a.note ? " — note: " + a.note : ""));
+    } else {
+      tdC.textContent = "Not answered"; tdC.className = "pending";
+      lines.push(item.q.id + ": not answered" + (a && a.note ? " — note: " + a.note : ""));
+    }
+    tdN.textContent = (a && a.note) || "";
+    tr.appendChild(tdId); tr.appendChild(tdC); tr.appendChild(tdN);
+    rows.appendChild(tr);
+  }
+  document.getElementById("summary-text").textContent = lines.join("\n");
+}
+function setStoreNote(text) { document.getElementById("store-note").textContent = text; }
+
+document.getElementById("copy-btn").addEventListener("click", function () {
+  const pre = document.getElementById("summary-text");
+  const text = pre.textContent;
+  const state = document.getElementById("copy-state");
+  function fallback() {
+    pre.hidden = false;
+    const range = document.createRange();
+    range.selectNodeContents(pre);
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(range);
+    state.textContent = "Selected below; copy it with your keyboard.";
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { state.textContent = "Copied."; }, fallback);
+  } else { fallback(); }
+});
+
+buildPage();
+const local = loadLocal();
+for (const id in local) { answers[id] = local[id]; }
+for (const id in answers) applyRemote(id, answers[id]);
+refreshProgress();
+
+// Saving to and loading from a file: the answers travel as JSON beside the readable record.
+function saveToFile() {
+  const payload = { interview: "T3 theme language, round 2", saved: new Date().toISOString(), answers: answers, record: document.getElementById("summary-text").textContent };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "t3-round2-answers.json";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+  document.getElementById("copy-state").textContent = "Saved t3-round2-answers.json to your downloads.";
+}
+function loadFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = function () {
+    const state = document.getElementById("copy-state");
+    let payload = null;
+    try { payload = JSON.parse(String(reader.result)); } catch (e) { payload = null; }
+    if (!payload || typeof payload.answers !== "object" || payload.answers === null) {
+      state.textContent = "That file is not a saved T3 round 2; nothing was loaded.";
+      return;
+    }
+    let loaded = 0;
+    for (const id in payload.answers) {
+      if (!document.getElementById(id)) continue;
+      applyRemote(id, payload.answers[id]);
+      loaded++;
+    }
+    saveLocal();
+    refreshProgress();
+    state.textContent = "Loaded " + loaded + " answers from " + file.name + ".";
+  };
+  reader.readAsText(file);
+}
+document.getElementById("save-btn").addEventListener("click", saveToFile);
+document.getElementById("load-btn").addEventListener("click", function () { document.getElementById("load-file").click(); });
+document.getElementById("load-file").addEventListener("change", function (ev) {
+  const files = ev.target.files;
+  if (files && files.length > 0) loadFromFile(files[0]);
+  ev.target.value = "";
+});
+</script>

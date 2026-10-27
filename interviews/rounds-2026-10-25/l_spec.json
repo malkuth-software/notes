@@ -1,0 +1,12 @@
+{
+  "groups": "l_groups.js",
+  "out": "l-layout-interview.html",
+  "title": "L Layout Interview",
+  "eyebrow": "GUI.Forms · stage L · dynamic layout · interview round 1",
+  "lede": "Stage L brings flex, grid and flow layout to GUI.Forms as engine containers, checked against Chromium as a test oracle. The plan is in planning/stages/L-layout/PLAN.md (PR #322). Section A holds the decisions that are yours, including the Chromium download; section B holds CSS fidelity calls where I would accept the plan’s recommendations. Your answers are kept in this browser; save them to a file or copy the record back to the coordinating session.",
+  "context_html": "      <h2>Where L stands</h2>\n      <p>Already decided (2026-10-13): the fidelity oracle lives in this repository under tools/, and Chromium is a test oracle only, never called by GUI.Forms at import or run time. Layout belongs to forms and the engine, never to themes. Standing rules apply: work bounded by effort, our engine as the reference.</p>\n      <p>The plan: three containers over one shared solver library in the core, min- and max-content queries with a per-control measure cache, layout boundaries, right-to-left, text-driven sizes, effort bounds as counts, and how form documents and the interface builder declare layouts. Phases L0 to L7, about 17 to 20 PRs.</p>",
+  "footer_html": "They become owner decisions in <span class=\"mono\">planning/stages/L-layout/README.md</span>, and the L worker builds L0 onward, each phase as its own PR with its gate. Nothing is downloaded unless you approve it here.",
+  "key": "l-layout-round-1",
+  "download": "l-interview-answers.json",
+  "record": "L layout, round 1"
+}

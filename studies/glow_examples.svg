@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="470" viewBox="0 0 900 470" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d7fd9"/>
+      <stop offset="1" stop-color="#2459a8"/>
+    </linearGradient>
+    <linearGradient id="faceLit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fb4ff"/>
+      <stop offset="1" stop-color="#4d86d6"/>
+    </linearGradient>
+    <radialGradient id="faceLight" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0" stop-color="#bfe0ff" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#bfe0ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="halo" x="-40%" y="-80%" width="180%" height="260%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+
+  <!-- light row -->
+  <rect x="0" y="0" width="900" height="235" fill="#f3f4f6"/>
+  <!-- dark row -->
+  <rect x="0" y="235" width="900" height="235" fill="#1f2328"/>
+
+  <text x="150" y="34" text-anchor="middle" font-size="16" fill="#111">No glow (reference)</text>
+  <text x="450" y="34" text-anchor="middle" font-size="16" fill="#111">1. Halo under the face (as built)</text>
+  <text x="750" y="34" text-anchor="middle" font-size="16" fill="#111">2. Light over the face too</text>
+
+  <!-- ===== light background ===== -->
+  <g transform="translate(90,90)">
+    <rect width="120" height="40" rx="6" fill="url(#face)" stroke="#1b4580"/>
+    <text x="60" y="26" text-anchor="middle" font-size="15" fill="#fff">OK</text>
+  </g>
+  <g transform="translate(390,90)">
+    <rect x="-4" y="-4" width="128" height="48" rx="10" fill="#5aa8ff" filter="url(#halo)"/>
+    <rect width="120" height="40" rx="6" fill="url(#face)" stroke="#1b4580"/>
+    <text x="60" y="26" text-anchor="middle" font-size="15" fill="#fff">OK</text>
+  </g>
+  <g transform="translate(690,90)">
+    <rect x="-4" y="-4" width="128" height="48" rx="10" fill="#5aa8ff" filter="url(#halo)"/>
+    <rect width="120" height="40" rx="6" fill="url(#faceLit)" stroke="#2d63b3"/>
+    <rect width="120" height="40" rx="6" fill="url(#faceLight)"/>
+    <text x="60" y="26" text-anchor="middle" font-size="15" fill="#fff">OK</text>
+  </g>
+  <text x="450" y="185" text-anchor="middle" font-size="13" fill="#444">Glow spreads past the edge; the face itself is unchanged and covers the glow's centre.</text>
+  <text x="750" y="205" text-anchor="middle" font-size="13" fill="#444">The face is also brightened, as if lit from inside.</text>
+
+  <!-- ===== dark background ===== -->
+  <g transform="translate(90,325)">
+    <rect width="120" height="40" rx="6" fill="url(#face)" stroke="#5b8fd6"/>
+    <text x="60" y="26" text-anchor="middle" font-size="15" fill="#fff">OK</text>
+  </g>
+  <g transform="translate(390,325)">
+    <rect x="-4" y="-4" width="128" height="48" rx="10" fill="#5aa8ff" filter="url(#halo)"/>
+    <rect width="120" height="40" rx="6" fill="url(#face)" stroke="#5b8fd6"/>
+    <text x="60" y="26" text-anchor="middle" font-size="15" fill="#fff">OK</text>
+  </g>
+  <g transform="translate(690,325)">
+    <rect x="-4" y="-4" width="128" height="48" rx="10" fill="#5aa8ff" filter="url(#halo)"/>
+    <rect width="120" height="40" rx="6" fill="url(#faceLit)" stroke="#8cc0ff"/>
+    <rect width="120" height="40" rx="6" fill="url(#faceLight)"/>
+    <text x="60" y="26" text-anchor="middle" font-size="15" fill="#fff">OK</text>
+  </g>
+  <text x="450" y="445" text-anchor="middle" font-size="13" fill="#ccc">Illustration only (SVG blur), not engine output. Glow reach is capped at 8 units in the engine.</text>
+</svg>

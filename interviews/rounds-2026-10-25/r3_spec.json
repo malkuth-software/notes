@@ -1,0 +1,12 @@
+{
+  "groups": "r3_groups.js",
+  "out": "rt-w-t3-interview.html",
+  "title": "Open Calls Interview",
+  "eyebrow": "GUI.Forms · rich text, controls and theme language · 2026-10-26",
+  "lede": "Fifteen open calls from three tracks: SwiftEdit's rich text library plan (PR #344), the W controls, and the T3 theme language worker's confirmations. Each has a recommendation. Your answers are kept in this browser; save them to a file or copy the record back to the coordinating session.",
+  "context_html": "      <h2>Where things stand</h2>\n      <p>Everyone has resumed after the reboot. T3 has built P1 to P5 and is in P6 materials; W has the file, folder and colour dialogs, ThreadExceptionDialog and tab images; SwiftEdit's stx_rtf plan is PR #344. The T3 choices in section C are already built as recommended; they change only if you reverse them.</p>",
+  "footer_html": "They become owner decisions in each track's README, and the workers build on them.",
+  "key": "open-calls-2026-10-26",
+  "download": "open-calls-answers.json",
+  "record": "Open calls, 2026-10-26"
+}

@@ -1,0 +1,12 @@
+{
+  "groups": "t5_groups.js",
+  "out": "t5-compositor-interview.html",
+  "title": "T5 Compositor Interview",
+  "eyebrow": "GUI.Forms · stage T5 · compositor cooperation · interview round 1",
+  "lede": "T5 lets windows cooperate with the desktop’s compositor: transparency and the system’s frosted materials, plus full-fidelity glass and reflection. The plan is in planning/stages/T5-compositor/PLAN.md (PR #321). Section A holds the decisions that are yours; section B holds platform calls where I would accept the plan’s recommendations. Your answers are kept in this browser; save them to a file or copy the record back to the coordinating session.",
+  "context_html": "      <h2>Where T5 stands</h2>\n      <p>The engine half is built: glass inside a window blurs a cached image of the window’s own background (T2, E9.3). The host half is the plan’s nine phases, C0 to C8, about 16 to 17 PRs: per host, Windows DWM (client alpha; Mica and Acrylic from Windows 11 22H2), macOS visual effect views (14.0), X11 ARGB visuals with and without a compositor, and Wayland as a note. Every capability is reported honestly per host, and a window always falls back without an error.</p>\n      <p>Three things still need measuring on real systems, whatever you choose: which Windows route gives clean transparency with the native title bar, the 32-bit visual under Xvfb, and compositor detection under XWayland.</p>",
+  "footer_html": "They become owner decisions in <span class=\"mono\">planning/stages/T5-compositor/README.md</span>, and the T5 worker builds the phases in order, each as its own PR with its gate.",
+  "key": "t5-compositor-round-1",
+  "download": "t5-interview-answers.json",
+  "record": "T5 compositor, round 1"
+}

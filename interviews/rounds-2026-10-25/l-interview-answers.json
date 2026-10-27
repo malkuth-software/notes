@@ -1,0 +1,188 @@
+{
+  "interview": "L layout, round 1",
+  "saved": "2026-10-25T21:25:34.274Z",
+  "answers": {
+    "L-Q1": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:22:30.963Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:22:30.963Z"
+        }
+      ]
+    },
+    "L-Q2": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:22:41.270Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:22:41.270Z"
+        }
+      ]
+    },
+    "L-Q7": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:22:52.981Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:22:52.981Z"
+        }
+      ]
+    },
+    "L-Q8": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:23:01.650Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:23:01.650Z"
+        }
+      ]
+    },
+    "L-Q14": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:23:05.235Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:23:05.235Z"
+        }
+      ]
+    },
+    "L-Q10": {
+      "choice": 2,
+      "note": "",
+      "at": "2026-10-25T21:23:14.817Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:23:11.583Z"
+        },
+        {
+          "choice": 2,
+          "at": "2026-10-25T21:23:14.817Z"
+        }
+      ]
+    },
+    "L-Q11": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:23:27.784Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:23:27.784Z"
+        }
+      ]
+    },
+    "L-Q3": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:23:34.072Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:23:34.072Z"
+        }
+      ]
+    },
+    "L-Q4": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:23:43.143Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:23:43.143Z"
+        }
+      ]
+    },
+    "L-Q5": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:23:57.294Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:23:57.294Z"
+        }
+      ]
+    },
+    "L-Q6": {
+      "choice": 2,
+      "note": "warn on this behavior, but allow. ",
+      "at": "2026-10-25T21:25:06.453Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:24:00.147Z"
+        },
+        {
+          "choice": 2,
+          "at": "2026-10-25T21:24:08.814Z"
+        },
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:24:17.234Z"
+        },
+        {
+          "choice": 2,
+          "at": "2026-10-25T21:24:28.113Z"
+        }
+      ]
+    },
+    "L-Q9": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:25:10.942Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:25:10.942Z"
+        }
+      ]
+    },
+    "L-Q12": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:25:20.388Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:25:20.388Z"
+        }
+      ]
+    },
+    "L-Q13": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:25:23.380Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:25:23.380Z"
+        }
+      ]
+    },
+    "L-Q15": {
+      "choice": 1,
+      "note": "",
+      "at": "2026-10-25T21:25:30.866Z",
+      "history": [
+        {
+          "choice": 1,
+          "at": "2026-10-25T21:25:30.866Z"
+        }
+      ]
+    }
+  },
+  "record": "L layout, round 1\nL-Q1: 1 (Three typed containers over one shared solver: FlexLayoutPanel, GridLayoutPanel, BlockFlowPanel)\nL-Q2: 1 (Keep their behaviour; rebuild their insides on the new solvers wherever their existing tests pass unchanged)\nL-Q7: 1 (An inherited layout direction on every control)\nL-Q8: 1 (Layout is independent of display scale; edges are snapped to pixels only when painting)\nL-Q14: 1 (px, %, fr, the content keywords and linear calc(); em resolved to px when importing; min(), max(), clamp() later)\nL-Q10: 2 (Also approve the Windows package (124,737,213 bytes) for local runs on this machine)\nL-Q11: 1 (Checked into the repository; every host compares against them without Chromium; a Linux job regenerates and checks them, not required)\nL-Q3: 1 (As CSS: an item's minimum is its content's minimum unless min-width or min-height says otherwise)\nL-Q4: 1 (CSS 2.1 rules, without floats)\nL-Q5: 1 (Left out of L; HTML import reports them as unsupported)\nL-Q6: 2 (The nearest positioned ancestor, as CSS) — note: warn on this behavior, but allow. \nL-Q9: 1 (HTML fragments read by both Chromium and our XML reader; 0.05 px per edge for boxes, 0.51 px per edge and 1.0 px baseline for text)\nL-Q12: 1 (The solvers lay out records; item systems realise only visible items; no new virtualising container)\nL-Q13: 1 (Keep it as it is)\nL-Q15: 1 (grid-template-areas and grid-area in phase L4; named lines left out)"
+}
