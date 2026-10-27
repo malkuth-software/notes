@@ -80,7 +80,7 @@ against SK).
    menus, object view, inspector, search, transfers, settings) without
    behaviour change, with the current 15 tests as the contract.
 2. Replace `std::bind_front` subscriptions with named non-owning delegates
-   where a function and context suffice (house style section 8).
+   where a function and context suffice (house style section 5).
 3. Move colour and material literals to a File Manager theme sheet once T3
    loads themes; keep the C++ values as the built-in fallback until T4.
 4. Move the three hand-written Flow/Table hosts onto L's containers after

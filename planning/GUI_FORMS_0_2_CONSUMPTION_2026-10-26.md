@@ -1,5 +1,7 @@
 # GUI.Forms 0.2 consumption and the provider build method
 
+Section numbers here use the house style's pre-2026-10-27 numbering.
+
 Date: 2026-10-26. Implements accepted ADR-021 at a new pin; no new decision.
 This record separates what was given, observed, measured and left unverified.
 
