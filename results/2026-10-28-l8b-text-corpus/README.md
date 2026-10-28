@@ -101,8 +101,9 @@ Tolerances (decision L-Q9):
 | --- | --- | --- | --- | --- |
 | `text/hyphen-breaks` | `numbers` | the 8 at text scale 100 % | 15 px in height (one line) | UAX #14 rule LB25 forbids a break between a hyphen and a digit, so the engine keeps `10-20` whole; Chromium 155 breaks after the hyphen |
 
-This difference is an open question: `PLAN.md` 12.8, question 4. The
-recommendation is to keep UAX #14 and keep the difference recorded. At
+Owner decision of 2026-10-28 (`PLAN.md` 12.8, question 4): option 1,
+keep the UAX #14 rule and keep the Chromium difference recorded on the
+node. At
 the 150 % profiles the same node is within tolerance, so it is recorded
 only at 100 %.
 
@@ -129,7 +130,8 @@ the min-content and max-content contributions (12.5). The fix is in
   therefore has the same boxes in both directions, and it is not marked
   bidirectional. Its alignment is covered by `gui_forms_text_block_tests`,
   not by the corpus.
-- **The hyphen-digit break** (above).
+- **The hyphen-digit break** (above): settled by the owner on
+  2026-10-28; it stays a recorded difference.
 
 ## Commands
 

@@ -969,7 +969,7 @@ About 30, each marked bidirectional where its boxes depend on direction:
   is then marked as exercised.
 - **Result** (2026-10-28, `results/2026-10-28-l8b-text-corpus`): 30 text
   fixtures, 0 nodes over tolerance, one recorded difference (12.8,
-  question 4). The corpus found one grid defect, fixed in L8b: a
+  question 4, the owner's decision of 2026-10-28). The corpus found one grid defect, fixed in L8b: a
   `fit-content()` argument no longer clamps an automatic minimum (CSS Grid
   6.6 clamps only by fixed maximums).
 
@@ -981,13 +981,15 @@ About 30, each marked bidirectional where its boxes depend on direction:
 3. **The strut without a declared font.** Answered (coordinator,
    2026-10-26): option (a). The strut comes from the content font and
    scales with the text scale, as in CSS.
-4. **A hyphen before a digit.** Open. UAX #14 rule LB25 forbids a break
+4. **A hyphen before a digit.** Answered (owner, 2026-10-28): option 1,
+   keep UAX #14 and keep the Chromium difference recorded on the node.
+   UAX #14 rule LB25 forbids a break
    in `10-20` (a hyphen followed by a number), and the engine's breaker
    (libunibreak) follows it. Chromium 155 breaks after the hyphen. In
    `text/hyphen-breaks` one node (`numbers`, a 60 px block) is one line
    taller in GUI.Forms at its eight profiles. It is recorded on the node
-   as a difference, with that reason. Recommendation: keep it recorded
-   and keep UAX #14, rather than tailoring the breaker to Chromium.
+   as a difference, with that reason. The breaker is not tailored to
+   Chromium.
 
 ### 12.9 Reaching the line breaker
 

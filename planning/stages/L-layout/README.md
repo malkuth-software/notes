@@ -4,8 +4,8 @@ Release: 0.4 Flexible. Depends on: T1. Unblocks FD, D and H. Status
 2026-10-28: phases L0 to L8 built. The box gate is recorded
 (`results/2026-10-26-l-layout-gate`), and the text corpus (L8b) in
 `results/2026-10-28-l8b-text-corpus`, which exercises the text-scale
-dimension. One question is open: the hyphen-digit break (`PLAN.md` 12.8,
-question 4). Plan accepted
+dimension. The hyphen-digit break keeps UAX #14 and stays a recorded
+difference (owner, 2026-10-28; `PLAN.md` 12.8, question 4). Plan accepted
 2026-10-25 ([`PLAN.md`](PLAN.md)); interview round 001 answered (below). T1's gate is recorded
 (`results/2026-10-13-t1-anatomy-gate`). Authority: `planning/FORWARD_PROGRAMME.md` §4 L.
 
