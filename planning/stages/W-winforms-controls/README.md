@@ -277,7 +277,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ListBox` | 109 | `ListBox` | done |
 | `CheckedListBox` | 52 | `CheckedListBox` | done |
 | `ComboBox` | 129 | `ComboBox` | done (auto-complete #123, filtering #126) |
-| `ListView` | 181 | `ListView`, `ObjectView` | partial: groups, tile view, label editing, the insertion mark, owner drawing and item tooltips are not supported (#88) |
+| `ListView` | 181 | `ListView`, `ObjectView` | partial: label editing (F2 and the slow second click), the insertion mark and content-only owner drawing are done; groups, tile view and item tooltips are not supported (#88) |
 | `ColumnHeader` | 27 | `ListViewColumn` records | done |
 | `TreeView` | 137 | `TreeView` | done |
 | `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149) |
