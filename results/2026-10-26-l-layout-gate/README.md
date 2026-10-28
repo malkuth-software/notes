@@ -51,12 +51,13 @@ The owner settled the gate's scope on 2026-10-26 (option 1):
 | Viewport | 320 x 240, 800 x 600, 1280 x 800, 1440 x 900 | all |
 | Device scale | 1, 2 | all |
 | Direction | ltr, rtl | ltr: all; rtl: the 165 marked bidirectional |
-| Text scale | 100 %, 150 % | **not yet exercised**: the corpus has no text fixture (phase L8) |
+| Text scale | 100 %, 150 % | **exercised in L8b** (`results/2026-10-28-l8b-text-corpus`): 150 % applies to the 30 text fixtures |
 
 Tolerances (decision L-Q9):
 - box fixtures: 0.05 logical px per edge;
-- text fixtures: 0.51 px per edge and 1.0 px on the first baseline. These
-  are not yet exercised, since there are no text fixtures.
+- text fixtures: 0.51 px per edge and 1.0 px on the first baseline. When
+  L7 was recorded there were no text fixtures; L8b exercises both
+  (`results/2026-10-28-l8b-text-corpus`).
 
 ## The corpus
 
@@ -129,14 +130,9 @@ The L3 to L5 records give the tests for each limit.
 
 ## Not yet exercised, and open
 
-- **Text scale and the text tolerances.** No fixture holds text, so the
-  150 % profile, the 0.51 px text tolerance and the 1.0 px baseline
-  tolerance have not run. Phase L8 adds:
-  - the text fixtures, with a CSS-style text leaf, provisionally named
-    `TextBlock`;
-  - the bundled engine in the harness;
-  - the first-baseline capture;
-  - the text-scale profiles.
+- **Text scale and the text tolerances.** Exercised since 2026-10-28 by
+  L8b's 30 text fixtures (`results/2026-10-28-l8b-text-corpus`): 0 nodes
+  over tolerance, and one recorded difference (a hyphen-digit break).
 - **Window resize.** `Window::resize` still marks the whole tree
   measure-dirty, which empties every measure cache. The L3 count stands:
   at 10,000 labels in a FlexPanel root, one window resize costs 10,000

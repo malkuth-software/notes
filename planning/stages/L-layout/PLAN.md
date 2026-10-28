@@ -659,7 +659,8 @@ dimension recorded as not yet exercised.
 provisionally named `TextBlock`; the bundled engine in the corpus harness;
 first-baseline capture; and the text-scale profiles. Gate: the text
 fixtures within L-Q9's tolerances at both text scales. Section 12 is its
-plan. 2 PRs.
+plan. 2 PRs. Recorded in `results/2026-10-28-l8b-text-corpus`; the L7
+record's text-scale dimension is now exercised.
 
 **The stage gate** (README; the measurement to record): a corpus of at
 least 100 fixtures (about 40 flex, 40 grid, 20 block and inline, and
@@ -866,8 +867,11 @@ does. As built in L8a they are computed on demand rather than cached:
 `TextBlock`'s first baseline needs no line breaking (only the font's
 metrics), so a cache would save little and could outlive a change that
 does not advance the measure generation. The nested containers'
-answers (a `FlexPanel` answering its first item's baseline) are left to
-L8b, and are built only if a fixture needs them.
+answers (a `FlexPanel` answering its first item's baseline) were left to
+L8b, to be built only if a fixture needed them. None of the 30 text
+fixtures did, so they are not built: a nested panel is aligned by its
+border box's bottom, and `docs/user/layout.md` lists it under "Not
+provided".
 
 `BlockPanel`'s `line_strut` stays a property. A `BlockPanel` whose strut
 is not set takes it from its content font's metrics (coordinator,
@@ -963,6 +967,11 @@ About 30, each marked bidirectional where its boxes depend on direction:
   Zero nodes over the text tolerances other than recorded differences,
   each with its reason. The L7 record gains the text-scale dimension, and
   is then marked as exercised.
+- **Result** (2026-10-28, `results/2026-10-28-l8b-text-corpus`): 30 text
+  fixtures, 0 nodes over tolerance, one recorded difference (12.8,
+  question 4). The corpus found one grid defect, fixed in L8b: a
+  `fit-content()` argument no longer clamps an automatic minimum (CSS Grid
+  6.6 clamps only by fixed maximums).
 
 ### 12.8 Questions put to the coordinator
 
@@ -972,6 +981,13 @@ About 30, each marked bidirectional where its boxes depend on direction:
 3. **The strut without a declared font.** Answered (coordinator,
    2026-10-26): option (a). The strut comes from the content font and
    scales with the text scale, as in CSS.
+4. **A hyphen before a digit.** Open. UAX #14 rule LB25 forbids a break
+   in `10-20` (a hyphen followed by a number), and the engine's breaker
+   (libunibreak) follows it. Chromium 155 breaks after the hyphen. In
+   `text/hyphen-breaks` one node (`numbers`, a 60 px block) is one line
+   taller in GUI.Forms at its eight profiles. It is recorded on the node
+   as a difference, with that reason. Recommendation: keep it recorded
+   and keep UAX #14, rather than tailoring the breaker to Chromium.
 
 ### 12.9 Reaching the line breaker
 
