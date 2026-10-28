@@ -1,0 +1,777 @@
+{
+  "schema": "gui_forms.hot_paths.v1",
+  "host": {
+    "system": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "cpus": "4",
+    "runner": "ubuntu-24.04",
+    "image": "ubuntu24 20261023.334.3",
+    "perf": "perf version 6.17.13",
+    "compiler": "Ubuntu clang version 22.1.8 (++20260714014902+ca7933e47d3a-1~exp1~20260714135019.80)",
+    "commit": "d16c7910cdaf80b8acc6ec5a8626a30cb1f612f7"
+  },
+  "frequency_hz": 999,
+  "build_flags": "-fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -gline-tables-only",
+  "workloads": [
+    {
+      "workload": "paint",
+      "about": "the Gallery through the CPU Skia adapter: M2d damage matrix and every page (benchmarks/paint_profile_workload.cpp)",
+      "samples": 11000,
+      "areas": {
+        "skia": 47.13,
+        "gui_forms": 40.19,
+        "freetype": 3.13,
+        "workload": 1.0,
+        "other": 0.8,
+        "runtime": 0.73,
+        "kernel": 0.06
+      },
+      "functions": [
+        {
+          "symbol": "sse2::rect_memset32(unsigned int*, unsigned int, int, unsigned long, int)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 28.62,
+          "inclusive_percent": 28.66
+        },
+        {
+          "symbol": "gui_forms::detail::composite_text_coverage(gui_forms::detail::TextCoverage, gui_forms::detail::TextCompositeTarget, gui_forms::detail::TextCompositeClip, gui_forms::Color, gui_forms::detail::TextCompositeMode)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 24.46,
+          "inclusive_percent": 34.6
+        },
+        {
+          "symbol": "gui_forms::detail::(anonymous namespace)::prepared_clip_coverage(gui_forms::detail::(anonymous namespace)::PreparedClip const&, long, long)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 10.29,
+          "inclusive_percent": 10.3
+        },
+        {
+          "symbol": "sse2::lowp::evenly_spaced_2_stop_gradient(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 5.29,
+          "inclusive_percent": 5.29
+        },
+        {
+          "symbol": "aaa_fill_path(SkPathRaw const&, SkIRect const&, AdditiveBlitter*, int, int, bool, bool, bool)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 1.48,
+          "inclusive_percent": 1.49
+        },
+        {
+          "symbol": "sse2::lowp::store_8888(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 1.23,
+          "inclusive_percent": 1.23
+        },
+        {
+          "symbol": "sse2::lowp::start_pipeline(unsigned long, unsigned long, unsigned long, unsigned long, SkRasterPipelineStage*, SkSpan<SkRasterPipelineContexts::MemoryCtxPatch>, unsigned char*)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 1.17,
+          "inclusive_percent": 1.18
+        },
+        {
+          "symbol": "sse2::lowp::bilerp_clamp_8888(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 1.17,
+          "inclusive_percent": 1.17
+        },
+        {
+          "symbol": "(anonymous namespace)::measure(gui_forms::render::SkiaRaster&, gui_forms::Window&, gui_forms::Rect, double, unsigned long, unsigned long)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "workload",
+          "self_percent": 1.0,
+          "inclusive_percent": 46.45
+        },
+        {
+          "symbol": "sse2::lowp::matrix_2x3(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.84,
+          "inclusive_percent": 0.84
+        },
+        {
+          "symbol": "gui_forms::Window::collect_paint_checkpoints(std::shared_ptr<gui_forms::Control> const&, std::vector<gui_forms::Window::PaintControlCheckpoint, std::allocator<gui_forms::Window::PaintControlCheckpoint> >&)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.81,
+          "inclusive_percent": 0.98
+        },
+        {
+          "symbol": "gui_forms::Control::clear_dirty(gui_forms::Dirty)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.75,
+          "inclusive_percent": 0.76
+        },
+        {
+          "symbol": "gui_forms::Window::clear_paint_dirty_subtree(std::shared_ptr<gui_forms::Control> const&)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.75,
+          "inclusive_percent": 1.53
+        },
+        {
+          "symbol": "af_glyph_hints_reload",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "freetype",
+          "self_percent": 0.75,
+          "inclusive_percent": 0.87
+        },
+        {
+          "symbol": "blit_trapezoid_row(AdditiveBlitter*, int, int, int, int, int, int, int, unsigned char, unsigned char*, bool)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.71,
+          "inclusive_percent": 0.71
+        },
+        {
+          "symbol": "gui_forms::Window::display_cache_entries(std::shared_ptr<gui_forms::Control> const&) const",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.65,
+          "inclusive_percent": 0.65
+        },
+        {
+          "symbol": "SkScan::FillPath(SkPathRaw const&, SkRegion const&, SkBlitter*)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.6,
+          "inclusive_percent": 0.6
+        },
+        {
+          "symbol": "gray_render_line",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "freetype",
+          "self_percent": 0.57,
+          "inclusive_percent": 0.57
+        },
+        {
+          "symbol": "sse2::lowp::load_8888_dst(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.51,
+          "inclusive_percent": 0.51
+        },
+        {
+          "symbol": "gui_forms::Window::paint_recursive(std::shared_ptr<gui_forms::Control> const&, gui_forms::Painter&, gui_forms::Rect, gui_forms::PaintPlane, unsigned long&, unsigned long&, unsigned long&, unsigned long&, unsigned long&, unsigned long&)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.45,
+          "inclusive_percent": 3.54
+        },
+        {
+          "symbol": "sse2::lowp::clamp_01(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.39,
+          "inclusive_percent": 0.39
+        },
+        {
+          "symbol": "gui_forms::Window::absolute_bounds_of(gui_forms::Control const&) const",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.37,
+          "inclusive_percent": 0.37
+        },
+        {
+          "symbol": "gui_forms::detail::replay_display_chunk(gui_forms::detail::DisplayChunk const&, gui_forms::Painter&)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.32,
+          "inclusive_percent": 40.57
+        },
+        {
+          "symbol": "sse2::lowp::seed_shader(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.32,
+          "inclusive_percent": 0.33
+        },
+        {
+          "symbol": "SkRasterPipelineBlitter::blitRect(int, int, int, int)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.3,
+          "inclusive_percent": 0.3
+        },
+        {
+          "symbol": "sse2::lowp::clamp_x_1(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.27,
+          "inclusive_percent": 0.27
+        },
+        {
+          "symbol": "sse2::lowp::lerp_1_float(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.27,
+          "inclusive_percent": 0.27
+        },
+        {
+          "symbol": "af_latin_hints_compute_segments",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "freetype",
+          "self_percent": 0.24,
+          "inclusive_percent": 0.24
+        },
+        {
+          "symbol": "0x0000000000188dd9",
+          "object": "libc.so.6",
+          "area": "runtime",
+          "self_percent": 0.24,
+          "inclusive_percent": 0.24
+        },
+        {
+          "symbol": "SkRasterPipelineBlitter::blitAntiH(int, int, unsigned char const*, short const*)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.22,
+          "inclusive_percent": 0.22
+        },
+        {
+          "symbol": "malloc",
+          "object": "libc.so.6",
+          "area": "runtime",
+          "self_percent": 0.22,
+          "inclusive_percent": 0.66
+        },
+        {
+          "symbol": "SkRasterPipelineBlitter::blitH(int, int, int)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.21,
+          "inclusive_percent": 0.21
+        },
+        {
+          "symbol": "gui_forms::detail::DisplayCommand::~DisplayCommand()",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.2,
+          "inclusive_percent": 0.22
+        },
+        {
+          "symbol": "void std::_Destroy_aux<false>::__destroy<gui_forms::Window::PaintControlCheckpoint*>(gui_forms::Window::PaintControlCheckpoint*, gui_forms::Window::PaintControlCheckpoint*)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.2,
+          "inclusive_percent": 0.2
+        },
+        {
+          "symbol": "SkAAClipBlitter::blitH(int, int, int)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.19,
+          "inclusive_percent": 0.19
+        },
+        {
+          "symbol": "SkRasterPipelineBlitter::Create(SkPixmap const&, SkPaint const&, SkRGBA4f<(SkAlphaType)3> const&, SkArenaAlloc*, SkRasterPipeline const&, bool, bool, SkShader const*)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.19,
+          "inclusive_percent": 0.19
+        },
+        {
+          "symbol": "af_glyph_hints_align_weak_points",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "freetype",
+          "self_percent": 0.19,
+          "inclusive_percent": 0.21
+        },
+        {
+          "symbol": "gui_forms::detail::DisplayCommand& std::vector<gui_forms::detail::DisplayCommand, std::allocator<gui_forms::detail::DisplayCommand> >::emplace_back<gui_forms::detail::DisplayCommand>(gui_forms::detail::DisplayCommand&&)",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "gui_forms",
+          "self_percent": 0.19,
+          "inclusive_percent": 0.49
+        },
+        {
+          "symbol": "sse2::lowp::srcover(SkRasterPipelineStage*, unsigned long, unsigned long, unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8), unsigned short __vector(8))",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "skia",
+          "self_percent": 0.19,
+          "inclusive_percent": 0.19
+        },
+        {
+          "symbol": "TT_Load_Simple_Glyph",
+          "object": "gui_forms_paint_profile_workload",
+          "area": "freetype",
+          "self_percent": 0.18,
+          "inclusive_percent": 0.18
+        }
+      ]
+    },
+    {
+      "workload": "text_engine",
+      "about": "100 caption labels through the HarfBuzz/FreeType engine, 180 passes (benchmarks/text_engine_benchmark.cpp)",
+      "samples": 15000,
+      "areas": {
+        "freetype": 71.8,
+        "gui_forms": 15.48,
+        "runtime": 4.34,
+        "other": 3.26,
+        "harfbuzz": 2.22,
+        "workload": 0.05
+      },
+      "functions": [
+        {
+          "symbol": "af_glyph_hints_reload",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 10.64,
+          "inclusive_percent": 12.82
+        },
+        {
+          "symbol": "gray_render_line",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 7.98,
+          "inclusive_percent": 7.98
+        },
+        {
+          "symbol": "gui_forms::detail::composite_text_coverage(gui_forms::detail::TextCoverage, gui_forms::detail::TextCompositeTarget, gui_forms::detail::TextCompositeClip, gui_forms::Color, gui_forms::detail::TextCompositeMode)",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "gui_forms",
+          "self_percent": 7.15,
+          "inclusive_percent": 10.23
+        },
+        {
+          "symbol": "af_latin_hints_compute_segments",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 4.79,
+          "inclusive_percent": 4.79
+        },
+        {
+          "symbol": "af_latin_hints_apply",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 4.7,
+          "inclusive_percent": 33.67
+        },
+        {
+          "symbol": "TT_Load_Simple_Glyph",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 4.26,
+          "inclusive_percent": 4.26
+        },
+        {
+          "symbol": "gray_conic_to",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 4.04,
+          "inclusive_percent": 9.45
+        },
+        {
+          "symbol": "af_glyph_hints_align_weak_points",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 3.59,
+          "inclusive_percent": 4.26
+        },
+        {
+          "symbol": "gui_forms::detail::(anonymous namespace)::prepared_clip_coverage(gui_forms::detail::(anonymous namespace)::PreparedClip const&, long, long)",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "gui_forms",
+          "self_percent": 3.08,
+          "inclusive_percent": 3.08
+        },
+        {
+          "symbol": "0x000000000018984a",
+          "object": "libc.so.6",
+          "area": "runtime",
+          "self_percent": 2.76,
+          "inclusive_percent": 2.76
+        },
+        {
+          "symbol": "gui_forms::render::text::GlyphRunRasterizer::Impl::Runner::run(gui_forms::render::text::GlyphRunRasterizer::Impl&, gui_forms::render::text::ShapedText const&, gui_forms::render::text::(anonymous namespace)::RunPlacement const&)",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "gui_forms",
+          "self_percent": 2.67,
+          "inclusive_percent": 77.55
+        },
+        {
+          "symbol": "gray_convert_glyph",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 2.58,
+          "inclusive_percent": 17.54
+        },
+        {
+          "symbol": "FT_Outline_Transform",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 2.43,
+          "inclusive_percent": 2.43
+        },
+        {
+          "symbol": "FT_Outline_Decompose",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 2.4,
+          "inclusive_percent": 14.34
+        },
+        {
+          "symbol": "ft_glyphslot_preset_bitmap",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 2.34,
+          "inclusive_percent": 2.34
+        },
+        {
+          "symbol": "FT_Outline_Get_Orientation",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 2.06,
+          "inclusive_percent": 2.06
+        },
+        {
+          "symbol": "af_latin_hints_detect_features",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 2.0,
+          "inclusive_percent": 8.94
+        },
+        {
+          "symbol": "FT_Outline_Get_CBox",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 1.82,
+          "inclusive_percent": 1.82
+        },
+        {
+          "symbol": "tt_cmap4_char_map_binary",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 1.69,
+          "inclusive_percent": 1.69
+        },
+        {
+          "symbol": "af_latin_hints_link_segments",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 1.57,
+          "inclusive_percent": 1.57
+        },
+        {
+          "symbol": "af_autofitter_load_glyph",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 1.5,
+          "inclusive_percent": 46.19
+        },
+        {
+          "symbol": "gui_forms::detail::extended_grapheme_boundaries(std::basic_string_view<char, std::char_traits<char> >, unsigned long)",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "gui_forms",
+          "self_percent": 1.19,
+          "inclusive_percent": 1.4
+        },
+        {
+          "symbol": "FT_DivFix",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 1.1,
+          "inclusive_percent": 1.1
+        },
+        {
+          "symbol": "af_glyph_hints_align_strong_points",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 1.06,
+          "inclusive_percent": 1.2
+        },
+        {
+          "symbol": "FT_Load_Glyph",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.95,
+          "inclusive_percent": 53.96
+        },
+        {
+          "symbol": "af_latin_hint_edges",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.86,
+          "inclusive_percent": 0.89
+        },
+        {
+          "symbol": "FT_Outline_Translate",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.83,
+          "inclusive_percent": 0.83
+        },
+        {
+          "symbol": "load_truetype_glyph",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "other",
+          "self_percent": 0.82,
+          "inclusive_percent": 7.32
+        },
+        {
+          "symbol": "SBAlgorithmCreateParagraph",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "other",
+          "self_percent": 0.65,
+          "inclusive_percent": 0.72
+        },
+        {
+          "symbol": "ft_hash_num_lookup",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.59,
+          "inclusive_percent": 0.72
+        },
+        {
+          "symbol": "malloc",
+          "object": "libc.so.6",
+          "area": "runtime",
+          "self_percent": 0.57,
+          "inclusive_percent": 0.66
+        },
+        {
+          "symbol": "af_axis_hints_new_edge",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.56,
+          "inclusive_percent": 0.56
+        },
+        {
+          "symbol": "apply_forward(OT::hb_ot_apply_context_t*, OT::hb_ot_layout_lookup_accelerator_t const&)",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "other",
+          "self_percent": 0.46,
+          "inclusive_percent": 1.5
+        },
+        {
+          "symbol": "OT::Layout::GPOS_impl::PairPosFormat2_4<OT::Layout::SmallTypes>::apply(OT::hb_ot_apply_context_t*, void*) const",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "harfbuzz",
+          "self_percent": 0.45,
+          "inclusive_percent": 0.79
+        },
+        {
+          "symbol": "TT_Access_Glyph_Frame",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.43,
+          "inclusive_percent": 0.75
+        },
+        {
+          "symbol": "cfree",
+          "object": "libc.so.6",
+          "area": "runtime",
+          "self_percent": 0.42,
+          "inclusive_percent": 0.89
+        },
+        {
+          "symbol": "gui_forms::render::text::HarfBuzzFontEngine::shape(std::basic_string_view<char, std::char_traits<char> >, gui_forms::FontSpec)",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "gui_forms",
+          "self_percent": 0.37,
+          "inclusive_percent": 10.58
+        },
+        {
+          "symbol": "TT_Load_Glyph_Header",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.34,
+          "inclusive_percent": 0.34
+        },
+        {
+          "symbol": "TT_Process_Simple_Glyph",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.32,
+          "inclusive_percent": 0.33
+        },
+        {
+          "symbol": "tt_glyph_load",
+          "object": "gui_forms_text_engine_benchmark",
+          "area": "freetype",
+          "self_percent": 0.32,
+          "inclusive_percent": 9.58
+        }
+      ]
+    },
+    {
+      "workload": "document_view",
+      "about": "the renderer-neutral DocumentView D1 workload, run 100 times in one recording (benchmarks/document_view_benchmark.cpp)",
+      "samples": 13000,
+      "areas": {
+        "workload": 52.23,
+        "gui_forms": 43.46,
+        "kernel": 1.97,
+        "runtime": 0.33,
+        "other": 0.22
+      },
+      "functions": [
+        {
+          "symbol": "main",
+          "object": "gui_forms_document_view_benchmark",
+          "area": "workload",
+          "self_percent": 52.23,
+          "inclusive_percent": 98.58
+        },
+        {
+          "symbol": "gui_forms::validate_utf8(std::basic_string_view<char, std::char_traits<char> >)",
+          "object": "gui_forms_document_view_benchmark",
+          "area": "gui_forms",
+          "self_percent": 29.74,
+          "inclusive_percent": 29.74
+        },
+        {
+          "symbol": "gui_forms::DocumentViewState::publish(gui_forms::DocumentPage&&)",
+          "object": "gui_forms_document_view_benchmark",
+          "area": "gui_forms",
+          "self_percent": 8.45,
+          "inclusive_percent": 38.74
+        },
+        {
+          "symbol": "gui_forms::DocumentViewState::display_position(gui_forms::DocumentPageRequest const&, gui_forms::SourceByteOffset) const",
+          "object": "gui_forms_document_view_benchmark",
+          "area": "gui_forms",
+          "self_percent": 2.71,
+          "inclusive_percent": 2.71
+        },
+        {
+          "symbol": "gui_forms::DocumentViewState::source_position(gui_forms::DocumentPageRequest const&, gui_forms::DisplayByteOffset) const",
+          "object": "gui_forms_document_view_benchmark",
+          "area": "gui_forms",
+          "self_percent": 2.56,
+          "inclusive_percent": 2.56
+        },
+        {
+          "symbol": "do_user_addr_fault",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.48,
+          "inclusive_percent": 2.14
+        },
+        {
+          "symbol": "_raw_spin_unlock_irqrestore",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.31,
+          "inclusive_percent": 0.31
+        },
+        {
+          "symbol": "0x000000000000fa22",
+          "object": "ld-linux-x86-64.so.2",
+          "area": "runtime",
+          "self_percent": 0.26,
+          "inclusive_percent": 0.26
+        },
+        {
+          "symbol": "clear_page_erms",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.25,
+          "inclusive_percent": 0.25
+        },
+        {
+          "symbol": "zap_present_ptes.constprop.0",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.2,
+          "inclusive_percent": 0.28
+        },
+        {
+          "symbol": "0x0000000000000bfb",
+          "object": "[vdso]",
+          "area": "other",
+          "self_percent": 0.15,
+          "inclusive_percent": 0.15
+        },
+        {
+          "symbol": "do_anonymous_page",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.11,
+          "inclusive_percent": 1.27
+        },
+        {
+          "symbol": "free_unref_folios",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.09,
+          "inclusive_percent": 0.1
+        },
+        {
+          "symbol": "handle_mm_fault",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.09,
+          "inclusive_percent": 1.63
+        },
+        {
+          "symbol": "handle_pte_fault",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.09,
+          "inclusive_percent": 1.44
+        },
+        {
+          "symbol": "alloc_pages_mpol",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.08,
+          "inclusive_percent": 0.63
+        },
+        {
+          "symbol": "queued_spin_unlock",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.08,
+          "inclusive_percent": 0.08
+        },
+        {
+          "symbol": "void std::__introsort_loop<__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, __gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, long, __gnu_cxx::__ops::_Iter_less_iter)",
+          "object": "gui_forms_document_view_benchmark",
+          "area": "other",
+          "self_percent": 0.07,
+          "inclusive_percent": 0.07
+        },
+        {
+          "symbol": "0x000000000000a87f",
+          "object": "ld-linux-x86-64.so.2",
+          "area": "runtime",
+          "self_percent": 0.07,
+          "inclusive_percent": 0.07
+        },
+        {
+          "symbol": "__lruvec_stat_mod_folio",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.07,
+          "inclusive_percent": 0.12
+        },
+        {
+          "symbol": "alloc_anon_folio",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.06,
+          "inclusive_percent": 0.77
+        },
+        {
+          "symbol": "get_page_from_freelist",
+          "object": "[kernel.kallsyms]",
+          "area": "kernel",
+          "self_percent": 0.06,
+          "inclusive_percent": 0.48
+        }
+      ]
+    }
+  ]
+}
