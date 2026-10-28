@@ -204,6 +204,15 @@ both as recommended.
 The rich text library is named `stx_rtf2md` (RT-Q1); the
 [rich text brief](RICH_TEXT_BRIEF.md) records it and the other answers.
 
+## Owner decision, 2026-10-28
+
+7. **Links are underlined by a new mark, `PartMark::underline`**: a one-unit
+   rule along the bottom edge of the mark's box, drawn by the `glyph` role in
+   the recipe's glyph colour (the link families set it to their text colour).
+   `LinkLabel`'s `underline` part and `DataGridView`'s `cell_link_underline`
+   part use it. Rejected: a visible link border drawn by a divider part, and
+   links without an underline.
+
 ## Advanced candidates, 2026-10-14
 
 The owner listed common advanced controls from other frameworks and
@@ -274,7 +283,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149) |
 | `DataGridViewTextBoxColumn`, `CheckBoxColumn`, `ComboBoxColumn`, `ButtonColumn` | 68 | `DataGridViewColumnKind` | done |
 | `DataGridViewImageColumn` | 19 | `DataGridViewColumnKind::image` | done |
-| `DataGridViewLinkColumn` | 20 | `DataGridViewColumnKind::link` | done: `link_text`, `track_visited_state`, `link_visited`; no underline yet (no underline mark in the vocabulary); `LinkBehavior` not supported |
+| `DataGridViewLinkColumn` | 20 | `DataGridViewColumnKind::link` | done: `link_text`, `track_visited_state`, `link_visited`, underlined (`cell_link_underline`, the `underline` mark); `LinkBehavior` not supported |
 | `DataGridViewTextBoxEditingControl`, `ComboBoxEditingControl` | 40 | the grid's own editors | partial: not public types |
 | `PropertyGrid` | 141 | `PropertyGrid` | done |
 
