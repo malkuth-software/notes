@@ -1056,24 +1056,28 @@ from a sheet with the same frames as the C++ rules in
   refining a transition's it joins that machine (owner decision
   2026-10-27): its duration, timing and delay must equal the
   transition's, else E405; an animation and a transition of one
-  property in one rule are E405. Accepted differences: the part stays
-  at `to` afterwards (CSS `forwards`) and a missing `to` is the rule's
-  own or rest value, not a less specific rule's.
+  property in one rule are E405. Differences from CSS (owner decision
+  2026-10-28, they stand): the part stays at `to` afterwards (CSS
+  `forwards`) and a missing `to` is the rule's own or rest value, not a
+  less specific rule's.
 - **Loops** (`infinite`) move number parameters of the rule's primitive
   only (E405 otherwise): an expression of time_in_state, v0 plus each
   interval's change times its eased progress (linear, ease-in-out as
   smoothstep, or steps; others E405; over 64 instructions E507), under
-  the rule's ambient effect: period = duration (above 0, at most 60 s,
-  a new derived limit for owner confirmation), `animation-frame-rate`
-  (default 30, at most 30) and `animation-rest-pose` (default 0s, within
-  the period). A delay is E405; all loops of a rule share one ambient
+  the rule's ambient effect: period = duration (above 0, at most 60 s),
+  `animation-frame-rate` (default 30, at most 30) and
+  `animation-rest-pose` (default 0s, within the period). The 60 s ceiling is a derived limit, confirmed by the
+  owner on 2026-10-28; a longer period is E403. A delay is E405; all loops of a rule share one ambient
   effect (E405). A missing `from` or `to` is the rule's own value.
 - **Engine change:** a state of another rule's machine is another state
   (compiled machines are numbered; the part's channel compares the
   machine within one compilation), so an animation in a rule of its own
-  plays when the part arrives from a less specific rule's machine. Open
-  for the owner: this also replays a less specific rule's animation when
-  the part leaves a refining rule's state, which CSS would not.
+  plays when the part arrives from a less specific rule's machine. It
+  also replays a less specific rule's animation when the part leaves a
+  refining rule's state, which CSS would not; owner decision 2026-10-28:
+  that replay is the rule, and the fix stays.
+- At most 64 `@keyframes` rules a sheet (a derived limit, E514
+  `too_many_keyframes`), counted before any is read.
 - Gate: `gui_forms_theme_animation_css_tests` (moves, keyframe forms,
   grouping, a loop per timing function evaluated against its keyframes,
   engine_motion_tests' ambient rule as a sheet giving the same values to
