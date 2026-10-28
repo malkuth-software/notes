@@ -267,7 +267,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `TextBoxBase` | 75 | none public | partial: no public base; `TextBox` carries the surface |
 | `TextBox` | 42 | `TextBox` | done (single and multiple lines, auto-complete #123) |
 | `MaskedTextBox` | 102 | `MaskedTextBox` | done (#89) |
-| `RichTextBox` | 128 | none | missing: matrix row 42 places it as a P4 package; its scope is an owner decision |
+| `RichTextBox` | 128 | `RichTextBox`, `RichTextModel` | partial: the run model and the control are done (decision 1: styled runs, RTF and markdown through `stx_rtf2md`, the Windows Forms formatting keys, links by role); embedded objects, zoom beyond the size steps and the RTF-only members are declined |
 
 ### Lists, trees and grids
 
@@ -381,7 +381,7 @@ ADR-001.
 ### Totals
 
 Of the 93 types in the tables above (rows that name several types count
-each): 68 done, 18 partial, 7 missing. The missing ones are `RichTextBox`, `Splitter`, two `DataGridView` column
+each): 68 done, 19 partial, 6 missing. The missing ones are `Splitter`, two `DataGridView` column
 types, `CommonDialog`, `FileDialog` and `ThreadExceptionDialog`; four of the
 partial ones (`OpenFileDialog`, `SaveFileDialog`, `FolderBrowserDialog`,
 `ColorDialog`) lack only the component over an existing host service.
