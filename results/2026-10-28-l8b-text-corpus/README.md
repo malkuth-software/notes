@@ -48,15 +48,20 @@ exercised. `report.json` is the whole corpus's per-node report.
 
 ## Machines and Chromium
 
-- References: Chrome for Testing `chrome-headless-shell` 155.0.8059.39,
-  win64, captured on the Shadow Windows host on 2026-10-26 (pin and hashes
-  as in the L7 record).
+- References: Chrome for Testing `chrome-headless-shell` 155.0.8059.39
+  (pin and hashes as in the L7 record). The text references are the
+  `layout-oracle` CI job's own linux64 capture (run 40754140511, artifact
+  `layout-oracle-references`). They were first captured with win64
+  Chromium on the Shadow Windows host, but the linux64 build's glyph
+  advances differ by up to 1/16 px (`text/bold-italic #large-bold`,
+  `text/grid-baseline-row #note` and `#value`). That is over the 1/64 px
+  drift bound, though far inside the 0.51 px text tolerance, so the job's
+  drift check failed. Box references are identical between the two builds
+  and stay as captured in L7.
 - This run: the M4 Mac mini (macOS, arm64), LLVM 22, from the
   `claude/l8b-text-corpus` branch merged with main 31d974a0.
-- The reference drift of a second Chromium capture was not measured for
-  the text fixtures. Chromium is not installed on the M4, and the Windows
-  host is down. The `layout-oracle` CI job regenerates the references on
-  Linux.
+- Reference drift: 0 against the adopted linux64 capture. The next CI
+  run of the job is the second, independent capture.
 
 ## Profiles and tolerances
 
