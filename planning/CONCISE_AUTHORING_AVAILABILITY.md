@@ -21,7 +21,7 @@ The proposal's PlaySuite pixel comparisons and authoring trials remain useful
 consumer acceptance evidence, but cannot be claimed from a toolkit fixture.
 
 **GIVEN:** compact owning handles are acceptable in plain form structs when
-they conform to `planning/PROGRAMMING_HOUSE_STYLE.md` and retain the existing
+they conform to the house style (`HOUSE_STYLE.md` on this repository's `main` branch) and retain the existing
 parent-owns-child model. By-value controls with borrowed tree links are not
 required. A source record remains data; named owner methods hold behavior.
 

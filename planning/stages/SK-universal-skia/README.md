@@ -46,7 +46,7 @@ raster. Every present is then a plain copy: no host reorders bytes.
 
 - `AGENTS.md`: the hard boundaries (CPU only, no Skia type in public headers,
   PNG the only codec, AppKit and Win32 types only in their hosts).
-- `planning/PROGRAMMING_HOUSE_STYLE.md`.
+- `HOUSE_STYLE.md` on this repository's `main` branch.
 - `D:/gui_forms_workers/stx_skia/REQUIREMENTS.md`: what GUI.Forms uses from
   Skia. Its "Required" list is the whole admitted surface for this stage.
 - `third_party/SKIA_BUILD_EVIDENCE.md` and `third_party/README.md`: the pinned

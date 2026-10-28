@@ -23,7 +23,7 @@ going, and list it in your final report under "Owner decisions".
 ## Read first (in full, before writing code)
 
 1. `AGENTS.md` (repository rules and hard boundaries).
-2. `planning/PROGRAMMING_HOUSE_STYLE.md`. It is mandatory. The short version:
+2. `HOUSE_STYLE.md` on this repository's `main` branch. It is mandatory. The short version:
    - spell every type: no `auto`, no lambdas, no trailing returns, no
      structured bindings, no `= default` comparisons;
    - write `(*pointer).member`, never `->`;

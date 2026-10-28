@@ -3,7 +3,7 @@
 Date: 2026-10-25. Status: **brief; owner decision 1 of 2026-10-25 (W-Q1) in
 force; nothing built**. Read with the [W brief](README.md),
 [AGENTS.md](../../../AGENTS.md), the complete
-[house style](../../PROGRAMMING_HOUSE_STYLE.md) and the
+[house style](https://github.com/malkuth-software/notes/blob/main/HOUSE_STYLE.md) and the
 [zlib stage](../Z-zlib/README.md), whose library layout this follows.
 
 ## Decision

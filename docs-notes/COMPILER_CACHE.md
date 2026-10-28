@@ -26,7 +26,7 @@ It measures the fixture only; native application/package evidence is separate.
 The owner approved independent source/cache publication on 2026-10-07.
 History was extracted from `falseywinchnet/file_manager` at
 `0dc39f989f2d077d5485027dba9046f884e43bc7`; its `gui_forms/` subtree became this
-repository root. First-party changes follow `planning/PROGRAMMING_HOUSE_STYLE.md`.
+repository root. First-party changes follow `HOUSE_STYLE.md` on this repository's `main` branch.
 ThinLTO and static Application
 linking remain separate, unmeasured candidates, not consequences of caching.
 

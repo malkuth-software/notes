@@ -70,7 +70,7 @@ Sources, by short name:
 | DOCK-PLAN | `planning/stages/DK-docking/PLAN.md` (accepted 2026-10-17) |
 | RIBBON-STUDY | `planning/stages/RB-ribbon/RIBBON_STUDY.md` (form; §8 question style) |
 | SPEC | `planning/DESIGN_LANGUAGE_SPECIFICATION.md` (§8 atoms, §12.7 the ruling) |
-| HOUSE | `planning/PROGRAMMING_HOUSE_STYLE.md` |
+| HOUSE | `HOUSE_STYLE.md` on this repository's `main` branch |
 
 Products not opened at a primary page in this study, and so reported only as
 Unverified: Syncfusion, MindFusion, GoDiagram, Visio's object model, and the
