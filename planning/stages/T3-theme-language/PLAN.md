@@ -1117,7 +1117,7 @@ theme. 3 PRs.
   sheet fuzz target reads every `@media` prelude.
 
 *P8b and P8c, owner decisions (2026-10-28, as recommended):*
-- **D1** The role atoms are design language §5.4's 18 pairs in kebab case
+- **D1** The role atoms are design language §5.4's 17 pairs in kebab case
   (`ink-on-paper` ... `command-link-ink-on-paper`), plus single-colour
   roles for the relief ramp and lines (`chrome-highlight`, `chrome`,
   `chrome-middle`, `chrome-low`, `ordinary-line`, `dark-line`, `shadow`,
@@ -1141,6 +1141,43 @@ theme. 3 PRs.
   controls' text call sites are not changed.
 - **D7** `inherit` on `color` and `font` is the parent control's cascade
   result, resolved at paint.
+
+*P8b, colour roles, done (local branch, 2026-10-28):*
+- The coordinator's "18 pairs" was a miscount: §5.4 lists 17 pairs; with
+  the 9 single roles there are 26 `ColourRole` atoms (`focus` is a single
+  colour, "on any surface").
+- **Engine (EC4):** `ColourRole`, `ColourOrigin` (none, literal, or a role
+  and its side) on `RuleDeclaration`, `MaterialDeclaration` and
+  `RecipeDeclaration`; `ColourPosition` of each material and recipe field
+  (fill, edge, text); `high_contrast_colour(origin, position, state,
+  selected)` beside `high_contrast_colours`, the D3 mapping. P9 draws with
+  it.
+- **Palette:** `:root` blocks (the selector `:root` alone, also inside
+  `@media`) are collected before the rules, so a rule reads the palette
+  wherever it stands. A pair is `<colour> on <colour>`, a single role one
+  colour; custom properties are read, `role()` is not (E405); another
+  property is W107; `!important` E405. A role's unconditional declaration
+  replaces its earlier ones; its conditional ones are variants. The base
+  palette is each role's unconditional colours: a role without one is
+  undefined (E415) even if `@media` declares it.
+- **Variants:** a rule reading roles with conditional variants is lowered
+  again right after itself for each other combination of their variants in
+  lexicographic order, each copy under the rule's condition joined with the
+  variants' (a contradictory join is skipped). The cascade's later-wins then
+  gives each window, role by role, its last holding variant, as CSS's later
+  `:root` declaration wins. Copies' warnings, and those of a `@media`
+  list's second and later queries, are reported once.
+- **Origins:** one per declaration: a literal where any colour of the value
+  is one, else its first role (a `color-mix()` of roles keeps its first);
+  none for `initial` or no colour. A literal at a text or edge position is
+  W201, once per declaration. `role(<pair>)` without a side is the
+  foreground in `color` and the background in `background` and
+  `background-color`, E405 elsewhere.
+- `currentcolor` stays refused (E999, not built) in P8b; proposed for P8c,
+  resolved at paint from the part's text colour like `inherit` (D7).
+- Gate: `gui_forms_theme_colour_role_css_tests` (role and literal fixtures
+  under forced high contrast, W201, undefined roles, variant copies, one
+  palette switching light and dark in a window).
 
 **P9. Inline styles and `!important` (engine change EC6).** The two
 important levels, the split of important declarations, the colour-only
