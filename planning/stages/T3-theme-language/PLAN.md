@@ -404,7 +404,7 @@ refined in P1):
 | E3xx selector | error | `selector_syntax` (E301), `combinator_not_admitted`, `pseudo_class_not_admitted` (`:not()` and the rest), `attribute_selector_not_admitted` (E304); numbered in this order in P3 |
 | E4xx value | error | `value_syntax`, `value_wrong_kind`, `value_out_of_range`, `unit_not_admitted`, `value_form_not_admitted`, `keyword_unknown`, `too_many_layers`, `expression_invalid` (with the engine's `ExpressionDefect`), `variable_undefined`, `variable_cycle`, `keyframes_undefined`, `transition_invalid`, `resource_unknown`, `variable_kind_mismatch` |
 | E5xx limit | error | `sheet_too_large`, `too_many_rules`, `too_many_declarations`, `nesting_too_deep`, `string_too_long`, `too_many_imports`, `expression_over_budget`, `too_many_variable_combinations`, and the derived limits of section 6 |
-| E6xx package | error | `manifest_invalid`, `sheet_hash_mismatch`, `import_not_installed`, `import_hash_mismatch`, `import_cycle`, `published_value_invalid` |
+| E6xx package | error | `manifest_invalid`, `file_hash_mismatch` (E602), `import_not_installed`, `import_hash_mismatch`, `import_cycle`, `published_value_invalid` |
 | E7xx reserved | error | `reserved_input_set` |
 | W1xx unknown name | warning | `unknown_property`, `unknown_primitive`, `unknown_function`, `unknown_at_rule` (W104, P2), `unknown_media_feature`, `unknown_selector_name`, `property_not_admitted`; numbered W101 to W107 in this order; then `primitive_over_budget` W108 and `primitive_cost_unbounded` W109 (P5) |
 | W2xx colour | warning | `literal_colour_unremappable` |
@@ -1251,6 +1251,24 @@ is a JSON object:
   is `MAJOR.MINOR.PATCH`, informational; `author` and `provenance` at most
   256 bytes each. A pack's identity in the installed index is the SHA-256
   of its `theme.json` bytes.
+
+*P10 closure and entry point, owner decisions (2026-10-28, as
+recommended):*
+
+- **One cascade** (1b): an `@import` closure compiles as one cascade,
+  imported sheets first; for colour roles, `@keyframes` and custom
+  properties the later definition wins, as in CSS; each diagnostic names
+  its file.
+- **E602 is `file_hash_mismatch`** (2a), number kept: any package file,
+  sheet or resource, whose bytes do not have their hash; the detail is its
+  path. A file the manifest does not list, or one given twice, is E601.
+- **Entry point** (3a): compiling a package returns a `Theme` or a
+  refusal with its diagnostics; the caller applies it through the existing
+  atomic `Window::set_theme` / `ApplicationResources::set_theme`. The RC003
+  gate tests both the refused and the good swap.
+- **Paths and names** (as built): a path also holds no `:` and no control
+  character; a resource name may also hold `.` and `_` after its first
+  character.
 
 **P12. Custom properties through the cascade (engine change EC7).** The
 engine first: custom property definitions and deferred declarations in the
