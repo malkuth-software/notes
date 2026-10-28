@@ -92,4 +92,4 @@ against SK).
    RAII wrappers once stage C installs them.
 
 Each step needs its own measured gate and source review against
-`../../planning/PROGRAMMING_HOUSE_STYLE.md`.
+`HOUSE_STYLE.md` on this repository's `main` branch.
