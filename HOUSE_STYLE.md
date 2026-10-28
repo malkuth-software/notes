@@ -36,11 +36,15 @@ If allocation failure is reported solely by a Boolean, keep element construction
 
 Assert internal preconditions; validate external inputs. Disabled assertions cannot reject invalid sizes or stale identities. Return complete success or failure states so callers need not infer validity from unrelated fields.
 
-Use explicit results for expected alternatives. Use exceptions at operation or subsystem failure boundaries that permit them. Keep routine hot-path decisions ordinary control flow. Clean up on every exit and define resource-exhaustion behavior.
+Use explicit results for expected alternatives. Use exceptions at operation or subsystem failure boundaries that permit them. Keep routine hot-path decisions ordinary control flow. Clean up on every exit. State set for the length of an operation (a re-entrancy mark, a depth count, a suspended notification, a held lock) belongs to a named scope object that restores it on every exit, an exception included, even where the code between cannot currently throw; never set and clear it by hand.
+
+Content can exhaust memory; the interface's own structures are not designed for routine exhaustion recovery. Bound every allocation that input sizes (a file, a document, an image, a message) by a stated limit, set by the format or by the caller, and check the input's declared or measured size against it before allocating. Turn a failed content allocation into the operation's named failure at its boundary; the program stays stable and closable.
 
 Specify whether failure leaves output unchanged, empty, partial, or invalid. Validate before mutation where old contents must survive. Prepare replacements before committing and account for peak storage.
 
 Foreign interfaces specify types, counts, ownership, destruction, errors, callback context, and identity validity. Keep language-specific layouts and ownership behind the interface. Contain exceptions where they cannot cross. Use thin wrappers to restore native resource conventions.
+
+Give each state a shape that holds only that state. A result is its value or its failure, never both. Store the states in a `std::variant` whose alternatives each carry their own state's data, so a contradictory state cannot be represented. Build the record only through named factories, one per state, and read it only through named queries, which may use `std::holds_alternative` and `std::get_if`; `std::visit` with a lambda stays out (§11). A flag beside the value it qualifies, a status beside a payload, and fields that belong to an inactive phase can disagree; do not declare them. Whatever the shape cannot exclude goes to the state machine's one fallback.
 
 A switch over a closed set still has a default, and a state machine still says what an unexpected input does in each state. Send those cases, including ones believed impossible, to one defined fallback: a named failure, a reset, or an input ignored for a stated reason. Do not add checks along the way to compensate. A switch that names every enumerator, leaves from each case, and reaches its fallback directly after the switch also qualifies; omitting `default` there keeps the compiler's warning for a new enumerator.
 
@@ -48,9 +52,11 @@ Take a foreign entry point's type from its declaration, through `decltype` of th
 
 **3. Types and values**
 
-Name fields so callers need not memorize positions. Group related data in records. Use enums for alternatives and named factories when several fields must agree. Prefer a shape that cannot hold contradictory values to a check that rejects them. Initialize independent options directly. Initialize each variable explicitly.
+Name fields so callers need not memorize positions. Group related data in records. Use enums for alternatives and named factories when several fields must agree. Prefer a shape that cannot hold contradictory values to a check that rejects them (state shapes: §2). Initialize independent options directly. Initialize each variable explicitly.
 
 Distinguish types whose confusion causes bugs: byte offsets and character positions, identities and indices, samples and seconds. Specify conversion rules, including rounding and encoding. Wrap scalars when the distinction matters.
+
+An identity is never reused. A counter that issues identities checks for exhaustion before it issues one: at its maximum it refuses with a named failure, never wraps. A counter read from storage is input: check it against the identities read beside it and against the maximum before adopting it.
 
 State array shape, active length, axes, and layout. Distinguish capacity from live length and maximum bounds from active regions. Fixed dimensions represent real bounds. Choose index types that support the required arithmetic; account for negative differences and signed/unsigned conversions.
 
@@ -74,6 +80,8 @@ Name asynchronous work, completion, cancellation, and shutdown. Assign mutable s
 
 Specify event order, reentrancy, and revocation. Define connection and disconnection during emission. A snapshot can preserve registration order, skip handlers disconnected before their turn, and defer new handlers. Keep the active target alive if it can dispose of itself during invocation.
 
+Hold a lock only around the state it guards. Under a lock, call nothing whose locking you do not know: collect the work and do it after releasing. When holding the lock is the point (a revoked callback must not still be running), call only a target documented to signal without taking your locks or calling back, and state the lock order.
+
 Adopt configuration at a defined processing boundary. Rebuild dependent state when inputs change. Synchronize cross-thread publication; copying fields at cycle start is not synchronization.
 
 Give callbacks named targets and explicit context. Binding specifies invocation; subscription controls connection; ownership controls lifetime. Keep these responsibilities visible.
@@ -84,7 +92,7 @@ Use a non-owning delegate when a function and context pointer suffice. Binding n
 
 Identify inputs, outputs, and permitted mutation. Use `in`, `out`, and `in_out` where available; otherwise use types, names, and a short contract. Mark read-only inputs.
 
-Fill supplied storage for bulk transformations. Return scalars directly when clearer. State required destination size, allocation, retained arguments, and permitted overlap so callers can compose operations safely.
+A procedure whose output grows with its input (a transformed buffer, an encoded image, a serialized document) writes into storage its caller supplies and states the size it needs, so the caller sees and can reuse the allocation. Return a fresh value when it is small and bounded, or say why the caller need not control it. State allocation, retained arguments, and permitted overlap so callers can compose operations safely.
 
 In-place operations may use scratch storage. Preserve any input still needed before overwriting it. Require a separate destination where the operation depends on that separation.
 
@@ -160,7 +168,7 @@ Fix the language mode and permitted subset.
 | Other exclusions | No structured bindings, coroutines, or ranges/views pipelines in the default subset. |
 | Type machinery | Keep `decltype(expression)` in named private traits, outside ordinary declarations and public signatures. |
 | Compile-time work | Admit templates, `constexpr`, `consteval`, `if constexpr`, packs, and folds. Require explicit protocol opt-in; member detection must not choose architecture. |
-| States and borrows | Admit `std::span`, `std::optional`, and `std::variant`. State lifetime and alternative semantics; name visitors. |
+| States and borrows | Admit `std::span`, `std::optional`, and `std::variant`. State lifetime and alternative semantics. Keep a result's or state's `std::variant` behind named factories and named queries (§2); read it with `std::holds_alternative` and `std::get_if`, and name any visitor. |
 | Ownership | Admit `std::unique_ptr`. Use `std::shared_ptr` and `std::weak_ptr` for shared lifetime and observation. |
 | Callables | Admit `std::function` for owning callables. Name targets; account for copies, allocation, and retained state. |
 | Type erasure | No general `std::any` architecture. Confine inert-metadata compatibility fields to their existing contract. |
@@ -176,6 +184,6 @@ A stricter generated-code profile uses named listeners, typed identities, determ
 
 - Before growing or replacing storage, finish reading any input that might refer to it. A read-only pointer or span can still point into the object being changed; copy the needed input first when overlap is allowed.
 - Treat an open stream and a closed or failed stream as different states. Check the live handle before I/O, and change byte counts only for bytes actually transferred.
-- Find the visible work area before allocating scratch for it. Check the entire size calculation, including padding and conversion to a smaller type. An unrepresentable size is not an empty image.
+- Find the extent of the work, the input's size or the visible area, and check it against a limit before allocating for it. Check the whole size calculation, including padding and conversion to a smaller type; an unrepresentable size is a failure, not an empty result.
 - If a call can return owned storage, adopt it before checking its success flag; failure can still leave storage to release.
 - Try the awkward boundary case for each such operation: input from its own storage, a closed stream, a huge extent with a tiny visible clip, or a size near the integer limit. A check that reports a failure must also make its caller or build step fail, even when output is copied to a log.
