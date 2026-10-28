@@ -29,7 +29,7 @@ The requested [light alternatives audit](ALTERNATIVES_LIGHT_AUDIT.md) examines
 existing implementations before code begins; it does not select an import.
 
 Read first: [AGENTS.md](../../../AGENTS.md), the complete
-[house style](../../PROGRAMMING_HOUSE_STYLE.md),
+[house style](https://github.com/malkuth-software/notes/blob/main/HOUSE_STYLE.md),
 [forward programme](../../FORWARD_PROGRAMME.md),
 [stage guidance](../README.md), design language
 [§4.5 and §12.3](../../DESIGN_LANGUAGE_SPECIFICATION.md),

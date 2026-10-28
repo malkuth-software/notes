@@ -20,7 +20,7 @@ style's two 2026-10-20 additions:
 | R3 no recursion | |
 | R4 every return checked | Every `bool` or result is tested at each call site. |
 | R5 every parameter validated | Enums, limits, spans (sizes, overlap) and records are checked before mutation. |
-| R6 impossible states | House style §1 (`PROGRAMMING_HOUSE_STYLE.md` line 11): prefer a shape that cannot hold contradictory values to a check that rejects them. House style §9 (line 133): a switch or state machine sends every unexpected case to one defined fallback, without compensating checks along the way. |
+| R6 impossible states | House style §3 (`HOUSE_STYLE.md` on this repository's `main` branch): prefer a shape that cannot hold contradictory values to a check that rejects them. House style §2: a switch or state machine sends every unexpected case to one defined fallback, without compensating checks along the way. |
 
 Results are **pass**, **fixed** (changed in this PR), or **finding** (recorded,
 with the remedy and the reason it is not done here).

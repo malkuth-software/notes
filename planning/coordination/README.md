@@ -115,9 +115,8 @@ These are lasting decisions, with the owner's words where given.
   the CPU renderer define metrics, layout and pixels. Never align to GDI,
   CoreText or another host renderer; host measurements are information, never
   a gate.
-- House style is mandatory (`planning/PROGRAMMING_HOUSE_STYLE.md`, a verbatim
-  copy of the owner's document in `falseywinchnet/EpistemicGPT`; change both
-  together).
+- House style is mandatory (`HOUSE_STYLE.md` on this repository's `main` branch,
+  the canonical text; change it there).
 - stx_zlib, stx_png, stx_conv and stx_cng are ours to finish and harden. They
   are safe by construction (state machines, impossible states
   unrepresentable), verified by malformed-input sweeps, differential checks and
