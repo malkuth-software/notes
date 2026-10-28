@@ -1224,6 +1224,34 @@ package fixtures for each E6xx code; a refused theme leaves the running
 `Theme` object installed and every window's focus, capture, selection and
 active edit unchanged; a good swap preserves them too (RC003). 2 to 3 PRs.
 
+*P10 manifest, owner decisions (2026-10-28, as recommended):* `theme.json`
+is a JSON object:
+`{"format": "gui-forms-theme/1", "name": "harbour-dark", "version": "1.4.0",
+"engine": ">=0.3", "author": "...", "provenance": "...",
+"sheet": {"path": "theme.theme.css", "sha256": "<hex>"},
+"imports": {"harbour-base": "<sha256 of its theme.json>"},
+"resources": [{"name": "icon.check", "path": "images/check.png",
+"sha256": "<hex>"}], "published_values": ["progress"],
+"coverage": ["button", "check-box"]}`.
+
+- **One sheet per pack** (1a); further sheets arrive by `@import`.
+- **Imports are pinned** (2a): `imports` maps each imported theme's name
+  to the SHA-256 of its `theme.json`; E604 `import_hash_mismatch` is an
+  installed pack that differs from its pin, and every `@import` must be
+  listed there.
+- **Unknown keys** are E601 `manifest_invalid` (3a), checked after the
+  engine bound, so a manifest for a newer engine gets the upgrade message.
+- **E607 `engine_too_old`** (4a), detail `X.Y`: "this theme needs engine
+  >= X.Y; upgrade to run it" (C8).
+- **Coverage** is informational (5a): control type names, an unknown one
+  W106 as in selectors.
+- **Encoding** (6): hashes are 64 lowercase hex digits; paths are relative
+  with `/`, no `.`, `..`, empty segment, backslash or leading `/`, at most
+  255 bytes and 8 segments; `name` is `[a-z0-9][a-z0-9-]{0,63}`; `version`
+  is `MAJOR.MINOR.PATCH`, informational; `author` and `provenance` at most
+  256 bytes each. A pack's identity in the installed index is the SHA-256
+  of its `theme.json` bytes.
+
 **P12. Custom properties through the cascade (engine change EC7).** The
 engine first: custom property definitions and deferred declarations in the
 compiled rules, the per-part resolution of section 1.11 with `!important`
