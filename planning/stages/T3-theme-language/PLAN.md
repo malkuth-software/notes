@@ -1032,6 +1032,55 @@ from a sheet with the same frames as the C++ rules in
   per timing function, the longhands, translate, a parameter, the grouping
   order and 24 refusals.
 
+*P7b, keyframes and animations, done (local branch, 2026-10-28):*
+- **`@keyframes`** are collected before the rules, so an animation may
+  name keyframes defined after it; a later definition of a name
+  replaces the earlier, and blocks of one offset merge (the later value
+  wins). Selectors: `from`, `to`, 0% to 100% (else E403), comma lists
+  (else E301). A keyframe moves `opacity`, `scale`, `translate` (read as
+  their static values are) or a parameter's number (checked where it
+  plays); other admitted properties are E405, left-out ones W107.
+  Names are case-sensitive; `none` and the CSS-wide keywords are E401.
+- **`animation`** and its longhands as CSS reads them (a keyword is a
+  longhand's while that longhand is unwritten, then a name). Only the
+  initial `animation-direction`, `animation-fill-mode` and
+  `animation-play-state`, and iteration counts 1 and `infinite`, are
+  admitted (E405; a negative count E403). Timing functions as for
+  transitions; the physical curves are E405. An undefined name is the
+  new E411 `keyframes_undefined`. Other `animation-*` names are W107.
+- **Run once:** each property becomes a machine state: `from` its entry
+  value, the keyframes between its stops (at most 4, E407), `to` its
+  target, else the rule's own value, else the property's rest (opacity
+  and scale 1, translate 0; a parameter without either is E405). The
+  curve is the animation's, clamped to the 400 ms ceiling. In a rule
+  refining a transition's it joins that machine (owner decision
+  2026-10-27): its duration, timing and delay must equal the
+  transition's, else E405; an animation and a transition of one
+  property in one rule are E405. Accepted differences: the part stays
+  at `to` afterwards (CSS `forwards`) and a missing `to` is the rule's
+  own or rest value, not a less specific rule's.
+- **Loops** (`infinite`) move number parameters of the rule's primitive
+  only (E405 otherwise): an expression of time_in_state, v0 plus each
+  interval's change times its eased progress (linear, ease-in-out as
+  smoothstep, or steps; others E405; over 64 instructions E507), under
+  the rule's ambient effect: period = duration (above 0, at most 60 s,
+  a new derived limit for owner confirmation), `animation-frame-rate`
+  (default 30, at most 30) and `animation-rest-pose` (default 0s, within
+  the period). A delay is E405; all loops of a rule share one ambient
+  effect (E405). A missing `from` or `to` is the rule's own value.
+- **Engine change:** a state of another rule's machine is another state
+  (compiled machines are numbered; the part's channel compares the
+  machine within one compilation), so an animation in a rule of its own
+  plays when the part arrives from a less specific rule's machine. Open
+  for the owner: this also replays a less specific rule's animation when
+  the part leaves a refining rule's state, which CSS would not.
+- Gate: `gui_forms_theme_animation_css_tests` (moves, keyframe forms,
+  grouping, a loop per timing function evaluated against its keyframes,
+  engine_motion_tests' ambient rule as a sheet giving the same values to
+  the bit, 42 refusals, warnings) and
+  `stops_play_entering_from_another_rule` in
+  `gui_forms_engine_motion_curve_tests`.
+
 **P8. Colour roles, em, text roles and `@media` (engine changes EC3, EC4,
 EC5).** Colour roles as vocabulary atoms and the theme's `:root` palette
 (R2-03); colour values that remember their role; the high-contrast
