@@ -204,6 +204,15 @@ both as recommended.
 The rich text library is named `stx_rtf2md` (RT-Q1); the
 [rich text brief](RICH_TEXT_BRIEF.md) records it and the other answers.
 
+## Owner decision, 2026-10-28
+
+7. **Links are underlined by a new mark, `PartMark::underline`**: a one-unit
+   rule along the bottom edge of the mark's box, drawn by the `glyph` role in
+   the recipe's glyph colour (the link families set it to their text colour).
+   `LinkLabel`'s `underline` part and `DataGridView`'s `cell_link_underline`
+   part use it. Rejected: a visible link border drawn by a divider part, and
+   links without an underline.
+
 ## Advanced candidates, 2026-10-14
 
 The owner listed common advanced controls from other frameworks and
@@ -268,13 +277,13 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ListBox` | 109 | `ListBox` | done |
 | `CheckedListBox` | 52 | `CheckedListBox` | done |
 | `ComboBox` | 129 | `ComboBox` | done (auto-complete #123, filtering #126) |
-| `ListView` | 181 | `ListView`, `ObjectView` | partial: groups, tile view, label editing, the insertion mark, owner drawing and item tooltips are not supported (#88) |
+| `ListView` | 181 | `ListView`, `ObjectView` | partial: label editing (F2 and the slow second click), the insertion mark and content-only owner drawing are done; groups, tile view and item tooltips are not supported (#88) |
 | `ColumnHeader` | 27 | `ListViewColumn` records | done |
 | `TreeView` | 137 | `TreeView` | done |
-| `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box and button columns; no image or link column (#90, #117, #149) |
+| `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149) |
 | `DataGridViewTextBoxColumn`, `CheckBoxColumn`, `ComboBoxColumn`, `ButtonColumn` | 68 | `DataGridViewColumnKind` | done |
-| `DataGridViewImageColumn` | 19 | none | missing |
-| `DataGridViewLinkColumn` | 20 | none | missing |
+| `DataGridViewImageColumn` | 19 | `DataGridViewColumnKind::image` | done |
+| `DataGridViewLinkColumn` | 20 | `DataGridViewColumnKind::link` | done: `link_text`, `track_visited_state`, `link_visited`, underlined (`cell_link_underline`, the `underline` mark); `LinkBehavior` not supported |
 | `DataGridViewTextBoxEditingControl`, `ComboBoxEditingControl` | 40 | the grid's own editors | partial: not public types |
 | `PropertyGrid` | 141 | `PropertyGrid` | done |
 
@@ -358,8 +367,8 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ColorDialog` | 21 | `HostColorDialogRequest` | partial: as `OpenFileDialog` |
 | `FontDialog` | 40 | `FontDialog` | done (in the window, bundled faces only) |
 | `TaskDialog` | 9 | `TaskDialog` (provisional) | done (in the window) |
-| `MessageBox` | 22 | `TaskDialog`, `HostMessageDialogRequest` | partial: no `show` facade |
-| `ThreadExceptionDialog` | 5 | none | missing |
+| `MessageBox` | 22 | `show_message_box` (the host's message dialog) | done (host-drawn) |
+| `ThreadExceptionDialog` | 5 | `ThreadExceptionDialog` (a `TaskDialog` preset) | done (in the window) |
 
 ### Excluded
 
