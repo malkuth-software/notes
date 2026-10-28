@@ -1096,6 +1096,52 @@ role and literal fixtures under forced high contrast; the
 switching light and dark, and two windows at different scales from one
 theme. 3 PRs.
 
+*P8a, `@media`, done (local branch, 2026-10-28):*
+- **Engine (EC3):** `ThemeRule::media`, a `MediaCondition` (colour
+  scheme, forced colours, reduced motion, inclusive resolution bounds);
+  the cascade matches a rule only where its condition holds for the
+  part's window (`MediaFacts`, `window_media_facts`). An invalid bound
+  drops the rule (`media_invalid`). `PresentationSettings::colour_scheme`
+  is new (light unless the application says dark); host reporting of the
+  system scheme is a host-track follow-up.
+- **Language:** each query of a list lowers the block once, carrying its
+  condition. `not`, `only`, `or`, other media types, boolean and range
+  forms, nested groups and functions are E405; a wrong keyword E406; a
+  unit other than dppx and x E404; a bound not above zero E403. An unknown
+  feature is W105 and skips its query only (CSS's `not all`); a block no
+  query lowers is still lowered once and discarded, so its errors refuse
+  the sheet (B2). A refinement joins a transition's machine only under
+  the same condition.
+- Gate: `gui_forms_theme_media_css_tests` (one sheet switching light and
+  dark; two windows at two scales showing one theme; 22 refusals); the
+  sheet fuzz target reads every `@media` prelude.
+
+*P8b and P8c, owner decisions (2026-10-28, as recommended):*
+- **D1** The role atoms are design language §5.4's 18 pairs in kebab case
+  (`ink-on-paper` ... `command-link-ink-on-paper`), plus single-colour
+  roles for the relief ramp and lines (`chrome-highlight`, `chrome`,
+  `chrome-middle`, `chrome-low`, `ordinary-line`, `dark-line`, `shadow`,
+  `selection-line`, `focus`), declared with one colour and read as
+  `role(<name>)`.
+- **D2** A role a sheet reads that its `:root` palette does not declare is
+  an error, `colour_role_undefined` (E4xx).
+- **D3** P8 records each colour's role, or a literal's position, and
+  provides the tested remap; P9's colour-only pass (EC6) draws with it.
+  By position: text to the high-contrast text of the surface state,
+  edges, rings and outlines to its edge, fills to its plate
+  (`high_contrast_colours`). By role, the same by side, except: disabled
+  roles to the disabled grey, invalid roles to the invalid edge, `focus`
+  and `selection-line` to the hot (cyan) edge, selection and on-accent
+  pairs to the selected record (black on white).
+- **D4** em is admitted in every admitted length, carried as px plus em
+  through the material, recipe and motion records and resolved per part.
+- **D5** The text-role size is the theme's typography token size times
+  the window's text scale; a part with no `font:` has the ui role.
+- **D6** `font: <role>` is recorded in the part's resolution only in P8;
+  controls' text call sites are not changed.
+- **D7** `inherit` on `color` and `font` is the parent control's cascade
+  result, resolved at paint.
+
 **P9. Inline styles and `!important` (engine change EC6).** The two
 important levels, the split of important declarations, the colour-only
 high-contrast pass that keeps inline important non-colour declarations,
