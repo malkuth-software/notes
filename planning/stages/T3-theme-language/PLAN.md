@@ -1188,9 +1188,12 @@ theme. 3 PRs.
   number parameters carry pixels plus an em coefficient. The compiler
   lowers a value at an em of 0 and of 1 and records the difference per
   length, in a fixed walk order; a length the walk does not list that em
-  changes is E405. A parameter in em is clamped to its range at paint.
-  `@keyframes` and a loop whose own value is in em refuse it (E405): a
-  motion program reads no part's em.
+  changes is E405.
+- **Owner decisions (2026-10-28), em in motion:** `@keyframes`, and a
+  looped animation whose own value is in em, refuse em (E405): a motion
+  program reads no part's em. This narrows D4 for motion programs. A
+  number parameter in em is clamped to its declared range at paint, since
+  its value is known only there.
 - **currentcolor:** lowered again at a white sentinel; the colours that
   differ are current, taken from the part's resolved text colour when its
   material is assembled (part of the assembly cache key). A shadow, glow,
