@@ -404,7 +404,7 @@ refined in P1):
 | E3xx selector | error | `selector_syntax` (E301), `combinator_not_admitted`, `pseudo_class_not_admitted` (`:not()` and the rest), `attribute_selector_not_admitted` (E304); numbered in this order in P3 |
 | E4xx value | error | `value_syntax`, `value_wrong_kind`, `value_out_of_range`, `unit_not_admitted`, `value_form_not_admitted`, `keyword_unknown`, `too_many_layers`, `expression_invalid` (with the engine's `ExpressionDefect`), `variable_undefined`, `variable_cycle`, `keyframes_undefined`, `transition_invalid`, `resource_unknown`, `variable_kind_mismatch` |
 | E5xx limit | error | `sheet_too_large`, `too_many_rules`, `too_many_declarations`, `nesting_too_deep`, `string_too_long`, `too_many_imports`, `expression_over_budget`, `too_many_variable_combinations`, and the derived limits of section 6 |
-| E6xx package | error | `manifest_invalid`, `sheet_hash_mismatch`, `import_not_installed`, `import_hash_mismatch`, `import_cycle`, `published_value_invalid` |
+| E6xx package | error | `manifest_invalid`, `file_hash_mismatch` (E602), `import_not_installed`, `import_hash_mismatch`, `import_cycle`, `published_value_invalid` |
 | E7xx reserved | error | `reserved_input_set` |
 | W1xx unknown name | warning | `unknown_property`, `unknown_primitive`, `unknown_function`, `unknown_at_rule` (W104, P2), `unknown_media_feature`, `unknown_selector_name`, `property_not_admitted`; numbered W101 to W107 in this order; then `primitive_over_budget` W108 and `primitive_cost_unbounded` W109 (P5) |
 | W2xx colour | warning | `literal_colour_unremappable` |
@@ -1032,6 +1032,59 @@ from a sheet with the same frames as the C++ rules in
   per timing function, the longhands, translate, a parameter, the grouping
   order and 24 refusals.
 
+*P7b, keyframes and animations, done (local branch, 2026-10-28):*
+- **`@keyframes`** are collected before the rules, so an animation may
+  name keyframes defined after it; a later definition of a name
+  replaces the earlier, and blocks of one offset merge (the later value
+  wins). Selectors: `from`, `to`, 0% to 100% (else E403), comma lists
+  (else E301). A keyframe moves `opacity`, `scale`, `translate` (read as
+  their static values are) or a parameter's number (checked where it
+  plays); other admitted properties are E405, left-out ones W107.
+  Names are case-sensitive; `none` and the CSS-wide keywords are E401.
+- **`animation`** and its longhands as CSS reads them (a keyword is a
+  longhand's while that longhand is unwritten, then a name). Only the
+  initial `animation-direction`, `animation-fill-mode` and
+  `animation-play-state`, and iteration counts 1 and `infinite`, are
+  admitted (E405; a negative count E403). Timing functions as for
+  transitions; the physical curves are E405. An undefined name is the
+  new E411 `keyframes_undefined`. Other `animation-*` names are W107.
+- **Run once:** each property becomes a machine state: `from` its entry
+  value, the keyframes between its stops (at most 4, E407), `to` its
+  target, else the rule's own value, else the property's rest (opacity
+  and scale 1, translate 0; a parameter without either is E405). The
+  curve is the animation's, clamped to the 400 ms ceiling. In a rule
+  refining a transition's it joins that machine (owner decision
+  2026-10-27): its duration, timing and delay must equal the
+  transition's, else E405; an animation and a transition of one
+  property in one rule are E405. Differences from CSS (owner decision
+  2026-10-28, they stand): the part stays at `to` afterwards (CSS
+  `forwards`) and a missing `to` is the rule's own or rest value, not a
+  less specific rule's.
+- **Loops** (`infinite`) move number parameters of the rule's primitive
+  only (E405 otherwise): an expression of time_in_state, v0 plus each
+  interval's change times its eased progress (linear, ease-in-out as
+  smoothstep, or steps; others E405; over 64 instructions E507), under
+  the rule's ambient effect: period = duration (above 0, at most 60 s),
+  `animation-frame-rate` (default 30, at most 30) and
+  `animation-rest-pose` (default 0s, within the period). The 60 s ceiling is a derived limit, confirmed by the
+  owner on 2026-10-28; a longer period is E403. A delay is E405; all loops of a rule share one ambient
+  effect (E405). A missing `from` or `to` is the rule's own value.
+- **Engine change:** a state of another rule's machine is another state
+  (compiled machines are numbered; the part's channel compares the
+  machine within one compilation), so an animation in a rule of its own
+  plays when the part arrives from a less specific rule's machine. It
+  also replays a less specific rule's animation when the part leaves a
+  refining rule's state, which CSS would not; owner decision 2026-10-28:
+  that replay is the rule, and the fix stays.
+- At most 64 `@keyframes` rules a sheet (a derived limit, E514
+  `too_many_keyframes`), counted before any is read.
+- Gate: `gui_forms_theme_animation_css_tests` (moves, keyframe forms,
+  grouping, a loop per timing function evaluated against its keyframes,
+  engine_motion_tests' ambient rule as a sheet giving the same values to
+  the bit, 42 refusals, warnings) and
+  `stops_play_entering_from_another_rule` in
+  `gui_forms_engine_motion_curve_tests`.
+
 **P8. Colour roles, em, text roles and `@media` (engine changes EC3, EC4,
 EC5).** Colour roles as vocabulary atoms and the theme's `:root` palette
 (R2-03); colour values that remember their role; the high-contrast
@@ -1042,6 +1095,115 @@ role and literal fixtures under forced high contrast; the
 `literal_colour_unremappable` warning; em at two text scales; one sheet
 switching light and dark, and two windows at different scales from one
 theme. 3 PRs.
+
+*P8a, `@media`, done (local branch, 2026-10-28):*
+- **Engine (EC3):** `ThemeRule::media`, a `MediaCondition` (colour
+  scheme, forced colours, reduced motion, inclusive resolution bounds);
+  the cascade matches a rule only where its condition holds for the
+  part's window (`MediaFacts`, `window_media_facts`). An invalid bound
+  drops the rule (`media_invalid`). `PresentationSettings::colour_scheme`
+  is new (light unless the application says dark); host reporting of the
+  system scheme is a host-track follow-up.
+- **Language:** each query of a list lowers the block once, carrying its
+  condition. `not`, `only`, `or`, other media types, boolean and range
+  forms, nested groups and functions are E405; a wrong keyword E406; a
+  unit other than dppx and x E404; a bound not above zero E403. An unknown
+  feature is W105 and skips its query only (CSS's `not all`); a block no
+  query lowers is still lowered once and discarded, so its errors refuse
+  the sheet (B2). A refinement joins a transition's machine only under
+  the same condition.
+- Gate: `gui_forms_theme_media_css_tests` (one sheet switching light and
+  dark; two windows at two scales showing one theme; 22 refusals); the
+  sheet fuzz target reads every `@media` prelude.
+
+*P8b and P8c, owner decisions (2026-10-28, as recommended):*
+- **D1** The role atoms are design language §5.4's 17 pairs in kebab case
+  (`ink-on-paper` ... `command-link-ink-on-paper`), plus single-colour
+  roles for the relief ramp and lines (`chrome-highlight`, `chrome`,
+  `chrome-middle`, `chrome-low`, `ordinary-line`, `dark-line`, `shadow`,
+  `selection-line`, `focus`), declared with one colour and read as
+  `role(<name>)`.
+- **D2** A role a sheet reads that its `:root` palette does not declare is
+  an error, `colour_role_undefined` (E4xx).
+- **D3** P8 records each colour's role, or a literal's position, and
+  provides the tested remap; P9's colour-only pass (EC6) draws with it.
+  By position: text to the high-contrast text of the surface state,
+  edges, rings and outlines to its edge, fills to its plate
+  (`high_contrast_colours`). By role, the same by side, except: disabled
+  roles to the disabled grey, invalid roles to the invalid edge, `focus`
+  and `selection-line` to the hot (cyan) edge, selection and on-accent
+  pairs to the selected record (black on white).
+- **D4** em is admitted in every admitted length, carried as px plus em
+  through the material, recipe and motion records and resolved per part.
+- **D5** The text-role size is the theme's typography token size times
+  the window's text scale; a part with no `font:` has the ui role.
+- **D6** `font: <role>` is recorded in the part's resolution only in P8;
+  controls' text call sites are not changed.
+- **D7** `inherit` on `color` and `font` is the parent control's cascade
+  result, resolved at paint.
+
+*P8b, colour roles, done (local branch, 2026-10-28):*
+- The coordinator's "18 pairs" was a miscount: §5.4 lists 17 pairs; with
+  the 9 single roles there are 26 `ColourRole` atoms (`focus` is a single
+  colour, "on any surface").
+- **Engine (EC4):** `ColourRole`, `ColourOrigin` (none, literal, or a role
+  and its side) on `RuleDeclaration`, `MaterialDeclaration` and
+  `RecipeDeclaration`; `ColourPosition` of each material and recipe field
+  (fill, edge, text); `high_contrast_colour(origin, position, state,
+  selected)` beside `high_contrast_colours`, the D3 mapping. P9 draws with
+  it.
+- **Palette:** `:root` blocks (the selector `:root` alone, also inside
+  `@media`) are collected before the rules, so a rule reads the palette
+  wherever it stands. A pair is `<colour> on <colour>`, a single role one
+  colour; custom properties are read, `role()` is not (E405); another
+  property is W107; `!important` E405. A role's unconditional declaration
+  replaces its earlier ones; its conditional ones are variants. The base
+  palette is each role's unconditional colours: a role without one is
+  undefined (E415) even if `@media` declares it.
+- **Variants:** a rule reading roles with conditional variants is lowered
+  again right after itself for each other combination of their variants in
+  lexicographic order, each copy under the rule's condition joined with the
+  variants' (a contradictory join is skipped). The cascade's later-wins then
+  gives each window, role by role, its last holding variant, as CSS's later
+  `:root` declaration wins. Copies' warnings, and those of a `@media`
+  list's second and later queries, are reported once.
+- **Origins:** one per declaration: a literal where any colour of the value
+  is one, else its first role (a `color-mix()` of roles keeps its first);
+  none for `initial` or no colour. A literal at a text or edge position is
+  W201, once per declaration. `role(<pair>)` without a side is the
+  foreground in `color` and the background in `background` and
+  `background-color`, E405 elsewhere.
+- `currentcolor` stayed refused in P8b; P8c builds it (below).
+- Gate: `gui_forms_theme_colour_role_css_tests` (role and literal fixtures
+  under forced high contrast, W201, undefined roles, variant copies, one
+  palette switching light and dark in a window).
+
+*P8c as built (2026-10-28, local on `claude/t3-p8-media`):*
+
+- **Text roles:** `font: <role>` (ui, field, caption, heading, title,
+  monospace) or `inherit`, recorded only (D6); `initial` is ui. A part's
+  em is its role's typography token size times the window's text scale
+  (D5); `inherit` takes the parent control's role (D7).
+- **em (D4):** every admitted material and recipe length, translate and
+  number parameters carry pixels plus an em coefficient. The compiler
+  lowers a value at an em of 0 and of 1 and records the difference per
+  length, in a fixed walk order; a length the walk does not list that em
+  changes is E405.
+- **Owner decisions (2026-10-28), em in motion:** `@keyframes`, and a
+  looped animation whose own value is in em, refuse em (E405): a motion
+  program reads no part's em. This narrows D4 for motion programs. A
+  number parameter in em is clamped to its declared range at paint, since
+  its value is known only there.
+- **currentcolor:** lowered again at a white sentinel; the colours that
+  differ are current, taken from the part's resolved text colour when its
+  material is assembled (part of the assembly cache key). A shadow, glow,
+  drop shadow or text shadow without a colour takes it, as in CSS.
+- **color: inherit** (and `color: currentcolor`, which CSS reads as it):
+  the parent control's text colour, resolved at paint; at the root, the
+  control's own floor.
+- Gate: `gui_forms_theme_em_font_css_tests` (em at two text scales, the
+  font role and its inheritance, em and current-colour records, assembly,
+  inherited colour through two controls).
 
 **P9. Inline styles and `!important` (engine change EC6).** The two
 important levels, the split of important declarations, the colour-only
@@ -1061,6 +1223,52 @@ closure, and refusal semantics through the public entry point. Gate:
 package fixtures for each E6xx code; a refused theme leaves the running
 `Theme` object installed and every window's focus, capture, selection and
 active edit unchanged; a good swap preserves them too (RC003). 2 to 3 PRs.
+
+*P10 manifest, owner decisions (2026-10-28, as recommended):* `theme.json`
+is a JSON object:
+`{"format": "gui-forms-theme/1", "name": "harbour-dark", "version": "1.4.0",
+"engine": ">=0.3", "author": "...", "provenance": "...",
+"sheet": {"path": "theme.theme.css", "sha256": "<hex>"},
+"imports": {"harbour-base": "<sha256 of its theme.json>"},
+"resources": [{"name": "icon.check", "path": "images/check.png",
+"sha256": "<hex>"}], "published_values": ["progress"],
+"coverage": ["button", "check-box"]}`.
+
+- **One sheet per pack** (1a); further sheets arrive by `@import`.
+- **Imports are pinned** (2a): `imports` maps each imported theme's name
+  to the SHA-256 of its `theme.json`; E604 `import_hash_mismatch` is an
+  installed pack that differs from its pin, and every `@import` must be
+  listed there.
+- **Unknown keys** are E601 `manifest_invalid` (3a), checked after the
+  engine bound, so a manifest for a newer engine gets the upgrade message.
+- **E607 `engine_too_old`** (4a), detail `X.Y`: "this theme needs engine
+  >= X.Y; upgrade to run it" (C8).
+- **Coverage** is informational (5a): control type names, an unknown one
+  W106 as in selectors.
+- **Encoding** (6): hashes are 64 lowercase hex digits; paths are relative
+  with `/`, no `.`, `..`, empty segment, backslash or leading `/`, at most
+  255 bytes and 8 segments; `name` is `[a-z0-9][a-z0-9-]{0,63}`; `version`
+  is `MAJOR.MINOR.PATCH`, informational; `author` and `provenance` at most
+  256 bytes each. A pack's identity in the installed index is the SHA-256
+  of its `theme.json` bytes.
+
+*P10 closure and entry point, owner decisions (2026-10-28, as
+recommended):*
+
+- **One cascade** (1b): an `@import` closure compiles as one cascade,
+  imported sheets first; for colour roles, `@keyframes` and custom
+  properties the later definition wins, as in CSS; each diagnostic names
+  its file.
+- **E602 is `file_hash_mismatch`** (2a), number kept: any package file,
+  sheet or resource, whose bytes do not have their hash; the detail is its
+  path. A file the manifest does not list, or one given twice, is E601.
+- **Entry point** (3a): compiling a package returns a `Theme` or a
+  refusal with its diagnostics; the caller applies it through the existing
+  atomic `Window::set_theme` / `ApplicationResources::set_theme`. The RC003
+  gate tests both the refused and the good swap.
+- **Paths and names** (as built): a path also holds no `:` and no control
+  character; a resource name may also hold `.` and `_` after its first
+  character.
 
 **P12. Custom properties through the cascade (engine change EC7).** The
 engine first: custom property definitions and deferred declarations in the
