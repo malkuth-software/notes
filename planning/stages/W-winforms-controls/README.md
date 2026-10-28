@@ -271,10 +271,10 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ListView` | 181 | `ListView`, `ObjectView` | partial: groups, tile view, label editing, the insertion mark, owner drawing and item tooltips are not supported (#88) |
 | `ColumnHeader` | 27 | `ListViewColumn` records | done |
 | `TreeView` | 137 | `TreeView` | done |
-| `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box and button columns; no image or link column (#90, #117, #149) |
+| `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149) |
 | `DataGridViewTextBoxColumn`, `CheckBoxColumn`, `ComboBoxColumn`, `ButtonColumn` | 68 | `DataGridViewColumnKind` | done |
-| `DataGridViewImageColumn` | 19 | none | missing |
-| `DataGridViewLinkColumn` | 20 | none | missing |
+| `DataGridViewImageColumn` | 19 | `DataGridViewColumnKind::image` | done |
+| `DataGridViewLinkColumn` | 20 | `DataGridViewColumnKind::link` | done: `link_text`, `track_visited_state`, `link_visited`; no underline yet (no underline mark in the vocabulary); `LinkBehavior` not supported |
 | `DataGridViewTextBoxEditingControl`, `ComboBoxEditingControl` | 40 | the grid's own editors | partial: not public types |
 | `PropertyGrid` | 141 | `PropertyGrid` | done |
 
