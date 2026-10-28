@@ -1173,11 +1173,34 @@ theme. 3 PRs.
   W201, once per declaration. `role(<pair>)` without a side is the
   foreground in `color` and the background in `background` and
   `background-color`, E405 elsewhere.
-- `currentcolor` stays refused (E999, not built) in P8b; proposed for P8c,
-  resolved at paint from the part's text colour like `inherit` (D7).
+- `currentcolor` stayed refused in P8b; P8c builds it (below).
 - Gate: `gui_forms_theme_colour_role_css_tests` (role and literal fixtures
   under forced high contrast, W201, undefined roles, variant copies, one
   palette switching light and dark in a window).
+
+*P8c as built (2026-10-28, local on `claude/t3-p8-media`):*
+
+- **Text roles:** `font: <role>` (ui, field, caption, heading, title,
+  monospace) or `inherit`, recorded only (D6); `initial` is ui. A part's
+  em is its role's typography token size times the window's text scale
+  (D5); `inherit` takes the parent control's role (D7).
+- **em (D4):** every admitted material and recipe length, translate and
+  number parameters carry pixels plus an em coefficient. The compiler
+  lowers a value at an em of 0 and of 1 and records the difference per
+  length, in a fixed walk order; a length the walk does not list that em
+  changes is E405. A parameter in em is clamped to its range at paint.
+  `@keyframes` and a loop whose own value is in em refuse it (E405): a
+  motion program reads no part's em.
+- **currentcolor:** lowered again at a white sentinel; the colours that
+  differ are current, taken from the part's resolved text colour when its
+  material is assembled (part of the assembly cache key). A shadow, glow,
+  drop shadow or text shadow without a colour takes it, as in CSS.
+- **color: inherit** (and `color: currentcolor`, which CSS reads as it):
+  the parent control's text colour, resolved at paint; at the root, the
+  control's own floor.
+- Gate: `gui_forms_theme_em_font_css_tests` (em at two text scales, the
+  font role and its inheritance, em and current-colour records, assembly,
+  inherited colour through two controls).
 
 **P9. Inline styles and `!important` (engine change EC6).** The two
 important levels, the split of important declarations, the colour-only
