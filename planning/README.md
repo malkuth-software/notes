@@ -46,6 +46,10 @@ absorb the other's authority.
 - [`BUILD_SIZE_PLAN_2026-10-23.md`](BUILD_SIZE_PLAN_2026-10-23.md) —
   measured options for reducing the CI cache, artifacts, release assets and
   build outputs, with a recommended order.
+- [`BUILD_STREAMLINING_TODO.md`](BUILD_STREAMLINING_TODO.md) — the owner's
+  2026-10-29 direction for build time: dependencies on their own cached
+  repositories, main-line cache reuse on branches, sanitizers off by default,
+  a standalone test repository for the remote workers.
 - [`PAINT_PIPELINE_AVAILABILITY.md`](PAINT_PIPELINE_AVAILABILITY.md)
 - [`WINFORMS_API_CATALOGUE.md`](WINFORMS_API_CATALOGUE.md)
 - [`WINFORMS_BEHAVIOR_GAP_CATALOGUE.md`](WINFORMS_BEHAVIOR_GAP_CATALOGUE.md)
