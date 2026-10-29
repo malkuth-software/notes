@@ -1,0 +1,31 @@
+bisect tabs-and-pages scale 1 bands 2 commands 674
+  after #0 op 0 rect 0.000,0.000 0.000x0.000 scalars 0.000 0.000 0.000 text '' : 1049600 differing
+  after #3 op 4 rect 0.000,0.000 1280.000x820.000 scalars 0.000 0.000 0.000 text '' : 0 differing
+  after #420 op 11 rect 0.500,29.500 889.000x183.107 scalars 5.500 1.000 0.000 text '' : 4 differing
+  after #437 op 15 rect 1.000,7.500 30.000x15.000 scalars 0.000 0.000 0.000 text '' : 18 differing
+  after #439 op 11 rect 1.500,8.000 29.000x14.000 scalars 7.000 1.000 0.000 text '' : 30 differing
+  after #440 op 10 rect 18.000,9.500 11.000x11.000 scalars 5.500 0.000 0.000 text '' : 39 differing
+bisect dock-and-anchor scale 2 bands 2 commands 545
+  after #0 op 0 rect 0.000,0.000 0.000x0.000 scalars 0.000 0.000 0.000 text '' : 4198400 differing
+  after #3 op 4 rect 0.000,0.000 1280.000x820.000 scalars 0.000 0.000 0.000 text '' : 0 differing
+  after #387 op 15 rect 0.000,0.000 82.000x182.563 scalars 0.000 0.000 0.000 text '' : 7 differing
+  after #389 op 11 rect 0.500,0.500 81.000x181.563 scalars 2.500 1.000 0.000 text '' : 24 differing
+  after #417 op 15 rect 0.000,0.000 76.000x132.563 scalars 0.000 0.000 0.000 text '' : 31 differing
+  after #419 op 11 rect 0.500,0.500 75.000x131.563 scalars 2.500 1.000 0.000 text '' : 48 differing
+  after #427 op 15 rect 0.000,0.000 436.000x26.000 scalars 0.000 0.000 0.000 text '' : 54 differing
+  after #429 op 11 rect 0.500,0.500 435.000x25.000 scalars 2.500 1.000 0.000 text '' : 72 differing
+bisect control-spectrum scale 1 bands 8 commands 628
+  after #0 op 0 rect 0.000,0.000 0.000x0.000 scalars 0.000 0.000 0.000 text '' : 1049600 differing
+  after #3 op 4 rect 0.000,0.000 1280.000x820.000 scalars 0.000 0.000 0.000 text '' : 0 differing
+  after #569 op 6 rect 0.000,0.000 0.000x0.000 scalars 2.000 0.000 0.000 text '' : 21 differing
+bisect containers-and-focus scale 2 bands 2 commands 574
+  after #0 op 0 rect 0.000,0.000 0.000x0.000 scalars 0.000 0.000 0.000 text '' : 4198400 differing
+  after #3 op 4 rect 0.000,0.000 1280.000x820.000 scalars 0.000 0.000 0.000 text '' : 0 differing
+  after #510 op 11 rect 0.500,0.500 169.000x33.000 scalars 2.500 1.000 0.000 text '' : 3 differing
+bisect values-and-spinners scale 2 bands 2 commands 1057
+  after #0 op 0 rect 0.000,0.000 0.000x0.000 scalars 0.000 0.000 0.000 text '' : 4198400 differing
+  after #3 op 4 rect 0.000,0.000 1280.000x820.000 scalars 0.000 0.000 0.000 text '' : 0 differing
+  after #532 op 15 rect 0.000,17.000 18.000x17.246 scalars 0.000 0.000 0.000 text '' : 1 differing
+4
+6
+21:42  up 4 days,  1:05, 1 user, load averages: 6.28 7.38 7.26

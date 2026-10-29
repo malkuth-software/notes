@@ -1,0 +1,23 @@
+samples: 6688; slide 0xd30000
+areas (self): other 75.04%, gui_forms 14.55%, runtime 7.67%, harfbuzz 2.74%
+| # | Self | Incl | Area | Function |
+| 1 | 11.56% | 13.17% | other | _af_glyph_hints_reload |
+| 2 | 10.33% | 10.33% | other | _gray_render_line |
+| 3 | 4.71% | 4.98% | other | _TT_Load_Simple_Glyph |
+| 4 | 4.61% | 4.61% | other | _af_latin_hints_compute_segments |
+| 5 | 4.25% | 7.60% | gui_forms | gui_forms::detail::composite_text_coverage(gui_forms::detail::TextCoverage, gui_forms::detail::TextComposit... |
+| 6 | 3.86% | 33.04% | other | _af_latin_hints_apply |
+| 7 | 3.51% | 3.51% | runtime | _platform_memset |
+| 8 | 3.35% | 3.69% | other | _af_glyph_hints_align_weak_points |
+| 9 | 3.35% | 3.35% | gui_forms | gui_forms::detail::(anonymous namespace)::prepared_clip_coverage(gui_forms::detail::(anonymous namespace)::... |
+| 10 | 3.32% | 3.90% | gui_forms | gui_forms::detail::extended_grapheme_boundaries(std::__1::basic_string_view<char, std::__1::char_traits<cha... |
+| 11 | 3.18% | 18.44% | other | _gray_convert_glyph |
+| 12 | 2.87% | 10.21% | other | _gray_conic_to |
+| 13 | 2.51% | 9.84% | other | _af_latin_hints_detect_features |
+| 14 | 2.06% | 2.06% | other | _ft_glyphslot_preset_bitmap |
+| 15 | 2.06% | 77.77% | gui_forms | gui_forms::render::text::GlyphRunRasterizer::Impl::Runner::run(gui_forms::render::text::GlyphRunRasterizer:... |
+| 16 | 1.99% | 1.99% | other | _af_latin_hints_link_segments |
+| 17 | 1.82% | 1.82% | other | _FT_Outline_Transform |
+| 18 | 1.78% | 14.49% | other | _FT_Outline_Decompose |
+| 19 | 1.54% | 1.54% | other | _FT_Outline_Get_Orientation |
+| 20 | 1.21% | 1.21% | other | _FT_Outline_Get_CBox |

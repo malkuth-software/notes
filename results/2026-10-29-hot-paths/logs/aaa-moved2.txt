@@ -1,0 +1,6 @@
+region-clips:  35330891 bytes,  5999586 differ; ../.build/stx-skia-full/baseline/region-clips.raw ../.build/stx-skia-full/candidate/region-clips.raw differ: char 25117493, line 54468
+canvas-device:   279848 bytes,     3009 differ; ../.build/stx-skia-full/baseline/canvas-device.raw ../.build/stx-skia-full/candidate/canvas-device.raw differ: char 9, line 1
+android-clip:   322088 bytes,        8 differ; ../.build/stx-skia-full/baseline/android-clip.raw ../.build/stx-skia-full/candidate/android-clip.raw differ: char 28100, line 25
+layers:  7475200 bytes,     8533 differ; ../.build/stx-skia-full/baseline/layers.raw ../.build/stx-skia-full/candidate/layers.raw differ: char 49313, line 1
+render:  2229120 bytes,     2344 differ; ../.build/stx-skia-full/baseline/render.raw ../.build/stx-skia-full/candidate/render.raw differ: char 101, line 1
+mask-filter:  38737728 bytes,    27054 differ; ../.build/stx-skia-full/baseline/mask-filter.raw ../.build/stx-skia-full/candidate/mask-filter.raw differ: char 1781685, line 598

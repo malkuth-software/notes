@@ -1,0 +1,17 @@
+== ../hp-band-sample-4-4.txt
+Thread_11253250   DispatchQueue_1: com.apple.main-thread  (s total 5920 lock 5898 (99.6%)
+      5898 __psynch_cvwait <- gui_forms_atomic_pool_wait_checked
+Thread_11253266 total 5920 lock 1370 (23.1%)
+      1366 __psynch_cvwait <- gui_forms_atomic_pool_worker
+         4 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+Thread_11253267 total 5920 lock 1376 (23.2%)
+      1373 __psynch_cvwait <- gui_forms_atomic_pool_worker
+         2 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+         1 pthread_mutex_lock <- gui_forms_atomic_pool_worker
+Thread_11253268 total 5920 lock 1421 (24.0%)
+      1418 __psynch_cvwait <- gui_forms_atomic_pool_worker
+         3 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+Thread_11253269 total 5920 lock 1231 (20.8%)
+      1226 __psynch_cvwait <- gui_forms_atomic_pool_worker
+         3 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+         2 SkSemaphore::~SkSemaphore() <- SkPathData::~SkPathData()

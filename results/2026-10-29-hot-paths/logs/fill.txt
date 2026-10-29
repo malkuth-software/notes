@@ -1,0 +1,42 @@
+damage device px 6.706e+09; opaque fill px 3.294e+10 (4.91x damage); translucent 3.483e+07 (0.01x)
+opaque by kind: fill_rect 99.4%, fill_rounded_rect 0.4%, stroke_rect 0.2%
+
+opaque fill area by recording path (first 2 frames):
+   65.79%   3.23x  n=22980  fill_rect: Panel::paint_panel <- Window::paint_recursive
+   20.36%   1.00x  n=4059  fill_rect: paint_surface_material <- Window::paint_rectangles
+    7.69%   0.38x  n=15432  fill_rect: GroupBox::on_paint <- Window::paint_recursive
+    2.17%   0.11x  n=114338  fill_rect: Button::on_paint <- Window::paint_recursive
+    1.66%   0.08x  n=13353  fill_rect: gallery::GalleryControl::on_paint <- Window::paint_recursive
+    0.49%   0.02x  n=15680  fill_rect: ScrollableControl::paint_axis <- ScrollableControl::on_paint_overlay
+    0.27%   0.01x  n=19842  fill_rect: paint_relief <- ButtonBase::paint_button_frame
+    0.21%   0.01x  n=280  fill_rounded_rect: paint_surface_material <- ListBox::on_paint
+    0.15%   0.01x  n=112  fill_rect: Window::paint_recursive <- Window::paint_recursive
+    0.15%   0.01x  n=952  fill_rect: EasingPreview::on_paint <- Window::paint_recursive
+    0.14%   0.01x  n=1064  fill_rounded_rect: paint_surface_material <- TextBox::on_paint
+    0.11%   0.01x  n=58132  stroke_rect: Button::on_paint <- Window::paint_recursive
+    0.10%   0.01x  n=392  fill_rect: PropertyList::on_paint <- Window::paint_recursive
+    0.07%   0.00x  n=448  fill_rect: Panel::paint_panel <- PictureBox::on_paint
+    0.07%   0.00x  n=168  fill_rect: VisualInspectorView::on_paint <- Window::paint_recursive
+    0.06%   0.00x  n=7660  stroke_rect: GroupBox::on_paint <- Window::paint_recursive
+    0.06%   0.00x  n=56  fill_rect: std::__1::__function::__func<gui_forms::gallery::pages::LiveSurfacePaint, void  <- DrawingSurface::on_paint
+    0.06%   0.00x  n=224  fill_rect: TypographySpecimen::on_paint <- Window::paint_recursive
+
+opaque fill area by recording path (first 4 frames):
+   29.78%   1.46x  n=13179  fill_rect: Panel::paint_panel <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+   20.36%   1.00x  n=4059  fill_rect: Panel::paint_panel <- Window::paint_recursive <- Window::paint_rectangles <- Window::paint
+   20.36%   1.00x  n=4059  fill_rect: paint_surface_material <- Window::paint_rectangles <- Window::paint <- 
+   15.65%   0.77x  n=5742  fill_rect: Panel::paint_panel <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_rectangles
+    7.69%   0.38x  n=15432  fill_rect: GroupBox::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+    2.17%   0.11x  n=114338  fill_rect: Button::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+    1.33%   0.07x  n=12177  fill_rect: gallery::GalleryControl::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_rectangles
+    0.49%   0.02x  n=15680  fill_rect: ScrollableControl::paint_axis <- ScrollableControl::on_paint_overlay <- Window::paint_recursive <- Window::paint_recursive
+    0.34%   0.02x  n=1176  fill_rect: gallery::GalleryControl::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+    0.26%   0.01x  n=19618  fill_rect: paint_relief <- ButtonBase::paint_button_frame <- Button::on_paint <- Window::paint_recursive
+    0.21%   0.01x  n=280  fill_rounded_rect: paint_surface_material <- ListBox::on_paint <- Window::paint_recursive <- Window::paint_recursive
+    0.15%   0.01x  n=112  fill_rect: Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+    0.15%   0.01x  n=952  fill_rect: EasingPreview::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+    0.14%   0.01x  n=1064  fill_rounded_rect: paint_surface_material <- TextBox::on_paint <- Window::paint_recursive <- Window::paint_recursive
+    0.11%   0.01x  n=58132  stroke_rect: Button::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+    0.10%   0.01x  n=392  fill_rect: PropertyList::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive
+    0.07%   0.00x  n=448  fill_rect: Panel::paint_panel <- PictureBox::on_paint <- Window::paint_recursive <- Window::paint_recursive
+    0.07%   0.00x  n=168  fill_rect: VisualInspectorView::on_paint <- Window::paint_recursive <- Window::paint_recursive <- Window::paint_recursive

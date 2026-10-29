@@ -1,0 +1,30 @@
+candidate exit 0
+100% tests passed, 0 tests failed out of 137
+baseline exit 0
+100% tests passed, 0 tests failed out of 92
+compare exit 1
+differs (intentional) image-sampling-corrected.raw
+identical shader-coordinates.raw
+identical shader-working-space.raw
+identical color-plans.raw
+identical color-composition.raw
+identical color-adjustments.raw
+identical shader-blends.raw
+FAIL layers.raw: differs from the reference profile
+FAIL render.raw: differs from the reference profile
+identical conversions.raw
+identical pixmap.raw
+identical mask.raw
+FAIL mask-filter.raw: differs from the reference profile
+identical flattenable.raw
+60 corpus files, 11 intentional differences, 6 failures
+sanitize exit 0
+100% tests passed, 0 tests failed out of 137
+negative control exit 1 (expected 1)
+1265
+aa scan converters: canvas rounded stroke cut at row 10: pixel (3, 9) differs
+aa scan converters: canvas translucent rounded fill cut at row 42: pixel (125, 41) differs
+aa scan converters: canvas small rounded fill cut at row 29: pixel (65, 28) differs
+aa scan converters: canvas fractional rounded stroke cut at row 31: pixel (21, 30) differs
+aa scan converters: canvas fractional rounded stroke cut at row 31: pixel (21, 30) differs
+aa scan converters: banded fills differ from whole fills FAIL
