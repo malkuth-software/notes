@@ -113,7 +113,7 @@ checks still applies, except hash pinning:
   - the closure size limit;
   - the engine bound (E607);
   - every diagnostic of the sheet itself.
-- **`@import`** (recommended):
+- **`@import`** (decided):
   - A user theme may import the program's own packages by name, pinned
     implicitly to the installed one, since they ship together.
   - It may also import a partial sheet in its own folder, as a path in
@@ -216,7 +216,7 @@ levels.
 ### 4.3 Declaring the program sheet replaceable
 
 This is a policy the program sets once, before its first window
-(recommended):
+(decided):
 
 ```cpp
 enum class UserThemePolicy : std::uint8_t {
@@ -241,7 +241,7 @@ key is E601 today, so adding it needs a format version.
 
 ## 5. Selection, the built-in theme and the system appearance
 
-- **One user theme at a time** (recommended), or none. None is the
+- **One user theme at a time** (decided), or none. None is the
   default.
   - It is chosen on the program's settings page, which lists the
     discovered themes by name, author and version.
@@ -268,7 +268,7 @@ letters, digits and dashes, with `.` between segments, as in the locale
 keys (for example `toolbar.save`, `check-mark`).
 
 A user theme overrides one by a file at
-`themes/<name>/icons/<identifier>.png` (recommended), for example
+`themes/<name>/icons/<identifier>.png` (decided), for example
 `themes/harbour/icons/toolbar.save.png`. The alternative is a mapping in
 the sheet, such as `@icon toolbar.save url("icons/disk.png")`, which
 allows one file for several icons but is more to write.
@@ -358,8 +358,8 @@ unusable without a way back that needs no reading.
   6). Examples are the
   settings entry and its route back to the built-in theme.
 - **An engine floor on the user level.** At the user level, an `opacity`
-  below 0.5 on any part is clamped to 0.5, with a warning (recommended
-  value; owner to confirm). A theme then cannot hide a control outright.
+  below 0.5 on any part is clamped to 0.5, with a warning (decision 7).
+  A theme then cannot hide a control outright.
 - **Forced high contrast** stands over the user theme's colours (section
   4).
 - **Refusal is whole.** A theme that does not compile is not applied (B2,
