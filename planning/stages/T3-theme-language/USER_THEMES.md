@@ -1,6 +1,7 @@
 # User themes: the `themes/` folder (design note, T3)
 
-Status: design only, for owner review. No code until reviewed.
+Status: design, with the owner's decisions of 2026-10-28 (section 9). It
+lands after P12 and P11.
 Owner directions (2026-10-28): user themes follow the user-translations
 model; a user theme is a CSS file in `themes/` with its assets in a folder
 of the same name; it is a cascade layer over the program's whole result,
@@ -11,8 +12,10 @@ where it opts in.
 
 ## 1. What a user theme is
 
-A user theme is a file `themes/<name>.css`, with an optional folder
-`themes/<name>/` beside it for its images. It is display only. It changes
+A user theme is a main file `themes/<name>.css`, with an optional folder
+`themes/<name>/` beside it. The folder holds the theme's icons and images
+and any further sheets of the theme, for example one per window
+(`themes/harbour/editor-window.css`). It is display only. It changes
 how the program's parts are drawn and which icons it shows. It cannot
 change what the program does, its layout, its text or its translations.
 
@@ -49,7 +52,11 @@ system"), so this is the host's job. The scan is bounded:
 
 Something over a limit is skipped, with a diagnostic.
 
-A CSS file is a theme when it opens with a theme header:
+The folder `themes/<name>/` belongs to the theme `<name>`: its `.css`
+files are the theme's sub-files, not themes of their own.
+
+A CSS file directly in `themes/` is a theme when it opens with a theme
+header:
 
 ```css
 @theme {
@@ -62,8 +69,14 @@ A CSS file is a theme when it opens with a theme header:
 
 The header uses CSS descriptor syntax, like `@font-face`. The name is the
 file stem; the header does not repeat it. A CSS file without the header is
-not a theme. It is ignored without a diagnostic, so that a theme's partial
-sheets can sit in the folder (see `@import` in section 3).
+not a theme, and the log says so.
+
+**Load order.** The theme's sub-files load first, then the main file, in
+sequence as CSS evaluates sheets, so the last evaluated has the highest
+authority (within a level, a later rule of equal specificity wins). The
+sub-files load in filename order: byte order of their UTF-8 names, which
+the name rule makes ASCII order, searching the theme folder's top level
+only. The main file loads last. A sub-file needs no `@theme` header.
 
 The candidate themes are parsed and checked at launch, so the theme list
 can show only themes that compile. A refused theme appears in the list
@@ -78,7 +91,7 @@ A user theme is a **degenerate package with an implied manifest**:
 | `format` | `gui-forms-theme/1` |
 | `name` | the file stem |
 | `version`, `engine`, `author`, `provenance` | the `@theme` header |
-| `sheet` | the CSS file |
+| `sheet` | the main file, after the sub-files in filename order |
 | `resources` | every file under `themes/<name>/`, by relative path (P10's path rules) |
 | `published_values` | the program's |
 | `coverage` | empty |
@@ -104,7 +117,8 @@ checks still applies, except hash pinning:
   - A user theme may import the program's own packages by name, pinned
     implicitly to the installed one, since they ship together.
   - It may also import a partial sheet in its own folder, as a path in
-    `themes/<name>/`.
+    `themes/<name>/`. Sub-files load anyway (section 2); an `@import` of
+    one places it where the import stands instead of loading it twice.
   - It may not import another user theme, so no chains run between user
     files.
 - **The installed index**: user themes go in a separate `ThemeLibrary`
@@ -353,47 +367,40 @@ unusable without a way back that needs no reading.
 - **The way back needs no reading:**
   - `--theme built-in` on the command line, a literal ASCII word that is
     never translated;
-  - holding Shift while the program starts, which starts it without a
-    user theme for that run (the platform's convention may differ; to
-    confirm per host).
+  - the settings entry, which lists "Built-in" first.
 
   Both are documented in the program's help and in a `README.txt` that
-  export writes into `themes/`.
+  export writes into `themes/`. There is no key held at launch (owner
+  decision, as for locales).
 
-## 9. Decisions for the owner (recommendations first)
+## 9. Owner decisions (2026-10-28)
 
-1. **The theme marker**:
-   - (a) a `@theme { ... }` header (recommended);
-   - (b) every parseable CSS file named by the rule is a theme.
-2. **The export form**:
-   - (a) a verbatim copy (recommended; under the owner's order it changes
-     nothing until edited);
-   - (b) a skeleton with every declaration commented out.
-3. **How many user themes**:
-   - (a) one selected user theme (recommended);
-   - (b) an ordered stack of them.
-4. **`@import` in a user theme**:
-   - (a) of the program's packages and its own partial sheets
-     (recommended);
-   - (b) none.
-5. **Icon overrides**:
-   - (a) the file convention `<name>/icons/<identifier>.png`
-     (recommended);
-   - (b) an `@icon` mapping in the sheet.
-6. **Declaring the program sheet replaceable**:
-   - (a) `ApplicationResources::set_user_theme_policy` (recommended);
-   - (b) a `theme.json` key.
-
-   ("Where allowed" itself is decided: the owner's six-level order.)
-7. **The opacity floor** at the user level: 0.5, or another value, or
-   none.
-8. **The same name in both folders**: the per-user theme wins
-   (recommended), as with translations.
+1. **The theme marker**: a `@theme { ... }` header. Accepted.
+2. **Export**: no state is tracked. A theme file present in `themes/`,
+   exported or edited or written by hand, is parsed by a program
+   configured to load themes; the only question is whether themes exist.
+   Export writes ordinary theme files (a verbatim copy, section 7).
+3. **One theme at a time**, which may be several files: the main file
+   `themes/<name>.css` and further `.css` files in `themes/<name>/`. The
+   sub-files load before the main file, in filename order; the main file
+   loads last and has the highest authority (section 2).
+4. **`@import`** of the program's packages and of the theme's own partial
+   sheets. Accepted.
+5. **Icon overrides** by the file convention
+   `themes/<name>/icons/<identifier>.png`. Accepted.
+6. **`ApplicationResources::set_user_theme_policy`** declares the program
+   sheet replaceable. Accepted. "Where allowed" is the owner's six-level
+   order (section 4).
+7. **The opacity floor** at the user level is 0.5 (coordinator's reading,
+   unless the owner objects).
+8. **The per-user folder wins** on the same name (coordinator's reading).
+9. **No key held at launch**: `--theme built-in`, the settings entry, the
+   help and `README.txt` in `themes/` are the way back (coordinator's
+   reading, consistent with the locale decision).
 
 ## 10. Where it lands
 
-- **After P12 and P11** in T3, or as its own stage, once the decisions
-  above are taken.
+- **After P12 and P11** in T3, or as its own stage.
 - **The engine part** is small:
   - the `user_theme` and `important_user_theme` levels;
   - a third rule set in the walk;
