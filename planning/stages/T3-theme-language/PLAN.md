@@ -1220,8 +1220,9 @@ style keeps the previous one. 2 PRs.
 - **The levels**, lowest first: built_in, theme_sheet, class_rule,
   stable_id_rule, inline_style, important_theme_sheet,
   forced_high_contrast, important_inline_style (manifest
-  `cascade_levels`). The user theme's level goes between inline_style and
-  important_theme_sheet (see "User themes" under P10c).
+  `cascade_levels`). The user levels to come, `user_theme` above built_in
+  and `important_user_theme` above inline_style, fit without rework (see
+  "User themes" under P10c).
 - **The split.** A style rule with `!important` declarations lowers to a
   sibling rule at the important level, same selector, label and media.
   The sibling selects a primitive only where its own `primitive`
@@ -1344,26 +1345,33 @@ presentation settings it chose. No host reports the system colour scheme
 yet (P8a); the host work that does follows this opt-in. It applies to P9's
 forced high-contrast pass, P12, and T4; no code changes now.
 
-*User themes, owner principle (2026-10-28):* a user theme is another
-cascade layer over the program's whole result (its theme sheet and its
-inline styles), standing to it as the theme sheet stands to inline
-styles: it overrides the program's result, but only where the program
-allows. P9 leaves room for it without building it: the levels are an
-ordered enumeration, and the resolution walk merges the program's rules
-with a control's inline rules by level and specificity, so a user sheet is
-one more set in the same merge at its own level. The proposed order,
-lowest first: built_in, theme_sheet, class_rule, stable_id_rule,
-inline_style, **user_theme**, important_theme_sheet, forced_high_contrast,
-important_inline_style. "Where allowed" is then the program's own
-`!important`: an ordinary program declaration (sheet or inline) is the
-user's to override, and a declaration the program marks `!important` is
-not; a user sheet has no `!important` of its own. The alternatives (a
-program-declared list of user-overridable properties, or a separate
-`not-user` marker) and the rest of the design (the `themes/` folder, a
-user theme as a CSS file with an asset folder of the same name, export,
-selection, icon overrides by resource name, the safety rules, and the
-relation to P10's packages) belong to the theme-folder design note,
-written after P9.
+*User themes, owner decisions (2026-10-28):* a user theme is a CSS file
+in `themes/` with its assets in a folder of the same name, and a cascade
+layer over the program's result where allowed. GUI.Forms' default theme
+(the built-in recipe and built-in rules, level `built_in`) is not
+authoritative: a user theme replaces it. With no program sheet and no
+inline styles, a user theme applies in full. A developer may declare the
+program's sheet replaceable: a user theme then takes its place whole, and
+only the program's inline styles keep their E1 order over it. Otherwise
+the order, weakest first, is:
+
+1. user ordinary, which applies only where the program declares nothing
+   for that property on that part;
+2. program sheet ordinary;
+3. program inline ordinary;
+4. user `!important`;
+5. program sheet `!important`;
+6. program inline `!important`.
+
+A user `!important` never wins where the program declares `!important`
+for that property on that part. P9's CascadeLevel takes this without
+rework: two new levels, `user_theme` just above `built_in` and
+`important_user_theme` between `inline_style` and `important_theme_sheet`.
+Forced high contrast stays below program inline `!important`, above every
+user level. The resolution walk takes the user sheet as a third rule set.
+The design (folder, discovery, implied manifest, the
+`UserThemePolicy` API, icon overrides, export, safety) is in
+`USER_THEMES.md`.
 
 **P12. Custom properties through the cascade (engine change EC7).** The
 engine first: custom property definitions and deferred declarations in the
