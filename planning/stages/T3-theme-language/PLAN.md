@@ -369,6 +369,28 @@ only for text and colour roles).
   values fail", because the newly added piece is the one at fault, and a
   program designer's inline rules are honoured.
 
+- **Owner decision (2026-10-29): resolved at theme load, not at paint.**
+  This replaces the per-part lowering and cache above. A custom property
+  defined in only one place (only in the palette, say) is substituted
+  directly when the theme loads, as before P12, with no copies. A name
+  defined in more than one place is expanded only for the rules that read
+  it: such a rule is lowered once per combination of the candidate
+  definitions of the redefined names it reads (the pattern of P8b's
+  palette copies), and each copy carries conditions on which definition
+  wins for the part. The definitions themselves go to the engine as
+  unconditioned rules with their selector, level and media. At paint,
+  the engine only resolves which definition of each redefined name wins
+  for a part (one walk per resolution, no allocation) and matches the
+  copies by it. Nothing is lowered at paint, so every candidate is
+  checked when the theme loads (B2), and the gate's counter is a
+  load-time count. The limits on copies per rule and on redefined names
+  per theme are set from a realistic token-heavy test theme (about a
+  hundred variables, a few scoped overrides, light and dark through
+  `@media`), with headroom, so that ordinary themes are never refused;
+  the numbers are recorded here when measured. P12a builds this within
+  one compilation (a theme and its `@import` closure); P12b adds inline
+  definitions.
+
 ## 2. Diagnostics
 
 Every diagnostic has:
@@ -1215,6 +1237,52 @@ cascade fixture for each case of E1 (neither important, theme only, inline
 only, both), each under normal and forced high contrast; a refused inline
 style keeps the previous one. 2 PRs.
 
+*P9, built (2026-10-28; for owner review where marked):*
+
+- **The levels**, lowest first: built_in, theme_sheet, class_rule,
+  stable_id_rule, inline_style, important_theme_sheet,
+  forced_high_contrast, important_inline_style (manifest
+  `cascade_levels`). The user levels to come, `user_theme` above built_in
+  and `important_user_theme` above inline_style, fit without rework (see
+  "User themes" under P10c).
+- **The split.** A style rule with `!important` declarations lowers to a
+  sibling rule at the important level, same selector, label and media.
+  The sibling selects a primitive only where its own `primitive`
+  declaration is important; the ordinary rule's parameters belong to its
+  own selection, else borrow the sibling's. An important parameter of a
+  primitive selected without `!important` is E405 *(review)*; `!important`
+  on a custom property is E999 until P12.
+- **C7 with importance** *(review, changed in P9c)*: a rule of material
+  fields and no `primitive` selects the material primitive with its
+  `!important` material fields where it has any (the ordinary rule
+  borrows it), else at the ordinary level; so `border-radius: 6px
+  !important` stands under forced high contrast.
+- **Inline styles.** `Control::set_inline_style(text)` compiles a
+  declaration block, optionally followed by `::part(name)` blocks, against
+  the control's own anatomy; its selector is implied, it needs no stable
+  ID, and it survives theme replacement. A refusal returns diagnostics
+  (file `inline:<stable id>`) and keeps the previous style; empty text
+  clears it. Refused in an inline style: at-rules (E206, as is
+  `pad::part(face) {...}`), another control's selector (E301), custom
+  properties (E999 until P12). An inline style has no palette (role()
+  undefined) *(review)*. The engine merges the control's rules with the
+  theme's by level, then specificity, the theme's first on ties.
+  W401 (`inline_with_theme`) is written once per window, at paint.
+- **Forced high contrast** (E1): the drawing (primitive, parameters,
+  material and recipe fields) comes from important_inline_style rules
+  alone; without an important inline primitive the built-in recipe's
+  high-contrast records draw the part. An important inline primitive draws
+  with every colour parameter at `high_contrast_colour(origin, fill,
+  state, selected)` *(review: primitive parameters declare no position,
+  so all are fills)*. Its material keeps the border's styles and widths
+  and the corners, remaps the background, border and keyline colours, and
+  drops image layers, shadows, glows, filters, finish, mask and border
+  image; it is assembled per paint, not cached. The recipe keeps the pass's
+  colours and takes only an important inline outline style, width and
+  offset; no text shadow. Presentation (transitions, ambient, blend,
+  font) is not filtered: theme motion still runs under the pass, as
+  before P9 *(review)*.
+
 **P10. Packages, imports and atomic replacement.** The manifest (a bounded
 JSON reader under `src/core/`, fuzzed, in the pattern of the XML reader),
 SHA-256 content hashes, first-party with the standard test vectors
@@ -1298,6 +1366,34 @@ opts in to the system's locale changes; by default the program keeps the
 presentation settings it chose. No host reports the system colour scheme
 yet (P8a); the host work that does follows this opt-in. It applies to P9's
 forced high-contrast pass, P12, and T4; no code changes now.
+
+*User themes, owner decisions (2026-10-28):* a user theme is a CSS file
+in `themes/` with its assets in a folder of the same name, and a cascade
+layer over the program's result where allowed. GUI.Forms' default theme
+(the built-in recipe and built-in rules, level `built_in`) is not
+authoritative: a user theme replaces it. With no program sheet and no
+inline styles, a user theme applies in full. A developer may declare the
+program's sheet replaceable: a user theme then takes its place whole, and
+only the program's inline styles keep their E1 order over it. Otherwise
+the order, weakest first, is:
+
+1. user ordinary, which applies only where the program declares nothing
+   for that property on that part;
+2. program sheet ordinary;
+3. program inline ordinary;
+4. user `!important`;
+5. program sheet `!important`;
+6. program inline `!important`.
+
+A user `!important` never wins where the program declares `!important`
+for that property on that part. P9's CascadeLevel takes this without
+rework: two new levels, `user_theme` just above `built_in` and
+`important_user_theme` between `inline_style` and `important_theme_sheet`.
+Forced high contrast stays below program inline `!important`, above every
+user level. The resolution walk takes the user sheet as a third rule set.
+The design (folder, discovery, implied manifest, the
+`UserThemePolicy` API, icon overrides, export, safety) is in
+`USER_THEMES.md`.
 
 **P12. Custom properties through the cascade (engine change EC7).** The
 engine first: custom property definitions and deferred declarations in the
