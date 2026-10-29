@@ -40,12 +40,20 @@ the free GitHub Actions allowance.
    the same tree several times (2026-10-29: the M4 verify, the PR and main all
    ran it on one checkpoint). Sanitizers are instrumentation, not fuzzers, so a
    repeat run on unchanged code finds nothing new.
-6. **Remote TTB close to local.** The aim is near-local times remotely, given
+6. **Programs on their own repository.** Today the demonstration programs
+   (packaging/programs.json: the Gallery, the File Manager demoboard and the
+   rest, built, packaged and smoke-launched by release.yml) share the GUI.Forms
+   repository and its build stage, per platform, so every pull request also
+   builds and tests them. They move to their own repository, consumed against
+   GUI.Forms' published build, and an automatic trigger recompiles them whenever
+   main merges a pull request (for example a repository_dispatch from GUI.Forms'
+   push to main). Releases of the programs follow from there.
+7. **Remote TTB close to local.** The aim is near-local times remotely, given
    that runners must bootstrap. Cut the round trip at every stage.
-7. **Template integration.** Fold the whole setup into the template's GitHub
+8. **Template integration.** Fold the whole setup into the template's GitHub
    setup (template_harness), so every build system behaves correctly and
    efficiently wherever the work happens.
-8. **A far faster way to use the remote workers for tests.** Tests live in a
+9. **A far faster way to use the remote workers for tests.** Tests live in a
    standalone testing repository. A test run there changes only the files it
    needs and runs only the tests it asks for.
 
@@ -70,5 +78,10 @@ the free GitHub Actions allowance.
 - **Reference pins.** stx_skia's reference profile and the E4 ISA runs (RunPod
   for x86-64, the Windows host) need a home once stx_skia moves to its own
   repository.
+- **Programs and releases.** release.yml and publish-release.yml publish the
+  tested program packages and `v*` releases from GUI.Forms today, and
+  docs-publish.yml waits on "GUI.Forms programs and release". Decide which
+  repository publishes the toolkit release and which the program packages, and
+  re-point the documentation trigger.
 - **Where the checkpoint verify builds.** It should build against the
   published dependency caches too, so the M4 stops rebuilding them.
