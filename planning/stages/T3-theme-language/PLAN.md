@@ -369,6 +369,28 @@ only for text and colour roles).
   values fail", because the newly added piece is the one at fault, and a
   program designer's inline rules are honoured.
 
+- **Owner decision (2026-10-29): resolved at theme load, not at paint.**
+  This replaces the per-part lowering and cache above. A custom property
+  defined in only one place (only in the palette, say) is substituted
+  directly when the theme loads, as before P12, with no copies. A name
+  defined in more than one place is expanded only for the rules that read
+  it: such a rule is lowered once per combination of the candidate
+  definitions of the redefined names it reads (the pattern of P8b's
+  palette copies), and each copy carries conditions on which definition
+  wins for the part. The definitions themselves go to the engine as
+  unconditioned rules with their selector, level and media. At paint,
+  the engine only resolves which definition of each redefined name wins
+  for a part (one walk per resolution, no allocation) and matches the
+  copies by it. Nothing is lowered at paint, so every candidate is
+  checked when the theme loads (B2), and the gate's counter is a
+  load-time count. The limits on copies per rule and on redefined names
+  per theme are set from a realistic token-heavy test theme (about a
+  hundred variables, a few scoped overrides, light and dark through
+  `@media`), with headroom, so that ordinary themes are never refused;
+  the numbers are recorded here when measured. P12a builds this within
+  one compilation (a theme and its `@import` closure); P12b adds inline
+  definitions.
+
 ## 2. Diagnostics
 
 Every diagnostic has:
