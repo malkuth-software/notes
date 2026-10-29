@@ -1270,6 +1270,27 @@ recommended):*
   character; a resource name may also hold `.` and `_` after its first
   character.
 
+*P10c, owner decisions (2026-10-28):*
+
+- **The size limit** (1, accepted): the 1 MiB limit covers the whole
+  `@import` closure's text, not each sheet.
+- **A resource that is not a valid image** (2, accepted) is E601: its
+  bytes match their hash, but the manifest declares an image it is not.
+- **A compiled theme owns its images** (3, changed from the built
+  version, which left them in the registry): each image a theme loaded is
+  removed from its `ImageRegistry` when the last theme holding it is
+  released, so replacing or dropping a theme removes its images. Two
+  themes loading the same bytes into one registry share one image,
+  counted by both. A refused compile leaves none of its own. Nothing of
+  the mechanism is public (coordinator review): the theme holds a private
+  vector of an internal lease type through an internal factory, and the
+  registry's liveness (a registry destroyed or moved before its themes)
+  is reached through an internal accessor; `Theme::create` stays the one
+  public factory. The gate: repeated swaps leave the registry the same
+  size, clean under the sanitizer.
+- **A custom property defined in two sheets** (4, accepted) stays E999
+  until P12.
+
 **P12. Custom properties through the cascade (engine change EC7).** The
 engine first: custom property definitions and deferred declarations in the
 compiled rules, the per-part resolution of section 1.11 with `!important`
