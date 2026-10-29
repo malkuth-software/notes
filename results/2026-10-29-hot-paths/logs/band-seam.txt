@@ -1,0 +1,7 @@
+seam tabs-and-pages scale 1 damage rows [0,410): 12 pixels changed, rows 408-409
+seam dock-and-anchor scale 2 damage rows [0,820): 12 pixels changed, rows 819-819
+seam containers-and-focus scale 2 damage rows [0,820): 0 pixels changed
+seam values-and-spinners scale 2 damage rows [0,820): 1 pixels changed, rows 819-819
+4
+6
+22:06  up 4 days,  1:30, 1 user, load averages: 4.42 6.18 6.35

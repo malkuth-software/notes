@@ -1,0 +1,103 @@
+anchored-popups.trace: before 521 after 521 removals only; removed {}
+animation-laboratory.trace: before 447 after 447 removals only; removed {}
+basics.trace: before 530 after 530 removals only; removed {}
+checked-collections.trace: before 538 after 538 removals only; removed {}
+choices-and-sections.trace: before 604 after 604 removals only; removed {}
+collections-and-popups.trace: before 539 after 539 removals only; removed {}
+commands-and-menus.trace: before 661 after 661 removals only; removed {}
+containers-and-focus.trace: before 582 after 582 removals only; removed {}
+control-spectrum.trace: before 636 after 636 removals only; removed {}
+css-layout-panels.trace: before 744 after 744 removals only; removed {}
+dates-and-calendar.trace: before 649 after 649 removals only; removed {}
+dialogs-and-host-services.trace: before 618 after 618 removals only; removed {}
+dock-and-anchor.trace: before 559 after 559 removals only; removed {}
+images-and-drawing.trace: before 657 after 657 removals only; removed {}
+instrument.trace: before 382 after 382 removals only; removed {}
+live-surfaces.trace: before 594 after 594 removals only; removed {}
+ranges-and-progress.trace: before 875 after 875 removals only; removed {}
+responsive-layouts.trace: before 818 after 818 removals only; removed {}
+retained-layout-panels.trace: before 750 after 750 removals only; removed {}
+retained-rows.trace: before 392 after 392 removals only; removed {}
+semantic-feedback.trace: before 524 after 524 removals only; removed {}
+states-and-diagnostics.trace: before 547 after 547 removals only; removed {}
+tabs-and-pages.trace: before 680 after 680 removals only; removed {}
+text-and-input.trace: before 576 after 576 removals only; removed {}
+timing-and-tooltips.trace: before 740 after 740 removals only; removed {}
+tree-and-object-views.trace: before 685 after 685 removals only; removed {}
+typography-and-inspection.trace: before 608 after 608 removals only; removed {}
+value-editors.trace: before 682 after 682 removals only; removed {}
+values-and-spinners.trace: before 1068 after 1068 removals only; removed {}
+values.trace: before 403 after 403 removals only; removed {}
+pages 30 removed in all {}
+before round 1 wall 5.07 s
+after round 1 wall 4.87 s
+before round 2 wall 4.51 s
+after round 2 wall 4.50 s
+before round 3 wall 4.48 s
+after round 3 wall 4.60 s
+PIXELS DIFFER ('damage', 'control-spectrum', 1, 1)
+PIXELS DIFFER ('damage', 'control-spectrum', 1, 10)
+PIXELS DIFFER ('damage', 'control-spectrum', 1, 100)
+PIXELS DIFFER ('damage', 'control-spectrum', 2, 1)
+PIXELS DIFFER ('damage', 'control-spectrum', 2, 10)
+PIXELS DIFFER ('damage', 'control-spectrum', 2, 100)
+PIXELS DIFFER ('damage', 'control-spectrum', 3, 1)
+PIXELS DIFFER ('damage', 'control-spectrum', 3, 10)
+PIXELS DIFFER ('damage', 'control-spectrum', 3, 100)
+PIXELS DIFFER ('pages', 'values', 1, 100)
+PIXELS DIFFER ('pages', 'control-spectrum', 1, 100)
+PIXELS DIFFER ('pages', 'ranges-and-progress', 1, 100)
+PIXELS DIFFER ('pages', 'containers-and-focus', 1, 100)
+PIXELS DIFFER ('pages', 'animation-laboratory', 1, 100)
+PIXELS DIFFER ('pages', 'collections-and-popups', 1, 100)
+PIXELS DIFFER ('pages', 'values-and-spinners', 1, 100)
+PIXELS DIFFER ('pages', 'images-and-drawing', 1, 100)
+PIXELS DIFFER ('pages', 'tabs-and-pages', 1, 100)
+PIXELS DIFFER ('pages', 'timing-and-tooltips', 1, 100)
+PIXELS DIFFER ('pages', 'dates-and-calendar', 1, 100)
+PIXELS DIFFER ('pages', 'dialogs-and-host-services', 1, 100)
+PIXELS DIFFER ('pages', 'css-layout-panels', 1, 100)
+PIXELS DIFFER ('pages', 'retained-layout-panels', 1, 100)
+PIXELS DIFFER ('pages', 'dock-and-anchor', 1, 100)
+PIXELS DIFFER ('pages', 'choices-and-sections', 1, 100)
+PIXELS DIFFER ('pages', 'value-editors', 1, 100)
+PIXELS DIFFER ('pages', 'responsive-layouts', 1, 100)
+PIXELS DIFFER ('pages', 'anchored-popups', 1, 100)
+PIXELS DIFFER ('pages', 'live-surfaces', 1, 100)
+PIXELS DIFFER ('pages', 'typography-and-inspection', 1, 100)
+PIXELS DIFFER ('pages', 'semantic-feedback', 1, 100)
+PIXELS DIFFER ('pages', 'values', 2, 100)
+PIXELS DIFFER ('pages', 'control-spectrum', 2, 100)
+PIXELS DIFFER ('pages', 'ranges-and-progress', 2, 100)
+PIXELS DIFFER ('pages', 'containers-and-focus', 2, 100)
+PIXELS DIFFER ('pages', 'animation-laboratory', 2, 100)
+PIXELS DIFFER ('pages', 'states-and-diagnostics', 2, 100)
+PIXELS DIFFER ('pages', 'collections-and-popups', 2, 100)
+PIXELS DIFFER ('pages', 'values-and-spinners', 2, 100)
+PIXELS DIFFER ('pages', 'images-and-drawing', 2, 100)
+PIXELS DIFFER ('pages', 'tabs-and-pages', 2, 100)
+PIXELS DIFFER ('pages', 'timing-and-tooltips', 2, 100)
+PIXELS DIFFER ('pages', 'dialogs-and-host-services', 2, 100)
+PIXELS DIFFER ('pages', 'css-layout-panels', 2, 100)
+PIXELS DIFFER ('pages', 'retained-layout-panels', 2, 100)
+PIXELS DIFFER ('pages', 'dock-and-anchor', 2, 100)
+PIXELS DIFFER ('pages', 'tree-and-object-views', 2, 100)
+PIXELS DIFFER ('pages', 'choices-and-sections', 2, 100)
+PIXELS DIFFER ('pages', 'value-editors', 2, 100)
+PIXELS DIFFER ('pages', 'responsive-layouts', 2, 100)
+PIXELS DIFFER ('pages', 'anchored-popups', 2, 100)
+PIXELS DIFFER ('pages', 'live-surfaces', 2, 100)
+PIXELS DIFFER ('pages', 'typography-and-inspection', 2, 100)
+PIXELS DIFFER ('pages', 'semantic-feedback', 2, 100)
+cases 69, pixel hash mismatches 54
+damage: 9 cases, sum of median frame ns before 5.80 ms after 5.81 ms ratio 1.002
+  scale 1: before 0.66 ms after 0.61 ms ratio 0.926
+  scale 2: before 1.74 ms after 1.65 ms ratio 0.948
+  scale 3: before 3.40 ms after 3.55 ms ratio 1.044
+pages: 60 cases, sum of median frame ns before 93.81 ms after 94.09 ms ratio 1.003
+  scale 1: before 22.54 ms after 24.26 ms ratio 1.076
+  scale 2: before 71.27 ms after 69.84 ms ratio 0.980
+controls_painted: before 179544 after 179544
+paint_nodes_visited: before 1006272 after 1006272
+display_commands_replayed: before 705528 after 705528
+ 1:55  up 4 days,  5:18, 1 user, load averages: 6.69 7.31 6.70

@@ -1,0 +1,28 @@
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+FAIL NotoSansArabic-Regular.ttf glyph 169: Glyph render failed
+IDENTICAL      310 lines; total 61c4fbd3d5549f24
+old repeats ns_per_glyph 2577.4 (sink f02cf529cbf43a99) distinct ns_per_glyph 2867.4 (sink 30c919e2327f2234) 
+new repeats ns_per_glyph 1331.0 (sink f02cf529cbf43a99) distinct ns_per_glyph 2499.1 (sink 30c919e2327f2234) 
+old repeats ns_per_glyph 2255.4 (sink f02cf529cbf43a99) distinct ns_per_glyph 2542.9 (sink 30c919e2327f2234) 
+new repeats ns_per_glyph 1307.8 (sink f02cf529cbf43a99) distinct ns_per_glyph 2771.5 (sink 30c919e2327f2234) 
+old repeats ns_per_glyph 2430.2 (sink f02cf529cbf43a99) distinct ns_per_glyph 2840.9 (sink 30c919e2327f2234) 
+new repeats ns_per_glyph 1344.8 (sink f02cf529cbf43a99) distinct ns_per_glyph 2894.5 (sink 30c919e2327f2234) 
+old text_engine stage resolve=0.2475 shape=0.2298 rasterize=2.3958 composite=0.1724
+new text_engine stage resolve=0.2733 shape=0.2519 rasterize=2.2324 composite=0.1890
+old text_engine stage resolve=0.2790 shape=0.2587 rasterize=2.6662 composite=0.1961
+new text_engine stage resolve=0.2862 shape=0.2574 rasterize=2.2457 composite=0.1945
+old text_engine stage resolve=0.2456 shape=0.2290 rasterize=2.3924 composite=0.1727
+new text_engine stage resolve=0.2712 shape=0.2484 rasterize=2.2252 composite=0.1890
+19:47  up 3 days, 23:10, 1 user, load averages: 6.37 7.57 7.34
+== tests plain
+exit 0
+100% tests passed, 0 tests failed out of 1
+== tests sanitize
+exit 0
+100% tests passed, 0 tests failed out of 1

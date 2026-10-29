@@ -1,0 +1,38 @@
+samples: 5095; slide 0x4424000
+areas (self): skia 58.74%, gui_forms 31.58%, other 4.79%, runtime 2.75%, workload 2.12%, harfbuzz 0.02%
+| # | Self | Incl | Area | Function |
+| 1 | 40.69% | 40.69% | skia | neon::rect_memset32(unsigned int*, unsigned int, int, unsigned long, int) |
+| 2 | 16.90% | 26.26% | gui_forms | gui_forms::detail::composite_text_coverage(gui_forms::detail::TextCoverage, gui_forms::detail::TextComposit... |
+| 3 | 9.34% | 9.34% | gui_forms | gui_forms::detail::(anonymous namespace)::prepared_clip_coverage(gui_forms::detail::(anonymous namespace)::... |
+| 4 | 2.83% | 2.83% | skia | void neon::lowp::lowp_gather_stage<(SkRasterPipelineOp)94, &neon::lowp::evenly_spaced_2_stop_gradient_k(SkR... |
+| 5 | 2.12% | 98.25% | workload | (anonymous namespace)::measure(gui_forms::render::SkiaRaster&, gui_forms::Window&, gui_forms::Rect, double,... |
+| 6 | 1.33% | 2.20% | skia | SkScan::FillPath(SkPathRaw const&, SkRegion const&, SkBlitter*) |
+| 7 | 1.30% | 1.30% | skia | void neon::lowp::lowp_pixel_stage<(SkRasterPipelineOp)32, &neon::lowp::store_8888_k(SkRasterPipelineContext... |
+| 8 | 1.12% | 4.97% | skia | aaa_fill_path(SkPathRaw const&, SkIRect const&, AdditiveBlitter*, int, int, bool, bool, bool) |
+| 9 | 1.12% | 1.12% | skia | void neon::lowp::lowp_geometry_stage<(SkRasterPipelineOp)82, &neon::lowp::matrix_2x3_k(float const*, unsign... |
+| 10 | 1.02% | 2.18% | skia | blit_trapezoid_row(AdditiveBlitter*, int, int, int, int, int, int, int, unsigned char, MaskRow, bool) |
+| 11 | 0.98% | 0.98% | other | _gray_render_line |
+| 12 | 0.88% | 0.88% | skia | void neon::lowp::lowp_gather_stage<(SkRasterPipelineOp)45, &neon::lowp::bilerp_clamp_8888_k(SkRasterPipelin... |
+| 13 | 0.77% | 8.73% | skia | neon::lowp::start_pipeline(unsigned long, unsigned long, unsigned long, unsigned long, SkRasterPipelineStag... |
+| 14 | 0.73% | 0.73% | skia | neon::memset32(unsigned int*, unsigned int, int) |
+| 15 | 0.65% | 0.84% | other | _af_glyph_hints_reload |
+| 16 | 0.59% | 1.16% | gui_forms | gui_forms::Window::collect_paint_checkpoints(std::__1::shared_ptr<gui_forms::Control> const&, std::__1::vec... |
+| 17 | 0.45% | 0.45% | gui_forms | gui_forms::Window::display_cache_entries(std::__1::shared_ptr<gui_forms::Control> const&) const |
+| 18 | 0.43% | 0.43% | gui_forms | std::__1::vector<gui_forms::Window::PaintControlCheckpoint, std::__1::allocator<gui_forms::Window::PaintCon... |
+| 19 | 0.43% | 0.92% | gui_forms | gui_forms::Window::clear_paint_dirty_subtree(std::__1::shared_ptr<gui_forms::Control> const&) |
+| 20 | 0.43% | 0.43% | skia | void neon::lowp::lowp_pixel_stage<(SkRasterPipelineOp)3, &neon::lowp::clamp_01_k(void const*, unsigned long... |
+| 21 | 0.41% | 0.41% | skia | void neon::lowp::lowp_geometry_stage<(SkRasterPipelineOp)17, &neon::lowp::seed_shader_k(void const*, unsign... |
+| 22 | 0.39% | 96.70% | gui_forms | gui_forms::Window::paint_rectangles(gui_forms::Painter&, std::__1::span<gui_forms::Rect const, 184467440737... |
+| 23 | 0.39% | 0.39% | skia | void neon::lowp::lowp_geometry_stage<(SkRasterPipelineOp)88, &neon::lowp::clamp_x_1_k(void const*, unsigned... |
+| 24 | 0.31% | 0.31% | runtime | _platform_memset |
+| 25 | 0.27% | 0.27% | runtime | _platform_memmove |
+| 26 | 0.26% | 0.26% | gui_forms | gui_forms::Control::clear_dirty(gui_forms::Dirty) |
+| 27 | 0.26% | 0.51% | runtime | _xzm_free |
+| 28 | 0.26% | 0.26% | other | _af_latin_hints_compute_segments |
+| 29 | 0.24% | 0.24% | gui_forms | gui_forms::Control::clear_subtree_dirty(gui_forms::Dirty) |
+| 30 | 0.24% | 0.24% | skia | SkBlitRow::Color32(unsigned int*, int, unsigned int) |
+
+leaf rect_memset32: 40.69% of samples; GUI.Forms call paths (nearest first), share of those samples:
+   99.66%  gui_forms::render::SkiaRaster::fill_rect <- gui_forms::detail::replay_display_chunk <- gui_forms::Window::paint_rectangles <- gui_forms::Window::paint
+    0.19%  gui_forms::render::SkiaRaster::draw_line <- gui_forms::detail::replay_display_chunk <- gui_forms::Window::paint_rectangles <- gui_forms::Window::paint
+    0.14%  gui_forms::render::SkiaRaster::resize <- 

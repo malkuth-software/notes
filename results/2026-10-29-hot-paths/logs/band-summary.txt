@@ -1,0 +1,64 @@
+damage scale 1 10%: cases 1, direct 0.09 ms, record 0.05 ms, replay1 0.04 ms (replay share 46%), replay identical True
+  T1  B1  wall 0.05 ms, record+wall 0.10 ms, speed-up 0.94x, replay speed-up 0.91x, busy/replay1 1.03, identical True
+  T2  B2  wall 0.04 ms, record+wall 0.09 ms, speed-up 1.07x, replay speed-up 1.21x, busy/replay1 1.24, identical True
+  T4  B4  wall 0.04 ms, record+wall 0.09 ms, speed-up 1.00x, replay speed-up 1.04x, busy/replay1 2.16, identical True
+  T4  B8  wall 0.06 ms, record+wall 0.11 ms, speed-up 0.85x, replay speed-up 0.74x, busy/replay1 3.92, identical True
+  T6  B12 wall 0.11 ms, record+wall 0.16 ms, speed-up 0.58x, replay speed-up 0.40x, busy/replay1 11.58, identical True
+  T8  B8  wall 0.08 ms, record+wall 0.13 ms, speed-up 0.69x, replay speed-up 0.51x, busy/replay1 10.69, identical True
+  T8  B16 wall 0.16 ms, record+wall 0.21 ms, speed-up 0.44x, replay speed-up 0.27x, busy/replay1 24.00, identical True
+damage scale 1 100%: cases 1, direct 0.56 ms, record 0.09 ms, replay1 0.49 ms (replay share 86%), replay identical True
+  T1  B1  wall 0.54 ms, record+wall 0.63 ms, speed-up 0.89x, replay speed-up 0.89x, busy/replay1 1.11, identical True
+  T2  B2  wall 0.29 ms, record+wall 0.38 ms, speed-up 1.48x, replay speed-up 1.67x, busy/replay1 1.09, identical True
+  T4  B4  wall 0.24 ms, record+wall 0.33 ms, speed-up 1.69x, replay speed-up 1.99x, busy/replay1 1.55, identical True
+  T4  B8  wall 0.30 ms, record+wall 0.39 ms, speed-up 1.44x, replay speed-up 1.61x, busy/replay1 2.02, identical False
+  T6  B12 wall 0.39 ms, record+wall 0.48 ms, speed-up 1.18x, replay speed-up 1.25x, busy/replay1 4.35, identical False
+  T8  B8  wall 0.32 ms, record+wall 0.41 ms, speed-up 1.37x, replay speed-up 1.50x, busy/replay1 4.05, identical False
+  T8  B16 wall 0.57 ms, record+wall 0.66 ms, speed-up 0.86x, replay speed-up 0.85x, busy/replay1 8.12, identical False
+damage scale 2 10%: cases 1, direct 0.15 ms, record 0.05 ms, replay1 0.10 ms (replay share 66%), replay identical True
+  T1  B1  wall 0.11 ms, record+wall 0.16 ms, speed-up 0.95x, replay speed-up 0.92x, busy/replay1 1.03, identical True
+  T2  B2  wall 0.06 ms, record+wall 0.11 ms, speed-up 1.35x, replay speed-up 1.65x, busy/replay1 1.09, identical True
+  T4  B4  wall 0.06 ms, record+wall 0.11 ms, speed-up 1.30x, replay speed-up 1.54x, busy/replay1 1.59, identical True
+  T4  B8  wall 0.06 ms, record+wall 0.11 ms, speed-up 1.36x, replay speed-up 1.66x, busy/replay1 1.97, identical True
+  T6  B12 wall 0.11 ms, record+wall 0.16 ms, speed-up 0.94x, replay speed-up 0.91x, busy/replay1 5.16, identical True
+  T8  B8  wall 0.09 ms, record+wall 0.14 ms, speed-up 1.04x, replay speed-up 1.07x, busy/replay1 4.99, identical True
+  T8  B16 wall 0.16 ms, record+wall 0.21 ms, speed-up 0.70x, replay speed-up 0.60x, busy/replay1 10.47, identical True
+damage scale 2 100%: cases 1, direct 1.57 ms, record 0.09 ms, replay1 1.48 ms (replay share 94%), replay identical True
+  T1  B1  wall 1.53 ms, record+wall 1.62 ms, speed-up 0.97x, replay speed-up 0.97x, busy/replay1 1.04, identical True
+  T2  B2  wall 0.82 ms, record+wall 0.91 ms, speed-up 1.73x, replay speed-up 1.81x, busy/replay1 1.04, identical True
+  T4  B4  wall 0.56 ms, record+wall 0.65 ms, speed-up 2.41x, replay speed-up 2.65x, busy/replay1 1.27, identical True
+  T4  B8  wall 0.45 ms, record+wall 0.54 ms, speed-up 2.89x, replay speed-up 3.29x, busy/replay1 1.13, identical False
+  T6  B12 wall 0.48 ms, record+wall 0.57 ms, speed-up 2.74x, replay speed-up 3.09x, busy/replay1 1.62, identical False
+  T8  B8  wall 0.40 ms, record+wall 0.50 ms, speed-up 3.16x, replay speed-up 3.67x, busy/replay1 1.60, identical False
+  T8  B16 wall 0.56 ms, record+wall 0.65 ms, speed-up 2.42x, replay speed-up 2.66x, busy/replay1 2.62, identical False
+damage scale 3 10%: cases 1, direct 0.21 ms, record 0.04 ms, replay1 0.16 ms (replay share 79%), replay identical True
+  T1  B1  wall 0.17 ms, record+wall 0.22 ms, speed-up 0.95x, replay speed-up 0.93x, busy/replay1 1.06, identical True
+  T2  B2  wall 0.10 ms, record+wall 0.14 ms, speed-up 1.46x, replay speed-up 1.65x, busy/replay1 1.14, identical True
+  T4  B4  wall 0.07 ms, record+wall 0.11 ms, speed-up 1.87x, replay speed-up 2.43x, busy/replay1 1.37, identical True
+  T4  B8  wall 0.08 ms, record+wall 0.12 ms, speed-up 1.67x, replay speed-up 2.03x, busy/replay1 1.57, identical True
+  T6  B12 wall 0.10 ms, record+wall 0.14 ms, speed-up 1.44x, replay speed-up 1.62x, busy/replay1 2.85, identical True
+  T8  B8  wall 0.09 ms, record+wall 0.14 ms, speed-up 1.50x, replay speed-up 1.72x, busy/replay1 2.77, identical True
+  T8  B16 wall 0.16 ms, record+wall 0.20 ms, speed-up 1.04x, replay speed-up 1.05x, busy/replay1 5.95, identical True
+damage scale 3 100%: cases 1, direct 2.74 ms, record 0.09 ms, replay1 2.76 ms (replay share 101%), replay identical True
+  T1  B1  wall 2.80 ms, record+wall 2.89 ms, speed-up 0.95x, replay speed-up 0.98x, busy/replay1 1.01, identical True
+  T2  B2  wall 1.50 ms, record+wall 1.58 ms, speed-up 1.73x, replay speed-up 1.84x, busy/replay1 1.08, identical True
+  T4  B4  wall 1.20 ms, record+wall 1.29 ms, speed-up 2.13x, replay speed-up 2.30x, busy/replay1 1.50, identical True
+  T4  B8  wall 1.20 ms, record+wall 1.28 ms, speed-up 2.13x, replay speed-up 2.31x, busy/replay1 1.48, identical False
+  T6  B12 wall 1.00 ms, record+wall 1.09 ms, speed-up 2.52x, replay speed-up 2.76x, busy/replay1 1.84, identical False
+  T8  B8  wall 0.99 ms, record+wall 1.08 ms, speed-up 2.54x, replay speed-up 2.78x, busy/replay1 1.95, identical False
+  T8  B16 wall 0.93 ms, record+wall 1.01 ms, speed-up 2.70x, replay speed-up 2.98x, busy/replay1 2.23, identical False
+pages scale 1: cases 30, direct 24.20 ms, record 2.82 ms, replay1 21.24 ms (replay share 88%), replay identical True
+  T1  B1  wall 21.94 ms, record+wall 24.76 ms, speed-up 0.98x, replay speed-up 0.97x, busy/replay1 1.03, identical True
+  T2  B2  wall 12.67 ms, record+wall 15.49 ms, speed-up 1.56x, replay speed-up 1.68x, busy/replay1 1.09, identical False
+  T4  B4  wall 9.37 ms, record+wall 12.20 ms, speed-up 1.98x, replay speed-up 2.27x, busy/replay1 1.33, identical False
+  T4  B8  wall 10.22 ms, record+wall 13.04 ms, speed-up 1.86x, replay speed-up 2.08x, busy/replay1 1.64, identical False
+  T6  B12 wall 13.36 ms, record+wall 16.18 ms, speed-up 1.50x, replay speed-up 1.59x, busy/replay1 3.30, identical False
+  T8  B8  wall 10.90 ms, record+wall 13.72 ms, speed-up 1.76x, replay speed-up 1.95x, busy/replay1 3.01, identical False
+  T8  B16 wall 19.25 ms, record+wall 22.07 ms, speed-up 1.10x, replay speed-up 1.10x, busy/replay1 6.37, identical False
+pages scale 2: cases 30, direct 70.83 ms, record 2.77 ms, replay1 67.53 ms (replay share 95%), replay identical True
+  T1  B1  wall 68.29 ms, record+wall 71.05 ms, speed-up 1.00x, replay speed-up 0.99x, busy/replay1 1.01, identical True
+  T2  B2  wall 38.03 ms, record+wall 40.80 ms, speed-up 1.74x, replay speed-up 1.78x, busy/replay1 1.04, identical False
+  T4  B4  wall 26.26 ms, record+wall 29.03 ms, speed-up 2.44x, replay speed-up 2.57x, busy/replay1 1.21, identical False
+  T4  B8  wall 25.14 ms, record+wall 27.91 ms, speed-up 2.54x, replay speed-up 2.69x, busy/replay1 1.29, identical False
+  T6  B12 wall 23.04 ms, record+wall 25.80 ms, speed-up 2.74x, replay speed-up 2.93x, busy/replay1 1.71, identical False
+  T8  B8  wall 23.54 ms, record+wall 26.30 ms, speed-up 2.69x, replay speed-up 2.87x, busy/replay1 1.83, identical False
+  T8  B16 wall 23.90 ms, record+wall 26.66 ms, speed-up 2.66x, replay speed-up 2.83x, busy/replay1 2.41, identical False

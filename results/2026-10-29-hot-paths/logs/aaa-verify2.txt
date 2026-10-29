@@ -1,0 +1,17 @@
+plain exit 0
+100% tests passed, 0 tests failed out of 16
+sanitize exit 0
+100% tests passed, 0 tests failed out of 16
+house style exit 0
+1454 files; 0 spelling findings/review candidates. Semantic review still required.
+lifetime exit 0
+1454 files; 0 lifetime-rule findings. Semantic review still required.
+gate exit 0
+0 translation units compiled; 1 files parsed
+area             C1   C2   C3   F1   F2   OK
+OK counts compliant switches (every enumerator listed, every case leaves, one fallback after the switch); they are not listed below.
+state-machine gate: no F1/F2 findings
+stx_skia style exit 0
+0 files with 0 allowed findings; 0 failures.
+docs check exit 0
+GUI.Forms API reference check: PASS (committed pages match the headers and docstrings)

@@ -1,0 +1,215 @@
+diff --git a/src/core/display/command/display_command.hpp b/src/core/display/command/display_command.hpp
+index 8532a33a..e57a9b8b 100644
+--- a/src/core/display/command/display_command.hpp
++++ b/src/core/display/command/display_command.hpp
+@@ -5,6 +5,7 @@
+ #include "gui_forms/engine/part_raster/part_raster.hpp"
+ 
+ #include <cstdint>
++#include "../hp_fill_trace.hpp"
+ #include <memory>
+ #include <string>
+ #include <vector>
+@@ -55,6 +56,7 @@ enum class DisplayOperation : std::uint8_t {
+ 
+ struct DisplayCommand final {
+     DisplayOperation operation{};
++    gui_forms::hp::Origin hp_origin{};
+     Point first{};
+     Point second{};
+     Rect rect{};
+diff --git a/src/core/display/hp_fill_trace.hpp b/src/core/display/hp_fill_trace.hpp
+new file mode 100644
+index 00000000..e9750647
+--- /dev/null
++++ b/src/core/display/hp_fill_trace.hpp
+@@ -0,0 +1,88 @@
++#pragma once
++// SCRATCH (hot-paths track): fill-volume attribution. Never committed.
++#include <array>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++#include <cxxabi.h>
++#include <dlfcn.h>
++#include <execinfo.h>
++#include <map>
++#include <string>
++#include <utility>
++#include <vector>
++
++namespace gui_forms::hp {
++
++using Origin = std::array<void*, 14>;
++
++inline thread_local const Origin* current = nullptr;
++
++inline Origin capture() {
++    Origin origin{};
++    backtrace(origin.data(), static_cast<int>(origin.size()));
++    return origin;
++}
++
++inline std::string frame_name(void* address) {
++    Dl_info info{};
++    if (address == nullptr || dladdr(address, &info) == 0 || info.dli_sname == nullptr) return "?";
++    int status = 0;
++    char* demangled = abi::__cxa_demangle(info.dli_sname, nullptr, nullptr, &status);
++    std::string name = status == 0 && demangled != nullptr ? demangled : info.dli_sname;
++    std::free(demangled);
++    const std::size_t paren = name.find('(');
++    if (paren != std::string::npos) name.resize(paren);
++    return name;
++}
++
++struct Totals final {
++    std::map<std::pair<int, Origin>, std::array<double, 3>> by;  // opaque area, translucent area, count
++    double opaque = 0.0;
++    double translucent = 0.0;
++    double damage = 0.0;
++    ~Totals() {
++        const char* path = std::getenv("HP_FILL_OUT");
++        if (path == nullptr) return;
++        std::FILE* out = std::fopen(path, "w");
++        if (out == nullptr) return;
++        std::fprintf(out, "damage_device_px %.0f\nopaque_fill_px %.0f\ntranslucent_fill_px %.0f\n", damage, opaque,
++                     translucent);
++        static const char* const kinds[] = {"fill_rect", "fill_rounded_rect", "stroke_rect", "clear"};
++        for (const std::pair<const std::pair<int, Origin>, std::array<double, 3>>& entry : by) {
++            std::string chain;
++            int kept = 0;
++            for (void* address : entry.first.second) {
++                const std::string name = frame_name(address);
++                if (name.find("hp::") != std::string::npos || name.find("RecordingPainter::") != std::string::npos ||
++                    name == "?") {
++                    continue;
++                }
++                if (!chain.empty()) chain += " <- ";
++                chain += name;
++                if (++kept == 7) break;
++            }
++            std::fprintf(out, "ROW\t%s\t%.0f\t%.0f\t%.0f\t%s\n", kinds[entry.first.first], entry.second[0],
++                         entry.second[1], entry.second[2], chain.c_str());
++        }
++        std::fclose(out);
++    }
++};
++
++inline Totals totals;
++
++inline void add(int kind, double area, bool opaque) {
++    Origin none{};
++    const Origin& origin = current != nullptr ? *current : none;
++    std::array<double, 3>& row = totals.by[{kind, origin}];
++    if (opaque) {
++        row[0] += area;
++        totals.opaque += area;
++    } else {
++        row[1] += area;
++        totals.translucent += area;
++    }
++    row[2] += 1.0;
++}
++
++} // namespace gui_forms::hp
+diff --git a/src/core/display/recording_painter/recording_painter.cpp b/src/core/display/recording_painter/recording_painter.cpp
+index 23a9293d..22beec6a 100644
+--- a/src/core/display/recording_painter/recording_painter.cpp
++++ b/src/core/display/recording_painter/recording_painter.cpp
+@@ -85,6 +85,7 @@ void RecordingPainter::clip_rounded_rect(Rect rect, double radius) {
+ void RecordingPainter::fill_rect(Rect rect, Color color) {
+     DisplayCommand command;
+     command.operation = DisplayOperation::fill_rect;
++    command.hp_origin = gui_forms::hp::current != nullptr ? *gui_forms::hp::current : gui_forms::hp::capture();
+     command.rect = rect;
+     command.color = color;
+     commands_.push_back(std::move(command));
+@@ -93,6 +94,7 @@ void RecordingPainter::fill_rect(Rect rect, Color color) {
+ void RecordingPainter::fill_rounded_rect(Rect rect, double radius, Color color) {
+     DisplayCommand command;
+     command.operation = DisplayOperation::fill_rounded_rect;
++    command.hp_origin = gui_forms::hp::current != nullptr ? *gui_forms::hp::current : gui_forms::hp::capture();
+     command.rect = rect;
+     command.color = color;
+     command.scalar = radius;
+@@ -102,6 +104,7 @@ void RecordingPainter::fill_rounded_rect(Rect rect, double radius, Color color)
+ void RecordingPainter::stroke_rect(Rect rect, Color color, double width) {
+     DisplayCommand command;
+     command.operation = DisplayOperation::stroke_rect;
++    command.hp_origin = gui_forms::hp::current != nullptr ? *gui_forms::hp::current : gui_forms::hp::capture();
+     command.rect = rect;
+     command.color = color;
+     command.scalar = width;
+diff --git a/src/core/display/replay/replay_display_chunk.cpp b/src/core/display/replay/replay_display_chunk.cpp
+index e0873bc4..4e8ceb32 100644
+--- a/src/core/display/replay/replay_display_chunk.cpp
++++ b/src/core/display/replay/replay_display_chunk.cpp
+@@ -8,7 +8,13 @@ namespace gui_forms::detail {
+ namespace {
+ 
+ // Replays one recorded command onto `painter`.
++struct HpOriginScope final {
++    const gui_forms::hp::Origin* saved;
++    explicit HpOriginScope(const gui_forms::hp::Origin* o) : saved(gui_forms::hp::current) { gui_forms::hp::current = o; }
++    ~HpOriginScope() { gui_forms::hp::current = saved; }
++};
+ void replay_command(const DisplayCommand& command, Painter& painter) {
++    HpOriginScope hp_scope(&command.hp_origin);
+     switch (command.operation) {
+ #if defined(GUI_FORMS_PREPARED_TEXT)
+     case DisplayOperation::draw_prepared_text: {
+diff --git a/src/render/skia/raster/skia_raster.cpp b/src/render/skia/raster/skia_raster.cpp
+index d48d2c9c..b88b8ae6 100644
+--- a/src/render/skia/raster/skia_raster.cpp
++++ b/src/render/skia/raster/skia_raster.cpp
+@@ -32,6 +32,7 @@
+ #include "include/effects/SkShaderMaskFilter.h"
+ #include "include/effects/SkGradient.h"
+ 
++#include "../../../core/display/hp_fill_trace.hpp"
+ #include <algorithm>
+ #include <array>
+ #include <cstring>
+@@ -594,6 +595,7 @@ void SkiaRaster::begin_frame(const DamageRegion& damage) {
+                 static_cast<int>(std::ceil((rect.x + rect.width) * (*impl_).scale)),
+                 static_cast<int>(std::ceil((rect.y + rect.height) * (*impl_).scale)));
+             region.op(pixels, SkRegion::kUnion_Op);
++            gui_forms::hp::totals.damage += static_cast<double>(pixels.width()) * pixels.height();
+         }
+         (*canvas).resetMatrix();
+         (*canvas).clipRegion(region);
+@@ -910,12 +912,22 @@ void SkiaRaster::fill_rect(Rect rect, Color color) {
+     if (SkCanvas* canvas = (*impl_).canvas()) {
+         SkPaint paint = make_paint(color);
+         const SkRect box = snapped_box((*impl_).snap_transform_of(*canvas), rect, paint);
++        {
++            SkRect device = (*canvas).getTotalMatrix().mapRect(box);
++            if (device.intersect(SkRect::Make((*canvas).getDeviceClipBounds())))
++                gui_forms::hp::add(0, static_cast<double>(device.width()) * device.height(), paint.getAlpha() == 255);
++        }
+         (*canvas).drawRect(box, paint);
+     }
+ }
+ 
+ void SkiaRaster::fill_rounded_rect(Rect rect, double radius, Color color) {
+     if (SkCanvas* canvas = (*impl_).canvas()) {
++        {
++            SkRect device = (*canvas).getTotalMatrix().mapRect(to_sk_rect(rect));
++            if (device.intersect(SkRect::Make((*canvas).getDeviceClipBounds())))
++                gui_forms::hp::add(1, static_cast<double>(device.width()) * device.height(), color.alpha == 255);
++        }
+         // The bounds snap, in device space; the corners keep their
+         // antialiasing.
+         const SnapTransform transform = (*impl_).snap_transform_of(*canvas);
+@@ -938,6 +950,11 @@ void SkiaRaster::fill_rounded_rect(Rect rect, double radius, Color color) {
+ 
+ void SkiaRaster::stroke_rect(Rect rect, Color color, double width) {
+     if (SkCanvas* canvas = (*impl_).canvas()) {
++        {
++            SkRect device = (*canvas).getTotalMatrix().mapRect(to_sk_rect(rect));
++            if (device.intersect(SkRect::Make((*canvas).getDeviceClipBounds())))
++                gui_forms::hp::add(2, 2.0 * width * (static_cast<double>(device.width()) + device.height()), color.alpha == 255);
++        }
+         SkPaint paint = make_paint(color);
+         // The stroke is centred on the edges. Snapped, it is the ring between
+         // its snapped outer and inner edges, filled without antialiasing.

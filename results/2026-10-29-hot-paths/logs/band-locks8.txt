@@ -1,0 +1,36 @@
+== ../hp-band-sample-8-8.txt
+Thread_11265145   DispatchQueue_1: com.apple.main-thread  (s total 5789 lock 5749 (99.3%)
+      5746 __psynch_cvwait <- gui_forms_atomic_pool_wait_checked
+         2 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_wait_checked
+         1 pthread_mutex_lock <- gui_forms_atomic_pool_wait_checked
+Thread_11265168 total 5789 lock 2321 (40.1%)
+      2280 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        39 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+         1 SkSemaphore::~SkSemaphore() <- SkPath::~SkPath()
+         1 __ulock_wait <- SkPathData::MakeNoCheck(SkSpan<SkPoint const>, SkSpan<SkPathVerb const>, SkSpan<float const>, std::optional<Sk
+Thread_11265169 total 5789 lock 2375 (41.0%)
+      2322 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        53 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+Thread_11265170 total 5789 lock 2342 (40.5%)
+      2290 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        50 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+         1 SkSemaphore::~SkSemaphore() <- SkPath::~SkPath()
+         1 __ulock_wait <- SkPathData::MakeNoCheck(SkSpan<SkPoint const>, SkSpan<SkPathVerb const>, SkSpan<float const>, std::optional<Sk
+Thread_11265171 total 5789 lock 2093 (36.2%)
+      2045 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        47 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+         1 __ulock_wait <- SkPathData::MakeNoCheck(SkSpan<SkPoint const>, SkSpan<SkPathVerb const>, SkSpan<float const>, std::optional<Sk
+Thread_11265172 total 5789 lock 1967 (34.0%)
+      1922 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        45 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+Thread_11265173 total 5789 lock 1839 (31.8%)
+      1802 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        37 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+Thread_11265174 total 5789 lock 1815 (31.4%)
+      1780 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        35 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+Thread_11265175 total 5789 lock 1753 (30.3%)
+      1716 __psynch_cvwait <- gui_forms_atomic_pool_worker
+        35 _pthread_mutex_firstfit_lock_slow <- gui_forms_atomic_pool_worker
+         1 SkSemaphore::~SkSemaphore() <- SkPathData::~SkPathData()
+         1 __ulock_wait <- SkPathData::MakeNoCheck(SkSpan<SkPoint const>, SkSpan<SkPathVerb const>, SkSpan<float const>, std::optional<Sk
