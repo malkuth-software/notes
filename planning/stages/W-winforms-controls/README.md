@@ -277,7 +277,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ListBox` | 109 | `ListBox` | done |
 | `CheckedListBox` | 52 | `CheckedListBox` | done |
 | `ComboBox` | 129 | `ComboBox` | done (auto-complete #123, filtering #126) |
-| `ListView` | 181 | `ListView`, `ObjectView` | partial: label editing (F2 and the slow second click), the insertion mark and content-only owner drawing are done; groups, tile view and item tooltips are not supported (#88) |
+| `ListView` | 181 | `ListView`, `ObjectView` | partial: label editing (F2 and the slow second click), the insertion mark, content-only owner drawing, groups (header and rule, not collapsible, not in virtual mode or the list view; the default group first) and the tile view (`TileSize`) are done; item tooltips wait for a per-item tooltip seam shared with `TabControl` and `TreeView` (#88) |
 | `ColumnHeader` | 27 | `ListViewColumn` records | done |
 | `TreeView` | 137 | `TreeView` | done |
 | `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149) |
@@ -315,7 +315,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `TableLayoutPanel` | 39 | `TableLayoutPanel` | done |
 | `SplitContainer`, `SplitterPanel` | 130 | the same two | done |
 | `Splitter` | 57 | none | missing: matrix row 45 holds it to a migration facade over `SplitContainer`; building it is an owner decision |
-| `TabControl` | 98 | `TabControl` | partial: tab images (`ImageList`, `ImageIndex`) and owner drawing are not supported (re-based on `PageStrip`, #137) |
+| `TabControl` | 98 | `TabControl` | partial: tab images (`ImageList`, `ImageIndex`, #343) and content-only owner drawing (#354) and the `Deselecting`, `Selecting`, `Deselected` and `Selected` events are done; `ShowToolTips` with `TabPage.ToolTipText` (the per-item tooltip seam) and `Multiline` are not (re-based on `PageStrip`, #137) |
 | `TabPage` | 55 | `TabPage` | done |
 
 ### Strips and menus
