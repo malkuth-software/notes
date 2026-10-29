@@ -1291,6 +1291,14 @@ recommended):*
 - **A custom property defined in two sheets** (4, accepted) stays E999
   until P12.
 
+*System appearance, owner direction (2026-10-28):* a change of the
+system's high-contrast or light/dark setting reaches a window only where
+the program opts in through an explicit call, as the translation system
+opts in to the system's locale changes; by default the program keeps the
+presentation settings it chose. No host reports the system colour scheme
+yet (P8a); the host work that does follows this opt-in. It applies to P9's
+forced high-contrast pass, P12, and T4; no code changes now.
+
 **P12. Custom properties through the cascade (engine change EC7).** The
 engine first: custom property definitions and deferred declarations in the
 compiled rules, the per-part resolution of section 1.11 with `!important`
