@@ -11,9 +11,10 @@ each one to its cause and says whether it is intended. Paths are relative to gui
 - **Fused multiply-add is a cause; contraction never is.** NEON and AVX2 fuse the raster
   pipeline's `mad`. Building the shipped profiles with `-ffp-contract=off` changed no byte of any
   corpus, on either architecture.
-- **One upstream wrong value found.** Converting black to an HLG Rec. 2020 colour through the
-  scalar colour-space path gives 16.5 on arm64 and −15.2 on x86-64 instead of 0. GUI.Forms never
-  uses an HLG destination. It is reported to the coordinator as a decision, not fixed.
+- **One upstream wrong value found and corrected.** Converting black to an HLG Rec. 2020 colour
+  through the scalar colour-space path gave 16.5 on arm64 and −15.2 on x86-64 instead of 0.
+  GUI.Forms never uses an HLG destination. The coordinator chose to correct it (option 2 below).
+  Since then, black stays black and both architectures agree.
 
 ## How the causes were separated
 
@@ -204,7 +205,9 @@ Default precision is low precision against float stages throughout: at most two 
 
 ## The 10 files that differ between arm64 and x86-64 scalar builds
 
-Neither build has SIMD, auto-vectorization or contraction. Source lines are from the
+Neither build has SIMD, auto-vectorization or contraction. After the HLG correction,
+`color-plans` and `color-plans-corrected` are identical on both architectures, which leaves nine
+files. The byte counts in this note were measured before that split. Source lines are from the
 instrumented corpus helper.
 
 | File | Bytes | Cause | Where | Intended |
@@ -218,7 +221,7 @@ instrumented corpus helper.
 | mask-cache | 4 | one double's last bit in a Gaussian filter factor (`SkGaussFilter`, `exp`; libm, 8) | `mask_cache.cpp` line 50 | yes |
 | tarray-core-capacity | 24,976 | `TArray` takes the allocator's usable size as capacity (`malloc_size`): 160 vs 148 or 240 (9) | capacity records | yes |
 | block-list-core | 3.6 of 6.1 MB; sizes differ | block layout follows `alignof(max_align_t)`, 16 vs 8 (9) | lines 69–89 onward | yes |
-| color-plans | 945 | **wrong value upstream** (10): see below | scalar conversion path, HLG Rec. 2020 destinations | **no** |
+| color-plans | 945 | **wrong value upstream** (10), now corrected: see below | scalar conversion path, HLG Rec. 2020 destinations | **no**; corrected |
 
 **`color-plans`: black into an HLG destination.**
 - **Where.** `SkColorSpaceXformSteps::apply(float*)` is the scalar path. It is used for single
@@ -239,8 +242,20 @@ instrumented corpus helper.
 - **Undefined behaviour.** None: the bits are copied with `memcpy`, so this is a wrong value.
 - **GUI.Forms exposure:** none. It never creates an HLG colour space.
 
-It goes to the coordinator as a decision: (1) record it as an upstream defect and leave the
-code, (2) return 0 from the OOTF step for `Y = 0`, or (3) report it upstream as well.
+The options put to the coordinator were:
+1. record it as an upstream defect and leave the code;
+2. return 0 from the OOTF step for `Y = 0`;
+3. report it upstream as well.
+
+**Decision (coordinator, 2026-10-28): option 2**, under the owner's rule that matching the
+reference is not correctness. There is no upstream report unless the owner asks for one.
+
+The fix is on gui_forms `claude/stx-skia-e4`:
+- The scalar OOTF now matches the raster pipeline's `ootf` stage. Zero luminance gives 0, and a
+  negative luminance keeps its sign; `std::pow` alone gave NaN there too.
+- HLG-destination plans are recorded in `color-plans-corrected.raw`, an intentional difference.
+- The candidate checks that black stays black.
+- stx_skia `docs/CONVERSION.md` has the record, under "HLG black".
 
 ## Between the shipped paths
 
