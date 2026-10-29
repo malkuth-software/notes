@@ -315,7 +315,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `TableLayoutPanel` | 39 | `TableLayoutPanel` | done |
 | `SplitContainer`, `SplitterPanel` | 130 | the same two | done |
 | `Splitter` | 57 | none | missing: matrix row 45 holds it to a migration facade over `SplitContainer`; building it is an owner decision |
-| `TabControl` | 98 | `TabControl` | partial: tab images (`ImageList`, `ImageIndex`, #343) and content-only owner drawing (#354) and the `Deselecting`, `Selecting`, `Deselected` and `Selected` events are done; `ShowToolTips` with `TabPage.ToolTipText` (the per-item tooltip seam) and `Multiline` are not (re-based on `PageStrip`, #137) |
+| `TabControl` | 98 | `TabControl` | partial: tab images (`ImageList`, `ImageIndex`, #343) and content-only owner drawing (#354) and the `Deselecting`, `Selecting`, `Deselected` and `Selected` events are done; `ShowToolTips` with `TabPage.ToolTipText` (the per-item tooltip seam) is not; `Multiline` wrapping is deferred by the owner (2026-10-28; tabs that do not fit scroll) (re-based on `PageStrip`, #137) |
 | `TabPage` | 55 | `TabPage` | done |
 
 ### Strips and menus
