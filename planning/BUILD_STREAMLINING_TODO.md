@@ -33,8 +33,13 @@ the free GitHub Actions allowance.
 4. **Branches reuse main's cache.** Branches import and reuse main's cache
    wherever they can. They do not run large builds, and they run only the
    tests their change needs.
-5. **Sanitizers off by default.** Sanitizers do not run by default, and never on
-   main.
+5. **Sanitizers on their own repository.** Sanitizers do not run in GUI.Forms'
+   own builds: not by default, not on pull requests, never on main. They live in
+   a side repository that builds the sanitized suite periodically, for example at
+   checkpoints. Running them everywhere repeats the same deterministic suite on
+   the same tree several times (2026-10-29: the M4 verify, the PR and main all
+   ran it on one checkpoint). Sanitizers are instrumentation, not fuzzers, so a
+   repeat run on unchanged code finds nothing new.
 6. **Remote TTB close to local.** The aim is near-local times remotely, given
    that runners must bootstrap. Cut the round trip at every stage.
 7. **Template integration.** Fold the whole setup into the template's GitHub
@@ -54,8 +59,11 @@ the free GitHub Actions allowance.
     sanitized suite;
   - the sanitizer job is a required check.
 
-  Decide where sanitizers run instead (on demand, on a schedule, at stage
-  gates only), then update those documents and the required checks together.
+  The owner's answer (2026-10-29): a side repository that runs them
+  periodically, such as at checkpoints. Still to settle: what triggers it (each
+  checkpoint merge, a schedule, or both), which platforms it covers (Linux with
+  LSan; macOS), and how a finding there reaches the main line. Then update
+  those documents and the required checks together.
 - **Required check names.** The required checks are engine-gate, docs,
   house-style, the four native builds, Sanitizers and the state-machine gate.
   Branch protection must change together with the workflows, by the owner.
