@@ -114,23 +114,17 @@ Precompute stable tables and reusable plans when saved work justifies storage. S
 
 **8. Repeated kernels**
 
-Validate whole-buffer shape, extent, capacity, format, access, alignment, and non-overlap before the kernel where required. Pass the established count and parameters. Keep checks whose result can change during execution.
+_In order of priority (owner, 2026-10-31). Kernels are judged by how little they decide and check per element; the bookkeeping the other sections ask for belongs at the kernel's boundary, not in its interior._
 
-Distinguish in-place, disjoint-output, and overlapping-range operations. `const` does not guarantee non-aliasing. Confine compiler-specific restricted-pointer declarations to kernels whose callers satisfy their access rules. Guarantee alignment at the actual access offset; aligned storage does not make every slice equally aligned. Optimization assumptions must describe established facts.
+No decisions inside the loop. A loop body that decides per element is not finished. Before any other optimization, find the formulation in which the decision does not arise: change what the loop iterates over, split the domain into regions of uniform treatment, precompute the case structure, regroup the work, or change the representation. Evaluating both alternatives and selecting is a fallback that pays for work the right formulation never does, not the answer.
 
-Handle empty and short inputs first. Calculate the interior bounds, then process edges and interior separately. A convolution's interior needs no edge checks. Split contiguous regions where their treatment changes; preserve ordering and overlap semantics.
+Break the local paradigm, then restore exactness. The fast form need not resemble the reference algorithm or its paper. Derive it, then put back the local corrections it needs (edges, tails, exceptional values, the residual a reformulation leaves) outside the interior, and prove the result against the reference. Keep the reference and the comparison permanently; they are what make a radical reformulation safe.
 
-Keep element-dependent branches, especially guards against invalid access or unnecessary work. Do not replace them with arithmetic that evaluates both alternatives or changes NaN and infinity behavior. A ternary does not guarantee branchless instructions. Avoid extra passes and temporary masks solely to remove an `if`.
+Expect several waves. A kernel improves by successive reformulations, each measured on the same workload against the same reference. Keep the negative results.
 
-Specify permitted numerical changes. Reassociation, partial accumulators, fused operations, reciprocal substitution, and assumptions about NaNs or signed zero can change results. Keep them within the required error and exceptional-value behavior. Do not enable blanket fast-math without granting those freedoms.
+Bookkeeping lives outside the loop. Establish every fact the interior relies on before it starts: shape, extent, capacity, alignment, overlap, and value ranges. The interior then needs no guards. A guard that cannot be moved out marks an unfinished formulation, not a check to preserve. Correctness is carried by the reference comparison, not by per-element defence. `const` does not guarantee non-aliasing; restricted-pointer declarations state an established no-overlap fact and apply wherever it is true.
 
-Keep loop bounds and storage stable. Use direct indexing; traverse the contiguous dimension innermost where dependencies allow. Avoid per-element allocation, growth, format discovery, implementation selection, and unnecessary pointer chasing. Use named math operations and small helpers with visible effects.
-
-Keep allocation, logging, locking, callbacks, and error construction outside per-element arithmetic unless those effects are the operation. Inlining, unrolling, and vectorization hints do not resolve dependencies. Force expansion only for a specific benefit; duplicated code and excess live temporaries can make execution worse.
-
-Choose mode, format, direction, and implementation before the element loop. Hoist conditions only when their values and effects stay invariant throughout the call. Run a named kernel for each distinct operation. Specialize useful cases without generating every combination of unrelated options.
-
-Read fixed parameters once. Accumulate locally and publish afterward when intermediate updates need not be observed. Repeated writes through members or output references introduce possible interactions with input accesses.
+Then the mechanics. Lay data out in lane groups, with the contiguous dimension innermost. Choose mode, format, direction, and implementation before the loop, one named kernel per distinct operation. Keep allocation, growth, logging, locking, callbacks, and error construction out of the interior. Read fixed parameters once and accumulate locally. State the numerical freedoms taken (reassociation, partial accumulators, fused operations, reciprocal substitution, NaN and signed-zero behaviour) and hold them to the reference's error bound; never blanket fast-math.
 
 **9. Statements and expressions**
 
