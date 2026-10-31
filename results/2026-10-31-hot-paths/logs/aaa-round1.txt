@@ -1,0 +1,59 @@
+/dev/disk3s5   228Gi   189Gi    18Gi    92%    1.8M  191M    1%   /System/Volumes/Data
+== stx_full
+candidate exit 0
+100% tests passed, 0 tests failed out of 138
+baseline exit 0
+100% tests passed, 0 tests failed out of 93
+compare exit 1
+identical color-plans.raw
+differs (intentional) color-plans-corrected.raw
+identical color-composition.raw
+identical color-adjustments.raw
+identical shader-blends.raw
+differs (intentional) layers.raw
+differs (intentional) render.raw
+identical conversions.raw
+identical pixmap.raw
+identical mask.raw
+differs (intentional) mask-filter.raw
+identical flattenable.raw
+FAIL isa-workload.raw: differs from the reference profile
+FAIL isa-workload-highp.raw: differs from the reference profile
+63 corpus files, 18 intentional differences, 2 failures
+sanitize exit 0
+100% tests passed, 0 tests failed out of 138
+negative control exit 1 (expected 1)
+1265
+aa scan converters: canvas rounded stroke cut at row 10: pixel (3, 9) differs
+aa scan converters: canvas translucent rounded fill cut at row 42: pixel (125, 41) differs
+aa scan converters: canvas small rounded fill cut at row 29: pixel (65, 28) differs
+aa scan converters: canvas fractional rounded stroke cut at row 31: pixel (21, 30) differs
+aa scan converters: canvas fractional rounded stroke cut at row 31: pixel (21, 30) differs
+aa scan converters: banded fills differ from whole fills FAIL
+== verify
+plain exit 0
+100% tests passed, 0 tests failed out of 16
+sanitize exit 0
+100% tests passed, 0 tests failed out of 16
+house style exit 0
+1474 files; 0 spelling findings/review candidates. Semantic review still required.
+lifetime exit 0
+1474 files; 0 lifetime-rule findings. Semantic review still required.
+gate exit 0
+0 translation units compiled; 1 files parsed
+area             C1   C2   C3   F1   F2   OK
+OK counts compliant switches (every enumerator listed, every case leaves, one fallback after the switch); they are not listed below.
+state-machine gate: no F1/F2 findings
+stx_skia style exit 0
+0 files with 0 allowed findings; 0 failures.
+docs check exit 0
+GUI.Forms API reference check: PASS (committed pages match the headers and docstrings)
+== probe
+COLUMNS after pages_2_value-editors                    diff_px=15 max_delta=3 columns=[604, 792, 1011, 1203, 1421, 1766, 1894, 2261, 2367, 2383]
+COLUMNS after pages_2_values-and-spinners              diff_px=27 max_delta=1 columns=[604, 952, 983, 1435, 1536, 1790, 1883, 2018, 2108, 2135, 2253, 2363]
+COLUMNS after pages_2_values                           diff_px=2 max_delta=1 columns=[536, 1073]
+96
+before
+TALL short height=600 best_ns_per_frame=8659
+paint profile workload failed: raster resize failed
+/dev/disk3s5   228Gi   194Gi    13Gi    94%    1.8M  131M    1%   /System/Volumes/Data

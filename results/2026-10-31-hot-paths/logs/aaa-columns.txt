@@ -1,0 +1,22 @@
+== negative
+pipeline=0 rrect fill       cuts_with_seam=137/159 pixels= 3009 max_delta=65
+pipeline=0 rrect stroke     cuts_with_seam=139/159 pixels= 3923 max_delta=66
+pipeline=0 cubic fill       cuts_with_seam=150/159 pixels=33840 max_delta=68
+pipeline=0 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 2px line         cuts_with_seam=147/159 pixels=40330 max_delta=35
+pipeline=1 rrect fill       cuts_with_seam= 18/159 pixels= 2239 max_delta=66
+pipeline=1 rrect stroke     cuts_with_seam= 23/159 pixels=  716 max_delta=66
+pipeline=1 cubic fill       cuts_with_seam=150/159 pixels=31465 max_delta=69
+pipeline=1 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 2px line         cuts_with_seam=147/159 pixels=40635 max_delta=35
+== positive
+pipeline=0 rrect fill       cuts_with_seam=137/159 pixels= 3009 max_delta=65
+pipeline=0 rrect stroke     cuts_with_seam=139/159 pixels= 3923 max_delta=66
+pipeline=0 cubic fill       cuts_with_seam=150/159 pixels=33840 max_delta=68
+pipeline=0 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 2px line         cuts_with_seam=147/159 pixels=40330 max_delta=35
+pipeline=1 rrect fill       cuts_with_seam= 18/159 pixels= 2239 max_delta=66
+pipeline=1 rrect stroke     cuts_with_seam= 23/159 pixels=  716 max_delta=66
+pipeline=1 cubic fill       cuts_with_seam=150/159 pixels=31465 max_delta=69
+pipeline=1 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 2px line         cuts_with_seam=147/159 pixels=40635 max_delta=35
