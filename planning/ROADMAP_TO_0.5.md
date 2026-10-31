@@ -160,6 +160,62 @@ left.
 - **Supporting work:** `claude/consumer-contract` (the consumer tooling
   contract and its test) is parked for the template harness (plan phase D).
 
+## Addendum 2026-10-31: the consumer refactor that concludes 0.5 (owner)
+
+Planned work not yet in the stages above, recorded as the owner gave it. Where
+it says nothing about a detail, the detail is unknown.
+
+**stx_conv, folded in and optimized further.**
+- **State:** the standalone stx_conv work was advanced by alternating Codex
+  and Claude threads and is now faster and better than before. It is done in
+  its standalone folder.
+- **Left:** fold it into GUI.Forms. Then more SIMD optimization of its
+  additional logic: rotations, perspective warp and the like.
+
+**Too much CPU on some screens.**
+- **Observation:** running the demonstration programs (2026-10-29 builds), the
+  owner found some screens using too much CPU for the optimization done so far.
+  Even animations should not sustain as much as they do.
+- **Treated as:** part of the overall refactor below, not a separate fix. The
+  benchmark programs are themselves dogfood for the framework and help find hot
+  paths that are too expensive or under-optimized, so they get touched up as
+  the stages go.
+
+**Everyone moves to the theme engine at once.** All consumers move forward
+together onto the GUI.Forms theme engine and built-in capabilities.
+- **PlaySuite** performs well and looks good, so it is the challenge: GUI.Forms
+  must deliver a visually identical or superior result, or adapt until it can.
+- **Plan Paint** is not taken to 100 % identical behaviour, since the standard
+  appearances change some things. Its interfaces are refactored to GUI.Forms
+  standards, and it uses the new stx_conv for nicer results. Separately, and
+  strictly outside the GUI.Forms division, it needs a touch-up for image
+  format issues the owner has spotted.
+- **The File Manager frontend and the standalone file picker** move to
+  properly themed in-house control collections. The aim is not to stay
+  identical to what exists but to follow our styles and the interviews for a
+  good look. That file picker then becomes Plan Paint's file picker.
+- **SwiftEdit** is properly modernized.
+
+**Order (staged).**
+1. Theming is formalized.
+2. PlaySuite, right after.
+3. Plan Paint, right after that. 0.5 lands around this time.
+4. SwiftEdit, PlaySuite, Plan Paint, the benchmark demos and the File Manager
+   frontend all land, correctly themed and behaving. That concludes 0.5.
+
+The benchmark programs are touched up throughout.
+
+**0.6.**
+- Testing all of the above for regressions, and for equally good behaviour on
+  Windows.
+- The shadow desktop picks back up here, and Mac work pauses.
+- After that: the SDRSharp experiments and the Visual Studio .NET work.
+
+**Relation to the stages above (unknown):**
+- whether these consumers are the 0.5 "two independent native consumers";
+- how this order maps onto T3's remaining items;
+- where the stx_conv fold sits in the stage list.
+
 ## Also listed, outside the releases above
 
 - **A, accessibility verification:** complete in 0.2 Verified; nothing left
