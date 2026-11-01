@@ -423,8 +423,25 @@ only for text and colour roles).
   default theme. A control outside any window compiles against the
   default theme; when it joins a window whose theme differs, its style is
   compiled again against that theme (implementer's choice: a failure there
-  is logged, and the style keeps its own rules while its copies of the
-  theme's rules stop applying).
+  keeps the style as it was, unlogged, and its copies of the theme's rules
+  stop applying, being compiled for another theme's serial).
+- **P12b as built (2026-10-31).** A theme compiled from a package keeps its
+  source (`ThemeSourceRecord`: the closure's text, published values,
+  images, control types); a built-in theme keeps none, so a style compiled
+  against the default theme reads only its own definitions. The style is
+  compiled alone, every definition it makes scoped and lowered whether it
+  reads it or not; where the theme kept its source, the theme's text is
+  compiled again with the style written after it as `*` sheet rules, and
+  the theme-level rules reading a name the style defines, whose selector
+  can match the control, join the style's rules at their source positions.
+  Theme rules carry the names they read and their source positions only
+  where the sheet names a custom property. A program theme change, a theme
+  override and its removal compile each affected style first and are
+  refused (`invalid_argument`, nothing changed) where one fails. Limits:
+  a palette value or `@keyframes` reading a name the style defines where
+  the theme defines it more than once is E416; the style's own `var()` of
+  a name only the theme defines is not resolved. Gate:
+  `gui_forms_theme_inline_custom_property_tests`.
 - **What keeps the copies down** (built in P12a): a copy decides only the
   scoped names it reads given the candidates chosen above them (a decision
   tree, so a palette surface does not multiply by the accent the primary
