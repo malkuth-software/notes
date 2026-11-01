@@ -50,10 +50,19 @@ the free GitHub Actions allowance.
    push to main). Releases of the programs follow from there.
 7. **Remote TTB close to local.** The aim is near-local times remotely, given
    that runners must bootstrap. Cut the round trip at every stage.
-8. **Template integration.** Fold the whole setup into the template's GitHub
+8. **Quiet by default, verbose on request (owner, 2026-10-31).** Build, test
+   and logging tools (tools/ci_build.py, the checkers, template_harness's
+   checkpoint and harness tools, the stx_* runners) print a minimal summary by
+   default: one line per stage or check (pass/fail, counts, time) plus the
+   failing lines, with full logs written to files; `--verbose` restores today's
+   output. This is a harness-wide change, not only for GUI.Forms: agents
+   re-read everything a tool prints on every later step, so verbose output is
+   paid for many times over. Pair it with one-command routine checks (build,
+   touched tests plain and sanitized, gate, style) so a check is one step.
+9. **Template integration.** Fold the whole setup into the template's GitHub
    setup (template_harness), so every build system behaves correctly and
    efficiently wherever the work happens.
-9. **A far faster way to use the remote workers for tests.** Tests live in a
+10. **A far faster way to use the remote workers for tests.** Tests live in a
    standalone testing repository. A test run there changes only the files it
    needs and runs only the tests it asks for.
 
