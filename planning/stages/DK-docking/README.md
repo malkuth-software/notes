@@ -238,6 +238,12 @@ From the second review (2026-10-19, N1 to N10):
 57. **Close All Documents and Close Other Documents are in a document's
     position menu (owner, 2026-10-31, D6),** as two `DockPositionCommand`
     values that ask as the workspace's requests do.
+58. **Toolbar dragging shares the docking drag's mechanics (owner,
+    2026-11-01, refines 36; K2-1 option 1):** the 4-unit threshold, Ctrl
+    suppressing targets, Escape cancelling, the stamp and its motion live
+    in one shared piece (`src/controls/drag_gesture`) that DockSite uses;
+    ToolStripContainer drags strips on it with its four ToolStripPanels and
+    their rows as targets. Strips never enter dock stacks or float.
 26. **Invalid drops float or snap back (D4-1);** threshold 4 units
     (D5-1); Ctrl suppresses docking (D6-1); caption drags move the stack,
     tab drags one panel (D7-1).
