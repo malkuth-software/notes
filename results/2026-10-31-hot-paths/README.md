@@ -128,3 +128,24 @@ only its marker tracks; pausing the vsync producer while not presented
 (owner decision: the lab exists to stress the producer); a time-based
 instrument sweep; and, as a framework option, an active surface whose
 on_frame reports whether it changed.
+
+## AAA skip-ahead and column invariance (stopped at checkpoint 7, partial)
+
+gui_forms `claude/aaa-clip-invariant` cac5a320 (WIP, not for folding). Logs:
+`logs/aaa-random-skip-vs-full.txt`, `logs/aaa-column-cut-after.txt`, `logs/aaa-round3.txt`,
+`logs/aaa-round4.txt`.
+
+- **Skip-ahead (decision 1): exact.** 1500 random paths x 2 blitters hash bit-identical with
+  skip-ahead on and off (also under ASan/UBSan, 600 cases). Tall rounded fill + 2 px stroke
+  under a 100-row band, ns/frame, before (origin/main) -> after: 600 rows 9.3-10.0k ->
+  11.4-12.3k; 6000 rows 9.4-10.0k -> 11.3-12.2k (row fix alone: 107-120k); 30000 rows
+  9.3-10.0k -> 11.7-12.6k. The 200000-row case read 1.7k after; it was taken before the
+  over-32767 fallback and is unexplained, so it is not counted.
+- **Columns (decision 2): partial.** Primitive probe clean at every column cut, both
+  blitters (was 137-150 seamed cuts of 159, up to 68 levels). Random AA fills on a canvas: no
+  row, column or region seams; strokes thinner than 1 px (hairlines, a separate scan
+  converter) still seam, up to 5 levels. Workload: 69/69 frames equal their row-band repaint,
+  48/69 their column-band repaint (21 still differ, up to 219 levels; cause not found).
+  Open defects: stx_skia aa_scan_converter column-band random cases differ (large deltas,
+  coverage blitter), and an ASan out-of-bounds read in blit_aaa_trapezoid_row from
+  canvas_device's drawPoints.

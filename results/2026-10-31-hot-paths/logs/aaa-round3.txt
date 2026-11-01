@@ -1,0 +1,84 @@
+m4ws: waiting for w1 before syncing
+/dev/disk3s5   228Gi   193Gi    14Gi    94%    1.8M  143M    1%   /System/Volumes/Data
+== skip
+cases=600 hash=f17ecd48f780b2dd row_seams=7106 column_seams=3630 region_seams=3729 max_delta=4
+exit 0
+== skip-sanitize
+cases=600 hash=f17ecd48f780b2dd row_seams=7106 column_seams=3630 region_seams=3729 max_delta=4
+exit 0
+COLUMNS after pages_2_dates-and-calendar               diff_px=12932 max_delta=198 columns=[1875, 1876, 1877, 1878, 1879, 1880, 1881, 1882, 1883, 1884, 1885, 1886]
+COLUMNS after pages_2_semantic-feedback                diff_px=11839 max_delta=13 columns=[1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078]
+COLUMNS after pages_2_values                           diff_px=42 max_delta=3 columns=[1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078]
+before
+TALL short height=600 best_ns_per_frame=9127
+TALL medium height=6000 best_ns_per_frame=9641
+TALL tall height=30000 best_ns_per_frame=8978
+TALL huge height=200000 best_ns_per_frame=9113
+after
+TALL short height=600 best_ns_per_frame=11953
+TALL medium height=6000 best_ns_per_frame=11312
+TALL tall height=30000 best_ns_per_frame=11623
+TALL huge height=200000 best_ns_per_frame=1707
+before
+TALL short height=600 best_ns_per_frame=9273
+TALL medium height=6000 best_ns_per_frame=8804
+TALL tall height=30000 best_ns_per_frame=9666
+TALL huge height=200000 best_ns_per_frame=9984
+after
+TALL short height=600 best_ns_per_frame=11429
+TALL medium height=6000 best_ns_per_frame=11340
+TALL tall height=30000 best_ns_per_frame=11695
+TALL huge height=200000 best_ns_per_frame=1650
+23:08  up 2 days, 16:49, 1 user, load averages: 9.41 13.71 10.45
+probe exit 0
+COLUMNS after pages_2_dates-and-calendar               diff_px=12932 max_delta=198 columns=[1875, 1876, 1877, 1878, 1879, 1880, 1881, 1882, 1883, 1884, 1885, 1886]
+COLUMNS after pages_2_semantic-feedback                diff_px=11839 max_delta=13 columns=[1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078]
+COLUMNS after pages_2_values                           diff_px=42 max_delta=3 columns=[1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078]
+before
+TALL short height=600 best_ns_per_frame=9329
+TALL medium height=6000 best_ns_per_frame=9352
+TALL tall height=30000 best_ns_per_frame=9290
+TALL huge height=200000 best_ns_per_frame=9266
+after
+TALL short height=600 best_ns_per_frame=11376
+TALL medium height=6000 best_ns_per_frame=12185
+TALL tall height=30000 best_ns_per_frame=11730
+TALL huge height=200000 best_ns_per_frame=1719
+before
+TALL short height=600 best_ns_per_frame=9993
+TALL medium height=6000 best_ns_per_frame=10015
+TALL tall height=30000 best_ns_per_frame=10000
+TALL huge height=200000 best_ns_per_frame=9911
+after
+TALL short height=600 best_ns_per_frame=12286
+TALL medium height=6000 best_ns_per_frame=12204
+TALL tall height=30000 best_ns_per_frame=12594
+TALL huge height=200000 best_ns_per_frame=1794
+23:08  up 2 days, 16:49, 1 user, load averages: 9.41 13.71 10.45
+tall exit 0
+candidate exit 8
+99% tests passed, 1 tests failed out of 138
+The following tests FAILED:
+baseline exit 0
+100% tests passed, 0 tests failed out of 93
+compare exit 0
+identical color-plans.raw
+differs (intentional) color-plans-corrected.raw
+identical color-composition.raw
+identical color-adjustments.raw
+identical shader-blends.raw
+differs (intentional) layers.raw
+differs (intentional) render.raw
+identical conversions.raw
+identical pixmap.raw
+identical mask.raw
+differs (intentional) mask-filter.raw
+identical flattenable.raw
+differs (intentional) isa-workload.raw
+differs (intentional) isa-workload-highp.raw
+63 corpus files, 20 intentional differences, 0 failures
+sanitize exit 8
+==48594==ERROR: AddressSanitizer: unknown-crash on address 0x00016f666c07 at pc 0x000100b35f68 bp 0x00016f666910 sp 0x00016f666908
+99% tests passed, 1 tests failed out of 138
+/dev/disk3s5   228Gi   189Gi    18Gi    92%    1.8M  193M    1%   /System/Volumes/Data
+DONE
