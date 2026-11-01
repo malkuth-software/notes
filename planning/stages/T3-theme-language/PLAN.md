@@ -414,11 +414,17 @@ only for text and colour roles).
   names it reads, and the engine skips a theme rule wherever an inline
   definition wins for the part, so the copy takes its place. A theme
   switch recompiles every such inline style and refuses the new theme if
-  one fails (the reverse case above). A control with no active theme yet
-  holds its inline style uncompiled and compiles it when it joins a
-  window with a theme, reporting failures then; this was the
-  implementer's choice, kept isolated so that refusing instead is a small
-  change, and the owner may still reverse it.
+  one fails (the reverse case above). There is no "no theme" state (owner,
+  2026-10-31, replacing a held-uncompiled proposal): the theme in effect is
+  the program's theme if one is set, else the default theme, which is not
+  authoritative. An inline style compiles against the theme in effect, the
+  default theme when none is set; inline declarations win over the default
+  theme where they apply, and a control with no inline style takes the
+  default theme. A control outside any window compiles against the
+  default theme; when it joins a window whose theme differs, its style is
+  compiled again against that theme (implementer's choice: a failure there
+  is logged, and the style keeps its own rules while its copies of the
+  theme's rules stop applying).
 - **What keeps the copies down** (built in P12a): a copy decides only the
   scoped names it reads given the candidates chosen above them (a decision
   tree, so a palette surface does not multiply by the accent the primary
