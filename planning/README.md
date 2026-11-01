@@ -46,6 +46,9 @@ absorb the other's authority.
 - [`BUILD_SIZE_PLAN_2026-10-23.md`](BUILD_SIZE_PLAN_2026-10-23.md) —
   measured options for reducing the CI cache, artifacts, release assets and
   build outputs, with a recommended order.
+- [`SKEUDOINDUSTRIAL_SURFACES.md`](SKEUDOINDUSTRIAL_SURFACES.md) — the
+  industrial surfaces work (glintstone): bitmap-free finishes, glint, lit
+  keys and lamps, GOST colour styles; phases and open decisions.
 - [`BUILD_STREAMLINING_TODO.md`](BUILD_STREAMLINING_TODO.md) — the owner's
   2026-10-29 direction for build time: dependencies on their own cached
   repositories, main-line cache reuse on branches, sanitizers off by default,

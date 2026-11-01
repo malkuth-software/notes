@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Keycap Renders</title>
+<style>
+  body { margin: 0; background: #0d0f10; color: #aab; font: 12px sans-serif; }
+  .g { display: grid; grid-template-columns: repeat(4, max-content); gap: 8px; padding: 8px; }
+  img { display: block; width: 180px; height: 180px; image-rendering: auto; }
+</style></head>
+<body><div class="g" id="g"></div>
+<script>
+// Working aid: the C++ previews side by side (up/down × off/on per grade).
+const g = document.getElementById('g');
+const v = Date.now();
+const dir = new URLSearchParams(location.search).get("dir") || "keycap";
+const grades = (new URLSearchParams(location.search).get('grades') || 'clear,frosted,opal,smoked').split(',');
+for (const grade of grades) {
+  for (const name of ['up_off', 'up_on', 'down_off', 'down_on']) {
+    const f = document.createElement('figure'); f.style.margin = '0';
+    f.innerHTML = `<img src="build/${dir}/${grade}_${name}.png?${v}"><figcaption>${grade} ${name}</figcaption>`;
+    g.appendChild(f);
+  }
+}
+</script></body></html>

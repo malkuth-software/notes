@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paint From Photographs</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .photo { position: relative; margin: 10px 0 6px; }
+  .photo canvas { width: 100%; display: block; border-radius: 4px; }
+  table.m { border-collapse: collapse; font: 12px ui-monospace, Menlo, monospace; width: 100%; }
+  table.m td, table.m th { padding: 4px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  .sw { display: inline-block; width: 46px; height: 22px; border-radius: 3px; border: 1px solid #0004; vertical-align: middle; }
+  .src { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Paint from photographs</h1>
+  <p>Paint colours measured from your control-room photographs. Each sample is a rectangle drawn on its photo. The
+    colour is the per-channel median in linear light, so labels, specks and glare don't drag it. The spread is the
+    standard deviation of Oklab lightness and chroma inside the rectangle, which tells us how much real paint varies.
+    Each photo is white-balanced from a neutral patch in the same photo (marked N). Both raw and balanced values are
+    shown, because film stock, lamps and age all tint these photographs.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="finishes.html">Finishes</a><a href="glint_lab.html">Glint lab</a><a href="paint.html">Paint study</a><a href="paint_from_photos.html" aria-current="page">From photographs</a><a href="neon_buttons.html">Neon buttons</a></nav>
+</header>
+<main id="main"></main>
+<script src="finish_kernel.js"></script>
+<script>
+'use strict';
+// Rectangles are in each photograph's own pixels: [x, y, w, h].
+const PHOTOS = [
+  {
+    src: 'reference/control_room_blue_mint.webp', title: 'Control room: mint-teal consoles, deep-blue mimic board',
+    neutral: { label: 'N white instrument box', r: [310, 213, 10, 10] },
+    samples: [
+      { id: 'A1', label: 'Mint wall panel', r: [300, 250, 22, 12] },
+      { id: 'A2', label: 'Mint wall panel, lower', r: [222, 300, 18, 10] },
+      { id: 'A3', label: 'Mint desk top (lit)', r: [60, 420, 30, 14] },
+      { id: 'A4', label: 'Blue mimic board', r: [470, 160, 18, 10] },
+      { id: 'A5', label: 'Mint lower cabinet', r: [500, 395, 40, 18] },
+    ],
+  },
+  {
+    src: 'reference/control_room_grey_yellow.webp', title: 'Control room: grey-lavender panels, yellow mimic, red-oxide floor',
+    neutral: { label: 'N lab coat', r: [395, 760, 40, 60] },
+    samples: [
+      { id: 'B1', label: 'Grey-lavender wall panel', r: [1010, 300, 30, 18] },
+      { id: 'B2', label: 'Grey-lavender wall panel, lower', r: [880, 470, 40, 20] },
+      { id: 'B3', label: 'Yellow mimic panel', r: [430, 300, 30, 20] },
+      { id: 'B4', label: 'Console apron', r: [1200, 640, 50, 22] },
+      { id: 'B5', label: 'Desk wood (orange)', r: [860, 730, 50, 16] },
+      { id: 'B6', label: 'Carpet (red)', r: [700, 900, 80, 40] },
+    ],
+  },
+  {
+    src: 'reference/switchboard_turquoise.webp', title: 'Switchboard: turquoise panels, red dividers, grey desk tops',
+    neutral: { label: 'N meter face', r: [52, 90, 18, 14] },
+    samples: [
+      { id: 'C1', label: 'Turquoise panel, lower left', r: [60, 560, 50, 50] },
+      { id: 'C2', label: 'Turquoise panel, upper', r: [520, 240, 14, 20] },
+      { id: 'C3', label: 'Turquoise desk front', r: [400, 600, 60, 30] },
+      { id: 'C4', label: 'Grey desk top', r: [430, 520, 40, 14] },
+      { id: 'C5', label: 'Red divider strip', r: [24, 300, 5, 100] },
+    ],
+  },
+];
+
+const lab = [0, 0, 0], lin = [0, 0, 0];
+function measure(data, W, r, gains) {
+  const [x0, y0, w, h] = r;
+  const R = [], G = [], B = [], Ls = [], Cs = [], Hs = [];
+  for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) {
+    const q = (y * W + x) * 4;
+    const rl = Finish.TO_LINEAR[data[q]] * gains[0], gl = Finish.TO_LINEAR[data[q + 1]] * gains[1], bl = Finish.TO_LINEAR[data[q + 2]] * gains[2];
+    R.push(rl); G.push(gl); B.push(bl);
+    Finish.linearToOklab(rl, gl, bl, lab);
+    Ls.push(lab[0]); Cs.push(Math.hypot(lab[1], lab[2])); Hs.push(Math.atan2(lab[2], lab[1]));
+  }
+  const med = (a) => { const s = a.slice().sort((p, q) => p - q); return s[s.length >> 1]; };
+  const sd = (a) => { const m = a.reduce((p, q) => p + q, 0) / a.length; return Math.sqrt(a.reduce((p, q) => p + (q - m) * (q - m), 0) / a.length); };
+  // circular spread of hue, weighted towards the more chromatic pixels
+  let sx = 0, sy = 0; for (let i = 0; i < Hs.length; i++) { sx += Math.cos(Hs[i]) * Cs[i]; sy += Math.sin(Hs[i]) * Cs[i]; }
+  const Rbar = Math.hypot(sx, sy) / Math.max(1e-9, Cs.reduce((p, q) => p + q, 0));
+  const hueSd = Math.sqrt(-2 * Math.log(Math.max(1e-9, Math.min(1, Rbar)))) * 180 / Math.PI;
+  const m = [med(R), med(G), med(B)];
+  Finish.linearToOklab(m[0], m[1], m[2], lab);
+  let hue = Math.atan2(lab[2], lab[1]) * 180 / Math.PI; if (hue < 0) hue += 360;
+  const hex = '#' + m.map((v) => Finish.encode(v).toString(16).padStart(2, '0')).join('');
+  return { hex, L: lab[0], C: Math.hypot(lab[1], lab[2]), h: hue, sdL: sd(Ls), sdC: sd(Cs), hueSd };
+}
+
+const RESULTS = {};
+async function build() {
+  const main = document.getElementById('main');
+  for (const P of PHOTOS) {
+    const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = P.src; });
+    const W = im.naturalWidth, H = im.naturalHeight;
+    const work = document.createElement('canvas'); work.width = W; work.height = H;
+    const wg = work.getContext('2d'); wg.drawImage(im, 0, 0);
+    const data = wg.getImageData(0, 0, W, H).data;
+    // White balance: scale channels so the neutral patch's median is grey at its own luminance.
+    const n = measure(data, W, P.neutral.r, [1, 1, 1]);
+    const nl = [0, 0, 0];
+    Finish.oklabToLinear(n.L, 0, 0, nl);
+    const raw = n.hex.slice(1).match(/../g).map((h) => Finish.TO_LINEAR[parseInt(h, 16)]);
+    const Y = 0.2126 * raw[0] + 0.7152 * raw[1] + 0.0722 * raw[2];
+    const gains = raw.map((v) => Y / Math.max(1e-6, v));
+
+    const sec = document.createElement('section'); sec.className = 'panel'; sec.style.marginBottom = '18px';
+    sec.innerHTML = `<h2 style="margin-top:0">${P.title}</h2><div class="src">${P.src} · ${W}×${H} · white balance from ${P.neutral.label} ` +
+      `(raw ${n.hex}; gains R ${gains[0].toFixed(2)} G ${gains[1].toFixed(2)} B ${gains[2].toFixed(2)})</div>`;
+    const pc = document.createElement('div'); pc.className = 'photo';
+    const view = document.createElement('canvas'); view.width = W; view.height = H; pc.appendChild(view); sec.appendChild(pc);
+    const g = view.getContext('2d'); g.drawImage(im, 0, 0);
+    const lw = Math.max(2, W / 400);
+    const mark = (r, text, colour) => {
+      g.lineWidth = lw; g.strokeStyle = colour; g.strokeRect(r[0] - lw, r[1] - lw, r[2] + 2 * lw, r[3] + 2 * lw);
+      g.font = `bold ${Math.round(W / 60)}px sans-serif`; g.fillStyle = colour; g.fillText(text, r[0] + r[2] + 2 * lw, r[1] + r[3]);
+    };
+    mark(P.neutral.r, 'N', '#ff00ff');
+    let rows = '<tr><th>id</th><th>sample</th><th>raw</th><th>balanced</th><th>Oklab L · C · h (balanced)</th><th>spread σL · σC · σh</th></tr>';
+    for (const s of P.samples) {
+      mark(s.r, s.id, '#ffff00');
+      const a = measure(data, W, s.r, [1, 1, 1]);
+      const b = measure(data, W, s.r, gains);
+      RESULTS[s.id] = { label: s.label, raw: a, balanced: b };
+      rows += `<tr><td>${s.id}</td><td>${s.label}</td><td><span class="sw" style="background:${a.hex}"></span> ${a.hex}</td>` +
+        `<td><span class="sw" style="background:${b.hex}"></span> ${b.hex}</td>` +
+        `<td>${b.L.toFixed(3)} · ${b.C.toFixed(3)} · ${b.h.toFixed(0)}°</td>` +
+        `<td>${b.sdL.toFixed(3)} · ${b.sdC.toFixed(3)} · ${b.hueSd.toFixed(1)}°</td></tr>`;
+    }
+    const t = document.createElement('table'); t.className = 'm'; t.innerHTML = rows; sec.appendChild(t);
+    main.appendChild(sec);
+  }
+  window.RESULTS = RESULTS;
+}
+build();
+</script>
+</body>
+</html>

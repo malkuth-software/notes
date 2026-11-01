@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matte Surface Finishes</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Matte surface finishes</h1>
+  <p>Procedural finishes painted straight into the framebuffer. Each pixel is computed from its position, the display
+    scale and a few parameters, the way the solitaire card backs are drawn. Nothing is baked into a bitmap, and
+    repainting part of the surface gives the same bytes as repainting all of it.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="finishes.html" aria-current="page">Finishes</a><a href="blast_lab.html">Blast lab</a><a href="paint.html">Paint study</a><a href="neon_buttons.html">Neon buttons</a></nav>
+</header>
+<main>
+  <div class="row">
+    <div class="panel controls">
+      <label>Finish<select id="finish"></select></label>
+      <label>Paint colour (ГОСТ 22133-86)<div class="swatches" id="swatches"></div></label>
+      <label><span class="pair">Light azimuth <span class="v" id="azv"></span></span><input id="az" type="range" min="0" max="360" value="125"></label>
+      <label><span class="pair">Light elevation <span class="v" id="elv"></span></span><input id="el" type="range" min="8" max="85" value="38"></label>
+      <label><span class="pair">Relief <span class="v" id="rlv"></span></span><input id="rl" type="range" min="0" max="300" value="100"></label>
+      <label><span class="pair">Sheen <span class="v" id="glv"></span></span><input id="gl" type="range" min="0" max="300" value="100"></label>
+      <label><span class="pair">Display scale (device px per unit) <span class="v" id="kv"></span></span><input id="k" type="range" min="100" max="300" step="25" value="200"></label>
+      <label><span class="pair">Seed <span class="v" id="sdv"></span></span><input id="sd" type="range" min="1" max="64" value="7"></label>
+      <button class="primary" id="proof">Repaint 12 random damage rects &amp; compare</button>
+    </div>
+    <div class="stage panel">
+      <canvas id="view"></canvas>
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <h2>How it is drawn</h2>
+  <p class="note">A finish has a height field in logical units and an albedo change. The painter evaluates two rows of
+    height (the row it is shading and the one below), takes the slope from them and shades it with the theme light,
+    scaled so that a flat patch is exactly the paint colour. Fine detail never gets smaller than one device pixel, so it
+    doesn't alias at any scale. The noise is fixed to the surface's own origin, so a control keeps its finish when it
+    moves and a partial repaint leaves no seams. Memory: the parameters plus two scratch rows the width of the damage.</p>
+</main>
+<script src="finish_kernel.js"></script>
+<script>
+'use strict';
+// ГОСТ 22133-86 machine-tool colours (class a): Table 7 x, y, Y under illuminant C
+// converted Bradford C to D65 and IEC 61966-2-1 sRGB. Source: research/soviet_paints.md.
+const PALETTE = [
+  ['#4D676D', 'Сине-зелёный 397'], ['#80948A', 'Серо-зелёный 365'], ['#B4C4B2', 'Светлый серо-зелёный 319'],
+  ['#B9BBAE', '«Белая ночь» 858'], ['#CCC7AC', '«Слоновая кость» 224'], ['#AE9B84', 'Светло-бежевый 661'],
+  ['#68554C', 'Коричневый 619'], ['#E7CA96', 'Кремовый 270'], ['#E0783A', 'Оранжевый 121'],
+  ['#94928D', 'Серый 840'], ['#8D9695', 'Серо-серебристый 810'], ['#656F74', 'Тёмно-серый 832'],
+];
+const $ = (id) => document.getElementById(id);
+let colour = PALETTE[0][0];
+let finishKey = 'dusty_matte';
+
+const finishSel = $('finish');
+for (const [key, f] of Object.entries(Finish.FINISHES)) {
+  const o = document.createElement('option'); o.value = key; o.textContent = f.label; finishSel.appendChild(o);
+}
+finishSel.value = finishKey;
+const sw = $('swatches');
+for (const [hex, name] of PALETTE) {
+  const b = document.createElement('button'); b.style.background = hex; b.title = name; b.setAttribute('aria-label', name);
+  b.setAttribute('aria-pressed', hex === colour ? 'true' : 'false');
+  b.onclick = () => { colour = hex; for (const c of sw.children) c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); schedule(true); };
+  sw.appendChild(b);
+}
+
+function options() {
+  const k = +$('k').value / 100;
+  return {
+    finish: finishKey, k, seed: +$('sd').value, colour,
+    light: Finish.lightOf(+$('az').value, +$('el').value), ambient: 0.32,
+    reliefScale: +$('rl').value / 100, glossScale: +$('gl').value / 100,
+  };
+}
+
+const view = $('view');
+function sizeCanvas(c, cssW, cssH, k) {
+  c.width = Math.round(cssW * k); c.height = Math.round(cssH * k);
+}
+function renderInto(c, opt) {
+  const ctx = c.getContext('2d');
+  const img = ctx.createImageData(c.width, c.height);
+  const t0 = performance.now();
+  const n = Finish.paint(img, { x: 0, y: 0, w: c.width, h: c.height }, { x: 0, y: 0, w: c.width, h: c.height }, opt);
+  const dt = performance.now() - t0;
+  ctx.putImageData(img, 0, 0);
+  return { n, dt, img };
+}
+
+let lastFull = null;
+function renderMain() {
+  const opt = options();
+  const cssW = view.parentElement.clientWidth - 30;
+  sizeCanvas(view, cssW, Math.round(cssW * 0.48), opt.k);
+  const r = renderInto(view, opt);
+  lastFull = r.img;
+  const f = Finish.FINISHES[finishKey];
+  $('stats').innerHTML =
+    `<b>${f.label}</b> — ${f.note}\n` +
+    `${view.width}×${view.height} device px, ${(r.n / 1e6).toFixed(2)} Mpx in <b>${r.dt.toFixed(1)} ms</b> ` +
+    `(${(r.n / r.dt / 1000).toFixed(1)} Mpx/s, single-threaded JavaScript)\n` +
+    `texture memory: <b>0 B</b> · scratch: 2 rows × ${view.width + 1} px × 16 B = ${((view.width + 1) * 32 / 1024).toFixed(1)} KiB`;
+}
+
+function renderGrid() {
+  const grid = $('grid');
+  if (!grid.children.length) {
+    for (const [key, f] of Object.entries(Finish.FINISHES)) {
+      const t = document.createElement('div'); t.className = 'tile'; t.dataset.key = key; t.tabIndex = 0;
+      t.innerHTML = `<canvas></canvas><div class="cap"><b>${f.label}</b><span>${f.note}</span></div>`;
+      t.onclick = () => { finishKey = key; finishSel.value = key; schedule(false); };
+      grid.appendChild(t);
+    }
+  }
+  const base = options();
+  for (const t of grid.children) {
+    t.setAttribute('aria-selected', t.dataset.key === finishKey ? 'true' : 'false');
+    const c = t.querySelector('canvas');
+    const w = t.clientWidth;
+    sizeCanvas(c, w, Math.round(w * 9 / 16), base.k);
+    renderInto(c, { ...base, finish: t.dataset.key });
+  }
+}
+
+let pending = 0, gridToo = true;
+function schedule(grid) {
+  gridToo = gridToo || grid;
+  if (pending) return;
+  pending = requestAnimationFrame(() => {
+    pending = 0;
+    renderMain();
+    if (gridToo) renderGrid(); else for (const t of $('grid').children) t.setAttribute('aria-selected', t.dataset.key === finishKey ? 'true' : 'false');
+    gridToo = false;
+  });
+}
+function labels() {
+  $('azv').textContent = $('az').value + '°'; $('elv').textContent = $('el').value + '°';
+  $('rlv').textContent = $('rl').value + '%'; $('glv').textContent = $('gl').value + '%';
+  $('kv').textContent = (+$('k').value / 100).toFixed(2); $('sdv').textContent = $('sd').value;
+}
+for (const id of ['az', 'el', 'rl', 'gl', 'k', 'sd']) $(id).addEventListener('input', () => { labels(); schedule(true); });
+finishSel.onchange = () => { finishKey = finishSel.value; schedule(false); };
+window.addEventListener('resize', () => schedule(true));
+
+// Damage proof: repaint random rectangles into a cleared buffer and compare
+// with the full paint, byte for byte.
+$('proof').onclick = () => {
+  const opt = options();
+  const W = view.width, H = view.height;
+  const img = new ImageData(W, H);
+  let written = 0;
+  // Cover the surface with random rects first, then fill gaps in a grid of strips.
+  for (let i = 0; i < 12; i++) {
+    const w = 20 + Math.floor(Math.random() * W / 3), h = 12 + Math.floor(Math.random() * H / 3);
+    const x = Math.floor(Math.random() * (W - w)), y = Math.floor(Math.random() * (H - h));
+    written += Finish.paint(img, { x: 0, y: 0, w: W, h: H }, { x, y, w, h }, opt);
+  }
+  for (let y = 0; y < H; y += 37) written += Finish.paint(img, { x: 0, y: 0, w: W, h: H }, { x: 0, y, w: W, h: 37 }, opt);
+  let diff = 0;
+  for (let i = 0; i < img.data.length; i++) if (img.data[i] !== lastFull.data[i]) diff++;
+  $('stats').innerHTML += `\ndamage proof: ${written} px repainted in pieces → <b>${diff === 0 ? 'byte-identical to the full paint' : diff + ' bytes differ'}</b>`;
+};
+
+labels();
+schedule(true);
+</script>
+</body>
+</html>

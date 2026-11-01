@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Process Control Dialog</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  #dialog { display: block; width: 100%; max-width: 1000px; border-radius: 4px; touch-action: none; }
+  .stage-wrap { background: #1a1d1f; padding: 24px; border-radius: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Process control dialog</h1>
+  <p>Every lit element is rendered by the bfft photonic transport engine. CANCEL is white translucent plastic
+    with red lamps behind it, and OK is clear green acrylic over a frosted back (<code>--scene key</code>, the lens
+    reconstructed from a control grid by stx_conv). The status lights are faceted glass jewels with a bulb inside
+    and a mirror back (<code>--key-style jewel</code>), seen through dots in the panel. Each key's press is 8 engine
+    frames, stored as deltas, with a separate faint fill light so unlit plastic and glass still read. The body is
+    the glint kernel over ГОСТ 22133-86 сине-зелёный 397. Nothing is drawn past a control's edge, and only what
+    changes is redrawn: a pressed key, the blinking FAULT jewel.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="panel_lamps.html">Panel lamps</a><a href="paint.html">Paint study</a><a href="dialog.html" aria-current="page">Dialog</a></nav>
+</header>
+<main>
+  <div class="stage-wrap"><canvas id="dialog" width="1000" height="620" aria-label="Process control dialog"></canvas></div>
+  <div class="stats" id="stats">Rendering the body…</div>
+</main>
+<script src="finish_kernel.js"></script>
+<script src="glint_kernel.js"></script>
+<script>
+'use strict';
+const W = 1000, H = 620, K = 2;
+const canvas = document.getElementById('dialog');
+const ctx = canvas.getContext('2d');
+
+// ---- colour ---------------------------------------------------------------------------
+const TO_LIN = new Float32Array(256);
+for (let i = 0; i < 256; i++) { const c = i / 255; TO_LIN[i] = c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+const SRGB = new Uint8Array(4097);
+for (let i = 0; i <= 4096; i++) { const c = i / 4096; SRGB[i] = Math.round(255 * (c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055)); }
+const enc = (v) => SRGB[((v <= 0 ? 0 : v >= 1 ? 1 : v) * 4096) | 0];
+
+// ---- assets -----------------------------------------------------------------------------
+// Delta animation: int32 w, h, frames, channels; frame 0; then per frame runs
+// of (first pixel, length, length × channels float32) against the previous.
+async function loadAnim(url) {
+  const buf = await (await fetch(url + '?' + Date.now())).arrayBuffer();
+  const dv = new DataView(buf);
+  const w = dv.getInt32(0, true), h = dv.getInt32(4, true), frames = dv.getInt32(8, true), ch = dv.getInt32(12, true);
+  let off = 16;
+  const first = new Float32Array(buf.slice(off, off + w * h * ch * 4)); off += w * h * ch * 4;
+  const out = [first];
+  for (let k = 1; k < frames; k++) {
+    const frame = Float32Array.from(out[k - 1]);
+    const runs = dv.getInt32(off, true); off += 4;
+    for (let r = 0; r < runs; r++) {
+      const start = dv.getInt32(off, true), length = dv.getInt32(off + 4, true); off += 8;
+      frame.set(new Float32Array(buf.slice(off, off + length * ch * 4)), start * ch); off += length * ch * 4;
+    }
+    out.push(frame);
+  }
+  return { w, h, frames: out };
+}
+// An engine linear render: int32 w, h; float32 RGB.
+async function loadLinear(url) {
+  const buf = await (await fetch(url + '?' + Date.now())).arrayBuffer();
+  const head = new Int32Array(buf, 0, 2);
+  return { w: head[0], h: head[1], rgb: new Float32Array(buf, 8, head[0] * head[1] * 3) };
+}
+// Lamp cache (cpp/lamps.cpp): int32 w, h, lamps; base; each lamp; coverage.
+async function loadCache(url) {
+  const buf = await (await fetch(url + '?' + Date.now())).arrayBuffer();
+  const head = new Int32Array(buf, 0, 3), w = head[0], h = head[1], n = w * h * 3;
+  return { w, h, base: new Float32Array(buf, 12, n), glow: new Float32Array(buf, 12 + n * 4, n) };
+}
+
+// ---- stroke font --------------------------------------------------------------------------
+const GLYPHS = {
+  A: '0,0 0,4.5 1.5,6 2.5,6 4,4.5 4,0|0,3 4,3', B: '0,0 0,6 3,6 4,5 4,4 3,3 0,3|3,3 4,2 4,1 3,0 0,0',
+  C: '4,5 3,6 1,6 0,5 0,1 1,0 3,0 4,1', D: '0,0 0,6 3,6 4,5 4,1 3,0 0,0', E: '4,6 0,6 0,0 4,0|0,3 3,3',
+  F: '4,6 0,6 0,0|0,3 3,3', G: '4,5 3,6 1,6 0,5 0,1 1,0 3,0 4,1 4,3 2.5,3', H: '0,0 0,6|4,0 4,6|0,3 4,3',
+  I: '2,0 2,6|1,6 3,6|1,0 3,0', K: '0,0 0,6|4,6 0,2|1.3,3.3 4,0', L: '0,6 0,0 4,0', M: '0,0 0,6 2,3 4,6 4,0',
+  N: '0,0 0,6 4,0 4,6', O: '1,0 0,1 0,5 1,6 3,6 4,5 4,1 3,0 1,0', P: '0,0 0,6 3,6 4,5 4,4 3,3 0,3',
+  R: '0,0 0,6 3,6 4,5 4,4 3,3 0,3|2,3 4,0', S: '4,5 3,6 1,6 0,5 0,4 1,3 3,3 4,2 4,1 3,0 1,0 0,1',
+  T: '0,6 4,6|2,6 2,0', U: '0,6 0,1 1,0 3,0 4,1 4,6', V: '0,6 2,0 4,6', W: '0,6 1,0 2,3.5 3,0 4,6', Y: '0,6 2,3 4,6|2,3 2,0',
+};
+function strokes(text, x, baseline, size) {
+  const unit = size / 6, segs = [];
+  let pen = x;
+  for (const ch of text) {
+    const g = GLYPHS[ch];
+    if (g) for (const line of g.split('|')) {
+      const pts = line.split(' ').map((p) => p.split(',').map(Number));
+      for (let i = 1; i < pts.length; i++) segs.push([pen + pts[i - 1][0] * unit, baseline - pts[i - 1][1] * unit, pen + pts[i][0] * unit, baseline - pts[i][1] * unit]);
+    }
+    pen += 5.5 * unit;
+  }
+  return segs;
+}
+function paintText(lin, segs, half, colour, opacity) {
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (const s of segs) { x0 = Math.min(x0, s[0], s[2]); y0 = Math.min(y0, s[1], s[3]); x1 = Math.max(x1, s[0], s[2]); y1 = Math.max(y1, s[1], s[3]); }
+  for (let y = Math.max(0, (y0 - half - 2) | 0); y <= Math.min(H - 1, y1 + half + 2); y++) {
+    for (let x = Math.max(0, (x0 - half - 2) | 0); x <= Math.min(W - 1, x1 + half + 2); x++) {
+      let d = 1e9;
+      for (const s of segs) {
+        const vx = s[2] - s[0], vy = s[3] - s[1], wx = x + 0.5 - s[0], wy = y + 0.5 - s[1];
+        const t = Math.max(0, Math.min(1, (wx * vx + wy * vy) / Math.max(1e-12, vx * vx + vy * vy)));
+        d = Math.min(d, Math.hypot(wx - vx * t, wy - vy * t));
+      }
+      const a = Math.max(0, Math.min(1, half + 0.5 - d)) * opacity;
+      if (a > 0) { const p = (y * W + x) * 3; for (let c = 0; c < 3; c++) lin[p + c] += (colour[c] - lin[p + c]) * a; }
+    }
+  }
+}
+
+// ---- the body -------------------------------------------------------------------------------
+function paintBody() {
+  const img = new ImageData(W, H);
+  const preset = Glint.PRESETS.painted_sand;
+  const common = { ...preset, k: K, seed: 11, ambient: 0.35, filmAlpha: preset.filmAlpha,
+    lightX: 0.2 * W / K, lightY: 0.05 * H / K, lightZ: 900, eyeX: 0.5 * W / K, eyeY: 0.5 * H / K, eyeZ: 700 };
+  Glint.paint(img, { x: 0, y: 0, w: W, h: H }, { x: 0, y: 78, w: W, h: H - 78 }, { ...common, paintColour: '#4d676d' });
+  Glint.paint(img, { x: 0, y: 0, w: W, h: H }, { x: 0, y: 0, w: W, h: 78 }, { ...common, paintColour: '#656f74', film: 0.85 });
+  const lin = new Float32Array(W * H * 3);
+  for (let i = 0; i < W * H; i++) for (let c = 0; c < 3; c++) lin[i * 3 + c] = TO_LIN[img.data[i * 4 + c]];
+  const shade = (x, y, to, a) => { const p = (y * W + x) * 3; for (let c = 0; c < 3; c++) lin[p + c] += (to - lin[p + c]) * a; };
+  for (let x = 0; x < W; x++) { shade(x, 76, 0, 0.7); shade(x, 77, 0, 0.45); shade(x, 78, 1, 0.12); }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const edge = Math.min(x, y, W - 1 - x, H - 1 - y);
+    if (edge < 3) { const lit = (x < 3 || y < 3) && x < W - 3 && y < H - 3; shade(x, y, lit ? 1 : 0, lit ? 0.18 : 0.5); }
+  }
+  const ivory = [TO_LIN[0xcc], TO_LIN[0xc7], TO_LIN[0xac]];
+  paintText(lin, strokes('PROCESS CONTROL', 34, 52, 26), 1.7, ivory, 0.95);
+  paintText(lin, strokes('START TRANSFER', 48, 160, 36), 2.4, ivory, 1);
+  paintText(lin, strokes('PUMP TO RESERVE TANK', 48, 205, 20), 1.5, ivory, 0.85);
+  ['PUMP READY', 'HEATING', 'FAULT'].forEach((label, i) => paintText(lin, strokes(label, 104, 290 + 58 * i + 9, 18), 1.4, ivory, 0.9));
+  return lin;
+}
+
+// ---- keys ----------------------------------------------------------------------------------------
+const keys = [];
+function shadowUnder(lin, key) {
+  const { w, h, frames } = key.anim, a0 = frames[0];
+  const blur = 7, dx = 3, dy = 7;
+  for (let y = key.top - blur; y < key.top + h + blur + dy; y++) for (let x = key.left - blur; x < key.left + w + blur + dx; x++) {
+    if (x < 0 || y < 0 || x >= W || y >= H) continue;
+    let s = 0, n = 0;
+    for (let j = -blur; j <= blur; j += 2) for (let i = -blur; i <= blur; i += 2) {
+      const sx = x - key.left - dx + i, sy = y - key.top - dy + j; n++;
+      if (sx >= 0 && sy >= 0 && sx < w && sy < h) s += a0[(sy * w + sx) * 4 + 3];
+    }
+    const a = 0.6 * s / n, p = (y * W + x) * 3;
+    for (let c = 0; c < 3; c++) lin[p + c] *= 1 - a;
+  }
+}
+// The engine's tone (1 − e^(−0.75 L)) on unpremultiplied light, laid over the
+// body. Each frame pixel: lamp RGB (unit power), coverage, fill RGB.
+function drawKey(out, body, key) {
+  const { w, h, frames } = key.anim;
+  const f = Math.max(0, Math.min(frames.length - 1, Math.round(key.frame)));
+  const px = frames[f], power = key.power, fill = key.fillPower, ch = 7;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const q = (y * w + x) * ch, a = px[q + 3], dx = key.left + x, dy = key.top + y, p = (dy * W + dx) * 3, o = (dy * W + dx) * 4;
+    for (let c = 0; c < 3; c++) {
+      const v = a > 1e-6 ? (px[q + c] * key.colour[c] * power + px[q + 4 + c] * fill) / a : 0;
+      out.data[o + c] = enc((1 - Math.exp(-0.75 * v)) * a + body[p + c] * (1 - a));
+    }
+    out.data[o + 3] = 255;
+  }
+}
+
+// ---- indicators: the jewel through a dot ------------------------------------------------------
+// The faceted jewel rendered earlier (cpp/lamps.cpp, the one approved in the
+// panel viewer): its crown is sampled inside the dot, coloured by its lamp. Nothing
+// is drawn beyond the dot but the panel's dark rim round the hole.
+const INDICATORS = [
+  { y: 290, colour: [0.16, 1.0, 0.25] }, { y: 348, colour: [1.0, 0.5, 0.08] }, { y: 406, colour: [1.0, 0.12, 0.04], blink: true },
+];
+const DOT = 12;   // radius in device pixels
+function drawIndicator(out, body, jewel, ind, power) {
+  const cx = 72, cy = ind.y;
+  // the cached render's hole is 0.19 units across a frame of ±2.6·tan(9.5°)
+  const holePx = 0.19 / (2.6 * Math.tan(9.5 * Math.PI / 180)) * (jewel.w / 2), step = holePx / DOT;
+  for (let y = Math.floor(cy - DOT - 3); y <= cy + DOT + 3; y++) for (let x = Math.floor(cx - DOT - 3); x <= cx + DOT + 3; x++) {
+    const ox = x + 0.5 - cx, oy = y + 0.5 - cy, d = Math.hypot(ox, oy), p = (y * W + x) * 3, o = (y * W + x) * 4;
+    const here = [body[p], body[p + 1], body[p + 2]];
+    const rim = Math.max(0, Math.min(1, DOT + 2 - d)) - Math.max(0, Math.min(1, DOT - d));
+    for (let c = 0; c < 3; c++) here[c] += (0.004 - here[c]) * 0.85 * rim;
+    const inside = Math.max(0, Math.min(1, DOT + 0.5 - d));
+    if (inside > 0) {
+      const sum = [0, 0, 0];
+      for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) {
+        const sx = Math.max(0, Math.min(jewel.w - 1, (jewel.w / 2 + (ox - 0.5 + (i + 0.5) / 3) * step) | 0));
+        const sy = Math.max(0, Math.min(jewel.h - 1, (jewel.h / 2 + (oy - 0.5 + (j + 0.5) / 3) * step) | 0));
+        const q = (sy * jewel.w + sx) * 3;
+        for (let c = 0; c < 3; c++) sum[c] += (1 - Math.exp(-1.3 * (jewel.base[q + c] + power * ind.colour[c] * jewel.glow[q + c]))) / 9;
+      }
+      for (let c = 0; c < 3; c++) here[c] += (sum[c] - here[c]) * inside;
+    }
+    for (let c = 0; c < 3; c++) out.data[o + c] = enc(here[c]);
+    out.data[o + 3] = 255;
+  }
+}
+
+// ---- frame loop: runs only while something moves or blinks -------------------------------------
+let body, frameImage, jewel;
+// Damage-limited: an element is redrawn only when its frame or power changes,
+// and only its rectangle is uploaded to the canvas.
+function render(now) {
+  for (const key of keys) {
+    const target = key.held ? key.anim.frames.length - 1 : 0;
+    if (key.frame !== target) {
+      const step = (now - (key.lastTime || now)) / 70 * (key.anim.frames.length - 1);
+      key.frame = key.frame < target ? Math.min(target, key.frame + Math.max(step, 0.5)) : Math.max(target, key.frame - Math.max(step, 0.5));
+    }
+    key.lastTime = now;
+    const wanted = key.lampWhenHeld ? (key.held ? key.lampPower : 0) : key.lampPower;
+    key.power += (wanted - key.power) * 0.5;
+    if (Math.abs(key.power - wanted) < 1e-3) key.power = wanted;
+    const state = Math.round(key.frame) + ':' + key.power.toFixed(3);
+    if (state !== key.drawn) {
+      drawKey(frameImage, body, key); key.drawn = state;
+      ctx.putImageData(frameImage, 0, 0, key.left, key.top, key.anim.w, key.anim.h);
+    }
+  }
+  for (const ind of INDICATORS) {
+    let p = 1.6;
+    if (ind.blink) { const ph = (now / 1000) % 1; p *= ph < 0.5 ? 1 - Math.exp(-ph / 0.012) : Math.exp(-(ph - 0.5) / 0.05); }
+    const state = p.toFixed(3);
+    if (state !== ind.drawn) {
+      drawIndicator(frameImage, body, jewel, ind, p); ind.drawn = state;
+      ctx.putImageData(frameImage, 0, 0, 72 - DOT - 3, ind.y - DOT - 3, 2 * DOT + 7, 2 * DOT + 7);
+    }
+  }
+  requestAnimationFrame(render);   // the blinking jewel keeps time; idle elements cost a comparison
+}
+
+function toCanvas(e) {
+  const r = canvas.getBoundingClientRect();
+  return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height];
+}
+function keyAt(x, y) {
+  return keys.find((k) => x >= k.left && y >= k.top && x < k.left + k.anim.w && y < k.top + k.anim.h);
+}
+canvas.addEventListener('pointerdown', (e) => {
+  const [x, y] = toCanvas(e); const k = keyAt(x, y);
+  if (k) { k.held = true; k.pointer = e.pointerId; try { canvas.setPointerCapture(e.pointerId); } catch (error) { /* not an active pointer */ } }
+});
+const release = (e) => { for (const k of keys) if (k.pointer === e.pointerId) { k.held = false; k.pointer = null; } };
+canvas.addEventListener('pointerup', release);
+canvas.addEventListener('pointercancel', release);
+
+(async () => {
+  const t0 = performance.now();
+  const [cancel, ok, jewelCache] = await Promise.all([
+    loadAnim('build/press_cancel/cancel_press.anim'), loadAnim('build/press_ok/ok_press.anim'),
+    loadCache('build/panel/indicator_backed_up.f32')]);
+  jewel = jewelCache;
+  const top = H - cancel.h - 36;
+  // The colour is the lamp's: CANCEL is white plastic over red lamps, OK clear
+  // acrylic over a green one. fillPower scales the room light.
+  keys.push({ name: 'CANCEL', anim: cancel, left: W - 2 * ok.w - 70, top, colour: [1.0, 0.03, 0.012], lampPower: 5, lampWhenHeld: false, frame: 0, power: 5, fillPower: 5, held: false });
+  keys.push({ name: 'OK', anim: ok, left: W - ok.w - 40, top, colour: [0.16, 1.0, 0.25], lampPower: 1, lampWhenHeld: true, frame: 0, power: 0, fillPower: 2.5, held: false });
+  const t1 = performance.now();
+  body = paintBody();
+  for (const k of keys) shadowUnder(body, k);
+  frameImage = new ImageData(W, H);
+  for (let i = 0; i < W * H; i++) { for (let c = 0; c < 3; c++) frameImage.data[i * 4 + c] = enc(body[i * 3 + c]); frameImage.data[i * 4 + 3] = 255; }
+  ctx.putImageData(frameImage, 0, 0);
+  const t2 = performance.now();
+  document.getElementById('stats').textContent =
+    `assets ${(t1 - t0).toFixed(0)} ms · body (glint kernel, JavaScript) ${(t2 - t1).toFixed(0)} ms · keys: 8 engine frames each with fill, delta-decoded · jewels: engine render through dots`;
+  requestAnimationFrame(render);
+})();
+</script>
+</body>
+</html>

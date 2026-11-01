@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Photo Grid</title>
+<style>body{margin:0;background:#111}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script>
+// Working aid: the photograph with a labelled 50 px grid, for choosing sample rectangles.
+const src = new URLSearchParams(location.search).get('src');
+const im = new Image();
+im.onload = () => {
+  const c = document.getElementById('c'), s = Math.min(1, 1400 / im.naturalWidth);
+  c.width = im.naturalWidth * s; c.height = im.naturalHeight * s;
+  c.style.width = c.width + 'px';
+  const g = c.getContext('2d');
+  g.drawImage(im, 0, 0, c.width, c.height);
+  g.font = '10px monospace'; g.lineWidth = 1;
+  for (let x = 0; x < im.naturalWidth; x += 50) {
+    g.strokeStyle = x % 100 ? '#ff00ff55' : '#ff00ffaa'; g.beginPath(); g.moveTo(x * s, 0); g.lineTo(x * s, c.height); g.stroke();
+    if (x % 100 === 0) { g.fillStyle = '#ff0'; g.fillText(x, x * s + 2, 10); }
+  }
+  for (let y = 0; y < im.naturalHeight; y += 50) {
+    g.strokeStyle = y % 100 ? '#ff00ff55' : '#ff00ffaa'; g.beginPath(); g.moveTo(0, y * s); g.lineTo(c.width, y * s); g.stroke();
+    if (y % 100 === 0) { g.fillStyle = '#ff0'; g.fillText(y, 2, y * s - 2); }
+  }
+};
+im.src = src;
+</script></body></html>

@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lit Keys (HTML)</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .board { display: inline-flex; gap: 40px; padding: 44px 48px; border-radius: 8px; background: #4d676d; flex-wrap: wrap; }
+  .key { display: grid; gap: 8px; justify-items: center; }
+  .key canvas { display: block; cursor: pointer; touch-action: none; }
+  .key canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+  .key span { font-size: 11px; color: #c9d6d3; }
+  .controls { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px 22px; max-width: 900px; margin: 18px 0; }
+  .controls label { display: grid; gap: 3px; font-size: 12px; }
+  .lessons { max-width: 880px; }
+  .lessons li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Lit keys, HTML form</h1>
+  <p>Both keys are traced per pixel in this page: no engine renders, no bitmaps. What the engine work taught is
+    carried over as rules (listed below).</p>
+  <nav class="pages"><a href="neon_buttons.html">Neon buttons</a><a href="html_keys.html" aria-current="page">Lit keys (HTML)</a></nav>
+</header>
+<main>
+  <div class="board" id="board"></div>
+  <div class="stats" id="stats"></div>
+  <div class="controls" id="controls"></div>
+  <h2>Carried over from the engine renders</h2>
+  <ol class="lessons">
+    <li><b>Two materials, colour from the lamp.</b> Clear acrylic (untinted) and opaque white plastic. OK is clear
+      over a green lamp; CANCEL is white plastic over red lamps.</li>
+    <li><b>The clear key has a matte black back.</b> Unlit it is dark glass over a void: the cold wire is black
+      on black, so no squiggle shows. A grey or glossy back silhouettes the wire.</li>
+    <li><b>The coil is big and sparse,</b> a few wide turns near the back, and its light diffuses far through a
+      faint haze in the acrylic (the clear key stays see-through).</li>
+    <li><b>White plastic reads white when off</b> (lit by the room) and glows in the lamp's colour when on, from
+      within: the light is scattered in the plastic, not painted on it.</li>
+    <li><b>The surface has a texture, not the light.</b> The top's normal carries a moulded relief (orange-peel
+      waves from Stillwater's caustic surface, and a finer grain), so the room's reflection and the coil seen
+      through the top are both broken up by it.</li>
+    <li><b>Legend: black ink on the top, clean joins,</b> antialiased in the key's own plane and seen in
+      perspective; it blocks the light behind it.</li>
+    <li><b>Gloss from a graded softbox:</b> soft edges and a fade, so no hard band crosses the key.</li>
+    <li><b>Nothing beyond the key's edge.</b> The canvas is transparent outside the key; coverage is its alpha.</li>
+    <li><b>Linear in lamp power.</b> Each press position is traced once into an unlit and a lit buffer; a frame is
+      tone(room × unlit + power × colour × lit), tone 1 − e<sup>−0.75 v</sup>. Press positions are traced in idle
+      time and the press plays between them; a still key is not redrawn.</li>
+  </ol>
+</main>
+<script>
+'use strict';
+const DPR = Math.min(2, window.devicePixelRatio || 1);
+const CSS_W = 280, CSS_H = 174;
+const W = Math.round(CSS_W * DPR), H = Math.round(CSS_H * DPR);
+const FRAMES = 5;   // press positions traced, up to down
+
+// ---- tunables (the controls edit these) -----------------------------------------------------
+const P = {
+  sidewall: 0.30,   // cap height over key height
+  relief: 0.05,     // orange-peel slope
+  grain: 0.05,      // stipple slope
+  turns: 5,         // coil turns
+  coilRadius: 0.15, // coil's sideways radius over key height
+  haze: 0.9,        // clear acrylic's scattering (diffusion)
+  spread: 0.30,     // how far the coil's light carries, over key height
+  room: 2.5,        // room light (the white key's off state)
+};
+
+// ---- small helpers ------------------------------------------------------------------------------
+const SRGB = new Uint8Array(4097);
+for (let i = 0; i <= 4096; i++) { const c = i / 4096; SRGB[i] = Math.round(255 * (c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055)); }
+const enc = (v) => SRGB[((v <= 0 ? 0 : v >= 1 ? 1 : v) * 4096) | 0];
+function hash2(x, y) { let h = (x * 374761393 + y * 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
+function smooth(e0, e1, x) { const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); }
+
+// ---- the moulded relief: Stillwater's caustic surface waves and a value-noise grain -------------
+const WAVES = (() => {
+  const out = []; let state = (1 * 2654435761 + 12345) >>> 0;
+  const next = () => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; let x = state; x ^= x >>> 16; x = Math.imul(x, 0x7FEB352D) >>> 0; x ^= x >>> 15; return x >>> 0; };
+  while (out.length < 14) {
+    const kx = (next() % 15) - 7, ky = (next() % 15) - 7, r = Math.hypot(kx, ky);
+    if (r < 1.4 || r > 7.2) continue;
+    out.push({ kx, ky, a: 1 / Math.pow(r, 1.75), ph: (next() & 0xFFFFFF) / 16777216 });
+  }
+  let bound = 0; for (const w of out) bound += w.a * Math.hypot(w.kx, w.ky);
+  for (const w of out) w.a /= bound * 0.45;   // typical peak slope about 1
+  return out;
+})();
+// slope of the relief at (x, y) in device px, written to g
+function reliefSlope(x, y, g) {
+  let gx = 0, gy = 0;
+  if (P.relief > 0) {
+    const tile = 0.9 * H, k = 2 * Math.PI / tile;
+    for (const w of WAVES) { const c = Math.cos(k * (w.kx * x + w.ky * y) + 2 * Math.PI * w.ph) * w.a; gx += c * w.kx; gy += c * w.ky; }
+    gx *= P.relief; gy *= P.relief;
+  }
+  if (P.grain > 0) {
+    const cell = 2.2 * DPR, u = x / cell, v = y / cell, i = Math.floor(u), j = Math.floor(v), fu = u - i, fv = v - j;
+    const su = fu * fu * fu * (fu * (fu * 6 - 15) + 10), sv = fv * fv * fv * (fv * (fv * 6 - 15) + 10);
+    const du = 30 * fu * fu * (fu * (fu - 2) + 1), dv = 30 * fv * fv * (fv * (fv - 2) + 1);
+    const a = hash2(i, j) * 2 - 1, b = hash2(i + 1, j) * 2 - 1, c = hash2(i, j + 1) * 2 - 1, d = hash2(i + 1, j + 1) * 2 - 1;
+    gx += P.grain * 0.5 * ((b - a) + (a - b - c + d) * sv) * du;
+    gy += P.grain * 0.5 * ((c - a) + (a - b - c + d) * su) * dv;
+  }
+  g[0] = gx; g[1] = gy;
+}
+
+// ---- the room: a graded softbox above, toward the viewer, and a dim room ------------------------
+const KEYDIR = (() => { const v = [0.0, 0.42, 0.91], l = Math.hypot(...v); return v.map((c) => c / l); })();
+function env(dx, dy, dz) {
+  if (dz <= 0) return 0.003;
+  const c = dx * KEYDIR[0] + dy * KEYDIR[1] + dz * KEYDIR[2];
+  if (c <= 0) return 0.01 + 0.03 * dz;
+  const ax = dx - KEYDIR[0] * c, ay = dy - KEYDIR[1] * c;
+  // The rounded front chamfer reflects its middle (ay near 0) and the flat top
+  // only its soft tail (ay ≈ −0.45), so a clear key's top stays dark glass with
+  // a faint gradient. Soft edges all round: no hard band anywhere.
+  const across = 1 - smooth(0.25, 0.65, Math.abs(ax));
+  const along = 1 - smooth(0.12, 0.5, Math.abs(ay + 0.02));
+  const fade = Math.max(0, Math.min(1, 0.5 - ay * 1.5));
+  return 0.01 + 0.03 * dz + 2.2 * across * along * (0.3 + 0.7 * fade);
+}
+function fresnel(cosi) { const r0 = ((1 - 1.49) / (1 + 1.49)) ** 2, m = 1 - cosi; return r0 + (1 - r0) * m * m * m * m * m; }
+const rf = [0, 0, 0];
+function refract(dx, dy, dz, nx, ny, nz, eta) {
+  const cosi = -(dx * nx + dy * ny + dz * nz), k = 1 - eta * eta * (1 - cosi * cosi);
+  if (k < 0) return false;
+  const a = eta * cosi - Math.sqrt(k);
+  rf[0] = eta * dx + a * nx; rf[1] = eta * dy + a * ny; rf[2] = eta * dz + a * nz;
+  return true;
+}
+
+// ---- geometry ------------------------------------------------------------------------------------
+// Device px, origin at the key's centre on the panel, x right, y down the screen, z out of the panel.
+function makeScene(style, press) {
+  const m = 0.07 * H;
+  const sc = { style, bx: W / 2 - m, by: H / 2 - m, rr: 0.13 * H, capH: P.sidewall * H };
+  sc.f = Math.min(0.11 * H, sc.capH * 0.45);   // the rounded chamfer
+  sc.taper = 0.22;                             // inset at the top, over the cap height
+  sc.zt = sc.capH * (1 - 0.14 * press); sc.zb = sc.zt - sc.capH;
+  sc.zc = (sc.zt + sc.zb) / 2; sc.hz = sc.capH / 2;
+  sc.eye = [0, 0.75 * H, 5.0 * W];
+  // lamps: OK's coil is a horizontal helix near the black back; CANCEL's are two bars mid-depth
+  sc.samples = [];
+  if (style === 'ok') {
+    const L = sc.bx * 0.62, ry = P.coilRadius * H, rz = Math.min(ry, sc.capH * 0.24), zc = sc.zb + 0.04 * H + rz;
+    const n = Math.round(P.turns * 40);
+    sc.coil = { L, ry, rz, zc, rw: 0.013 * H, pts: [] };
+    for (let i = 0; i <= n; i++) {
+      const t = i / n, a = 2 * Math.PI * P.turns * t;
+      sc.coil.pts.push([-L + 2 * L * t, ry * Math.cos(a), zc + rz * Math.sin(a)]);
+    }
+    for (let i = 0; i <= n; i += 3) sc.samples.push(sc.coil.pts[i]);
+  } else {
+    for (const yy of [-0.32, 0.32]) for (let i = 0; i <= 10; i++) sc.samples.push([(-0.7 + 1.4 * i / 10) * sc.bx, yy * sc.by, sc.zc - 0.05 * H]);
+  }
+  return sc;
+}
+function capSDF(sc, x, y, z) {
+  const tz = Math.max(0, Math.min(1, (z - sc.zb) / sc.capH)), inset = sc.taper * sc.capH * tz;
+  const r = Math.max(0.5, sc.rr - sc.f - inset * 0.5);
+  const qx = Math.abs(x) - (sc.bx - inset - sc.f) + r, qy = Math.abs(y) - (sc.by - inset - sc.f) + r;
+  const w = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
+  const h = Math.abs(z - sc.zc) - (sc.hz - sc.f);
+  return Math.hypot(Math.max(w, 0), Math.max(h, 0)) + Math.min(Math.max(w, h), 0) - sc.f;
+}
+const nrm = [0, 0, 0];
+function normalOf(sc, x, y, z) {
+  const e = 0.3;
+  const nx = capSDF(sc, x + e, y, z) - capSDF(sc, x - e, y, z);
+  const ny = capSDF(sc, x, y + e, z) - capSDF(sc, x, y - e, z);
+  const nz = capSDF(sc, x, y, z + e) - capSDF(sc, x, y, z - e);
+  const l = 1 / Math.hypot(nx, ny, nz); nrm[0] = nx * l; nrm[1] = ny * l; nrm[2] = nz * l;
+}
+// distance from a point to OK's coil (segments near the point's place along it)
+function coilDistance(sc, x, y, z) {
+  const c = sc.coil, pts = c.pts, n = pts.length - 1;
+  const centre = Math.round((x + c.L) / (2 * c.L) * n), reach = Math.ceil(n / P.turns * 0.75);
+  let best = 1e18;
+  for (let i = Math.max(0, centre - reach); i < Math.min(n, centre + reach); i++) {
+    const a = pts[i], b = pts[i + 1];
+    const vx = b[0] - a[0], vy = b[1] - a[1], vz = b[2] - a[2], wx = x - a[0], wy = y - a[1], wz = z - a[2];
+    let t = (wx * vx + wy * vy + wz * vz) / (vx * vx + vy * vy + vz * vz); t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const dx = wx - vx * t, dy = wy - vy * t, dz = wz - vz * t, d = dx * dx + dy * dy + dz * dz;
+    if (d < best) best = d;
+  }
+  return Math.sqrt(best);
+}
+// irradiance from the lamps at a point, per unit power: soft inverse square over `spread`
+function lampLight(sc, x, y, z) {
+  const S = sc.samples, soft = (P.spread * H) ** 2;
+  let e = 0;
+  for (let i = 0; i < S.length; i++) { const dx = S[i][0] - x, dy = S[i][1] - y, dz = S[i][2] - z; e += soft / (dx * dx + dy * dy + dz * dz + soft); }
+  return e / S.length;
+}
+
+// ---- the legend, in the key's own plane ---------------------------------------------------------
+function legendMask(text) {
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  let size = Math.round(H * 0.24);
+  g.font = `600 ${size}px "Avenir Next Condensed", "DIN Condensed", "Helvetica Neue", Arial, sans-serif`;
+  while (g.measureText(text).width > W * 0.56 && size > 10) { size -= 2; g.font = `600 ${size}px "Avenir Next Condensed", "DIN Condensed", "Helvetica Neue", Arial, sans-serif`; }
+  g.fillText(text, W / 2, H / 2 + size * 0.04);
+  const d = g.getImageData(0, 0, W, H).data, m = new Float32Array(W * H);
+  for (let i = 0; i < W * H; i++) m[i] = d[i * 4 + 3] / 255;
+  return m;
+}
+function inkAt(mask, x, y) {
+  const fx = x + W / 2 - 0.5, fy = y + H / 2 - 0.5, ix = Math.floor(fx), iy = Math.floor(fy);
+  if (ix < 0 || iy < 0 || ix + 1 >= W || iy + 1 >= H) return 0;
+  const ax = fx - ix, ay = fy - iy, k = iy * W + ix;
+  return (mask[k] * (1 - ax) + mask[k + 1] * ax) * (1 - ay) + (mask[k + W] * (1 - ax) + mask[k + W + 1] * ax) * ay;
+}
+
+// ---- tracing one press position into unlit (room) and lit (lamp, unit power) buffers -----------
+function* traceRows(key, press, out) {
+  const sc = makeScene(key.style, press), eye = sc.eye, white = key.style === 'cancel';
+  const slope = [0, 0];
+  for (let py = 0; py < H; py++) {
+    for (let px = 0; px < W; px++) {
+      let base = 0, glow = 0, alpha = 0;
+      const tx = px + 0.5 - W / 2, ty = py + 0.5 - H / 2;
+      let dx = tx - eye[0], dy = ty - eye[1], dz = -eye[2];
+      const l = 1 / Math.hypot(dx, dy, dz); dx *= l; dy *= l; dz *= l;
+      let t = (sc.zt + 2 - eye[2]) / dz, x = 0, y = 0, z = 0, hit = false, closest = 1e9;
+      for (let i = 0; i < 90; i++) {
+        x = eye[0] + dx * t; y = eye[1] + dy * t; z = eye[2] + dz * t;
+        const d = capSDF(sc, x, y, z);
+        if (d < closest) closest = d;
+        if (d < 0.2) { hit = true; break; }
+        if (z < sc.zb - 1) break;
+        t += Math.max(d * 0.9, 0.25);
+      }
+      if (hit) alpha = 1; else alpha = Math.max(0, Math.min(1, 0.5 - closest));
+      if (alpha > 0) {
+        if (!hit) { // an edge pixel the march passed beside: shade the nearest surface point
+          const tt = t; x = eye[0] + dx * tt; y = eye[1] + dy * tt; z = Math.max(sc.zb, Math.min(sc.zt, eye[2] + dz * tt));
+        }
+        normalOf(sc, x, y, z);
+        let nx = nrm[0], ny = nrm[1], nz = nrm[2];
+        // the moulded relief on the top and the chamfer's upper part
+        if (nz > 0.35) {
+          reliefSlope(x, y, slope);
+          const w = smooth(0.35, 0.8, nz);
+          nx -= slope[0] * w; ny -= slope[1] * w;
+          const ll = 1 / Math.hypot(nx, ny, nz); nx *= ll; ny *= ll; nz *= ll;
+        }
+        const cosi = Math.max(0, -(dx * nx + dy * ny + dz * nz)), F = fresnel(cosi);
+        const ink = nz > 0.9 ? inkAt(key.mask, x, y) : 0;
+        // the room in the surface (a printed matte ink takes little of it)
+        const rx = dx + 2 * cosi * nx, ry = dy + 2 * cosi * ny, rz = dz + 2 * cosi * nz;
+        base += F * env(rx, ry, rz) * (1 - 0.75 * ink);
+        base += ink * 0.002 * (0.3 + nz);   // the ink's own dull black
+        let through = (1 - F) * (1 - ink);
+        if (through > 0.002 && refract(dx, dy, dz, nx, ny, nz, 1 / 1.49)) {
+          let ix = x - nx * 0.5, iy = y - ny * 0.5, iz = z - nz * 0.5, ddx = rf[0], ddy = rf[1], ddz = rf[2];
+          if (white) {
+            // opaque white plastic: light scattered within a shallow layer. Single
+            // scattering of the lamps' light, and the room's light diffused back out.
+            const sigma = 9 / sc.capH, steps = 10, len = 3 / sigma, dt = len / steps;
+            for (let j = 0; j < steps; j++) {
+              const s = (j + 0.5) * dt, qx = ix + ddx * s, qy = iy + ddy * s, qz = iz + ddz * s;
+              if (capSDF(sc, qx, qy, qz) > 0) break;
+              glow += through * 0.92 * lampLight(sc, qx, qy, qz) * Math.exp(-sigma * s) * sigma * dt * 2.2;
+            }
+            base += through * 0.86 * 0.6 * (0.3 + 0.7 * Math.max(0, nx * KEYDIR[0] + ny * KEYDIR[1] + nz * KEYDIR[2]));
+          } else {
+            // clear acrylic with a faint haze, a coil inside, a matte black back
+            for (let bounce = 0; bounce < 3; bounce++) {
+              let tt = 0;
+              for (let i = 0; i < 60; i++) {
+                const d = -capSDF(sc, ix + ddx * tt, iy + ddy * tt, iz + ddz * tt);
+                if (d < 0.2) break;
+                tt += Math.max(d * 0.9, 0.25);
+              }
+              // along this leg: the wire itself and its near halo, and the haze lit by the coil
+              const steps = 22, dt = tt / steps, c = sc.coil, haze = P.haze / sc.capH;
+              let blocked = false;
+              for (let j = 0; j < steps && !blocked; j++) {
+                const s = (j + hash2(px * 7 + j, py * 13 + bounce)) * dt;
+                const qx = ix + ddx * s, qy = iy + ddy * s, qz = iz + ddz * s;
+                const d = coilDistance(sc, qx, qy, qz);
+                if (d < c.rw) { glow += through * 3.2; blocked = true; break; }   // the hot wire; cold, it is black
+                glow += through * (Math.exp(-d / (0.03 * H)) * 0.05 + haze * lampLight(sc, qx, qy, qz) * 0.5) * dt;
+              }
+              if (blocked) break;
+              ix += ddx * tt; iy += ddy * tt; iz += ddz * tt;
+              normalOf(sc, ix, iy, iz);
+              const onx = nrm[0], ony = nrm[1], onz = nrm[2];
+              if (onz < -0.6) { // the matte black back: lit faintly by the coil, no room light reaches it
+                glow += through * 0.012 * lampLight(sc, ix, iy, iz);
+                break;
+              }
+              // a side: part leaves for the dim room, part reflects back inside
+              const F2 = fresnel(Math.max(0, ddx * onx + ddy * ony + ddz * onz));
+              if (refract(ddx, ddy, ddz, -onx, -ony, -onz, 1.49)) { base += through * (1 - F2) * env(rf[0], rf[1], rf[2]) * 0.4; through *= F2; }
+              if (through < 0.01) break;
+              const dn = ddx * onx + ddy * ony + ddz * onz;
+              ddx -= 2 * dn * onx; ddy -= 2 * dn * ony; ddz -= 2 * dn * onz;
+              ix -= onx * 0.5; iy -= ony * 0.5; iz -= onz * 0.5;
+            }
+          }
+        }
+      }
+      const k = py * W + px;
+      out.base[k] = base; out.glow[k] = glow; out.alpha[k] = alpha;
+    }
+    yield py;
+  }
+}
+
+// ---- keys -----------------------------------------------------------------------------------------
+const KEYS = [
+  { name: 'CANCEL', style: 'cancel', colour: [1.0, 0.03, 0.012], power: 14, steady: true, note: 'opaque white over red lamps (lit)' },
+  { name: 'OK', style: 'ok', colour: [0.16, 1.0, 0.25], power: 0, steady: false, note: 'clear over a green lamp (lit while held)' },
+];
+const board = document.getElementById('board');
+for (const key of KEYS) {
+  const wrap = document.createElement('div'); wrap.className = 'key';
+  const c = document.createElement('canvas'); c.width = W; c.height = H; c.style.width = CSS_W + 'px'; c.style.height = CSS_H + 'px';
+  c.tabIndex = 0; c.setAttribute('role', 'button'); c.setAttribute('aria-label', key.name); c.setAttribute('aria-pressed', 'false');
+  const label = document.createElement('span'); label.textContent = key.note;
+  wrap.append(c, label); board.append(wrap);
+  key.canvas = c; key.ctx = c.getContext('2d'); key.image = key.ctx.createImageData(W, H);
+  key.frame = 0; key.held = false; key.lamp = key.steady ? key.power : 0; key.drawn = '';
+  const press = (down) => { key.held = down; c.setAttribute('aria-pressed', String(down)); kick(); };
+  c.addEventListener('pointerdown', (e) => { try { c.setPointerCapture(e.pointerId); } catch (error) { /* synthetic */ } press(true); });
+  c.addEventListener('pointerup', () => press(false));
+  c.addEventListener('pointercancel', () => press(false));
+  c.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); press(true); } });
+  c.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') press(false); });
+}
+
+function newBuffers() { return { base: new Float32Array(W * H), glow: new Float32Array(W * H), alpha: new Float32Array(W * H) }; }
+function draw(key) {
+  // between the two traced press positions around the key's place
+  const f = Math.max(0, Math.min(FRAMES - 1, key.frame)), a = Math.floor(f), b = Math.min(FRAMES - 1, a + 1), m = f - a;
+  const A = key.traced[a], B = key.traced[b] && key.traced[b].done ? key.traced[b] : A;
+  if (!A || !A.done) return;
+  const d = key.image.data, room = P.room, power = key.lamp, col = key.colour;
+  for (let k = 0, o = 0; k < W * H; k++, o += 4) {
+    const al = A.alpha[k] + (B.alpha[k] - A.alpha[k]) * m;
+    if (al <= 0) { d[o + 3] = 0; continue; }
+    const bs = (A.base[k] + (B.base[k] - A.base[k]) * m) * room, gl = (A.glow[k] + (B.glow[k] - A.glow[k]) * m) * power;
+    for (let c = 0; c < 3; c++) d[o + c] = enc(1 - Math.exp(-0.75 * (bs + gl * col[c])));
+    d[o + 3] = Math.round(Math.min(1, al) * 255);
+  }
+  key.ctx.putImageData(key.image, 0, 0);
+}
+
+// Tracing: press position 0 of every key first, then the rest, a few rows per slice.
+let jobs = [], tracing = false, traceStart = 0;
+function retrace() {
+  jobs = [];
+  for (const key of KEYS) { key.mask = legendMask(key.name); key.traced = []; }
+  for (let f = 0; f < FRAMES; f++) for (const key of KEYS) {
+    const buf = Object.assign(newBuffers(), { done: false });
+    key.traced[f] = buf;
+    jobs.push({ key, f, buf, rows: traceRows(key, f / (FRAMES - 1), buf) });
+  }
+  traceStart = performance.now();
+  if (!tracing) { tracing = true; setTimeout(slice, 0); }
+}
+function slice() {
+  const until = performance.now() + 14;
+  while (jobs.length && performance.now() < until) {
+    const job = jobs[0];
+    if (job.rows.next().done) {
+      job.buf.done = true; jobs.shift();
+      if (job.f === 0 || job.f === Math.round(job.key.frame)) { job.key.drawn = ''; kick(); }
+      stats();
+    }
+  }
+  if (jobs.length) setTimeout(slice, 0); else tracing = false;
+}
+function stats() {
+  const done = KEYS.reduce((n, k) => n + k.traced.filter((b) => b.done).length, 0);
+  document.getElementById('stats').textContent = `${W}×${H} device px per key · ${done} of ${FRAMES * KEYS.length} press positions traced in ${((performance.now() - traceStart) / 1000).toFixed(1)} s · drawn only when the press or the lamp changes`;
+}
+
+// Animation: the press over about 70 ms, OK's lamp following its hold.
+let last = 0, running = false;
+function kick() { if (!running) { running = true; last = 0; requestAnimationFrame(tick); } }
+function tick(now) {
+  const dt = last ? Math.min(50, now - last) : 16; last = now;
+  let moving = false;
+  for (const key of KEYS) {
+    const target = key.held ? FRAMES - 1 : 0, step = dt / 70 * (FRAMES - 1);
+    key.frame = key.frame < target ? Math.min(target, key.frame + step) : Math.max(target, key.frame - step);
+    const want = key.steady ? key.power : (key.held ? 1 : 0);
+    key.lamp += (want - key.lamp) * Math.min(1, dt / 30);
+    if (Math.abs(key.lamp - want) < 1e-3) key.lamp = want;
+    const state = key.frame.toFixed(2) + ':' + key.lamp.toFixed(3) + ':' + P.room;
+    if (state !== key.drawn) { draw(key); key.drawn = state; }
+    if (key.frame !== target || key.lamp !== want) moving = true;
+  }
+  if (moving || tracing) requestAnimationFrame(tick); else running = false;
+}
+
+// ---- controls ----------------------------------------------------------------------------------------
+const CONTROLS = [
+  ['sidewall', 'Sidewall height', 0.12, 0.6, 0.01, true],
+  ['relief', 'Orange peel', 0, 0.2, 0.005, true],
+  ['grain', 'Grain', 0, 0.2, 0.005, true],
+  ['turns', 'Coil turns', 2, 10, 1, true],
+  ['coilRadius', 'Coil radius', 0.05, 0.25, 0.005, true],
+  ['haze', 'Acrylic haze', 0, 3, 0.05, true],
+  ['spread', 'Light carry', 0.05, 0.8, 0.01, true],
+  ['room', 'Room light', 0, 12, 0.1, false],
+];
+const controls = document.getElementById('controls');
+let pending = 0;
+for (const [name, text, min, max, step, geometric] of CONTROLS) {
+  const label = document.createElement('label');
+  const value = document.createElement('span');
+  const input = Object.assign(document.createElement('input'), { type: 'range', min, max, step, value: P[name] });
+  value.textContent = `${text}: ${P[name]}`;
+  input.addEventListener('input', () => {
+    P[name] = Number(input.value); value.textContent = `${text}: ${P[name]}`;
+    if (geometric) { clearTimeout(pending); pending = setTimeout(retrace, 250); } else { for (const k of KEYS) k.drawn = ''; kick(); }
+  });
+  label.append(value, input); controls.append(label);
+}
+
+retrace();
+kick();
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blast Profile Lab</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .trio { display: flex; flex-wrap: wrap; gap: 12px; }
+  .trio figure { max-width: 100%; }
+  .trio figure { margin: 0; }
+  .trio .frame { overflow: auto; border-radius: 4px; }
+  .trio canvas { display: block; image-rendering: pixelated; }
+  .trio figcaption { font-size: 12px; color: var(--muted); margin-top: 5px; }
+  .trio figcaption b { color: var(--text); display: block; font-size: 13px; }
+  table.bands { border-collapse: collapse; font: 12px ui-monospace, Menlo, monospace; margin-top: 10px; }
+  table.bands td, table.bands th { padding: 3px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+  table.bands th:first-child, table.bands td:first-child { text-align: left; }
+  
+</style>
+</head>
+<body>
+<header>
+  <h1>Blast profile lab</h1>
+  <p>Paint over grit-blasted steel. On the left and in the middle is a slow simulation of the real process: angular
+    grit pits the steel (faceted craters with raised rims, several impacts deep), then primer and topcoat level the
+    profile, and the result is rendered with 4×4 supersampling. On the right is a fast kernel that works out each
+    pixel on its own, with no bitmap. It is fitted to the painted reference by matching the luminance mean and its
+    spread in three frequency bands. All sizes are physical, in millimetres.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="finishes.html">Finishes</a><a href="blast_lab.html" aria-current="page">Blast lab</a><a href="paint.html">Paint study</a><a href="neon_buttons.html">Neon buttons</a></nav>
+</header>
+<main>
+  <div class="row">
+    <div class="panel controls">
+      <label><span class="pair">Viewing scale: mm per logical unit <span class="v" id="v-mmu"></span></span><input id="mmu" type="range" min="2" max="60" value="10"></label>
+      <label><span class="pair">Grit size (mm) <span class="v" id="v-grit"></span></span><input id="grit" type="range" min="15" max="150" value="50"></label>
+      <label><span class="pair">Coverage (impacts per area) <span class="v" id="v-cov"></span></span><input id="cov" type="range" min="10" max="60" value="35"></label>
+      <label><span class="pair">Paint levelling σ (mm) <span class="v" id="v-lev"></span></span><input id="lev" type="range" min="0" max="40" value="9"></label>
+      <label><span class="pair">Orange peel (µm) <span class="v" id="v-peel"></span></span><input id="peel" type="range" min="0" max="20" value="4"></label>
+      <label><span class="pair">Topcoat roughness α <span class="v" id="v-alpha"></span></span><input id="alpha" type="range" min="5" max="90" value="32"></label>
+      <label><span class="pair">Light azimuth <span class="v" id="v-az"></span></span><input id="az" type="range" min="0" max="360" value="125"></label>
+      <label><span class="pair">Light elevation <span class="v" id="v-el"></span></span><input id="el" type="range" min="6" max="85" value="30"></label>
+      <label><span class="pair">Magnify <span class="v" id="v-zoom"></span></span><input id="zoom" type="range" min="1" max="6" value="2"></label>
+      <label>Paint<select id="colour">
+        <option value="#2f6e6c">Turbine hall teal</option><option value="#5c938c">Machine-tool teal</option>
+        <option value="#8fb7ab">Seafoam machinery</option><option value="#5d6266">Machinery grey</option>
+        <option value="#c9a227">Crane yellow</option><option value="#2a2d30">Graphite</option>
+      </select></label>
+      <button class="primary" id="simulate">Simulate reference</button>
+      <button id="fit">Fit fast kernel to reference</button>
+    </div>
+    <div class="stage panel">
+      <div class="trio">
+        <figure><div class="frame"><canvas id="bare"></canvas></div><figcaption><b>Reference: bare blasted steel</b>Checks the profile on its own, before any paint.</figcaption></figure>
+        <figure><div class="frame"><canvas id="ref"></canvas></div><figcaption><b>Reference: painted</b>The same profile after primer and topcoat level it, with orange peel added.</figcaption></figure>
+        <figure><div class="frame"><canvas id="fast"></canvas></div><figcaption><b>Fast per-pixel kernel</b>Sparse dents with an analytic slope; detail finer than a pixel becomes sheen roughness.</figcaption></figure>
+      </div>
+      <table class="bands" id="bands"></table>
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+  <h2>Model</h2>
+  <p class="note"><b>Steel.</b> Grit particles of diameter <i>d</i> (±40 %) land at random until each point has been hit
+    about <i>coverage</i> times. Each impact cuts a pyramidal pit with three to five facets, radius 0.22<i>d</i> and
+    depth 0.35 of its radius, stretched up to 1.6× along a random direction (impacts are oblique). It also pushes up a
+    rim. The surface is the lower envelope of all the pits, which gives the sharp ridges where pits meet.
+    At 0.5 mm grit the depth comes out at about 40 µm, inside the 40–100 µm anchor-profile range given for blasted
+    steel.</p>
+  <p class="note"><b>Paint.</b> Each wet coat flows under surface tension, which smooths the short wavelengths first.
+    The model applies that as a low-pass filter of width σ (three box passes approximating a Gaussian), then adds the
+    film's own low-frequency orange peel. It is shaded with GGX at the topcoat roughness α, and each device pixel
+    averages 4×4 samples, so detail finer than a pixel shows up as roughness in the sheen rather than as visible
+    relief.</p>
+  <p class="note"><b>Fast kernel.</b> The kernel places sparse compact dents on a hashed grid, sized like the levelled
+    craters, and adds up their analytic slopes. It needs no rows and no neighbouring pixels, so any pixel can be
+    computed on its own. The fit adjusts the dent amplitude and an effective sheen roughness until the kernel's mean
+    luminance and band spread match the reference.</p>
+</main>
+<script src="finish_kernel.js"></script>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const K = 2;                 // device px per logical unit for the lab
+const WD = 300, HD = 200;    // device pixels of each patch
+const SS = 4;                // reference supersampling per axis
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function params() {
+  return {
+    mmPerUnit: +$('mmu').value / 100, grit: +$('grit').value / 100, coverage: +$('cov').value / 10,
+    level: +$('lev').value / 100, peel: +$('peel').value / 1000, alpha: +$('alpha').value / 100,
+    light: Finish.lightOf(+$('az').value, +$('el').value), colour: $('colour').value,
+  };
+}
+
+// ---- shading (linear light) -----------------------------------------------
+
+const AMBIENT = 0.3;
+const shadeOut = [0, 0, 0];
+function shade(nx, ny, nz, light, alpha, F0, albedo, metal) {
+  const L = light.L, H = light.H;
+  const ndlRaw = nx * L[0] + ny * L[1] + nz * L[2];
+  const ndl = ndlRaw > 0 ? ndlRaw : 0;
+  const ndv = nz > 1e-3 ? nz : 1e-3;
+  const ndhRaw = nx * H[0] + ny * H[1] + nz * H[2];
+  const ndh = ndhRaw > 0 ? ndhRaw : 0;
+  const vdh = H[2];
+  const a2 = alpha * alpha;
+  const dd = ndh * ndh * (a2 - 1) + 1;
+  const D = a2 / (Math.PI * dd * dd);
+  const F = F0 + (1 - F0) * Math.pow(1 - vdh, 5);
+  const kk = alpha * 0.5;
+  const G = (ndl / (ndl * (1 - kk) + kk + 1e-6)) * (ndv / (ndv * (1 - kk) + kk));
+  const spec = D * F * G / (4 * ndv) * (1 - AMBIENT) * 0.35;
+  const norm = AMBIENT + (1 - AMBIENT) * L[2];
+  const dif = (AMBIENT + (1 - AMBIENT) * ndl) / norm * (1 - metal * 0.6);
+  for (let i = 0; i < 3; i++) {
+    const sc = metal > 0 ? (0.6 + 0.4 * albedo[i] / 0.4) : 1;
+    shadeOut[i] = albedo[i] * dif + spec * sc;
+  }
+}
+
+// ---- reference simulation ---------------------------------------------------
+
+function simulateProfile(p, seed) {
+  const GW = WD * SS, GH = HD * SS;
+  const g = p.mmPerUnit / K / SS;              // mm per grid cell
+  const h = new Float32Array(GW * GH);
+  const rng = mulberry32(seed);
+  const a0 = 0.22 * p.grit;
+  const areaMm = GW * GH * g * g;
+  // Mean pit area uses the mean of (0.6..1.4)² ≈ 1.053 and the stretch.
+  const n = Math.round(p.coverage * areaMm / (Math.PI * a0 * a0 * 1.053 * 1.3));
+  const margin = 2 * a0 * 1.6;
+  for (let i = 0; i < n; i++) {
+    const cx = -margin + rng() * (GW * g + 2 * margin);
+    const cy = -margin + rng() * (GH * g + 2 * margin);
+    const a = a0 * (0.6 + 0.8 * rng());
+    const depth = 0.35 * a;
+    const sides = 3 + Math.floor(rng() * 3);
+    const rot = rng() * Math.PI * 2;
+    const stretch = 1 + 0.6 * rng();
+    const sdir = rng() * Math.PI;
+    const cs = Math.cos(sdir), sn = Math.sin(sdir);
+    const apothem = Math.cos(Math.PI / sides);
+    const reach = a * stretch * 1.5 / apothem;
+    const x0 = Math.max(0, Math.floor((cx - reach) / g)), x1 = Math.min(GW - 1, Math.ceil((cx + reach) / g));
+    const y0 = Math.max(0, Math.floor((cy - reach) / g)), y1 = Math.min(GH - 1, Math.ceil((cy + reach) / g));
+    for (let yy = y0; yy <= y1; yy++) {
+      for (let xx = x0; xx <= x1; xx++) {
+        let dx = xx * g - cx, dy = yy * g - cy;
+        // undo the stretch along sdir
+        const u = (dx * cs + dy * sn) / stretch, v = -dx * sn + dy * cs;
+        dx = u; dy = v;
+        // polygon "radius": max over facet normals, 1 on the polygon edge
+        let rho = 0;
+        for (let s = 0; s < sides; s++) {
+          const t = rot + s * 2 * Math.PI / sides;
+          const d = (dx * Math.cos(t) + dy * Math.sin(t)) / (a * apothem);
+          if (d > rho) rho = d;
+        }
+        const idx = yy * GW + xx;
+        if (rho < 1) {
+          const pit = -depth * (1 - rho);
+          if (pit < h[idx]) h[idx] = pit;
+        } else if (rho < 1.5) {
+          const r = (rho - 1) / 0.5;
+          h[idx] += 0.12 * depth * (1 - r) * (1 - r);
+        }
+      }
+    }
+  }
+  return { h, GW, GH, g, impacts: n };
+}
+
+// Three box passes per axis approximate a Gaussian of the given σ (cells).
+function boxBlur(src, GW, GH, sigma) {
+  if (sigma < 0.5) return src.slice();
+  const r = Math.max(1, Math.round(Math.sqrt(12 * sigma * sigma / 3 + 1) / 2));
+  let a = src.slice(), b = new Float32Array(src.length);
+  for (let pass = 0; pass < 3; pass++) {
+    for (let y = 0; y < GH; y++) {
+      const row = y * GW;
+      let acc = 0;
+      for (let x = -r; x <= r; x++) acc += a[row + Math.min(GW - 1, Math.max(0, x))];
+      for (let x = 0; x < GW; x++) {
+        b[row + x] = acc / (2 * r + 1);
+        acc += a[row + Math.min(GW - 1, x + r + 1)] - a[row + Math.max(0, x - r)];
+      }
+    }
+    for (let x = 0; x < GW; x++) {
+      let acc = 0;
+      for (let y = -r; y <= r; y++) acc += b[Math.min(GH - 1, Math.max(0, y)) * GW + x];
+      for (let y = 0; y < GH; y++) {
+        a[y * GW + x] = acc / (2 * r + 1);
+        acc += b[Math.min(GH - 1, y + r + 1) * GW + x] - b[Math.max(0, y - r) * GW + x];
+      }
+    }
+  }
+  return a;
+}
+
+function addPeel(h, GW, GH, g, amp, seed) {
+  if (amp <= 0) return;
+  for (let y = 0; y < GH; y++) {
+    for (let x = 0; x < GW; x++) {
+      const mmx = x * g, mmy = y * g;
+      const v = 0.65 * Finish.noise(mmx * 100, mmy * 100, 260, seed) + 0.35 * Finish.noise(mmx * 100, mmy * 100, 110, seed + 1);
+      h[y * GW + x] += (v - 0.5) * 2 * amp;
+    }
+  }
+}
+
+// Render a height field (mm) on the supersampled grid to device pixels.
+function renderGrid(prof, h, p, albedoHex, F0, alpha, metal, canvas) {
+  const { GW, GH, g } = prof;
+  const albedo = Finish.linearOf(albedoHex);
+  const img = new ImageData(WD, HD);
+  const acc = new Float32Array(WD * 3);
+  const inv = 1 / (SS * SS);
+  for (let py = 0; py < HD; py++) {
+    acc.fill(0);
+    for (let sy = 0; sy < SS; sy++) {
+      const y = py * SS + sy;
+      const ym = Math.max(0, y - 1), yp = Math.min(GH - 1, y + 1);
+      for (let x = 0; x < GW; x++) {
+        const xm = Math.max(0, x - 1), xp = Math.min(GW - 1, x + 1);
+        const gx = (h[y * GW + xp] - h[y * GW + xm]) / ((xp - xm) * g);
+        const gy = (h[yp * GW + x] - h[ym * GW + x]) / ((yp - ym) * g);
+        const il = 1 / Math.sqrt(gx * gx + gy * gy + 1);
+        shade(-gx * il, -gy * il, il, p.light, alpha, F0, albedo, metal);
+        const o = ((x / SS) | 0) * 3;
+        acc[o] += shadeOut[0]; acc[o + 1] += shadeOut[1]; acc[o + 2] += shadeOut[2];
+      }
+    }
+    for (let px = 0; px < WD; px++) {
+      const q = (py * WD + px) * 4;
+      img.data[q] = Finish.encode(acc[px * 3] * inv);
+      img.data[q + 1] = Finish.encode(acc[px * 3 + 1] * inv);
+      img.data[q + 2] = Finish.encode(acc[px * 3 + 2] * inv);
+      img.data[q + 3] = 255;
+    }
+  }
+  show(canvas, img);
+  return img;
+}
+
+// ---- fast per-pixel kernel ----------------------------------------------------
+//
+// Dents of compact support w(q) = (1 - q)³, q = d²/r², on a hashed grid of
+// cells as wide as the largest dent, three dents per cell, so a 3×3 cell
+// neighbourhood covers every dent that can reach the pixel. The slope is the
+// analytic sum of the dents' gradients; no neighbouring pixel is read.
+
+function fastPixelSlope(x, y, f, out) {
+  const c = f.cell;
+  const ix = Math.floor(x / c), iy = Math.floor(y / c);
+  let gx = 0, gy = 0;
+  for (let j = -1; j <= 1; j++) {
+    for (let i = -1; i <= 1; i++) {
+      const cx = ix + i, cy = iy + j;
+      for (let d = 0; d < 3; d++) {
+        const s = d * 5;
+        const px = (cx + Finish.hash(cx, cy, s)) * c;
+        const py = (cy + Finish.hash(cx, cy, s + 1)) * c;
+        const r = f.radius * (0.6 + 0.8 * Finish.hash(cx, cy, s + 2));
+        const dx = x - px, dy = y - py;
+        const q = (dx * dx + dy * dy) / (r * r);
+        if (q < 1) {
+          const t = 1 - q;
+          const amp = -f.amp * (r / f.radius) * (0.7 + 0.6 * Finish.hash(cx, cy, s + 3));
+          const k = amp * -6 * t * t / (r * r);
+          gx += k * dx; gy += k * dy;
+        }
+      }
+    }
+  }
+  out[0] = gx; out[1] = gy;
+}
+
+function fastRender(p, f, canvas) {
+  const img = new ImageData(WD, HD);
+  const albedo = Finish.linearOf(p.colour);
+  const mmPerPx = p.mmPerUnit / K;
+  const sl = [0, 0];
+  const peelCell = 2.6 / mmPerPx, peelCell2 = 1.1 / mmPerPx;
+  const t0 = performance.now();
+  for (let y = 0; y < HD; y++) {
+    for (let x = 0; x < WD; x++) {
+      fastPixelSlope(x + 0.5, y + 0.5, f, sl);
+      // dents are in mm over device px: slope = mm / (px · mm/px)
+      let gx = sl[0] / mmPerPx, gy = sl[1] / mmPerPx;
+      if (p.peel > 0) {
+        const n0 = 0.65 * Finish.noise(x, y, peelCell, 901) + 0.35 * Finish.noise(x, y, peelCell2, 902);
+        const nx = 0.65 * Finish.noise(x + 1, y, peelCell, 901) + 0.35 * Finish.noise(x + 1, y, peelCell2, 902);
+        const ny = 0.65 * Finish.noise(x, y + 1, peelCell, 901) + 0.35 * Finish.noise(x, y + 1, peelCell2, 902);
+        gx += (nx - n0) * 2 * p.peel / mmPerPx;
+        gy += (ny - n0) * 2 * p.peel / mmPerPx;
+      }
+      const il = 1 / Math.sqrt(gx * gx + gy * gy + 1);
+      shade(-gx * il, -gy * il, il, p.light, f.alpha, 0.04, albedo, 0);
+      const q = (y * WD + x) * 4;
+      img.data[q] = Finish.encode(shadeOut[0]);
+      img.data[q + 1] = Finish.encode(shadeOut[1]);
+      img.data[q + 2] = Finish.encode(shadeOut[2]);
+      img.data[q + 3] = 255;
+    }
+  }
+  const dt = performance.now() - t0;
+  if (canvas) show(canvas, img);
+  return { img, dt };
+}
+
+// Initial guess from the physics: a levelled crater widens to about
+// sqrt(a² + (2σ)²) and its depth falls by the area ratio.
+function fastGuess(p) {
+  const a0 = 0.22 * p.grit;
+  const mmPerPx = p.mmPerUnit / K;
+  const aEff = Math.sqrt(a0 * a0 + 4 * p.level * p.level);
+  const depth = 0.35 * a0 * 0.6 * (a0 * a0) / (aEff * aEff);
+  const radiusPx = Math.max(0.8, aEff / mmPerPx);
+  return { radius: radiusPx, cell: radiusPx * 1.4, amp: depth, alpha: p.alpha };
+}
+
+// ---- statistics ---------------------------------------------------------------
+
+function luma(img) {
+  const n = WD * HD, y = new Float32Array(n);
+  for (let i = 0; i < n; i++) y[i] = 0.2126 * img.data[i * 4] + 0.7152 * img.data[i * 4 + 1] + 0.0722 * img.data[i * 4 + 2];
+  return y;
+}
+function blurLuma(src, r) {
+  return boxBlur(src, WD, HD, r);
+}
+function bands(img) {
+  const y0 = luma(img);
+  const y1 = blurLuma(y0, 1), y2 = blurLuma(y0, 2), y3 = blurLuma(y0, 4);
+  const sd = (a, b) => {
+    let s = 0, s2 = 0;
+    for (let i = 0; i < a.length; i++) { const d = a[i] - (b ? b[i] : 0); s += d; s2 += d * d; }
+    const m = s / a.length; return Math.sqrt(Math.max(0, s2 / a.length - m * m));
+  };
+  let mean = 0; for (const v of y0) mean += v; mean /= y0.length;
+  return { mean, total: sd(y0), fine: sd(y0, y1), mid: sd(y1, y2), coarse: sd(y2, y3) };
+}
+
+// ---- page -------------------------------------------------------------------------
+
+function show(canvas, img) {
+  canvas.width = WD; canvas.height = HD;
+  canvas.getContext('2d').putImageData(img, 0, 0);
+  const z = +$('zoom').value;
+  canvas.style.width = (WD / (window.devicePixelRatio || 1) * z) + 'px';
+  canvas.style.height = (HD / (window.devicePixelRatio || 1) * z) + 'px';
+}
+
+let reference = null, refStats = null, fast = null;
+function simulate() {
+  const p = params();
+  const t0 = performance.now();
+  const prof = simulateProfile(p, 1234);
+  const bareH = boxBlur(prof.h, prof.GW, prof.GH, 0.6);
+  renderGrid(prof, bareH, p, '#6e7276', 0.55, 0.42, 1, $('bare'));
+  const painted = boxBlur(prof.h, prof.GW, prof.GH, p.level / prof.g);
+  addPeel(painted, prof.GW, prof.GH, prof.g, p.peel, 77);
+  reference = renderGrid(prof, painted, p, p.colour, 0.04, p.alpha, 0, $('ref'));
+  refStats = bands(reference);
+  const dt = performance.now() - t0;
+  if (!fast) fast = fastGuess(p);
+  const fr = fastRender(p, fast, $('fast'));
+  report(p, prof, dt, fr.dt);
+}
+
+function report(p, prof, simMs, fastMs) {
+  const fs = bands(fastRender(p, fast, null).img);
+  const row = (n, k) => `<tr><td>${n}</td><td>${refStats[k].toFixed(2)}</td><td>${fs[k].toFixed(2)}</td><td>${(fs[k] - refStats[k] >= 0 ? '+' : '') + (fs[k] - refStats[k]).toFixed(2)}</td></tr>`;
+  $('bands').innerHTML = `<tr><th>luma (0–255)</th><th>reference</th><th>fast</th><th>Δ</th></tr>` +
+    row('mean', 'mean') + row('spread, all', 'total') + row('band 1–2 px', 'fine') + row('band 2–4 px', 'mid') + row('band 4–8 px', 'coarse');
+  const mmPerPx = p.mmPerUnit / K;
+  $('stats').innerHTML = (prof ? `reference: ${prof.impacts.toLocaleString()} impacts on ${prof.GW}×${prof.GH} grid (${(prof.g * 1000).toFixed(1)} µm/cell), ${simMs.toFixed(0)} ms\n` : '') +
+    `fast: ${(WD * HD / 1e6).toFixed(3)} Mpx in ${fastMs.toFixed(1)} ms · dent radius ${fast.radius.toFixed(2)} px (${(fast.radius * mmPerPx * 1000).toFixed(0)} µm), ` +
+    `amplitude ${(fast.amp * 1000).toFixed(1)} µm, sheen α ${fast.alpha.toFixed(3)}\n` +
+    `scale: ${(mmPerPx * 1000).toFixed(0)} µm per device px · grit ${(p.grit).toFixed(2)} mm → crater ≈ ${(0.22 * p.grit / mmPerPx).toFixed(1)} px radius`;
+}
+
+// Fit amplitude to the 1–4 px band spread and sheen α to the mean, by a few
+// rounds of multiplicative correction (both responses are monotonic).
+function fit() {
+  if (!refStats) simulate();
+  const p = params();
+  fast = fastGuess(p);
+  for (let it = 0; it < 8; it++) {
+    const s = bands(fastRender(p, fast, null).img);
+    const target = refStats.fine + refStats.mid, got = Math.max(1e-3, s.fine + s.mid);
+    fast.amp *= Math.pow(target / got, 0.9);
+    const dm = refStats.mean - s.mean;
+    fast.alpha = Math.min(0.95, Math.max(0.04, fast.alpha * Math.exp(-dm * 0.04)));
+  }
+  const fr = fastRender(p, fast, $('fast'));
+  report(p, null, 0, fr.dt);
+}
+
+function labels() {
+  $('v-mmu').textContent = (+$('mmu').value / 100).toFixed(2);
+  $('v-grit').textContent = (+$('grit').value / 100).toFixed(2);
+  $('v-cov').textContent = (+$('cov').value / 10).toFixed(1) + '×';
+  $('v-lev').textContent = (+$('lev').value / 100).toFixed(2);
+  $('v-peel').textContent = $('peel').value;
+  $('v-alpha').textContent = (+$('alpha').value / 100).toFixed(2);
+  $('v-az').textContent = $('az').value + '°'; $('v-el').textContent = $('el').value + '°';
+  $('v-zoom').textContent = $('zoom').value + '×';
+}
+for (const el of document.querySelectorAll('input,select')) el.addEventListener('input', () => { labels(); fast = null; });
+$('simulate').onclick = () => { fast = null; simulate(); };
+$('fit').onclick = fit;
+labels();
+setTimeout(() => { simulate(); fit(); }, 30);
+</script>
+</body>
+</html>
