@@ -359,8 +359,8 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 
 | Windows Forms | Rows | GUI.Forms | State |
 |---|---:|---|---|
-| `CommonDialog` | 12 | none | missing |
-| `FileDialog` | 46 | none | missing |
+| `CommonDialog` | 12 | the dialog components | done by design: no public base (house style §7, nothing needs one at run time); `ShowDialog`, `Reset` and `Tag`'s use are each dialog's own `show_dialog`, `reset` and component state. `HookProc`, `OwnerWndProc` and `RunDialog` are Win32 hooks and excluded; `HelpRequest` waits for a host help button, which no host dialog has |
+| `FileDialog` | 46 | `OpenFileDialog`, `SaveFileDialog` | done by design: no public base; the two dialogs share the filter parser and carry the members: title, initial directory, filter, `filter_index` (2026-11-01; counts from zero, the host request carries it and reports the chosen filter on every host), file names, `file_ok`, default and added extension (the chosen filter's first). Open: `ShowHiddenFiles`, `DereferenceLinks`, `CheckFileExists`/`CheckPathExists` and `ValidateNames` as settings (the hosts apply fixed rules). Excluded: the IFileDialog-only `ClientGuid`, `CustomPlaces`, `ShowPinnedPlaces`, `AutoUpgradeEnabled`, `OkRequiresInteraction`, `AddToRecent`; `RestoreDirectory` (no dialog changes the working directory) |
 | `OpenFileDialog` | 18 | `OpenFileDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
 | `SaveFileDialog` | 12 | `SaveFileDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
 | `FolderBrowserDialog` | 31 | `FolderBrowserDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
@@ -382,9 +382,10 @@ ADR-001.
 
 Of the 93 types in the tables above (rows that name several types count
 each), recounted against `main` on 2026-10-31 with `claude/w-tooltips`:
-79 done, 12 partial, 2 missing. The missing ones are `CommonDialog` and
-`FileDialog`, the public bases that are partial by design. Since the last
-count, `RichTextBox`, `Splitter`, the four dialog components, `ListView`,
+81 done, 12 partial, 0 missing (2026-11-01: `CommonDialog` and
+`FileDialog` are done by design, their members on the concrete dialogs;
+`filter_index` added). Since the count before that, `RichTextBox`,
+`Splitter`, the four dialog components, `ListView`,
 `ThreadExceptionDialog` and the `DataGridView` image and link columns are
 done.
 
