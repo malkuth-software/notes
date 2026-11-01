@@ -86,8 +86,9 @@ value time"). E409 stays only for a name defined nowhere.
 - E508 `too_many_variable_combinations`: the copies per rule;
 - E515 `too_many_scoped_variables`: the scoped names read per theme.
 
-**Limits.** These are provisional, and the test theme sets them:
-- `maximum_variable_combinations` = 64 copies per rule;
+**Limits.** Set from the test theme on 2026-10-31 (PLAN.md section 1.11,
+"Measured"); the first values below were provisional:
+- `maximum_variable_combinations` = 128 copies per rule (first 64);
 - `maximum_variable_steps` = 4096 candidate combinations considered per
   rule (also E508);
 - `maximum_scoped_custom_properties` = 64. The engine keeps a fixed winner

@@ -391,6 +391,31 @@ only for text and colour roles).
   one compilation (a theme and its `@import` closure); P12b adds inline
   definitions.
 
+- **Measured (P12a, 2026-10-31, M4).** The token-heavy test theme
+  (`tests/theme_language/theme_custom_property_css_tests.cpp`): 100 custom
+  properties and 8 colour roles in three `:root` blocks, dark and reduced
+  motion through `@media`, four scoped overrides (`.primary`, `.danger`,
+  `.compact`, `slider`) and 28 style rules over five controls. Lowered:
+  light only, 28 rules (one each); with dark and reduced motion, 60 rules,
+  at most 4 for one rule; with the overrides, 134 rules (127 copies and 7
+  rules of definitions), at most 24 copies for one rule (a button's face:
+  four worlds, each with the palette's surface, or the primary's over the
+  palette's accent or the danger's, each with and without the compact
+  radius), and 8 scoped names. The lowered sheet holds about 0.9 MB as
+  `ThemeRule` records (the record's size, not new to P12). Limits set
+  from it: `maximum_variable_combinations` 128 copies per rule (5.3 times
+  24), `maximum_variable_steps` 4,096 candidate combinations per rule (32
+  per admitted copy), `maximum_scoped_custom_properties` 64 (8 times 8).
+- **What keeps the copies down** (built in P12a): a copy decides only the
+  scoped names it reads given the candidates chosen above them (a decision
+  tree, so a palette surface does not multiply by the accent the primary
+  surface reads); a scoped definition whose rule cannot match the reader's
+  parts (another control type or stable ID) is not a candidate; where a
+  definition selecting the reader's control whole always matches
+  (`slider { --accent: ... }` for `slider::part(fill)`), neither the
+  palette's definition nor none is; and a palette role copy (P8b) that a
+  later copy covers in every window it holds in is not made.
+
 ## 2. Diagnostics
 
 Every diagnostic has:
