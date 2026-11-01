@@ -23,3 +23,16 @@ counts are approximate: the classification is by name pattern.
 | unclassified | 3 | `SelectedColumns`, `VerticalScrollingOffset` |
 
 The classifier is `dev/tools/dgv_audit.py` in the W workspace.
+
+## Batch 1: the editing lifecycle (owner, 2026-11-01)
+
+Accepted: data errors, validation, dirty state, the new row, deleting rows,
+`CancelRowEdit`, and cell and row enter and leave, on `claude/w-dgv-breadth`.
+
+- **B1-1 (a):** a `DataError` with no handler marks the cell invalid and
+  keeps the old value; no modal dialog is shown.
+- **B1-2 (a):** the new row is offered for unbound and BindingSource grids
+  only; virtual grids get it later through a provider call.
+- **B1-3 (a):** the row header's editing icons (the pencil on the current
+  row while it is dirty, the star on the new row) are drawn through glyph
+  roles; their look goes to T4.
