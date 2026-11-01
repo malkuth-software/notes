@@ -391,6 +391,78 @@ only for text and colour roles).
   one compilation (a theme and its `@import` closure); P12b adds inline
   definitions.
 
+- **Measured (P12a, 2026-10-31, M4).** The token-heavy test theme
+  (`tests/theme_language/theme_custom_property_css_tests.cpp`): 100 custom
+  properties and 8 colour roles in three `:root` blocks, dark and reduced
+  motion through `@media`, four scoped overrides (`.primary`, `.danger`,
+  `.compact`, `slider`) and 28 style rules over five controls. Lowered:
+  light only, 28 rules (one each); with dark and reduced motion, 60 rules,
+  at most 4 for one rule; with the overrides, 134 rules (127 copies and 7
+  rules of definitions), at most 24 copies for one rule (a button's face:
+  four worlds, each with the palette's surface, or the primary's over the
+  palette's accent or the danger's, each with and without the compact
+  radius), and 8 scoped names. The lowered sheet holds about 0.9 MB as
+  `ThemeRule` records (the record's size, not new to P12). Limits set
+  from it: `maximum_variable_combinations` 128 copies per rule (5.3 times
+  24), `maximum_variable_steps` 4,096 candidate combinations per rule (32
+  per admitted copy), `maximum_scoped_custom_properties` 64 (8 times 8).
+- **Owner decision (2026-10-31): inline definitions (P12b).** An inline
+  style that defines custom properties is compiled against the active
+  theme's source, which the program keeps. It yields copies of the theme's
+  rules that read those names, holding the inline values, each placed at
+  its theme rule's position in the cascade. Each theme rule records the
+  names it reads, and the engine skips a theme rule wherever an inline
+  definition wins for the part, so the copy takes its place. A theme
+  switch recompiles every such inline style and refuses the new theme if
+  one fails (the reverse case above). There is no "no theme" state (owner,
+  2026-10-31, replacing a held-uncompiled proposal): the theme in effect is
+  the program's theme if one is set, else the default theme, which is not
+  authoritative. An inline style compiles against the theme in effect, the
+  default theme when none is set; inline declarations win over the default
+  theme where they apply, and a control with no inline style takes the
+  default theme. A control outside any window compiles against the
+  default theme; when it joins a window whose theme differs, its style is
+  compiled again against that theme (decided 2026-10-31: a failure there
+  keeps the style as it was and writes one log line naming the control and
+  the first error; its copies of the theme's rules stop applying, being
+  compiled for another theme's serial).
+- **P12b as built (2026-10-31).** A theme compiled from a package keeps its
+  source (`ThemeSourceRecord`: the closure's text, published values,
+  images, control types, defined names, sheets); a theme made from a
+  definition alone, the built-in default among them, keeps the empty
+  sheet's (decided 2026-10-31, so that inline prevails over the default
+  theme the same way: its rules read no custom properties today, and T4's
+  default sheets will go there). The style is
+  compiled alone, every definition it makes scoped and lowered whether it
+  reads it or not; where the theme kept its source, the theme's text is
+  compiled again with the style written after it as `*` sheet rules, and
+  the theme-level rules reading a name the style defines, whose selector
+  can match the control, join the style's rules at their source positions.
+  Theme rules carry the names they read and their source positions only
+  where the sheet names a custom property. A program theme change, a theme
+  override and its removal compile each affected style first and are
+  refused (`invalid_argument`, nothing changed) where one fails. Limits:
+  a palette value or `@keyframes` reading a name the style defines where
+  the theme defines it more than once is E416. The style's own `var()` of
+  a name the theme defines reads the theme's definition (decided
+  2026-10-31): the style's compilation alone defers it, and the style's
+  rules are then lowered with the theme's text at the inline levels,
+  holding the theme's definitions of the scoped names they read below its
+  own; a theme no longer defining the name is refused (E409). Diagnostics
+  of the recompiled theme are placed in their own sheets, the style's in
+  the style, once. Theme refusal stays `invalid_argument` from the void
+  setters; a result-returning API comes with the C ABI. Gate:
+  `gui_forms_theme_inline_custom_property_tests`.
+- **What keeps the copies down** (built in P12a): a copy decides only the
+  scoped names it reads given the candidates chosen above them (a decision
+  tree, so a palette surface does not multiply by the accent the primary
+  surface reads); a scoped definition whose rule cannot match the reader's
+  parts (another control type or stable ID) is not a candidate; where a
+  definition selecting the reader's control whole always matches
+  (`slider { --accent: ... }` for `slider::part(fill)`), neither the
+  palette's definition nor none is; and a palette role copy (P8b) that a
+  later copy covers in every window it holds in is not made.
+
 ## 2. Diagnostics
 
 Every diagnostic has:
@@ -432,6 +504,7 @@ refined in P1):
 | W2xx colour | warning | `literal_colour_unremappable` |
 | W3xx version | warning | `needs_newer_engine` (the sheet or a rule), `keyword_from_newer_engine`; W301 and W302 |
 | W4xx inline | warning | `inline_with_theme`, once per window (E1) |
+| W5xx icons | warning | `icon_unknown`, `icon_not_overridable`, `icon_refused`: a user theme's `icons/<identifier>.png`, ignored (USER_THEMES.md section 6) |
 
 The engine's own `RuleDiagnosticKind`s still run after T3 (the engine
 compiles what T3 hands it). T3 checks the same conditions first, so for a
@@ -1448,6 +1521,11 @@ Per the brief, recorded under `results/`:
    count and corpus, not a duration.
 5. **The byte-preserving round trip** of every untouched fixture and of the
    T4 default theme's sheets once they exist.
+
+As built (P11, owner decisions 2026-11-01): the drawing rows' fixtures carry
+the compiled material digest; raster reference hashes are added with the T4
+default theme (2a). The work bound is `ThemeCompileWork`, at most
+4 x `maximum_variable_combinations` operations per byte plus 4,096 (1a).
 
 ## 7. House-style points
 

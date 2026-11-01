@@ -13,7 +13,7 @@ up the work from here without the earlier conversation.
 | `ThemeCompileResult` as a result type | Committed locally; the coordinator has it for checkpoint 5 | `claude/t3-p12-custom` at aba9d2a5 (the coordinator's clone holds it as e7f17abb) |
 | P12a | Partial, not verified | `claude/t3-p12-custom` at 7b54b5b9, one commit above aba9d2a5 |
 | P12b | Not started | |
-| P11 | Not started | |
+| P11 | Built, claude/t3-p11 a6c106dc | results/2026-11-01-t3-theme-language-gate; raster hashes with T4 (2a) |
 | User themes (`USER_THEMES.md`) | Designed, with the owner's decisions; no code | this directory |
 
 The gui_forms clone is `~/Developer/gui_forms_workers/w1/gui_forms`.
@@ -86,8 +86,9 @@ value time"). E409 stays only for a name defined nowhere.
 - E508 `too_many_variable_combinations`: the copies per rule;
 - E515 `too_many_scoped_variables`: the scoped names read per theme.
 
-**Limits.** These are provisional, and the test theme sets them:
-- `maximum_variable_combinations` = 64 copies per rule;
+**Limits.** Set from the test theme on 2026-10-31 (PLAN.md section 1.11,
+"Measured"); the first values below were provisional:
+- `maximum_variable_combinations` = 128 copies per rule (first 64);
 - `maximum_variable_steps` = 4096 candidate combinations considered per
   rule (also E508);
 - `maximum_scoped_custom_properties` = 64. The engine keeps a fixed winner
