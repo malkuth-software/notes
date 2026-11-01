@@ -1,0 +1,23 @@
+m4ws: waiting for w3 before syncing
+m4ws: waiting for w2 to finish
+full-walk switches: 5 (expect 4)
+== skip
+seam case=59 pipeline=0 mode=2 a=73 b=95 at 75,9 ffead5d9 vs ffebd6da
+seam case=59 pipeline=0 mode=2 a=73 b=95 at 76,9 ffebd6da vs ffead6da
+seam case=59 pipeline=0 mode=2 a=73 b=95 at 86,9 ffead7db vs ffebd8dc
+seam case=59 pipeline=0 mode=3 a=75 b=93 at 76,77 ffead4d8 vs ffe9d3d7
+seam case=59 pipeline=0 mode=3 a=75 b=93 at 77,85 ffede2e4 vs ffece2e4
+seam case=59 pipeline=0 mode=3 a=75 b=93 at 78,85 ffede1e3 vs ffece1e3
+seam case=83 pipeline=0 mode=1 a=70 b=76 at 9,70 ffc5ddcd vs ffc5dccd
+cases=1500 hash=6d983f1f3229faea row_seams=16324 column_seams=15117 region_seams=10283 max_delta=5
+exit 0
+== full
+seam case=59 pipeline=0 mode=2 a=73 b=95 at 75,9 ffead5d9 vs ffebd6da
+seam case=59 pipeline=0 mode=2 a=73 b=95 at 76,9 ffebd6da vs ffead6da
+seam case=59 pipeline=0 mode=2 a=73 b=95 at 86,9 ffead7db vs ffebd8dc
+seam case=59 pipeline=0 mode=3 a=75 b=93 at 76,77 ffead4d8 vs ffe9d3d7
+seam case=59 pipeline=0 mode=3 a=75 b=93 at 77,85 ffede2e4 vs ffece2e4
+seam case=59 pipeline=0 mode=3 a=75 b=93 at 78,85 ffede1e3 vs ffece1e3
+seam case=83 pipeline=0 mode=1 a=70 b=76 at 9,70 ffc5ddcd vs ffc5dccd
+cases=1500 hash=6d983f1f3229faea row_seams=16324 column_seams=15117 region_seams=10283 max_delta=5
+exit 0

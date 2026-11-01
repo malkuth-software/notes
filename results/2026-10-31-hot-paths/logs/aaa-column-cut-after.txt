@@ -1,0 +1,12 @@
+m4ws: waiting for w2 before syncing
+pipeline=0 rrect fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 rrect stroke     cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 cubic fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 2px line         cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 rrect fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 rrect stroke     cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 cubic fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 2px line         cuts_with_seam=  0/159 pixels=    0 max_delta=0
+probe exit 0

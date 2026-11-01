@@ -1,0 +1,199 @@
+m4ws: waiting for w2 before syncing
+old AAA:
+pipeline=0 clipped-vs-unclipped differing pixels: 432
+pipeline=1 clipped-vs-unclipped differing pixels: 443
+new AAA:
+pipeline=0 clipped-vs-unclipped differing pixels: 0
+pipeline=1 clipped-vs-unclipped differing pixels: 0
+== tall
+COLUMNS after pages_2_value-editors                    diff_px=15 max_delta=3 columns=[604, 792, 1011, 1203, 1421, 1766, 1894, 2261, 2367, 2383]
+COLUMNS after pages_2_values-and-spinners              diff_px=27 max_delta=1 columns=[604, 952, 983, 1435, 1536, 1790, 1883, 2018, 2108, 2135, 2253, 2363]
+COLUMNS after pages_2_values                           diff_px=2 max_delta=1 columns=[536, 1073]
+before
+TALL short height=600 best_ns_per_frame=8569
+TALL medium height=6000 best_ns_per_frame=8564
+TALL tall height=30000 best_ns_per_frame=8567
+TALL huge height=200000 best_ns_per_frame=8575
+after
+TALL short height=600 best_ns_per_frame=21009
+TALL medium height=6000 best_ns_per_frame=120029
+TALL tall height=30000 best_ns_per_frame=88818
+TALL huge height=200000 best_ns_per_frame=70593
+before
+TALL short height=600 best_ns_per_frame=9892
+TALL medium height=6000 best_ns_per_frame=9321
+TALL tall height=30000 best_ns_per_frame=9340
+TALL huge height=200000 best_ns_per_frame=9438
+after
+TALL short height=600 best_ns_per_frame=21820
+TALL medium height=6000 best_ns_per_frame=106661
+TALL tall height=30000 best_ns_per_frame=82022
+TALL huge height=200000 best_ns_per_frame=61969
+19:40  up 2 days, 13:20, 1 user, load averages: 8.27 9.77 8.59
+== compare
+damage_1_1                               900x620 diff_px=    11 max_delta=  3 rows=   1 first_rows=[525] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_1_10                              900x620 diff_px=    11 max_delta=  3 rows=   1 first_rows=[525] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_1_100                             900x620 diff_px=    11 max_delta=  3 rows=   1 first_rows=[525] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_2_1                               1800x1240 diff_px=    16 max_delta=  3 rows=   4 first_rows=[489, 490, 1007, 1008] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_2_10                              1800x1240 diff_px=    16 max_delta=  3 rows=   4 first_rows=[489, 490, 1007, 1008] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_2_100                             1800x1240 diff_px=    16 max_delta=  3 rows=   4 first_rows=[489, 490, 1007, 1008] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_3_1                               2700x1860 diff_px=    19 max_delta=  2 rows=   2 first_rows=[1510, 1511] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_3_10                              2700x1860 diff_px=    19 max_delta=  2 rows=   2 first_rows=[1510, 1511] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+damage_3_100                             2700x1860 diff_px=    19 max_delta=  2 rows=   2 first_rows=[1510, 1511] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_anchored-popups                  1280x820 diff_px=    25 max_delta=  2 rows=   4 first_rows=[216, 217, 247, 248] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_animation-laboratory             1280x820 diff_px=    14 max_delta= 19 rows=   5 first_rows=[605, 606, 607, 640, 641] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_basics                           1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_checked-collections              1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_choices-and-sections             1280x820 diff_px=    43 max_delta= 11 rows=   7 first_rows=[263, 264, 265, 386, 486, 514] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_collections-and-popups           1280x820 diff_px=     1 max_delta=  2 rows=   1 first_rows=[662] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_commands-and-menus               1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_containers-and-focus             1280x820 diff_px=    34 max_delta=  2 rows=  16 first_rows=[333, 334, 381, 382, 403, 404] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_control-spectrum                 1280x820 diff_px=    13 max_delta=  1 rows=   1 first_rows=[695] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_css-layout-panels                1280x820 diff_px=    88 max_delta= 20 rows=  24 first_rows=[280, 281, 312, 313, 340, 341] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_dates-and-calendar               1280x820 diff_px=    18 max_delta=  8 rows=   3 first_rows=[639, 640, 670] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_dialogs-and-host-services        1280x820 diff_px=    53 max_delta= 17 rows=  10 first_rows=[295, 296, 297, 331, 332, 433] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_dock-and-anchor                  1280x820 diff_px=    59 max_delta= 16 rows=  22 first_rows=[237, 238, 239, 270, 271, 285] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_images-and-drawing               1280x820 diff_px=   309 max_delta= 21 rows=  38 first_rows=[623, 624, 625, 626, 627, 628] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_instrument                       1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_live-surfaces                    1280x820 diff_px=    24 max_delta= 10 rows=   3 first_rows=[635, 636, 637] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_ranges-and-progress              1280x820 diff_px=   308 max_delta=  5 rows=  16 first_rows=[508, 509, 551, 572, 615, 679] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_responsive-layouts               1280x820 diff_px=    36 max_delta=  2 rows=   5 first_rows=[638, 639, 713, 714, 717] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_retained-layout-panels           1280x820 diff_px=    11 max_delta=  9 rows=   5 first_rows=[528, 529, 530, 564, 565] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_retained-rows                    1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_semantic-feedback                1280x820 diff_px=    33 max_delta= 23 rows=   7 first_rows=[264, 265, 402, 403, 404, 435] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_states-and-diagnostics           1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_tabs-and-pages                   1280x820 diff_px=    12 max_delta= 13 rows=   2 first_rows=[692, 693] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_text-and-input                   1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_timing-and-tooltips              1280x820 diff_px=    32 max_delta= 22 rows=  11 first_rows=[310, 311, 312, 340, 341, 392] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_tree-and-object-views            1280x820 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_1_typography-and-inspection        1280x820 diff_px=    19 max_delta=  5 rows=   2 first_rows=[629, 630] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_value-editors                    1280x820 diff_px=    17 max_delta=  4 rows=   5 first_rows=[289, 323, 445, 446, 598] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_values-and-spinners              1280x820 diff_px=   116 max_delta=  9 rows=  33 first_rows=[272, 273, 274, 304, 305, 331] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_1_values                           1280x820 diff_px=     1 max_delta=  1 rows=   1 first_rows=[161] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_2_anchored-popups                  2560x1640 diff_px=    29 max_delta=  2 rows=   3 first_rows=[432, 433, 494] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_animation-laboratory             2560x1640 diff_px=     6 max_delta= 28 rows=   2 first_rows=[1282, 1283] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_basics                           2560x1640 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_2_checked-collections              2560x1640 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_choices-and-sections             2560x1640 diff_px=    82 max_delta= 11 rows=  12 first_rows=[584, 585, 586, 719, 720, 919] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_collections-and-popups           2560x1640 diff_px=     1 max_delta=  1 rows=   1 first_rows=[1263] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_commands-and-menus               2560x1640 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_2_containers-and-focus             2560x1640 diff_px=    27 max_delta=  3 rows=   4 first_rows=[872, 1434, 1435, 1436] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_control-spectrum                 2560x1640 diff_px=    43 max_delta=  3 rows=   7 first_rows=[698, 699, 701, 702, 1389, 1390] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_css-layout-panels                2560x1640 diff_px=   127 max_delta= 26 rows=  24 first_rows=[513, 522, 524, 577, 641, 683] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_dates-and-calendar               2560x1640 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_dialogs-and-host-services        2560x1640 diff_px=    36 max_delta= 13 rows=   7 first_rows=[590, 591, 592, 594, 1240, 1403] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_dock-and-anchor                  2560x1640 diff_px=    61 max_delta= 35 rows=  15 first_rows=[507, 557, 570, 771, 772, 823] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_images-and-drawing               2560x1640 diff_px=   717 max_delta= 20 rows=  89 first_rows=[1246, 1247, 1248, 1249, 1250, 1251] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_instrument                       2560x1640 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_live-surfaces                    2560x1640 diff_px=    37 max_delta= 12 rows=   4 first_rows=[1201, 1202, 1274, 1275] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_ranges-and-progress              2560x1640 diff_px=   591 max_delta=  5 rows=  41 first_rows=[1058, 1060, 1188, 1189, 1229, 1230] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_responsive-layouts               2560x1640 diff_px=   153 max_delta=  5 rows=   9 first_rows=[891, 892, 1276, 1277, 1426, 1434] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_retained-layout-panels           2560x1640 diff_px=   117 max_delta= 28 rows=  21 first_rows=[573, 574, 587, 588, 620, 647] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_retained-rows                    2560x1640 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=1
+pages_2_semantic-feedback                2560x1640 diff_px=    45 max_delta= 26 rows=   3 first_rows=[531, 804, 805] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_states-and-diagnostics           2560x1640 diff_px=    40 max_delta= 17 rows=   5 first_rows=[733, 734, 1348, 1349, 1350] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_tabs-and-pages                   2560x1640 diff_px=    72 max_delta= 21 rows=   9 first_rows=[578, 579, 1153, 1154, 1155, 1380] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_text-and-input                   2560x1640 diff_px=     0 max_delta=  0 rows=   0 first_rows=[] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_timing-and-tooltips              2560x1640 diff_px=    67 max_delta= 26 rows=  13 first_rows=[620, 621, 679, 680, 682, 683] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_tree-and-object-views            2560x1640 diff_px=    16 max_delta=  1 rows=   2 first_rows=[521, 522] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_typography-and-inspection        2560x1640 diff_px=    32 max_delta=  8 rows=   5 first_rows=[1258, 1260, 1261, 1433, 1434] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_value-editors                    2560x1640 diff_px=    26 max_delta=  8 rows=   8 first_rows=[631, 632, 946, 947, 949, 950] | before measured_eq_whole=1 banded_eq_whole=0 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_values-and-spinners              2560x1640 diff_px=   162 max_delta= 21 rows=  37 first_rows=[544, 545, 546, 591, 592, 609] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+pages_2_values                           2560x1640 diff_px=     5 max_delta=  1 rows=   2 first_rows=[285, 286] | before measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0 | after measured_eq_whole=1 banded_eq_whole=1 columns_eq_whole=0
+{'moved': 54, 'same': 15}
+COLUMNS before damage_1_1                               diff_px=1609 max_delta=1 columns=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+COLUMNS before damage_1_10                              diff_px=1609 max_delta=1 columns=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+COLUMNS before damage_1_100                             diff_px=1609 max_delta=1 columns=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+COLUMNS before damage_2_1                               diff_px=15 max_delta=1 columns=[430, 687, 689, 733, 734, 991, 992, 1100, 1222, 1375, 1498]
+COLUMNS before damage_2_10                              diff_px=15 max_delta=1 columns=[430, 687, 689, 733, 734, 991, 992, 1100, 1222, 1375, 1498]
+COLUMNS before damage_2_100                             diff_px=15 max_delta=1 columns=[430, 687, 689, 733, 734, 991, 992, 1100, 1222, 1375, 1498]
+COLUMNS before damage_3_1                               diff_px=33 max_delta=3 columns=[645, 649, 1031, 1035, 1099, 1100, 1101, 1486, 1487, 1488, 1650, 1651]
+COLUMNS before damage_3_10                              diff_px=33 max_delta=3 columns=[645, 649, 1031, 1035, 1099, 1100, 1101, 1486, 1487, 1488, 1650, 1651]
+COLUMNS before damage_3_100                             diff_px=33 max_delta=3 columns=[645, 649, 1031, 1035, 1099, 1100, 1101, 1486, 1487, 1488, 1650, 1651]
+COLUMNS before pages_1_choices-and-sections             diff_px=6 max_delta=2 columns=[753, 988, 989]
+COLUMNS before pages_1_collections-and-popups           diff_px=6 max_delta=11 columns=[858, 876, 877]
+COLUMNS before pages_1_css-layout-panels                diff_px=7 max_delta=18 columns=[807, 814, 815, 1000]
+COLUMNS before pages_1_dates-and-calendar               diff_px=5 max_delta=2 columns=[634, 635, 1086, 1087]
+COLUMNS before pages_1_dock-and-anchor                  diff_px=1389 max_delta=3 columns=[300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311]
+COLUMNS before pages_1_images-and-drawing               diff_px=444 max_delta=27 columns=[791, 792, 793, 794, 795, 796, 797, 798, 799, 800, 801, 802]
+COLUMNS before pages_1_instrument                       diff_px=4626 max_delta=33 columns=[276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287]
+COLUMNS before pages_1_ranges-and-progress              diff_px=2890 max_delta=13 columns=[447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458]
+COLUMNS before pages_1_retained-layout-panels           diff_px=3995 max_delta=4 columns=[306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317]
+COLUMNS before pages_1_semantic-feedback                diff_px=18 max_delta=9 columns=[431, 556, 937, 938, 1060, 1061, 1062]
+COLUMNS before pages_1_tabs-and-pages                   diff_px=19 max_delta=1 columns=[302, 303, 687, 908, 909]
+COLUMNS before pages_1_tree-and-object-views            diff_px=690 max_delta=3 columns=[304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315]
+COLUMNS before pages_2_anchored-popups                  diff_px=3 max_delta=1 columns=[805, 807, 1205]
+COLUMNS before pages_2_animation-laboratory             diff_px=1 max_delta=1 columns=[931]
+COLUMNS before pages_2_checked-collections              diff_px=6 max_delta=1 columns=[612, 1411, 1552, 2371]
+COLUMNS before pages_2_choices-and-sections             diff_px=77 max_delta=2 columns=[604, 921, 923, 1241, 1244, 1461, 1463, 1504, 1505, 1506, 1507, 1508]
+COLUMNS before pages_2_collections-and-popups           diff_px=22 max_delta=12 columns=[612, 1211, 1260, 1411, 1552, 1714, 1717, 1755, 1759, 1808, 1812, 2371]
+COLUMNS before pages_2_containers-and-focus             diff_px=26 max_delta=2 columns=[604, 889, 1113, 1520, 1615, 1646, 1875, 1985]
+COLUMNS before pages_2_control-spectrum                 diff_px=13 max_delta=3 columns=[979, 981, 1042, 1043, 1410, 1564, 1739, 1956, 2131]
+COLUMNS before pages_2_css-layout-panels                diff_px=49 max_delta=2 columns=[600, 612, 779, 792, 800, 947, 964, 1197, 1199, 1299, 1316, 1399]
+COLUMNS before pages_2_dates-and-calendar               diff_px=5 max_delta=1 columns=[1568, 1570, 1870, 1872, 2175]
+COLUMNS before pages_2_dialogs-and-host-services        diff_px=32 max_delta=2 columns=[612, 925, 927, 964, 1015, 1052, 1277, 1279, 1316, 1455, 1475, 1492]
+COLUMNS before pages_2_dock-and-anchor                  diff_px=36 max_delta=2 columns=[616, 777, 779, 780, 885, 980, 1281, 1448, 1651, 1652, 1731, 1801]
+COLUMNS before pages_2_images-and-drawing               diff_px=790 max_delta=27 columns=[1581, 1582, 1583, 1584, 1585, 1586, 1587, 1588, 1589, 1590, 1591, 1592]
+COLUMNS before pages_2_instrument                       diff_px=2796 max_delta=40 columns=[555, 556, 557, 558, 559, 560, 562, 563, 564, 565, 566, 570]
+COLUMNS before pages_2_live-surfaces                    diff_px=6 max_delta=1 columns=[907, 1229, 1256, 1575, 1600, 1959]
+COLUMNS before pages_2_ranges-and-progress              diff_px=293 max_delta=13 columns=[884, 888, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1050, 1051, 1052]
+COLUMNS before pages_2_responsive-layouts               diff_px=14 max_delta=1 columns=[600, 616, 779, 897, 899, 958, 1131, 1221, 1223, 1511, 1576]
+COLUMNS before pages_2_retained-layout-panels           diff_px=9 max_delta=2 columns=[849, 898, 1153, 1598, 1908, 2057]
+COLUMNS before pages_2_semantic-feedback                diff_px=85 max_delta=20 columns=[608, 858, 860, 861, 1046, 1047, 1048, 1049, 1050, 1051, 1053, 1054]
+COLUMNS before pages_2_states-and-diagnostics           diff_px=9 max_delta=1 columns=[955, 980, 1024, 1285, 1381, 1649]
+COLUMNS before pages_2_tabs-and-pages                   diff_px=97 max_delta=1 columns=[604, 605, 606, 607, 608, 609, 610, 688, 690, 765, 767, 1157]
+COLUMNS before pages_2_text-and-input                   diff_px=12 max_delta=1 columns=[872, 2271]
+COLUMNS before pages_2_timing-and-tooltips              diff_px=22 max_delta=1 columns=[608, 871, 896, 957, 959, 992, 1157, 1343, 1401, 1735, 1755, 1820]
+COLUMNS before pages_2_tree-and-object-views            diff_px=2 max_delta=1 columns=[2201, 2203]
+COLUMNS before pages_2_typography-and-inspection        diff_px=10 max_delta=1 columns=[608, 863, 865, 866, 967, 1121, 1637, 1639]
+COLUMNS before pages_2_value-editors                    diff_px=14 max_delta=1 columns=[604, 792, 1011, 1203, 1421, 1766, 1894, 2261, 2367, 2383]
+COLUMNS before pages_2_values-and-spinners              diff_px=22 max_delta=1 columns=[604, 952, 983, 1435, 1536, 1790, 1883, 2018, 2108, 2135, 2253, 2363]
+COLUMNS before pages_2_values                           diff_px=3 max_delta=1 columns=[536, 1073, 1815]
+COLUMNS after damage_1_1                               diff_px=1610 max_delta=1 columns=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+COLUMNS after damage_1_10                              diff_px=1610 max_delta=1 columns=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+COLUMNS after damage_1_100                             diff_px=1610 max_delta=1 columns=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+COLUMNS after damage_2_1                               diff_px=13 max_delta=1 columns=[430, 687, 689, 733, 734, 991, 992, 1100, 1375]
+COLUMNS after damage_2_10                              diff_px=13 max_delta=1 columns=[430, 687, 689, 733, 734, 991, 992, 1100, 1375]
+COLUMNS after damage_2_100                             diff_px=13 max_delta=1 columns=[430, 687, 689, 733, 734, 991, 992, 1100, 1375]
+COLUMNS after damage_3_1                               diff_px=33 max_delta=3 columns=[645, 649, 1031, 1035, 1099, 1100, 1101, 1486, 1487, 1488, 1650, 1651]
+COLUMNS after damage_3_10                              diff_px=33 max_delta=3 columns=[645, 649, 1031, 1035, 1099, 1100, 1101, 1486, 1487, 1488, 1650, 1651]
+COLUMNS after damage_3_100                             diff_px=33 max_delta=3 columns=[645, 649, 1031, 1035, 1099, 1100, 1101, 1486, 1487, 1488, 1650, 1651]
+COLUMNS after pages_1_choices-and-sections             diff_px=6 max_delta=2 columns=[753, 988, 989]
+COLUMNS after pages_1_collections-and-popups           diff_px=6 max_delta=11 columns=[858, 876, 877]
+COLUMNS after pages_1_css-layout-panels                diff_px=8 max_delta=18 columns=[807, 814, 815, 1000]
+COLUMNS after pages_1_dates-and-calendar               diff_px=4 max_delta=29 columns=[634, 784, 937, 1087]
+COLUMNS after pages_1_dock-and-anchor                  diff_px=1389 max_delta=3 columns=[300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311]
+COLUMNS after pages_1_images-and-drawing               diff_px=476 max_delta=27 columns=[791, 792, 793, 794, 795, 796, 797, 798, 799, 800, 801, 802]
+COLUMNS after pages_1_instrument                       diff_px=4626 max_delta=33 columns=[276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287]
+COLUMNS after pages_1_ranges-and-progress              diff_px=2901 max_delta=13 columns=[447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458]
+COLUMNS after pages_1_retained-layout-panels           diff_px=3995 max_delta=4 columns=[306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317]
+COLUMNS after pages_1_semantic-feedback                diff_px=17 max_delta=9 columns=[431, 556, 937, 938, 1060, 1061, 1062]
+COLUMNS after pages_1_tabs-and-pages                   diff_px=19 max_delta=1 columns=[302, 303, 687, 908, 909]
+COLUMNS after pages_1_tree-and-object-views            diff_px=690 max_delta=3 columns=[304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315]
+COLUMNS after pages_2_anchored-popups                  diff_px=3 max_delta=1 columns=[805, 807, 1205]
+COLUMNS after pages_2_animation-laboratory             diff_px=1 max_delta=1 columns=[931]
+COLUMNS after pages_2_checked-collections              diff_px=6 max_delta=1 columns=[612, 1411, 1552, 2371]
+COLUMNS after pages_2_choices-and-sections             diff_px=81 max_delta=2 columns=[604, 921, 923, 1241, 1244, 1245, 1461, 1463, 1504, 1505, 1506, 1507]
+COLUMNS after pages_2_collections-and-popups           diff_px=22 max_delta=12 columns=[612, 1211, 1260, 1411, 1552, 1714, 1717, 1755, 1759, 1808, 1812, 2371]
+COLUMNS after pages_2_containers-and-focus             diff_px=26 max_delta=2 columns=[604, 889, 1113, 1520, 1615, 1646, 1875, 1985]
+COLUMNS after pages_2_control-spectrum                 diff_px=13 max_delta=3 columns=[979, 981, 1042, 1043, 1410, 1564, 1739, 1956, 2131]
+COLUMNS after pages_2_css-layout-panels                diff_px=49 max_delta=2 columns=[600, 612, 779, 792, 800, 947, 964, 1197, 1199, 1299, 1316, 1399]
+COLUMNS after pages_2_dates-and-calendar               diff_px=5 max_delta=1 columns=[1568, 1570, 1870, 1872, 2175]
+COLUMNS after pages_2_dialogs-and-host-services        diff_px=33 max_delta=2 columns=[612, 925, 927, 964, 1015, 1052, 1277, 1279, 1316, 1455, 1475, 1492]
+COLUMNS after pages_2_dock-and-anchor                  diff_px=42 max_delta=2 columns=[616, 617, 777, 779, 780, 781, 782, 885, 980, 1281, 1448, 1651]
+COLUMNS after pages_2_images-and-drawing               diff_px=842 max_delta=30 columns=[1581, 1582, 1584, 1585, 1586, 1587, 1588, 1589, 1590, 1591, 1592, 1593]
+COLUMNS after pages_2_instrument                       diff_px=2796 max_delta=40 columns=[555, 556, 557, 558, 559, 560, 562, 563, 564, 565, 566, 570]
+COLUMNS after pages_2_live-surfaces                    diff_px=6 max_delta=1 columns=[907, 1229, 1256, 1575, 1600, 1959]
+COLUMNS after pages_2_ranges-and-progress              diff_px=306 max_delta=13 columns=[884, 888, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1050, 1051, 1052]
+COLUMNS after pages_2_responsive-layouts               diff_px=14 max_delta=1 columns=[600, 616, 779, 897, 899, 958, 1131, 1221, 1223, 1511, 1576]
+COLUMNS after pages_2_retained-layout-panels           diff_px=10 max_delta=11 columns=[849, 898, 1153, 1598, 1908]
+COLUMNS after pages_2_semantic-feedback                diff_px=85 max_delta=20 columns=[608, 858, 860, 861, 1046, 1047, 1048, 1049, 1050, 1051, 1053, 1054]
+COLUMNS after pages_2_states-and-diagnostics           diff_px=12 max_delta=1 columns=[955, 980, 981, 982, 1024, 1285, 1381, 1649]
+COLUMNS after pages_2_tabs-and-pages                   diff_px=99 max_delta=2 columns=[604, 605, 606, 607, 608, 609, 610, 688, 690, 765, 767, 1157]
+COLUMNS after pages_2_text-and-input                   diff_px=12 max_delta=1 columns=[872, 2271]
+COLUMNS after pages_2_timing-and-tooltips              diff_px=21 max_delta=2 columns=[608, 871, 896, 957, 959, 992, 1157, 1343, 1401, 1735, 1755, 1820]
+COLUMNS after pages_2_tree-and-object-views            diff_px=2 max_delta=1 columns=[2201, 2203]
+COLUMNS after pages_2_typography-and-inspection        diff_px=10 max_delta=2 columns=[608, 863, 865, 866, 967, 1121, 1637, 1639]
+COLUMNS after pages_2_value-editors                    diff_px=15 max_delta=3 columns=[604, 792, 1011, 1203, 1421, 1766, 1894, 2261, 2367, 2383]
+COLUMNS after pages_2_values-and-spinners              diff_px=27 max_delta=1 columns=[604, 952, 983, 1435, 1536, 1790, 1883, 2018, 2108, 2135, 2253, 2363]
+COLUMNS after pages_2_values                           diff_px=2 max_delta=1 columns=[536, 1073]

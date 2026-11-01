@@ -1,0 +1,24 @@
+../../stx-skia-positive-src/tests/aaa_kinds.cpp:49:33: error: no viable conversion from 'SkBlurMaskFilterResult' to 'sk_sp<SkMaskFilter>'
+1 error generated.
+../../stx-skia-negative-src/tests/aaa_kinds.cpp:49:33: error: no viable conversion from 'SkBlurMaskFilterResult' to 'sk_sp<SkMaskFilter>'
+1 error generated.
+pipeline=0 rrect fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 rrect stroke     cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 cubic fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=0 2px line         cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 rrect fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 rrect stroke     cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 cubic fill       cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 linear gradient  cuts_with_seam=  0/159 pixels=    0 max_delta=0
+pipeline=1 2px line         cuts_with_seam=  0/159 pixels=    0 max_delta=0
+probe exit 0
+== skip
+cases=600 hash=f17ecd48f780b2dd row_seams=7106 column_seams=3630 region_seams=3729 max_delta=4
+exit 0
+== skip-sanitize
+cases=600 hash=f17ecd48f780b2dd row_seams=7106 column_seams=3630 region_seams=3729 max_delta=4
+exit 0
+sanitize exit 8
+==50955==ERROR: AddressSanitizer: unknown-crash on address 0x00016f276c07 at pc 0x000100f26068 bp 0x00016f276910 sp 0x00016f276908
+99% tests passed, 2 tests failed out of 138

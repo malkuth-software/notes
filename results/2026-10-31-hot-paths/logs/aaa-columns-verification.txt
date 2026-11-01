@@ -1,0 +1,19 @@
+candidate exit 0
+100% tests passed, 0 tests failed out of 138
+baseline exit 0
+100% tests passed, 0 tests failed out of 93
+compare exit 0
+64 corpus files, 21 intentional differences, 0 failures
+sanitize exit 0
+100% tests passed, 0 tests failed out of 138
+negative control exit 1 (expected 1)
+2603
+plain exit 0
+100% tests passed, 0 tests failed out of 16
+sanitize exit 0
+100% tests passed, 0 tests failed out of 16
+house style exit 0
+lifetime exit 0
+gate exit 0
+stx_skia style exit 0
+docs check exit 0
