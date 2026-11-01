@@ -391,8 +391,12 @@ unusable without a way back that needs no reading.
 6. **`ApplicationResources::set_user_theme_policy`** declares the program
    sheet replaceable. Accepted. "Where allowed" is the owner's six-level
    order (section 4).
-7. **The opacity floor** at the user level is 0.5 (coordinator's reading,
-   unless the owner objects).
+7. **The opacity floor** at the user level is 0.5, so that a user theme
+   cannot hide a control (owner, confirmed 2026-11-01). As built
+   (`CompiledThemeRules::compile_user`): every opacity target, entry value
+   and stop of a user theme's transitions below 0.5 is raised to 0.5, with
+   the diagnostic `user_opacity_raised`; program themes and inline styles
+   have no floor.
 8. **The per-user folder wins** on the same name (coordinator's reading).
 9. **No key held at launch**: `--theme built-in`, the settings entry, the
    help and `README.txt` in `themes/` are the way back (coordinator's
