@@ -64,10 +64,23 @@ decisions in the loop, corrections outside the interior, kept reference).
 
 ## Open decisions (owner)
 
-- **Lamps: baked or computed.** The demo composites caches baked offline with
-  the photonic transport law. Shipping caches means bitmap-like assets per key
-  size and scale; computing at run time means a cheaper model. The bake study
-  measures how cheap a bake can be while staying "virtually identical".
+- **Lamps: baked or computed. Answered (owner, 2026-11-01): bake on first
+  use** (shipping caches is also acceptable). Two questions to answer before
+  building it:
+  1. **Bake once, use many.** The demo already splits each bake into separate
+     linear light planes (room, each lamp at unit power, coverage). Can that
+     decomposition be extended so one bake serves many uses (other sizes,
+     scales, states, key shapes), the way the plane split lets one bake serve
+     every lamp brightness?
+  2. **Bake without colour, add colour after, same result.** Can the planes be
+     baked achromatic and tinted afterwards while matching a bake done in
+     colour? It holds exactly where light reaches the eye after one
+     interaction with the tinted material (the result is linear in its
+     colour), and fails where light bounces inside a tinted lens or body
+     several times (the colour enters as a power). The study should measure
+     the error against a coloured bake with the bake study's CIEDE2000 bar,
+     and, if needed, keep a small number of extra planes (for example one per
+     bounce order) so the tint can still be applied exactly afterwards.
 - **Finishes: theme-language primitive or engine-only** (a theme names a
   finish kind and parameters, or only engine code uses them).
 - **Where lamps live:** a new control, a part of existing controls, or both.
