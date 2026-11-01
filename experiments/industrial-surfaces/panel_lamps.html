@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel Lamps</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .panelboard { background: #22262a; border-radius: 8px; padding: 18px; display: grid; gap: 14px; }
+  .rowl { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+  .tile { display: grid; gap: 4px; justify-items: center; }
+  .tile canvas { display: block; cursor: pointer; border-radius: 4px; }
+  .tile canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tile span { font-size: 10px; color: #8a9694; max-width: 170px; text-align: center; }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+  .seg button { width: auto; padding: 3px 8px; font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Panel lamps</h1>
+  <p>Captions and indicators lit from within, rendered in C++ (<code>cpp/lamps.cpp</code>) with the bfft
+    participating-child law. Captions come with a clear or an opaque shell, sidewalls blocked or open, and the legend
+    in black or white ink on the lit field, or lit letters on a dead front. Each half of a caption has its own lamp
+    and its own colour. A frame is <code>tone(room + Σ power × colour × lamp)</code>, with glare added once to
+    each lamp's buffer. Click a caption to press it and toggle it.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="glint_lab.html">Glint lab</a><a href="paint.html">Paint study</a><a href="panel_lamps.html" aria-current="page">Panel lamps</a></nav>
+</header>
+<main>
+  <div class="panelboard">
+    <div class="rowl" id="captions"></div>
+    <div class="rowl" id="indicators"></div>
+  </div>
+  <div class="stats" id="stats"></div>
+</main>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+// Lamp colours as filters over a white-hot lamp (linear RGB).
+const C = {
+  amber: [1.0, 0.50, 0.08], white: [1.0, 0.92, 0.78], red: [1.0, 0.12, 0.04],
+  green: [0.16, 1.0, 0.25], blue: [0.10, 0.35, 1.0], cyan: [0.15, 0.85, 1.0],
+};
+const CAPTIONS = [
+  { stem: 'annunciator_opaque_black_blocked', label: 'opaque · black ink · sides blocked', colours: ['amber', 'amber'], css: 180 },
+  { stem: 'annunciator_opaque_black_blocked', label: 'opaque · black ink · split colours', colours: ['white', 'green'], css: 180 },
+  { stem: 'annunciator_opaque_white_open', label: 'opaque · white ink · sides open', colours: ['red', 'red'], css: 180 },
+  { stem: 'annunciator_clear_black_blocked', label: 'clear · black ink · sides blocked', colours: ['red', 'red'], css: 180 },
+  { stem: 'annunciator_clear_white_open', label: 'clear · white ink · sides open', colours: ['amber', 'white'], css: 180 },
+  { stem: 'annunciator_opaque_deadfront', label: 'dead front · lit letters', colours: ['red', 'amber'], css: 180, mode: 'blink' },
+];
+const INDICATORS = [
+  { stem: 'indicator_backed', label: 'green', colours: ['green'], css: 56, flare: true },
+  { stem: 'indicator_backed', label: 'amber', colours: ['amber'], css: 56, flare: true },
+  { stem: 'indicator_backed', label: 'red · blink', colours: ['red'], css: 56, mode: 'blink', flare: true },
+  { stem: 'indicator_backed', label: 'blue', colours: ['blue'], css: 56, flare: true },
+  { stem: 'indicator_clear', label: 'clear amber', colours: ['amber'], css: 56, flare: true },
+  { stem: 'indicator_clear', label: 'clear white', colours: ['white'], css: 56, flare: true },
+];
+
+const files = {};
+function load(stem, state, flare) {
+  const key = `${stem}_${state}`;
+  const slot = key + (flare ? ':flare' : '');
+  if (!files[slot]) {
+    files[slot] = fetch(`build/panel/${key}.f32?${Date.now()}`).then((r) => r.arrayBuffer()).then((buf) => {
+      const head = new Int32Array(buf, 0, 3);
+      const w = head[0], h = head[1], lamps = head[2], n = w * h * 3;
+      const base = new Float32Array(buf, 12, n);
+      const glows = [];
+      // glare only for indicators; a caption's light stays inside its own edge
+      for (let i = 0; i < lamps; i++) {
+        const g = new Float32Array(buf, 12 + (i + 1) * n * 4, n);
+        glows.push(flare ? addGlare(g, w, h, true) : g);
+      }
+      const alpha = new Float32Array(buf, 12 + (lamps + 1) * n * 4, w * h);
+      return { w, h, lamps, base, glows, alpha };
+    });
+  }
+  return files[slot];
+}
+
+// Glare: separable box blurs (three passes approximate a Gaussian) added once.
+function blur(src, w, h, r) {
+  let a = Float32Array.from(src), b = new Float32Array(src.length);
+  for (let pass = 0; pass < 3; pass++) {
+    for (let y = 0; y < h; y++) for (let c = 0; c < 3; c++) {
+      let acc = 0;
+      for (let x = -r; x <= r; x++) acc += a[(y * w + Math.min(w - 1, Math.max(0, x))) * 3 + c];
+      for (let x = 0; x < w; x++) {
+        b[(y * w + x) * 3 + c] = acc / (2 * r + 1);
+        acc += a[(y * w + Math.min(w - 1, x + r + 1)) * 3 + c] - a[(y * w + Math.max(0, x - r)) * 3 + c];
+      }
+    }
+    for (let x = 0; x < w; x++) for (let c = 0; c < 3; c++) {
+      let acc = 0;
+      for (let y = -r; y <= r; y++) acc += b[(Math.min(h - 1, Math.max(0, y)) * w + x) * 3 + c];
+      for (let y = 0; y < h; y++) {
+        a[(y * w + x) * 3 + c] = acc / (2 * r + 1);
+        acc += b[(Math.min(h - 1, y + r + 1) * w + x) * 3 + c] - b[(Math.max(0, y - r) * w + x) * 3 + c];
+      }
+    }
+  }
+  return a;
+}
+// A streak: an exponential tail in both directions along (dx, dy), as an
+// aperture's diffraction draws from a small bright source. Recursive, so its
+// cost does not depend on its length; `keep` is the share carried per pixel.
+function streak(src, w, h, dx, dy, keep) {
+  const out = new Float32Array(src.length);
+  // a line starts at every pixel whose predecessor along (dx, dy) is outside
+  const starts = [];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const px = x - dx, py = y - dy;
+    if (px < 0 || py < 0 || px >= w || py >= h) starts.push([x, y]);
+  }
+  for (const [sx, sy] of starts) {
+    const line = [];
+    for (let x = sx, y = sy; x >= 0 && y >= 0 && x < w && y < h; x += dx, y += dy) line.push((y * w + x) * 3);
+    for (let c = 0; c < 3; c++) {
+      let run = 0;
+      for (let i = 0; i < line.length; i++) { run = src[line[i] + c] + keep * run; out[line[i] + c] += run; }
+      run = 0;
+      for (let i = line.length - 1; i >= 0; i--) { out[line[i] + c] += keep * run; run = src[line[i] + c] + keep * run; }
+    }
+  }
+  return out;
+}
+function addGlare(glow, w, h, flare) {
+  const near = blur(glow, w, h, Math.max(1, Math.round(w / 100))), wide = blur(glow, w, h, Math.max(3, Math.round(w / 22)));
+  const out = new Float32Array(glow.length);
+  for (let i = 0; i < glow.length; i++) out[i] = glow[i] * 0.9 + near[i] * 0.07 + wide[i] * 0.03;
+  if (flare) {
+    // a soft bloom and a four-point star
+    const bloom = blur(glow, w, h, Math.max(4, Math.round(w / 10)));
+    const keep = Math.pow(0.02, 1 / (w * 0.45));  // streaks fade to 2 % over 45 % of the tile
+    const rays = [streak(glow, w, h, 1, 0, keep), streak(glow, w, h, 0, 1, keep), streak(glow, w, h, 1, 1, keep), streak(glow, w, h, -1, 1, keep)];
+    for (let i = 0; i < glow.length; i++) out[i] += bloom[i] * 0.10 + (rays[0][i] + rays[1][i]) * 0.006 + (rays[2][i] + rays[3][i]) * 0.003;
+  }
+  return out;
+}
+
+const SRGB = new Uint8Array(4097);
+for (let i = 0; i <= 4096; i++) { const c = i / 4096; SRGB[i] = Math.round(255 * (c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055)); }
+function tone(v) { return 1 - Math.exp(-v * 1.3); }
+
+function composite(t) {
+  const up = t.up, down = t.down, m = t.pressMix, d = t.img.data;
+  const powers = t.colours.map((name) => { const c = C[name]; return [c[0] * t.power, c[1] * t.power, c[2] * t.power]; });
+  // Colour planes are premultiplied by coverage: unpremultiply, tone, and
+  // hand the canvas straight colour with the coverage as alpha.
+  for (let i = 0, j = 0, k = 0; i < up.base.length; i += 3, j += 4, k++) {
+    const cover = up.alpha[k] + (down.alpha[k] - up.alpha[k]) * m;
+    const inv = cover > 1e-6 ? 1 / cover : 0;
+    for (let c = 0; c < 3; c++) {
+      let a = up.base[i + c], b = down.base[i + c];
+      for (let l = 0; l < up.lamps; l++) { a += powers[l][c] * up.glows[l][i + c]; b += powers[l][c] * down.glows[l][i + c]; }
+      d[j + c] = SRGB[(tone((a + (b - a) * m) * inv) * 4096) | 0];
+    }
+    d[j + 3] = Math.round(cover * 255);
+  }
+  t.ctx.putImageData(t.img, 0, 0);
+}
+
+function powerAt(t, s) {
+  if (!t.on) return 0;
+  const strike = s < 0.06 ? 0.4 + 0.6 * (s / 0.06) : 1;
+  if (t.mode === 'blink') { const ph = s % 1; return strike * (ph < 0.5 ? 1 - Math.exp(-ph / 0.012) : Math.exp(-(ph - 0.5) / 0.05)); }
+  return strike;
+}
+
+const tiles = [];
+async function addTile(host, spec, pressable) {
+  const wrap = document.createElement('div'); wrap.className = 'tile';
+  const c = document.createElement('canvas'); c.tabIndex = 0; c.setAttribute('role', 'switch');
+  const cap = document.createElement('span'); cap.textContent = spec.label;
+  wrap.appendChild(c); wrap.appendChild(cap); host.appendChild(wrap);
+  const up = await load(spec.stem, 'up', spec.flare), down = pressable ? await load(spec.stem, 'down', spec.flare) : up;
+  c.width = up.w; c.height = up.h; c.style.width = spec.css + 'px'; c.style.height = Math.round(spec.css * up.h / up.w) + 'px';
+  const t = { ...spec, up, down, ctx: c.getContext('2d'), canvas: c, on: true, power: -1, pressMix: 0, press: null, since: performance.now() / 1000 };
+  t.img = t.ctx.createImageData(up.w, up.h);
+  const press = (isDown) => {
+    t.press = { from: t.pressMix, to: isDown && pressable ? 1 : 0, t0: performance.now() / 1000 };
+    if (!isDown) { t.on = !t.on; t.since = performance.now() / 1000; c.setAttribute('aria-checked', String(t.on)); }
+    kick();
+  };
+  c.addEventListener('pointerdown', (e) => { c.setPointerCapture(e.pointerId); press(true); });
+  c.addEventListener('pointerup', () => press(false));
+  c.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); press(true); } });
+  c.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') press(false); });
+  c.setAttribute('aria-label', spec.label); c.setAttribute('aria-checked', 'true');
+  tiles.push(t);
+}
+
+let running = false, lastFrame = 0, force = false;
+function kick() { force = true; if (running && performance.now() - lastFrame < 250) return; running = true; lastFrame = performance.now(); requestAnimationFrame(frame); }
+function frame() {
+  lastFrame = performance.now();
+  const now = lastFrame / 1000;
+  let any = false;
+  for (const t of tiles) {
+    const s = now - t.since;
+    if (t.press) {
+      const u = Math.min(1, (now - t.press.t0) / 0.07);
+      t.pressMix = t.press.from + (t.press.to - t.press.from) * (1 - (1 - u) * (1 - u));
+      if (u >= 1) t.press = null;
+    }
+    const p = powerAt(t, s);
+    if (force || p !== t.power || t.press) { t.power = p; composite(t); }
+    if (t.press || (t.on && (t.mode === 'blink' || s < 0.08))) any = true;
+  }
+  force = false;
+  if (any) requestAnimationFrame(frame); else running = false;
+}
+
+(async () => {
+  for (const s of CAPTIONS) await addTile($('captions'), s, true);
+  for (const s of INDICATORS) await addTile($('indicators'), s, false);
+  const t0 = performance.now(); composite(tiles[0]); const dt = performance.now() - t0;
+  $('stats').textContent = `caption composite: ${dt.toFixed(1)} ms per frame at ${tiles[0].up.w}² (JavaScript); geometry renders are cached`;
+  kick();
+})();
+</script>
+</body>
+</html>

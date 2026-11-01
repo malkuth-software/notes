@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blasted Metal Glints</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  #big { cursor: crosshair; touch-action: none; }
+  .pairs { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; }
+  .pairs figure { margin: 0; }
+  .pairs canvas { display: block; image-rendering: pixelated; border-radius: 3px; }
+  .pairs figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  table.bands { border-collapse: collapse; font: 12px ui-monospace, Menlo, monospace; margin-top: 10px; }
+  table.bands td, table.bands th { padding: 3px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+  table.bands th:first-child, table.bands td:first-child { text-align: left; }
+  .inline { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+  .inline label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+  .inline select, .inline button { width: auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Blasted metal glints</h1>
+  <p>A blasted surface is a field of tiny facets with random tilts, and a pixel is bright when one of its facets faces
+    the half-vector between light and eye. Many facets per pixel average out into the satin of bead blast; one or two
+    per pixel break the sheen into the sparkle of sand blast. Each pixel is computed on its own, with no bitmap.
+    Drag on the panel to move the light.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="finishes.html">Finishes</a><a href="glint_lab.html" aria-current="page">Glint lab</a><a href="blast_lab.html">Blast lab (superseded)</a><a href="paint.html">Paint study</a><a href="neon_buttons.html">Neon buttons</a></nav>
+</header>
+<main>
+  <div class="row">
+    <div class="panel controls">
+      <label>Preset<select id="preset"></select></label>
+      <label><span class="pair">Facet size (logical units) <span class="v" id="v-grain"></span></span><input id="grain" type="range" min="2" max="150" value="28"></label>
+      <label><span class="pair">Speck size (logical units) <span class="v" id="v-speck"></span></span><input id="speck" type="range" min="0" max="200" value="75"></label>
+      <label><span class="pair">Tilt spread α <span class="v" id="v-alpha"></span></span><input id="alpha" type="range" min="5" max="80" value="42"></label>
+      <label><span class="pair">Facet tolerance τ <span class="v" id="v-tau"></span></span><input id="tau" type="range" min="5" max="150" value="40"></label>
+      <label><span class="pair">Diffuse <span class="v" id="v-diffuse"></span></span><input id="diffuse" type="range" min="0" max="120" value="36"></label>
+      <label><span class="pair">Specular <span class="v" id="v-specular"></span></span><input id="specular" type="range" min="0" max="600" value="70"></label>
+      <label><span class="pair">Iridescence <span class="v" id="v-irid"></span></span><input id="irid" type="range" min="0" max="100" value="0"></label>
+      <label><span class="pair">Paint film <span class="v" id="v-film"></span></span><input id="film" type="range" min="0" max="100" value="0"></label>
+      <label><span class="pair">Light height <span class="v" id="v-lh"></span></span><input id="lh" type="range" min="40" max="900" value="900"></label>
+      <label><span class="pair">Display scale <span class="v" id="v-k"></span></span><input id="k" type="range" min="100" max="300" step="25" value="200"></label>
+    </div>
+    <div class="stage panel">
+      <canvas id="big"></canvas>
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+
+  <h2>Against the photographs</h2>
+  <div class="panel">
+    <div class="inline">
+      <label>Photo crop<select id="crop"></select></label>
+      <label>Magnify<select id="zoom"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+      <button class="primary" id="fit">Fit current preset to crop</button>
+    </div>
+    <div class="pairs">
+      <figure><canvas id="photo"></canvas><figcaption>Photograph, 1:1 pixels</figcaption></figure>
+      <figure><canvas id="mine"></canvas><figcaption>Kernel, 1:1 device pixels, light centred above</figcaption></figure>
+    </div>
+    <table class="bands" id="bands"></table>
+    <p class="note">The statistics are luminance on 0–255. <b>Spread</b> is the standard deviation within each band: the
+      difference between the image blurred at 0, 1, 2 and 4 px. <b>Skew</b> measures the heavy tail of bright specks,
+      which is what separates sparkle from noise. Noise symmetric about the mean, like the cloth-looking version, has
+      a skew near 0; glints give a clearly positive skew. Each photograph also carries its camera's blur and JPEG/WebP
+      compression, which soften the finest band, so match the 2–4 px band and the skew before the 1–2 px band.</p>
+  </div>
+</main>
+<script src="finish_kernel.js"></script>
+<script src="glint_kernel.js"></script>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const CROPS = [
+  { label: 'Sand blast — photo 2, lower disc', src: 'reference/bead_vs_sand.webp', x: 250, y: 830, preset: 'sand_blast' },
+  { label: 'Bead blast — photo 2, upper disc', src: 'reference/bead_vs_sand.webp', x: 250, y: 160, preset: 'bead_blast' },
+  { label: 'Fine plate — photo 1, lower left', src: 'reference/blasted_plates.webp', x: 120, y: 820, preset: 'bead_blast' },
+  { label: 'Sparkle plate — photo 1, upper right', src: 'reference/blasted_plates.webp', x: 700, y: 110, preset: 'sand_blast' },
+  { label: 'Iridescent plate — photo 1, right', src: 'reference/blasted_plates.webp', x: 800, y: 760, preset: 'iridescent' },
+];
+const CW = 300, CH = 200;
+
+const SLIDERS = {
+  grain: [100, 2], speck: [100, 2], alpha: [100, 2], tau: [1000, 3], diffuse: [100, 2], specular: [100, 2], irid: [100, 2], film: [100, 2], lh: [1, 0], k: [100, 2],
+};
+function sliderValue(id) { return +$(id).value / SLIDERS[id][0]; }
+function setSlider(id, v) { $(id).value = Math.round(v * SLIDERS[id][0]); }
+function labels() { for (const id in SLIDERS) $('v-' + id).textContent = sliderValue(id).toFixed(SLIDERS[id][1]); }
+
+const presetSel = $('preset');
+for (const [key, p] of Object.entries(Glint.PRESETS)) {
+  const o = document.createElement('option'); o.value = key; o.textContent = p.label; presetSel.appendChild(o);
+}
+presetSel.value = 'sand_blast';
+for (const [i, c] of CROPS.entries()) { const o = document.createElement('option'); o.value = i; o.textContent = c.label; $('crop').appendChild(o); }
+
+function loadPreset(key) {
+  const p = Glint.PRESETS[key];
+  setSlider('grain', p.grain); setSlider('speck', p.speck || 0); setSlider('alpha', p.alpha); setSlider('tau', p.tau); setSlider('diffuse', p.diffuse);
+  setSlider('specular', p.specular); setSlider('irid', p.iridescence); setSlider('film', p.film);
+  setSlider('lh', p.lightHeight || 900);
+  labels();
+}
+
+let lightAt = { u: 0.62, v: 0.35 };   // light position as a fraction of the big panel
+function params(wLogical, hLogical, light) {
+  const base = Glint.PRESETS[presetSel.value];
+  return {
+    ...base, k: sliderValue('k'), seed: 5,
+    grain: sliderValue('grain'), speck: sliderValue('speck'), alpha: sliderValue('alpha'), tau: sliderValue('tau'), diffuse: sliderValue('diffuse'),
+    specular: sliderValue('specular'), iridescence: sliderValue('irid'), film: sliderValue('film'),
+    filmAlpha: base.filmAlpha || 0.3, paintColour: base.paintColour || '#2f6e6c',
+    ambient: 0.35, mottle: base.mottle,
+    lightX: light.u * wLogical, lightY: light.v * hLogical, lightZ: sliderValue('lh'),
+    eyeX: wLogical * 0.5, eyeY: hLogical * 0.5, eyeZ: 700,
+  };
+}
+
+function renderBig(fast) {
+  const c = $('big');
+  const k = sliderValue('k');
+  const cssW = c.parentElement.clientWidth - 30, cssH = Math.round(cssW * 0.42);
+  const scale = fast ? 0.5 : 1;
+  c.width = Math.round(cssW * k * scale); c.height = Math.round(cssH * k * scale);
+  c.style.width = cssW + 'px'; c.style.height = cssH + 'px';
+  const p = params(cssW, cssH, lightAt);
+  p.k = k * scale;
+  const img = new ImageData(c.width, c.height);
+  const t0 = performance.now();
+  const n = Glint.paint(img, { x: 0, y: 0, w: c.width, h: c.height }, { x: 0, y: 0, w: c.width, h: c.height }, p);
+  const dt = performance.now() - t0;
+  c.getContext('2d').putImageData(img, 0, 0);
+  const facetPx = p.grain * p.k;
+  $('stats').innerHTML = `<b>${Glint.PRESETS[presetSel.value].label}</b> — ${Glint.PRESETS[presetSel.value].note}\n` +
+    `${c.width}×${c.height} px${fast ? ' (half resolution while dragging)' : ''} in <b>${dt.toFixed(0)} ms</b> ` +
+    `(${(n / dt / 1000).toFixed(1)} Mpx/s, JavaScript) · facet ${facetPx.toFixed(2)} device px → ` +
+    (facetPx < 1 ? `${(1 / (facetPx * facetPx)).toFixed(1)} facets per pixel` : 'facets wider than a pixel') +
+    ` · texture memory 0 B`;
+}
+
+// ---- photo comparison ----------------------------------------------------------
+
+const images = {};
+function loadImage(src) {
+  if (images[src]) return images[src];
+  images[src] = new Promise((resolve) => { const im = new Image(); im.onload = () => resolve(im); im.src = src; });
+  return images[src];
+}
+let photoData = null;
+async function drawPhoto() {
+  const crop = CROPS[+$('crop').value];
+  const im = await loadImage(crop.src);
+  const c = $('photo');
+  c.width = CW; c.height = CH;
+  const g = c.getContext('2d');
+  g.drawImage(im, crop.x, crop.y, CW, CH, 0, 0, CW, CH);
+  photoData = g.getImageData(0, 0, CW, CH);
+  sizeCss(c);
+}
+function sizeCss(c) {
+  const z = +$('zoom').value;
+  c.style.width = (CW / (window.devicePixelRatio || 1) * z) + 'px';
+  c.style.height = (CH / (window.devicePixelRatio || 1) * z) + 'px';
+}
+function renderPatch(over) {
+  const p = { ...params(CW / 2, CH / 2, { u: 0.5, v: 0.5 }), k: 2, ...over };
+  const img = new ImageData(CW, CH);
+  Glint.paint(img, { x: 0, y: 0, w: CW, h: CH }, { x: 0, y: 0, w: CW, h: CH }, p);
+  return img;
+}
+function showPatch(img) {
+  const c = $('mine'); c.width = CW; c.height = CH;
+  c.getContext('2d').putImageData(img, 0, 0); sizeCss(c);
+}
+
+function blur(src, r) {
+  const W = CW, H = CH, a = new Float32Array(src.length), b = new Float32Array(src.length);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let s = 0, n = 0; for (let i = -r; i <= r; i++) { const xx = x + i; if (xx >= 0 && xx < W) { s += src[y * W + xx]; n++; } } a[y * W + x] = s / n;
+  }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let s = 0, n = 0; for (let i = -r; i <= r; i++) { const yy = y + i; if (yy >= 0 && yy < H) { s += a[yy * W + x]; n++; } } b[y * W + x] = s / n;
+  }
+  return b;
+}
+function stats(img) {
+  const n = CW * CH, y0 = new Float32Array(n);
+  for (let i = 0; i < n; i++) y0[i] = 0.2126 * img.data[i * 4] + 0.7152 * img.data[i * 4 + 1] + 0.0722 * img.data[i * 4 + 2];
+  const y1 = blur(y0, 1), y2 = blur(y0, 2), y4 = blur(y0, 4), y16 = blur(y0, 16);
+  const sd = (a, b) => { let s = 0, s2 = 0; for (let i = 0; i < n; i++) { const d = a[i] - b[i]; s += d; s2 += d * d; } const m = s / n; return Math.sqrt(Math.max(0, s2 / n - m * m)); };
+  let mean = 0; for (const v of y0) mean += v; mean /= n;
+  // skew of the detail about its local mean (gradients across the crop removed)
+  let m2 = 0, m3 = 0;
+  for (let i = 0; i < n; i++) { const d = y0[i] - y16[i]; m2 += d * d; m3 += d * d * d; }
+  m2 /= n; m3 /= n;
+  // chroma spread: how coloured the glints are
+  let cs = 0;
+  for (let i = 0; i < n; i++) { const r = img.data[i * 4], g = img.data[i * 4 + 1], b = img.data[i * 4 + 2]; cs += Math.max(r, g, b) - Math.min(r, g, b); }
+  return { mean, fine: sd(y0, y1), mid: sd(y1, y2), coarse: sd(y2, y4), skew: m3 / Math.pow(Math.max(m2, 1e-9), 1.5), chroma: cs / n };
+}
+function table(a, b) {
+  const row = (name, key, d = 2) => `<tr><td>${name}</td><td>${a[key].toFixed(d)}</td><td>${b[key].toFixed(d)}</td><td>${(b[key] - a[key] >= 0 ? '+' : '') + (b[key] - a[key]).toFixed(d)}</td></tr>`;
+  $('bands').innerHTML = '<tr><th></th><th>photo</th><th>kernel</th><th>Δ</th></tr>' + row('mean', 'mean') + row('spread 1–2 px', 'fine') +
+    row('spread 2–4 px', 'mid') + row('spread 4–8 px', 'coarse') + row('skew of detail', 'skew') + row('chroma (max−min)', 'chroma');
+}
+async function compare() {
+  await drawPhoto();
+  const mine = renderPatch({});
+  showPatch(mine);
+  table(stats(photoData), stats(mine));
+}
+
+// Fit: for each facet size on a grid, solve diffuse (mean) and specular (2–4 px
+// spread) by multiplicative steps, then keep the facet size whose skew and
+// fine/mid ratio best match the photograph.
+async function fit() {
+  await drawPhoto();
+  $('fit').textContent = 'Fitting…';
+  await new Promise((r) => setTimeout(r, 20));
+  const target = stats(photoData);
+  let best = null;
+  for (const grain of [0.05, 0.1, 0.2, 0.35]) {
+    for (const speck of [0.5, 0.75, 1.0, 1.4]) {
+      let diffuse = sliderValue('diffuse'), specular = sliderValue('specular');
+      let s = null;
+      for (let it = 0; it < 6; it++) {
+        s = stats(renderPatch({ grain, speck, diffuse, specular }));
+        specular *= (target.mid + 0.05) / (s.mid + 0.05);
+        diffuse *= Math.pow(target.mean / Math.max(1, s.mean), 1.6);
+      }
+      s = stats(renderPatch({ grain, speck, diffuse, specular }));
+      const err = Math.abs(s.skew - target.skew) + Math.abs(s.mid - target.mid) / Math.max(0.5, target.mid) +
+        0.6 * Math.abs(s.fine - target.fine) / Math.max(0.5, target.fine) +
+        0.5 * Math.abs(s.coarse - target.coarse) / Math.max(0.5, target.coarse) + Math.abs(s.mean - target.mean) / 20;
+      if (!best || err < best.err) best = { grain, speck, diffuse, specular, err };
+    }
+  }
+  setSlider('grain', best.grain); setSlider('speck', best.speck); setSlider('diffuse', best.diffuse); setSlider('specular', best.specular);
+  labels();
+  $('fit').textContent = 'Fit current preset to crop';
+  schedule(false);
+  compare();
+}
+
+// ---- events ----------------------------------------------------------------------
+
+let pending = 0, pendingFast = false;
+function schedule(fast) {
+  pendingFast = fast;
+  if (pending) return;
+  pending = requestAnimationFrame(() => { pending = 0; renderBig(pendingFast); });
+}
+let dragging = false, settle = 0;
+function moveLight(e) {
+  const r = $('big').getBoundingClientRect();
+  lightAt = { u: (e.clientX - r.left) / r.width, v: (e.clientY - r.top) / r.height };
+  schedule(true);
+  clearTimeout(settle); settle = setTimeout(() => schedule(false), 180);
+}
+$('big').addEventListener('pointerdown', (e) => { dragging = true; $('big').setPointerCapture(e.pointerId); moveLight(e); });
+$('big').addEventListener('pointermove', (e) => { if (dragging) moveLight(e); });
+$('big').addEventListener('pointerup', () => { dragging = false; });
+for (const id in SLIDERS) $(id).addEventListener('input', () => { labels(); schedule(false); });
+for (const id in SLIDERS) $(id).addEventListener('change', compare);
+presetSel.onchange = () => { loadPreset(presetSel.value); schedule(false); compare(); };
+$('crop').onchange = () => {
+  const c = CROPS[+$('crop').value];
+  presetSel.value = c.preset; loadPreset(c.preset); schedule(false); compare();
+};
+$('zoom').onchange = compare;
+$('fit').onclick = fit;
+window.addEventListener('resize', () => schedule(false));
+loadPreset('sand_blast');
+schedule(false);
+compare();
+</script>
+</body>
+</html>

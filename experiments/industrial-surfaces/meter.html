@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal Meter</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .meter-wrap { background: #0b0d0f; padding: 28px; border-radius: 8px; display: inline-block; max-width: 100%; }
+  #meter { display: block; width: 640px; max-width: 100%; height: auto; }
+  .notes { max-width: 900px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Signal meter</h1>
+  <p>A dBm meter. The bfft photonic transport engine (<code>--scene meter</code>) renders the recessed box under a
+    weak ambient light and the scale, ticks and numerals glowing white with their light on the face. Over that render
+    the page adds the face's texture and simulates the two readouts as backlit segment LCDs. Only the moving parts
+    redraw: the three needles (signal yellow, average red, noise floor) passing beneath the readouts, and the lit
+    segments.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="dialog.html">Dialog</a><a href="panel_lamps.html">Panel lamps</a><a href="meter.html" aria-current="page">Meter</a></nav>
+</header>
+<main>
+  <div class="meter-wrap"><canvas id="meter" width="1280" height="536" role="img" aria-label="Signal meter"></canvas></div>
+  <div class="stats" id="stats"></div>
+  <p class="note notes">The engine render (1280 × 536, <code>build/meter/meter_1280.png</code>) lights the box, the
+    face and the glowing scale. Over it, composed once: the face's fine grain and faint mottle, applied as a
+    modulation of the engine's light and kept off the scale; and the two readouts, simulated as backlit segment LCDs
+    with an edge-lit backlight, a vignette, the matte film's grain, a dark glass edge and ghost segments. Live: the
+    needles, and the lit segments with their parallax shadows. Nothing is redrawn while the needles rest.</p>
+</main>
+<script src="finish_kernel.js"></script>
+<script>
+'use strict';
+const S = 2;                       // device pixels per CSS pixel of the design
+const W = 640 * S, H = 268 * S;
+const canvas = document.getElementById('meter');
+const ctx = canvas.getContext('2d');
+
+// Geometry, in design units (CSS pixels of the 640 × 268 design).
+const PIVOT = { x: 320, y: 760 };  // far below the face: a flat arc, and only the needles' upper part shows
+const ARC_R = 660;                 // radius of the scale arc about the pivot
+const DB_MIN = -140, DB_MAX = 0;
+const SWEEP = 23.2 * Math.PI / 180;  // half the angle the scale spans (as the engine scene)
+const angleOf = (db) => -Math.PI / 2 + ((db - DB_MIN) / (DB_MAX - DB_MIN) - 0.5) * 2 * SWEEP;
+const at = (r, a) => ({ x: PIVOT.x + r * Math.cos(a), y: PIVOT.y + r * Math.sin(a) });
+
+const FACE = { x: 14, y: 6, w: 612, h: 256 };
+const READOUTS = [
+  { x: 176, y: 172, w: 128, h: 50, unit: '' },
+  { x: 332, y: 172, w: 128, h: 50, unit: 'SNR' },
+];
+
+function px(v) { return v * S; }
+
+// ---- the static layer: the engine's render ------------------------------------------------
+function loadStatic() {
+  return new Promise((resolve) => { const im = new Image(); im.onload = () => resolve(im); im.src = 'build/meter/meter_1280.png?' + Date.now(); });
+}
+
+// ---- the face's texture, over the engine's light ----------------------------------------------
+// The engine's face is a perfectly smooth diffuse surface. A painted instrument
+// face has a fine grain and a faint mottle: they are applied as a modulation of
+// the light the engine computed, lit from the same direction as its ambient
+// (above, towards the top of the screen), and kept off the glowing scale and
+// the readouts.
+function textureFace(image) {
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d'); g.drawImage(image, 0, 0);
+  const img = g.getImageData(0, 0, W, H), d = img.data;
+  const lin = Finish.TO_LIN || null;
+  const toLin = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+  const LIN = new Float32Array(256); for (let i = 0; i < 256; i++) LIN[i] = toLin(i);
+  const height = (x, y) => 0.65 * Finish.noise(x, y, 3.2, 41) + 0.35 * Finish.noise(x, y, 1.4, 42);
+  const x0 = px(FACE.x), y0 = px(FACE.y), x1 = px(FACE.x + FACE.w), y1 = px(FACE.y + FACE.h);
+  for (let y = y0; y < y1; y++) {
+    for (let x = x0; x < x1; x++) {
+      if (READOUTS.some((r) => x >= px(r.x - 3) && x < px(r.x + r.w + 3) && y >= px(r.y - 3) && y < px(r.y + r.h + 3))) continue;
+      const p = (y * W + x) * 4;
+      const peak = Math.max(d[p], d[p + 1], d[p + 2]) / 255;
+      const keep = 1 - Math.min(1, Math.max(0, (peak - 0.35) / 0.3));   // leave the bright scale alone
+      if (keep <= 0) continue;
+      const h0 = height(x, y);
+      const shade = -(height(x + 1, y) - h0) * 0.15 - (height(x, y + 1) - h0) * -0.45;   // light from the top
+      const mottle = (Finish.noise(x, y, 70, 43) - 0.5) * 0.10;
+      const speck = Finish.hash(x, y, 44) > 0.997 ? 0.25 : 0;
+      const f = 1 + keep * (shade * 2.2 + mottle + speck);
+      for (let k = 0; k < 3; k++) d[p + k] = Finish.encode(LIN[d[p + k]] * f);
+    }
+  }
+  g.putImageData(img, 0, 0);
+  return c;
+}
+
+// ---- backlit segment LCDs --------------------------------------------------------------------
+// A positive-mode segment LCD over an edge-lit LED backlight: a pale aqua
+// field, brightest along its lower edge where the LEDs sit and vignetted into
+// the corners; a matte anti-glare film with fine grain; a dark glass edge;
+// every segment faintly visible ("88.8"); lit segments blue-black, each with
+// a soft shadow offset by the gap between the liquid crystal and the diffuser.
+const SEGMENTS = {
+  '0': 'abcdef', '1': 'bc', '2': 'abged', '3': 'abgcd', '4': 'fgbc', '5': 'afgcd',
+  '6': 'afgedc', '7': 'abc', '8': 'abcdefg', '9': 'abcdfg', '-': 'g', ' ': '',
+};
+// One segment's polygon in a digit box w × h, stroke t, slanted by `slant`.
+function segmentPath(g, seg, x, y, w, h, t, slant) {
+  const half = h / 2, e = t / 2;
+  const hor = (cy) => [[x + e, cy], [x + e + e, cy - e], [x + w - 2 * e, cy - e], [x + w - e, cy], [x + w - 2 * e, cy + e], [x + 2 * e, cy + e]];
+  const ver = (cx, top, bottom) => [[cx, top + e], [cx + e, top + 2 * e], [cx + e, bottom - 2 * e], [cx, bottom - e], [cx - e, bottom - 2 * e], [cx - e, top + 2 * e]];
+  const pts = { a: hor(y + e), d: hor(y + h - e), g: hor(y + half),
+    f: ver(x + e, y, y + half), b: ver(x + w - e, y, y + half), e: ver(x + e, y + half, y + h), c: ver(x + w - e, y + half, y + h) }[seg];
+  g.beginPath();
+  pts.forEach(([px_, py_], i) => { const sx = px_ - slant * (py_ - (y + half)); if (i) g.lineTo(sx, py_); else g.moveTo(sx, py_); });
+  g.closePath();
+}
+// The cells of a readout: four digit positions, a point before the last.
+function layoutDigits(r) {
+  const h = 30, w = 15, gap = 6, slant = 0.14, t = 3.4;
+  const total = 4 * w + 3 * gap + 4;
+  const x0 = r.x + (r.w - total) / 2 - (r.unit ? 5 : 0), y0 = r.y + (r.h - h) / 2;
+  return [0, 1, 2, 3].map((i) => ({ x: x0 + i * (w + gap) + (i === 3 ? 4 : 0), y: y0, w, h, t, slant }));
+}
+function cellsOf(text) {
+  // right-aligned into four cells: e.g. "-58.5" → ['-', '5', '8', '5'] with the point lit
+  const [whole, frac] = text.split('.');
+  const left = whole.padStart(3, ' ').slice(-3).split('');
+  return { chars: [...left, frac || '0'], point: true };
+}
+function drawPanelStatic(g, r) {
+  g.save(); g.scale(S, S);
+  // the dark glass edge round the active area, and its own inner shadow
+  g.fillStyle = '#0b1218'; g.beginPath(); g.roundRect(r.x - 3, r.y - 3, r.w + 6, r.h + 6, 4); g.fill();
+  g.save(); g.beginPath(); g.roundRect(r.x, r.y, r.w, r.h, 2); g.clip();
+  // backlight: edge-lit from below, brighter along the lower edge, vignetted
+  const base = g.createLinearGradient(0, r.y, 0, r.y + r.h);
+  base.addColorStop(0, '#9fc9d2'); base.addColorStop(0.55, '#c3e3ea'); base.addColorStop(1, '#e2f5f8');
+  g.fillStyle = base; g.fillRect(r.x, r.y, r.w, r.h);
+  for (const fx of [0.2, 0.5, 0.8]) {   // the LEDs' hot spots along the lower edge
+    const spot = g.createRadialGradient(r.x + r.w * fx, r.y + r.h + 4, 2, r.x + r.w * fx, r.y + r.h + 4, 30);
+    spot.addColorStop(0, 'rgba(255,255,255,0.55)'); spot.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = spot; g.fillRect(r.x, r.y, r.w, r.h);
+  }
+  const vignette = g.createRadialGradient(r.x + r.w / 2, r.y + r.h / 2, r.h * 0.3, r.x + r.w / 2, r.y + r.h / 2, r.w * 0.62);
+  vignette.addColorStop(0, 'rgba(10,40,55,0)'); vignette.addColorStop(1, 'rgba(10,40,55,0.32)');
+  g.fillStyle = vignette; g.fillRect(r.x, r.y, r.w, r.h);
+  // inner shadow under the glass edge, top and left
+  const top = g.createLinearGradient(0, r.y, 0, r.y + 6); top.addColorStop(0, 'rgba(0,20,30,0.45)'); top.addColorStop(1, 'rgba(0,20,30,0)');
+  g.fillStyle = top; g.fillRect(r.x, r.y, r.w, 6);
+  // ghosts: every segment faintly visible
+  g.fillStyle = 'rgba(20,50,65,0.07)';
+  for (const cell of layoutDigits(r)) for (const seg of 'abcdefg') { segmentPath(g, seg, cell.x, cell.y, cell.w, cell.h, cell.t, cell.slant); g.fill(); }
+  g.restore();
+  if (r.unit) {
+    g.save(); g.translate(r.x + r.w - 9, r.y + r.h / 2); g.rotate(-Math.PI / 2);
+    g.font = '600 9px "Segoe UI", "Helvetica Neue", Arial, sans-serif'; g.fillStyle = 'rgba(20,45,58,0.85)';
+    g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(r.unit, 0, 0); g.restore();
+  }
+  g.restore();
+  // the anti-glare film's grain over the active area
+  const x0 = px(r.x), y0 = px(r.y), w = px(r.w), h = px(r.h);
+  const img = g.getImageData(x0, y0, w, h), d = img.data;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const f = 1 + (Finish.noise(x0 + x, y0 + y, 1.6, 51) - 0.5) * 0.07;
+    const p = (y * w + x) * 4; for (let k = 0; k < 3; k++) d[p + k] = Math.min(255, d[p + k] * f);
+  }
+  g.putImageData(img, x0, y0);
+}
+// The live figures: the lit segments with their parallax shadows.
+function drawReadout(g, r, text) {
+  g.save(); g.scale(S, S);
+  g.beginPath(); g.rect(r.x, r.y, r.w, r.h); g.clip();
+  const cells = layoutDigits(r), { chars, point } = cellsOf(text);
+  for (const pass of ['shadow', 'ink']) {
+    g.save();
+    if (pass === 'shadow') { g.translate(1.1, 1.5); g.filter = `blur(${px(0.9)}px)`; g.fillStyle = 'rgba(20,60,80,0.30)'; }
+    else g.fillStyle = 'rgba(14,26,36,0.92)';
+    cells.forEach((cell, i) => {
+      for (const seg of SEGMENTS[chars[i]] || '') { segmentPath(g, seg, cell.x, cell.y, cell.w, cell.h, cell.t, cell.slant); g.fill(); }
+    });
+    if (point) { const c = cells[3]; g.beginPath(); g.arc(c.x - 4.5 - c.slant * (c.h / 2), c.y + c.h - 1.8, 1.9, 0, 2 * Math.PI); g.fill(); }
+    g.restore();
+  }
+  g.restore();
+}
+
+// Needles: thin, with a soft shadow on the face (they ride a little above it).
+const NEEDLES = [
+  { name: 'floor', colour: '#e8ecef', width: 1.4, value: -128, target: -128, velocity: 0 },
+  { name: 'average', colour: '#ff2a1a', width: 2.6, value: -62, target: -62, velocity: 0 },
+  { name: 'signal', colour: '#f2e33a', width: 2.2, value: -60, target: -60, velocity: 0 },
+];
+function drawNeedles(g) {
+  g.save(); g.scale(S, S);
+  g.beginPath(); g.rect(FACE.x, FACE.y, FACE.w, FACE.h); g.clip();
+  for (const pass of ['shadow', 'needle']) {
+    for (const n of NEEDLES) {
+      const a = angleOf(n.value), tip = at(ARC_R + 30, a), base = at(ARC_R - 280, a);
+      g.save();
+      if (pass === 'shadow') { g.translate(4, 6); g.filter = `blur(${px(2)}px)`; g.strokeStyle = 'rgba(0,0,0,0.45)'; }
+      else g.strokeStyle = n.colour;
+      g.lineWidth = n.width; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(base.x, base.y); g.lineTo(tip.x, tip.y); g.stroke();
+      if (pass === 'needle' && n.name === 'average') {   // a dark edge on the bright red needle
+        g.strokeStyle = 'rgba(40,0,0,0.6)'; g.lineWidth = 0.8;
+        g.beginPath(); g.moveTo(base.x + 1.2, base.y); g.lineTo(tip.x + 1.2, tip.y); g.stroke();
+      }
+      g.restore();
+    }
+  }
+  g.restore();
+}
+
+// ---- retained composition and damage --------------------------------------------------------
+let staticLayer = null;
+
+// The band the needles can sweep: the face above the readouts plus the
+// needles' lower run; recomputed bounds for the current and previous needles.
+function needleBounds() {
+  let x0 = Infinity, x1 = -Infinity;
+  for (const n of NEEDLES) for (const v of [n.value, n.previous ?? n.value]) {
+    const a = angleOf(v);
+    for (const r of [ARC_R - 280, ARC_R + 30]) { const p = at(r, a); x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); }
+  }
+  return { x: Math.max(FACE.x, x0 - 10), y: FACE.y, w: Math.min(FACE.x + FACE.w, x1 + 12) - Math.max(FACE.x, x0 - 10), h: FACE.h };
+}
+let readoutText = ['', ''];
+function frame(now) {
+  // ballistics: a damped spring towards each needle's target
+  let moving = false;
+  const dt = Math.min(0.05, (now - (frame.last || now)) / 1000); frame.last = now;
+  for (const n of NEEDLES) {
+    n.previous = n.value;
+    const k = n.name === 'floor' ? 18 : 60, damping = n.name === 'floor' ? 9 : 13;
+    n.velocity += (k * (n.target - n.value) - damping * n.velocity) * dt;
+    n.value += n.velocity * dt;
+    if (Math.abs(n.target - n.value) > 0.02 || Math.abs(n.velocity) > 0.05) moving = true;
+  }
+  const signal = NEEDLES[2].value, floor = NEEDLES[0].value;
+  const texts = [signal.toFixed(1), (signal - floor).toFixed(1)];
+  const dirty = needleBounds();
+  // repaint only the damaged band: the static layer, the readouts if they lie in it, the needles
+  ctx.save();
+  ctx.beginPath(); ctx.rect(px(dirty.x), px(dirty.y), px(dirty.w), px(dirty.h));
+  for (const r of READOUTS) ctx.rect(px(r.x - 12), px(r.y - 12), px(r.w + 24), px(r.h + 24));
+  ctx.clip();
+  ctx.drawImage(staticLayer, 0, 0);
+  drawNeedles(ctx);
+  // the readout panels stand above the needles: restore them from the
+  // engine's render over the needles, then their figures
+  for (const r of READOUTS) ctx.drawImage(staticLayer, px(r.x - 3), px(r.y - 3), px(r.w + 6), px(r.h + 6), px(r.x - 3), px(r.y - 3), px(r.w + 6), px(r.h + 6));
+  READOUTS.forEach((r, i) => drawReadout(ctx, r, texts[i]));
+  ctx.restore();
+  readoutText = texts;
+  if (moving) requestAnimationFrame(frame); else frame.running = false;
+}
+function kick() { if (frame.running) return; frame.running = true; frame.last = undefined; requestAnimationFrame(frame); }
+
+// A plausible signal: the level wanders, the average follows slowly, the
+// floor drifts; new targets every 700 ms.
+function retarget() {
+  const s = NEEDLES[2], a = NEEDLES[1], f = NEEDLES[0];
+  s.target = Math.max(-135, Math.min(-5, s.target + (Math.random() - 0.5) * 14));
+  a.target = a.target + (s.target - a.target) * 0.35;
+  f.target = Math.max(-138, Math.min(-112, f.target + (Math.random() - 0.5) * 3));
+  kick();
+}
+NEEDLES.forEach((n) => { n.previous = n.value; });
+loadStatic().then((image) => {
+  staticLayer = textureFace(image);
+  const g = staticLayer.getContext('2d');
+  for (const r of READOUTS) drawPanelStatic(g, r);
+  ctx.drawImage(staticLayer, 0, 0); setInterval(retarget, 700); kick();
+});
+document.getElementById('stats').textContent = 'engine render loaded once; each frame repaints only the needles’ band and the readouts';
+</script>
+</body>
+</html>

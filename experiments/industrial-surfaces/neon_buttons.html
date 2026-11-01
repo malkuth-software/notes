@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Acrylic Buttons</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .bank { display: flex; flex-wrap: wrap; gap: 18px; padding: 18px; background: #0d0f10; border-radius: 6px; }
+  .btn { display: grid; gap: 6px; justify-items: center; }
+  .btn canvas { display: block; cursor: pointer; border-radius: 10px; outline-offset: 3px; }
+  .btn canvas:focus-visible { outline: 2px solid var(--accent); }
+  .btn canvas.sel { outline: 2px solid #4fa3a088; }
+  .btn span { font-size: 11px; color: #8a9694; }
+  .controls .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+  .controls .seg button { width: auto; padding: 3px 8px; font-size: 12px; }
+  .controls .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  input[type="text"] { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; font: inherit; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Neon acrylic buttons</h1>
+  <p>Illuminated push buttons: an acrylic cap over a neon tube in a dark well, raytraced per pixel on the CPU. Every
+    light in the scene scales linearly with the tube's power, so each geometry is rendered once into two buffers: the
+    unlit scene and the light from a tube at unit power. A frame is then <code>tone(unlit + power × lit)</code>, which
+    is one multiply-add per pixel. Blinking costs almost nothing, a steady button is drawn once, and only pressing
+    changes the geometry. Click to toggle; the selected button can be edited on the left.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="finishes.html">Finishes</a><a href="glint_lab.html">Glint lab</a><a href="paint.html">Paint study</a><a href="neon_buttons.html" aria-current="page">Neon buttons</a></nav>
+</header>
+<main>
+  <div class="row">
+    <div class="panel controls" id="inspector">
+      <label>Neon<div class="seg" id="seg-neon"></div></label>
+      <label>Acrylic<div class="seg" id="seg-acrylic"></div></label>
+      <label>Tube<div class="seg" id="seg-tube"></div></label>
+      <label>Label ink<div class="seg" id="seg-ink"></div></label>
+      <label>Light<div class="seg" id="seg-mode"></div></label>
+      <label>Action<div class="seg" id="seg-action"></div></label>
+      <label>Label<input type="text" id="label" maxlength="6"></label>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="stage">
+      <div class="bank" id="bank"></div>
+      <p class="note">The scene is a rounded acrylic cap (n = 1.49, filleted edges) in a well cut into a black
+        anodised plate, with a neon tube below the cap. Each pixel follows its ray: reflection from the cap (Fresnel,
+        softbox and room), refraction in and out of the cap with total internal reflection, absorption in tinted acrylic
+        (Beer–Lambert), scattering in frosted and opal acrylic, the glowing gas column and its halo, the well walls lit
+        by the tube, light piped out at the polished edges, and light spilling and focusing onto the plate round the
+        cap.</p>
+    </div>
+  </div>
+</main>
+<script src="finish_kernel.js"></script>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const DPR = Math.min(2, window.devicePixelRatio || 1);
+const CSS = 150;                 // button size in CSS px
+const S = Math.round(CSS * DPR); // device px
+
+// ---- options ---------------------------------------------------------------------
+
+// Linear emission colours. Each has some energy in its other channels, so a hot
+// core blows out towards white the way a real tube photographs.
+const NEON = {
+  red: { label: 'Red', rgb: [1.0, 0.16, 0.05] },
+  amber: { label: 'Amber', rgb: [1.0, 0.42, 0.04] },
+  green: { label: 'Green', rgb: [0.14, 1.0, 0.28] },
+  blue: { label: 'Blue', rgb: [0.08, 0.32, 1.0] },
+  purple: { label: 'Purple', rgb: [0.55, 0.08, 1.0] },
+  white: { label: 'Ice', rgb: [0.75, 0.9, 1.0] },
+};
+// tint: linear transmittance through the cap's full thickness; frost: share of
+// light scattered inside the cap (0 clear, 1 opal).
+const ACRYLIC = {
+  clear: { label: 'Clear', tint: null, frost: 0 },
+  smoked: { label: 'Smoked', tint: [0.22, 0.22, 0.23], frost: 0 },
+  tinted: { label: 'Tinted', tint: 'neon', frost: 0.15 },
+  frosted: { label: 'Frosted', tint: null, frost: 0.6 },
+  opal: { label: 'Opal', tint: [0.86, 0.86, 0.84], frost: 1 },
+};
+const TUBES = { ring: 'Ring', hairpin: 'Hairpin', zigzag: 'Zigzag', bar: 'Bar' };
+const INKS = { white: 'White print', mask: 'Black mask', engraved: 'Engraved', none: 'None' };
+const MODES = { steady: 'Steady', blink: 'Blink', pulse: 'Pulse', flicker: 'Flicker' };
+const ACTIONS = { latch: 'Latching', momentary: 'Momentary' };
+
+const BUTTONS = [
+  { label: 'RUN', neon: 'green', acrylic: 'clear', tube: 'ring', ink: 'white', mode: 'steady', action: 'latch', on: true },
+  { label: 'STOP', neon: 'red', acrylic: 'tinted', tube: 'hairpin', ink: 'white', mode: 'steady', action: 'momentary', on: false },
+  { label: 'ALARM', neon: 'red', acrylic: 'frosted', tube: 'zigzag', ink: 'mask', mode: 'blink', action: 'latch', on: true },
+  { label: 'PUMP', neon: 'blue', acrylic: 'smoked', tube: 'ring', ink: 'engraved', mode: 'pulse', action: 'latch', on: true },
+  { label: 'AUX', neon: 'purple', acrylic: 'opal', tube: 'bar', ink: 'white', mode: 'steady', action: 'latch', on: true },
+  { label: 'TEST', neon: 'amber', acrylic: 'clear', tube: 'hairpin', ink: 'engraved', mode: 'flicker', action: 'latch', on: true },
+  { label: 'SYNC', neon: 'white', acrylic: 'frosted', tube: 'ring', ink: 'mask', mode: 'steady', action: 'latch', on: false },
+];
+
+// ---- vector helpers (scalars only in the hot path) ----------------------------------
+
+function sdRR(x, y, b, r) {
+  const qx = Math.abs(x) - b + r, qy = Math.abs(y) - b + r;
+  const ox = qx > 0 ? qx : 0, oy = qy > 0 ? qy : 0;
+  return Math.sqrt(ox * ox + oy * oy) + Math.min(Math.max(qx, qy), 0) - r;
+}
+
+// ---- scene ------------------------------------------------------------------------------
+//
+// Units are device pixels, origin at the button centre, z up out of the plate.
+
+function makeScene(cfg, pressed) {
+  const sc = {
+    Bw: 0.40 * S, Rw: 0.10 * S,          // well half-size and corner
+    Bc: 0.345 * S, Rc: 0.085 * S,        // cap half-size and corner
+    f: 0.045 * S,                         // cap edge fillet
+    capH: 0.15 * S,
+    zt: (pressed ? 0.022 : 0.062) * S,    // cap top
+    D: 0.30 * S,                          // well depth
+    rt: 0.020 * S,                        // tube radius
+    eye: [0, 0.75 * S, 3.4 * S],
+  };
+  sc.zb = sc.zt - sc.capH;
+  sc.zc = (sc.zt + sc.zb) / 2; sc.hz = sc.capH / 2;
+  sc.zTube = sc.zb - 0.055 * S;
+  sc.segs = tubeSegments(cfg.tube, sc);
+  // a few points along the tube for lighting surfaces and the cap volume
+  sc.lights = [];
+  for (let i = 0; i < sc.segs.length; i += Math.max(1, Math.floor(sc.segs.length / 10))) {
+    const s = sc.segs[i]; sc.lights.push([(s[0] + s[2]) / 2, (s[1] + s[3]) / 2, sc.zTube]);
+  }
+  return sc;
+}
+
+function tubeSegments(kind, sc) {
+  const pts = [], R = sc.Bc * 0.58;
+  const arc = (cx, cy, r, a0, a1, n) => { for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n; pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } };
+  if (kind === 'ring') arc(0, 0, R, 0, Math.PI * 2, 20);
+  else if (kind === 'hairpin') {
+    const w = R * 0.42, h = R * 0.95;
+    pts.push([-w, h]); pts.push([-w, -h + w]); arc(0, -h + w, w, Math.PI, Math.PI * 2, 8); pts.push([w, h]);
+  } else if (kind === 'zigzag') {
+    const n = 5; for (let i = 0; i <= n; i++) pts.push([-R + 2 * R * i / n, (i & 1 ? 1 : -1) * R * 0.55]);
+  } else {
+    pts.push([-R * 1.05, 0]); pts.push([R * 1.05, 0]);
+  }
+  const segs = [];
+  for (let i = 0; i + 1 < pts.length; i++) segs.push([pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1]]);
+  return segs;
+}
+
+function tubeDistanceXY(sc, x, y) {
+  let best = 1e9;
+  const segs = sc.segs;
+  for (let i = 0; i < segs.length; i++) {
+    const s = segs[i];
+    const vx = s[2] - s[0], vy = s[3] - s[1], wx = x - s[0], wy = y - s[1];
+    let t = (wx * vx + wy * vy) / (vx * vx + vy * vy);
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    const dx = wx - vx * t, dy = wy - vy * t;
+    const d = dx * dx + dy * dy;
+    if (d < best) best = d;
+  }
+  return Math.sqrt(best);
+}
+function tubeDistance(sc, x, y, z) {
+  const dxy = tubeDistanceXY(sc, x, y), dz = z - sc.zTube;
+  return Math.sqrt(dxy * dxy + dz * dz);
+}
+
+function capSDF(sc, x, y, z) {
+  const w = sdRR(x, y, sc.Bc - sc.f, Math.max(0.5, sc.Rc - sc.f));
+  const h = Math.abs(z - sc.zc) - (sc.hz - sc.f);
+  const mw = w > 0 ? w : 0, mh = h > 0 ? h : 0;
+  return Math.sqrt(mw * mw + mh * mh) + Math.min(Math.max(w, h), 0) - sc.f;
+}
+// The plate with its well: solid below z = 0 outside the well, and below the
+// floor. The lip's rounding is shaded, not modelled.
+function plateSDF(sc, x, y, z) {
+  const well = sdRR(x, y, sc.Bw, sc.Rw);
+  return Math.min(Math.max(z, -well), z + sc.D);
+}
+
+function normalOf(f, sc, x, y, z, out) {
+  const e = 0.25;
+  const nx = f(sc, x + e, y, z) - f(sc, x - e, y, z);
+  const ny = f(sc, x, y + e, z) - f(sc, x, y - e, z);
+  const nz = f(sc, x, y, z + e) - f(sc, x, y, z - e);
+  const l = 1 / Math.hypot(nx, ny, nz);
+  out[0] = nx * l; out[1] = ny * l; out[2] = nz * l;
+}
+
+// ---- environment ----------------------------------------------------------------------
+// A dark room with one softbox above and behind the viewer, and a dim ceiling.
+
+const KEY = (() => { const v = [0.0, 0.42, 0.91]; const l = Math.hypot(...v); return v.map((c) => c / l); })();
+function env(dx, dy, dz) {
+  if (dz <= 0) return 0.004;
+  // softbox: angular rectangle around KEY
+  const c = dx * KEY[0] + dy * KEY[1] + dz * KEY[2];
+  const ax = dx - KEY[0] * c, ay = dy - KEY[1] * c;
+  const across = Math.abs(ax) / 0.38, along = Math.abs(ay + 0) / 0.16;
+  const box = c > 0 ? Math.max(0, 1 - Math.max(across, along) ** 8) : 0;
+  return 0.012 + 0.03 * dz + 2.4 * box;
+}
+
+// ---- rendering ----------------------------------------------------------------------------
+
+const N1 = 1.0, N2 = 1.49;
+const tmpN = [0, 0, 0];
+
+function fresnel(cosi, n1, n2) {
+  const r0 = ((n1 - n2) / (n1 + n2)) ** 2;
+  const m = 1 - cosi;
+  return r0 + (1 - r0) * m * m * m * m * m;
+}
+// refract d about normal n (n opposes d); returns false on total internal reflection
+const rf = [0, 0, 0];
+function refract(dx, dy, dz, nx, ny, nz, eta) {
+  const cosi = -(dx * nx + dy * ny + dz * nz);
+  const k = 1 - eta * eta * (1 - cosi * cosi);
+  if (k < 0) return false;
+  const a = eta * cosi - Math.sqrt(k);
+  rf[0] = eta * dx + a * nx; rf[1] = eta * dy + a * ny; rf[2] = eta * dz + a * nz;
+  return true;
+}
+
+// Irradiance at a point from the tube, per unit tube power (a sum over sample
+// points with soft inverse-square falloff), and with a normal when given.
+function tubeIrradiance(sc, x, y, z, nx, ny, nz, spread) {
+  let e = 0;
+  const L = sc.lights, soft = (0.05 * S + spread) ** 2;
+  for (let i = 0; i < L.length; i++) {
+    const lx = L[i][0] - x, ly = L[i][1] - y, lz = L[i][2] - z;
+    const d2 = lx * lx + ly * ly + lz * lz;
+    let cos = 1;
+    if (nx !== undefined) { cos = (lx * nx + ly * ny + lz * nz) / Math.sqrt(d2); if (cos < 0) cos = 0; }
+    e += cos * soft / (d2 + soft);
+  }
+  return e / L.length;
+}
+
+// Per-pixel accumulators: base (unlit) and glow (per unit tube power), RGB.
+const acc = { b: [0, 0, 0], g: [0, 0, 0] };
+
+// March a ray through open space (outside the cap) until it hits the plate or
+// well, gathering tube emission. `wb`/`wg` are the base/glow weights per channel.
+function traceOpen(sc, cfg, ox, oy, oz, dx, dy, dz, wb, wg, hashU) {
+  let t = 0, hit = false;
+  let x = ox, y = oy, z = oz;
+  const inWell = (z < 0.01 * S);
+  // emission along the segment inside the well volume
+  for (let i = 0; i < 72; i++) {
+    x = ox + dx * t; y = oy + dy * t; z = oz + dz * t;
+    const d = plateSDF(sc, x, y, z);
+    if (d < 0.3) { hit = true; break; }
+    if (z > sc.zt + 0.2 * S) break;
+    t += Math.max(d * 0.9, 0.4);
+  }
+  const tEnd = hit ? t : t;
+  // gas column and halo along [0, tEnd] where the ray is below the plate
+  if (inWell || dz < 0) {
+    const n = 18, dt = tEnd / n;
+    let glass = 0;
+    for (let i = 0; i < n; i++) {
+      const tt = (i + hashU) * dt;
+      const px = ox + dx * tt, py = oy + dy * tt, pz = oz + dz * tt;
+      if (pz > 0.005 * S) continue;
+      const dist = tubeDistance(sc, px, py, pz);
+      const core = dist < sc.rt ? 1 - (dist / sc.rt) ** 4 : 0;
+      // the gas column, then the halo of light scattered by the glass and the
+      // haze in the well; both per device pixel of path
+      const halo = Math.exp(-dist / (0.045 * S));
+      const e = (core * 0.30 + halo * 0.006) * dt;
+      for (let c = 0; c < 3; c++) acc.g[c] += wg[c] * e;
+      if (core > 0) glass += core * dt;
+    }
+    // the unlit tube: a faint grey glass rod
+    const gl = Math.min(1, glass / (sc.rt * 1.2)) * 0.035;
+    for (let c = 0; c < 3; c++) acc.b[c] += wb[c] * gl;
+  }
+  if (!hit) {
+    const e = env(dx, dy, dz);
+    for (let c = 0; c < 3; c++) acc.b[c] += wb[c] * e;
+    return;
+  }
+  normalOf(plateSDF, sc, x, y, z, tmpN);
+  const nx = tmpN[0], ny = tmpN[1], nz = tmpN[2];
+  const well = sdRR(x, y, sc.Bw, sc.Rw);
+  if (z > -0.01 * S && well > 0) {
+    plateShade(sc, cfg, x, y, well, nx, ny, nz, dx, dy, dz, wb, wg);
+    return;
+  }
+  // well wall or floor: dark grey paint, lit only by the tube
+  const alb = 0.16;
+  const E = tubeIrradiance(sc, x, y, z, nx, ny, nz, 0);
+  for (let c = 0; c < 3; c++) {
+    acc.b[c] += wb[c] * alb * 0.01;
+    acc.g[c] += wg[c] * alb * E * 2.4;
+  }
+}
+
+// The black anodised plate round the well: fine grain, a rounded lip that
+// catches the softbox, and light spilled and focused through the cap's edges.
+function plateShade(sc, cfg, x, y, well, nx, ny, nz, dx, dy, dz, wb, wg) {
+  const grain = 0.85 + 0.3 * Finish.noise(x + 500, y + 500, 1.2, 7);
+  const alb = 0.035 * grain;
+  const ndl = Math.max(0, nx * KEY[0] + ny * KEY[1] + nz * KEY[2]);
+  // a soft, broad sheen of the room in the anodising
+  const rx = dx - 2 * (dx * nx + dy * ny + dz * nz) * nx, ry = dy - 2 * (dx * nx + dy * ny + dz * nz) * ny, rz = dz - 2 * (dx * nx + dy * ny + dz * nz) * nz;
+  const sheen = env(rx, ry, rz) * 0.018;
+  // lip: the first 1.4 % of S outside the well edge is rounded over
+  const lip = 0.014 * S;
+  const lipT = well < lip ? 1 - well / lip : 0;
+  const lipLight = lipT * env(rx * 0.5, ry * 0.5 + 0.3, Math.max(0.2, rz)) * 0.08;
+  // spill and caustic: from the gap, a broad falloff plus a focused line
+  const gap = sc.Bw - sc.Bc;
+  const spill = Math.exp(-well / (0.035 * S)) * 0.22;
+  const caustic = Math.exp(-(((well - gap * 0.7) / (0.006 * S)) ** 2)) * 0.6 * (cfg.acrylic === 'opal' ? 0.3 : 1);
+  // brighter where the tube runs close to that edge
+  const near = Math.exp(-Math.max(0, tubeDistanceXY(sc, x * 0.8, y * 0.8) - 0.1 * S) / (0.12 * S));
+  for (let c = 0; c < 3; c++) {
+    acc.b[c] += wb[c] * (alb * (0.25 + 0.75 * ndl) + sheen + lipLight);
+    acc.g[c] += wg[c] * (alb * 6 + 0.05) * (spill + caustic) * (0.4 + 0.6 * near) + wg[c] * lipT * 0.25 * near;
+  }
+}
+
+// Label mask lookup on the cap's top face.
+function labelAt(cfg, x, y) {
+  if (!cfg._mask || cfg.ink === 'none') return 0;
+  const ix = Math.round(x + S / 2), iy = Math.round(y + S / 2);
+  if (ix < 0 || iy < 0 || ix >= S || iy >= S) return 0;
+  return cfg._mask[iy * S + ix];
+}
+
+function renderGeometry(cfg, pressed) {
+  const sc = makeScene(cfg, pressed);
+  const base = new Float32Array(S * S * 3), glow = new Float32Array(S * S * 3);
+  const neon = NEON[cfg.neon].rgb;
+  const ac = ACRYLIC[cfg.acrylic];
+  const tint = ac.tint === 'neon' ? neon.map((v) => 0.12 + 0.88 * v) : ac.tint;
+  const sigma = tint ? tint.map((v) => -Math.log(Math.max(1e-4, v)) / sc.capH) : [0, 0, 0];
+  const frost = ac.frost;
+  const eye = sc.eye;
+  const wb = [0, 0, 0], wg = [0, 0, 0], one = [1, 1, 1];
+  const n = [0, 0, 0];
+  for (let py = 0; py < S; py++) {
+    for (let px = 0; px < S; px++) {
+      acc.b[0] = acc.b[1] = acc.b[2] = 0; acc.g[0] = acc.g[1] = acc.g[2] = 0;
+      const tx = px + 0.5 - S / 2, ty = py + 0.5 - S / 2;
+      let dx = tx - eye[0], dy = ty - eye[1], dz = 0 - eye[2];
+      const l = 1 / Math.hypot(dx, dy, dz); dx *= l; dy *= l; dz *= l;
+      const hashU = Finish.hash(px, py, 3);
+      // start just above the cap
+      let t = (sc.zt + 0.02 * S - eye[2]) / dz;
+      let x = 0, y = 0, z = 0, hitCap = false;
+      for (let i = 0; i < 80; i++) {
+        x = eye[0] + dx * t; y = eye[1] + dy * t; z = eye[2] + dz * t;
+        const d = capSDF(sc, x, y, z);
+        if (d < 0.25) { hitCap = true; break; }
+        if (z < -0.02 * S) break;
+        t += Math.max(d * 0.95, 0.3);
+      }
+      const nb = [neon[0], neon[1], neon[2]];
+      if (!hitCap) {
+        // plate, gap or well, seen directly
+        traceOpen(sc, cfg, eye[0] + dx * ((0.05 * S - eye[2]) / dz), eye[1] + dy * ((0.05 * S - eye[2]) / dz), 0.05 * S, dx, dy, dz, one, nb, hashU);
+      } else {
+        normalOf(capSDF, sc, x, y, z, n);
+        const cosi = -(dx * n[0] + dy * n[1] + dz * n[2]);
+        const F = fresnel(Math.max(0, cosi), N1, N2);
+        // reflection of the room
+        const rx = dx + 2 * cosi * n[0], ry = dy + 2 * cosi * n[1], rz = dz + 2 * cosi * n[2];
+        const refl = F * env(rx, ry, rz);
+        for (let c = 0; c < 3; c++) acc.b[c] += refl;
+        // label on the top face
+        const onTop = n[2] > 0.92;
+        const ink = onTop ? labelAt(cfg, x, y) : 0;
+        let through = 1 - F;
+        let inkMask = 0;
+        if (cfg.ink === 'white') inkMask = ink * 0.85;
+        else if (cfg.ink === 'mask') inkMask = onTop ? (1 - ink) * 0.97 : 0;
+        else if (cfg.ink === 'engraved') inkMask = ink * 0.6;
+        // light piped out at the polished edges, stronger off-axis
+        const edge = Math.pow(1 - Math.abs(n[2]), 1.5);
+        const Etop = tubeIrradiance(sc, x, y, z - 0.03 * S, undefined, undefined, undefined, frost * 0.12 * S);
+        for (let c = 0; c < 3; c++) acc.g[c] += neon[c] * edge * Etop * 0.6 * (tint ? tint[c] : 1);
+        // the ink itself
+        if (cfg.ink === 'white' && ink > 0) {
+          for (let c = 0; c < 3; c++) {
+            acc.b[c] += ink * 0.62 * (0.22 + 0.5 * Math.max(0, n[0] * KEY[0] + n[1] * KEY[1] + n[2] * KEY[2]));
+            acc.g[c] += ink * neon[c] * Etop * 0.55;   // backlit through the ink
+          }
+        } else if (cfg.ink === 'mask' && onTop) {
+          for (let c = 0; c < 3; c++) acc.b[c] += (1 - ink) * 0.006;
+        } else if (cfg.ink === 'engraved' && ink > 0) {
+          for (let c = 0; c < 3; c++) { acc.b[c] += ink * 0.05; acc.g[c] += ink * neon[c] * Etop * 1.4; }
+        }
+        through *= 1 - inkMask;
+        if (through > 0.002 && refract(dx, dy, dz, n[0], n[1], n[2], N1 / N2)) {
+          let ix = x - n[0] * 0.6, iy = y - n[1] * 0.6, iz = z - n[2] * 0.6;
+          let ddx = rf[0], ddy = rf[1], ddz = rf[2];
+          let path = 0, exited = false;
+          for (let bounce = 0; bounce < 3 && !exited; bounce++) {
+            let tt = 0;
+            for (let i = 0; i < 60; i++) {
+              const d = -capSDF(sc, ix + ddx * tt, iy + ddy * tt, iz + ddz * tt);
+              if (d < 0.25) break;
+              tt += Math.max(d * 0.95, 0.3);
+            }
+            // volume scattering in frosted/opal acrylic along this leg
+            if (frost > 0) {
+              const k = 4;
+              for (let j = 0; j < k; j++) {
+                const s = (j + 0.5) / k * tt;
+                const E = tubeIrradiance(sc, ix + ddx * s, iy + ddy * s, iz + ddz * s, undefined, undefined, undefined, 0.08 * S);
+                for (let c = 0; c < 3; c++) acc.g[c] += through * frost * neon[c] * E * (tt / k) / sc.capH * 0.9 * (tint ? Math.exp(-sigma[c] * (path + s)) : 1);
+              }
+            }
+            path += tt;
+            ix += ddx * tt; iy += ddy * tt; iz += ddz * tt;
+            normalOf(capSDF, sc, ix, iy, iz, n);
+            // leaving: normal points out, the ray travels with it
+            const nnx = -n[0], nny = -n[1], nnz = -n[2];
+            const cos2 = -(ddx * nnx + ddy * nny + ddz * nnz);
+            const F2 = fresnel(Math.max(0, cos2), N2, N1);
+            if (refract(ddx, ddy, ddz, nnx, nny, nnz, N2 / N1) && bounce < 2) {
+              const T = through * (1 - F2) * (1 - frost);
+              for (let c = 0; c < 3; c++) {
+                const a = tint ? Math.exp(-sigma[c] * path) : 1;
+                wb[c] = T * a; wg[c] = T * a * neon[c];
+              }
+              if (T > 0.002) traceOpen(sc, cfg, ix + n[0] * 0.6, iy + n[1] * 0.6, iz + n[2] * 0.6, rf[0], rf[1], rf[2], wb, wg, hashU);
+              through *= F2;          // the rest reflects back inside
+            }
+            if (bounce >= 2 || through < 0.01) { exited = true; break; }
+            // internal reflection
+            const dn = ddx * n[0] + ddy * n[1] + ddz * n[2];
+            ddx -= 2 * dn * n[0]; ddy -= 2 * dn * n[1]; ddz -= 2 * dn * n[2];
+            ix -= n[0] * 0.6; iy -= n[1] * 0.6; iz -= n[2] * 0.6;
+          }
+        }
+      }
+      const q = (py * S + px) * 3;
+      base[q] = acc.b[0]; base[q + 1] = acc.b[1]; base[q + 2] = acc.b[2];
+      glow[q] = acc.g[0]; glow[q + 1] = acc.g[1]; glow[q + 2] = acc.g[2];
+    }
+  }
+  return { base, glow };
+}
+
+function makeMask(cfg) {
+  const c = document.createElement('canvas'); c.width = S; c.height = S;
+  const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const size = Math.round(S * (cfg.label.length > 4 ? 0.13 : 0.16));
+  g.font = `600 ${size}px "Avenir Next Condensed", "DIN Condensed", "Helvetica Neue", Arial, sans-serif`;
+  // The cap's top is seen in perspective; the label is printed on it, so it is
+  // laid out in cap coordinates and the renderer projects it.
+  g.fillText(cfg.label, S / 2, S / 2);
+  const d = g.getImageData(0, 0, S, S).data;
+  const m = new Float32Array(S * S);
+  for (let i = 0; i < S * S; i++) m[i] = d[i * 4 + 3] / 255;
+  cfg._mask = m;
+}
+
+// ---- compositing ----------------------------------------------------------------------------
+
+function tone(v) { return 1 - Math.exp(-v * 1.35); }
+function composite(b) {
+  const g = b.canvas.getContext('2d');
+  const img = b.img || (b.img = g.createImageData(S, S));
+  const geomA = b.cache[0], geomB = b.cache[1] || b.cache[0];
+  const mix = b.pressMix;
+  const P = b.power;
+  const d = img.data;
+  const ba = geomA.base, ga = geomA.glow, bb = geomB.base, gb = geomB.glow;
+  for (let i = 0, j = 0; i < S * S * 3; i += 3, j += 4) {
+    for (let c = 0; c < 3; c++) {
+      const va = ba[i + c] + P * ga[i + c];
+      const vb = bb[i + c] + P * gb[i + c];
+      d[j + c] = Finish.encode(tone(va + (vb - va) * mix));
+    }
+    d[j + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+}
+
+// ---- light behaviour ------------------------------------------------------------------------
+// power(t) in [0, 1.x]; t in seconds since the button was switched on.
+
+function powerAt(b, t) {
+  if (!b.cfg.on) return 0;
+  const strike = t < 0.09 ? (Finish.hash(Math.floor(t * 120), 1, 9) > 0.45 ? 1 : 0.15) : 1;
+  const mode = b.cfg.mode;
+  let p = 1;
+  if (mode === 'blink') {
+    const ph = (t % 1.0);
+    // neon lights in a few ms and dies in tens of ms
+    p = ph < 0.5 ? 1 - Math.exp(-ph / 0.006) : Math.exp(-(ph - 0.5) / 0.03);
+  } else if (mode === 'pulse') {
+    p = 0.35 + 0.65 * (0.5 - 0.5 * Math.cos(t * Math.PI * 2 / 2.4));
+  } else if (mode === 'flicker') {
+    const slot = Math.floor(t * 30);
+    const r = Finish.hash(slot, 2, 11);
+    const burst = Finish.hash(Math.floor(t * 1.3), 3, 11) > 0.6;
+    p = burst ? (r > 0.35 ? 1 : 0.1 + 0.3 * r) : 0.96 + 0.04 * r;
+  }
+  return p * strike;
+}
+function animated(b, t) {
+  if (b.pressAnim) return true;
+  if (!b.cfg.on) return false;
+  return b.cfg.mode !== 'steady' || t < 0.12;
+}
+
+// ---- buttons ----------------------------------------------------------------------------------
+
+const state = [];
+let selected = 0;
+const queue = [];
+function ensure(b, which) {
+  if (b.cache[which]) return;
+  b.cache[which] = renderGeometry(b.cfg, which === 1);
+}
+function rebuild(b) {
+  makeMask(b.cfg);
+  b.cache = [null, null];
+  const t0 = performance.now();
+  ensure(b, 0);
+  b.renderMs = performance.now() - t0;
+  composite(b);
+  queue.push(b);
+  pump();
+}
+// Render the pressed geometry in idle time so that the first press is instant.
+let pumping = false;
+function pump() {
+  if (pumping) return;
+  pumping = true;
+  setTimeout(function step() {
+    const b = queue.shift();
+    if (!b) { pumping = false; return; }
+    if (!b.cache[1]) { b.cache[1] = renderGeometry(b.cfg, true); }
+    setTimeout(step, 10);
+  }, 60);
+}
+
+function build() {
+  const bank = $('bank');
+  BUTTONS.forEach((cfg, i) => {
+    const wrap = document.createElement('div'); wrap.className = 'btn';
+    const c = document.createElement('canvas'); c.width = S; c.height = S;
+    c.style.width = CSS + 'px'; c.style.height = CSS + 'px';
+    c.tabIndex = 0; c.setAttribute('role', 'switch');
+    const cap = document.createElement('span');
+    wrap.appendChild(c); wrap.appendChild(cap); bank.appendChild(wrap);
+    const b = { cfg: { ...cfg }, canvas: c, caption: cap, cache: [null, null], power: 0, pressMix: 0, pressAnim: null, onSince: performance.now() / 1000 };
+    state.push(b);
+    const press = (down) => {
+      if (!b.cache[1]) ensure(b, 1);
+      b.pressAnim = { from: b.pressMix, to: down ? 1 : 0, t0: performance.now() / 1000 };
+      if (b.cfg.action === 'momentary') setOn(b, down);
+      else if (!down) setOn(b, !b.cfg.on);
+      kick();
+    };
+    c.addEventListener('pointerdown', (e) => { c.setPointerCapture(e.pointerId); select(i); press(true); });
+    c.addEventListener('pointerup', () => press(false));
+    c.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); select(i); press(true); } });
+    c.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') press(false); });
+  });
+  // render progressively
+  let i = 0;
+  (function next() {
+    if (i >= state.length) { select(0); return; }
+    rebuild(state[i]); caption(state[i]); i++;
+    setTimeout(next, 0);
+  })();
+}
+function setOn(b, on) {
+  if (b.cfg.on === on) return;
+  b.cfg.on = on; b.onSince = performance.now() / 1000; caption(b);
+}
+function caption(b) {
+  b.caption.textContent = `${b.cfg.label} · ${b.cfg.on ? 'on' : 'off'}`;
+  b.canvas.setAttribute('aria-checked', b.cfg.on ? 'true' : 'false');
+  b.canvas.setAttribute('aria-label', b.cfg.label);
+}
+
+// One animation loop that runs only while some button changes: blinking,
+// pulsing, flickering, striking or travelling under a press. Idle buttons are
+// not redrawn.
+// If a scheduled frame never arrives (a hidden pane can drop it), the next
+// kick restarts the loop instead of trusting the flag.
+let running = false, lastFrameAt = 0;
+function kick() {
+  if (running && performance.now() - lastFrameAt < 250) return;
+  running = true;
+  lastFrameAt = performance.now();
+  requestAnimationFrame(frame);
+}
+function frame() {
+  lastFrameAt = performance.now();
+  const now = lastFrameAt / 1000;
+  let any = false;
+  for (const b of state) {
+    if (!b.cache[0]) continue;
+    const t = now - b.onSince;
+    if (b.pressAnim) {
+      const k = Math.min(1, (now - b.pressAnim.t0) / 0.07);
+      b.pressMix = b.pressAnim.from + (b.pressAnim.to - b.pressAnim.from) * (1 - (1 - k) * (1 - k));
+      if (k >= 1) b.pressAnim = null;
+    }
+    const p = powerAt(b, t);
+    const changed = p !== b.power || b.pressAnim !== null || b.lastMix !== b.pressMix;
+    b.power = p; b.lastMix = b.pressMix;
+    if (changed) composite(b);
+    if (animated(b, t)) any = true;
+  }
+  if (any) requestAnimationFrame(frame); else running = false;
+}
+
+// ---- inspector ----------------------------------------------------------------------------------
+
+function seg(id, options, key) {
+  const host = $(id);
+  for (const [k, v] of Object.entries(options)) {
+    const bt = document.createElement('button'); bt.textContent = typeof v === 'string' ? v : v.label; bt.dataset.k = k;
+    bt.onclick = () => {
+      const b = state[selected]; b.cfg[key] = k; syncInspector();
+      if (key === 'mode' || key === 'action') { b.onSince = performance.now() / 1000; kick(); return; }
+      rebuild(b); kick(); stats();
+    };
+    host.appendChild(bt);
+  }
+}
+function syncInspector() {
+  const b = state[selected];
+  for (const [id, key] of [['seg-neon', 'neon'], ['seg-acrylic', 'acrylic'], ['seg-tube', 'tube'], ['seg-ink', 'ink'], ['seg-mode', 'mode'], ['seg-action', 'action']]) {
+    for (const bt of $(id).children) bt.setAttribute('aria-pressed', bt.dataset.k === b.cfg[key] ? 'true' : 'false');
+  }
+  $('label').value = b.cfg.label;
+}
+function select(i) {
+  selected = i;
+  state.forEach((b, j) => b.canvas.classList.toggle('sel', j === i));
+  syncInspector(); stats();
+}
+function stats() {
+  const b = state[selected];
+  if (!b || !b.renderMs) return;
+  const t0 = performance.now(); composite(b); const ct = performance.now() - t0;
+  $('stats').innerHTML = `${S}×${S} device px per button\ngeometry render: <b>${b.renderMs.toFixed(0)} ms</b> (once per shape/press state)\n` +
+    `frame composite: <b>${ct.toFixed(2)} ms</b> (unlit + power × lit, tone map)\ncache: 2 states × 2 buffers × ${S}² × 3 floats = ${(4 * S * S * 12 / 1048576).toFixed(1)} MiB`;
+}
+$('label').addEventListener('change', () => { const b = state[selected]; b.cfg.label = $('label').value.toUpperCase().slice(0, 6); caption(b); rebuild(b); kick(); stats(); });
+seg('seg-neon', NEON, 'neon'); seg('seg-acrylic', ACRYLIC, 'acrylic'); seg('seg-tube', TUBES, 'tube');
+seg('seg-ink', INKS, 'ink'); seg('seg-mode', MODES, 'mode'); seg('seg-action', ACTIONS, 'action');
+build();
+setTimeout(kick, 100);
+</script>
+</body>
+</html>

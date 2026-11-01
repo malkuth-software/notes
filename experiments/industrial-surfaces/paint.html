@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Industrial Paint Study</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .chip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+  .chip { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .chip canvas { display: block; width: 100%; aspect-ratio: 2 / 1; cursor: pointer; }
+  .chip .meta { padding: 9px 11px 11px; }
+  .chip .meta b { font-size: 13px; }
+  .chip .meta .hex { float: right; font: 12px ui-monospace, Menlo, monospace; color: var(--muted); }
+  .chip .meta p { margin: 4px 0 8px; font-size: 12px; color: var(--muted); min-height: 34px; }
+  .tokens { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; }
+  .tokens div { height: 22px; border-radius: 3px; position: relative; }
+  .tokens div span { position: absolute; bottom: -15px; left: 0; right: 0; text-align: center; font-size: 9px; color: var(--muted); }
+  .tokens { margin-bottom: 14px; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .compare figure { margin: 0; }
+  .compare canvas { width: 100%; display: block; border-radius: 4px; }
+  .compare figcaption { font-size: 12px; color: var(--muted); margin-top: 5px; }
+  .toggles { display: flex; flex-wrap: wrap; gap: 6px; }
+  .toggles button { width: auto; padding: 4px 10px; font-size: 12px; }
+  .toggles button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  .chip .meta .cls { display: block; font-size: 11px; font-weight: normal; color: var(--muted); }
+  h3 { font-size: 13px; margin: 20px 0 6px; }
+  table.rules { border-collapse: collapse; font-size: 12px; width: 100%; }
+  table.rules td, table.rules th { padding: 4px 8px 4px 0; text-align: left; vertical-align: middle; }
+  table.rules th { color: var(--muted); font-weight: 600; }
+  table.rules .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; border: 1px solid #0006; vertical-align: -3px; margin-right: 5px; }
+  table.rules .with span.item { display: inline-block; margin: 0 12px 2px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Industrial paint study</h1>
+  <p>Soviet machine-tool paints, taken from the sources collected in <code>research/soviet_paints.md</code>. The main
+    colours are the ones ГОСТ 22133-86 gives measured values for; a second, separate set is a hue guide only.
+    A painted surface looks painted because its colour varies in small ways: coats from different batches, uneven film
+    thickness, sun fading, sags, grime in the seams and wear down to the primer. Each of those layers is worked out per
+    pixel, in Oklab, on top of a finish from the finishes page.</p>
+  <nav class="pages"><a href="index.html">Index</a><a href="finishes.html">Finishes</a><a href="blast_lab.html">Blast lab</a><a href="paint.html" aria-current="page">Paint study</a><a href="neon_buttons.html">Neon buttons</a></nav>
+</header>
+<main>
+  <div class="row">
+    <div class="panel controls">
+      <label>Paint<select id="paint"></select></label>
+      <label>Finish<select id="finish"></select></label>
+      <label>Primer<select id="primer">
+        <option value="#7b3a26">Red oxide</option>
+        <option value="#8c8a80">Zinc grey</option>
+        <option value="#5a6b4f">Zinc chromate green</option>
+      </select></label>
+      <label><span class="pair">Batch drift <span class="v" id="v-batch"></span></span><input id="batch" type="range" min="0" max="100" value="55"></label>
+      <label><span class="pair">Film thickness <span class="v" id="v-film"></span></span><input id="film" type="range" min="0" max="100" value="60"></label>
+      <label><span class="pair">Sun fade <span class="v" id="v-fade"></span></span><input id="fade" type="range" min="0" max="100" value="35"></label>
+      <label><span class="pair">Runs and sags <span class="v" id="v-runs"></span></span><input id="runs" type="range" min="0" max="100" value="30"></label>
+      <label><span class="pair">Grime <span class="v" id="v-grime"></span></span><input id="grime" type="range" min="0" max="100" value="45"></label>
+      <label><span class="pair">Edge wear <span class="v" id="v-wear"></span></span><input id="wear" type="range" min="0" max="100" value="35"></label>
+      <label><span class="pair">Light azimuth <span class="v" id="v-az"></span></span><input id="az" type="range" min="0" max="360" value="125"></label>
+      <label><span class="pair">Light elevation <span class="v" id="v-el"></span></span><input id="el" type="range" min="8" max="85" value="30"></label>
+      <label><span class="pair">Seed <span class="v" id="v-sd"></span></span><input id="sd" type="range" min="1" max="64" value="11"></label>
+    </div>
+    <div class="stage panel">
+      <canvas id="panel"></canvas>
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+
+  <h2>Flat fill or painted surface</h2>
+  <div class="panel">
+    <div class="toggles" id="layerToggles"></div>
+    <div class="compare" style="margin-top:10px">
+      <figure><canvas id="flat"></canvas><figcaption>Theme colour as a solid fill.</figcaption></figure>
+      <figure><canvas id="painted"></canvas><figcaption>The same colour with the layers turned on above.</figcaption></figure>
+    </div>
+  </div>
+
+  <h2>Palette</h2>
+  <p class="note">Each paint has six theme tokens derived from it in Oklab: <b>lit</b> (edge catching the light),
+    <b>shade</b>, <b>recess</b> (a warm, darker grime tone), <b>worn</b> (an edge rubbed to a paler, greyer tone),
+    <b>ink</b> (lettering on the panel) and <b>lamp</b> (an indicator colour chosen to stand out against it). Click a
+    chip to load that paint into the panel above.</p>
+  <p class="note">Soviet enamel standards name a colour by a pair of swatches in the «Картотека образцов (эталонов)
+    цвета лакокрасочных материалов». The pair bounds the tolerance of one colour; the number shown is the first of
+    the pair. Value classes: <b>a</b> means the numbers come from a standard; <b>b</b> means a secondary source,
+    here the laz-legend.ru RGB list of card numbers, whose method is not stated; <b>c</b> means only a name or number
+    is known, so there is no chip.</p>
+
+  <h3>Class a: ГОСТ 22133-86 colours</h3>
+  <p class="note">ГОСТ 22133-86 Appendix 2, Table 7 gives CIE x, y and reflectance for 12 samples, measured on the
+    «Радуга-2» instrument under illuminant C with the specular component included. The hex values convert those
+    numbers to sRGB (Bradford adaptation C to D65, IEC 61966-2-1). Because the specular component is included, a
+    glossy enamel looks slightly darker and more saturated than these values. White and black are set only by
+    control samples with a reflectance bound (white at least 75 %, black at most 7 %), so they have no chip.</p>
+  <div class="chip-grid" id="chips-a"></div>
+
+  <h3>Class a: which colours go together</h3>
+  <p class="note">ГОСТ 22133-86 Appendix 4, Table 11 recommends two-colour schemes. It prefers pairs of the same hue
+    at different lightness, and at most three colours on one machine, not counting signal colours.</p>
+  <div class="panel"><table class="rules" id="rules"></table></div>
+  <p class="note">Appendix 5 lists hammer-finish enamels МЛ-165 (ГОСТ 12034-77) to go with the main colours. They are
+    set by control samples only (class c), so they have names but no values:</p>
+  <div class="panel"><table class="rules" id="hammer"></table></div>
+  <p class="note">Signal colours (ГОСТ 12.4.026-76) are separate from the three-colour limit. That standard lists the
+    card numbers that qualify (red 6, 7, 9, 10, 11, 19, 37, 43, 62; yellow 216, 218, 220, 221, 254, 255, 285, 286,
+    287; blue 408, 409, 423, 424, 449, 450, 474, 485, 486; green 324, 325, 329, 385) and chromaticity regions, but no
+    per-sample values, so they are not shown as chips.</p>
+
+  <h3>Class b: hue guides from an unverified list</h3>
+  <p class="note">These are not references. The enamel standards (ПФ-115, ПФ-133, НЦ-132, МЛ-12, МЛ-152, ХВ-124) give
+    only names and card numbers for these colours. The hex values are the laz-legend.ru RGB list, method unstated.
+    Compared with ГОСТ 22133-86 on the swatches both cover, that list agrees within about 0.01 in x, y on light
+    colours, runs cooler and greener on greys and is far off on dark brown. Use these for hue and ordering only.</p>
+  <div class="chip-grid" id="chips-b"></div>
+</main>
+<script src="finish_kernel.js"></script>
+<script>
+'use strict';
+// Sources: research/soviet_paints.md. Each card number is the first swatch of
+// its Kartoteka tolerance pair. Class a hex values are the research file's
+// conversion of ГОСТ 22133-86 Table 7 (x, y, Y under illuminant C, Bradford C to
+// D65, IEC 61966-2-1 sRGB); they were recomputed here and agree for all 12.
+// Class b hex values are the laz-legend.ru RGB list (method unstated).
+const GOST_USE = 'Exterior of metal-cutting, forging, foundry and woodworking equipment (ГОСТ 22133-86 §9.1.2); НЦ-256 machine-tool enamel (ГОСТ 25515-82).';
+const LAZ = 'Hue guide only: laz-legend.ru RGB, method unstated.';
+const PAINTS = [
+  // Class a: ГОСТ 22133-86 main colours, in the order of its Table 3 (rows 1-10), then cream and orange.
+  { cls: 'a', card: 224, pair: '224, 229', ru: '«Слоновая кость»', en: 'ivory', hex: '#CCC7AC',
+    note: GOST_USE + ' Conflict: МЛ-12 gives ivory as 251, 252 (ГОСТ 9754-76).' },
+  { cls: 'a', card: 661, pair: '661, 662', ru: 'Светло-бежевый', en: 'light beige', hex: '#AE9B84', note: GOST_USE },
+  { cls: 'a', card: 619, pair: '619, 622', ru: 'Коричневый', en: 'brown', hex: '#68554C',
+    note: GOST_USE + ' The laz-legend RGB for 619 (#55452C) is much darker and yellower than this.' },
+  { cls: 'a', card: 319, pair: '319, 352', ru: 'Светлый серо-зелёный', en: 'light grey-green', hex: '#B4C4B2',
+    note: GOST_USE + ' A restorer states the 16К20 and 676 machines were factory-painted 352 or 365 (chipmaker.ru, 2016); in ГОСТ 22133-86, 352 is the second swatch of this pair.' },
+  { cls: 'a', card: 365, pair: '365, 396', ru: 'Серо-зелёный', en: 'grey-green', hex: '#80948A',
+    note: GOST_USE + ' A restorer states the 16К20 and 676 machines were factory-painted 352 or 365 (chipmaker.ru, 2016).' },
+  { cls: 'a', card: 397, pair: '397, 398', ru: 'Сине-зелёный', en: 'blue-green', hex: '#4D676D',
+    note: GOST_USE + ' Conflict: МЛ-12 and МЛ-152 use the same name for a different pair, 375, 376.' },
+  { cls: 'a', card: 858, pair: '858, 859', ru: '«Белая ночь»', en: '"white night"', hex: '#B9BBAE', note: GOST_USE },
+  { cls: 'a', card: 840, pair: '840, 841', ru: 'Серый', en: 'grey', hex: '#94928D', note: GOST_USE },
+  { cls: 'a', card: 810, pair: '810, 845', ru: 'Серо-серебристый', en: 'grey-silver', hex: '#8D9695', note: GOST_USE },
+  { cls: 'a', card: 832, pair: '832, 847', ru: 'Тёмно-серый', en: 'dark grey', hex: '#656F74',
+    note: GOST_USE + ' Conflict: ГОСТ 22133-86 Table 3 gives the pair as 822, 847 and Table 7 measures 832; ГОСТ 25515-82 gives 832, 847.' },
+  { cls: 'a', card: 270, pair: '270, 271', ru: 'Кремовый', en: 'cream', hex: '#E7CA96',
+    note: 'Internal surfaces the operator does not see: bed interiors, hydraulics and lubrication, cabinets and niches with electrical equipment (ГОСТ 22133-86 §9.1).' },
+  { cls: 'a', card: 121, pair: '121, 128', ru: 'Оранжевый', en: 'orange', hex: '#E0783A',
+    note: 'Exterior elements of robotic complexes (ГОСТ 22133-86). Enamels МЛ-12, ПФ-133.' },
+  // Class b: teal, turquoise, sea-wave, grey-blue and pistachio swatches without official colorimetry.
+  { cls: 'b', card: 491, pair: '491, 492', ru: 'Серо-голубой', en: 'grey-blue', hex: '#437180',
+    note: LAZ + ' ПФ-115, МЛ-12, МЛ-152. ОСТ 36.13-90 names серо-голубой for tropical switchboard and console panels, without a card number. Conflict: НЦ-132 uses this name for 463, 464.' },
+  { cls: 'b', card: 463, pair: '463, 464', ru: 'Серо-голубой (НЦ-132)', en: 'grey-blue', hex: '#5A94A0',
+    note: LAZ + ' НЦ-132 (ГОСТ 6631-74). Conflict: the other enamels use this name for 491, 492.' },
+  { cls: 'b', card: 495, pair: '495, 496', ru: 'Светлый серо-голубой', en: 'light grey-blue', hex: '#8CB5B7',
+    note: LAZ + ' МЛ-12, МЛ-152.' },
+  { cls: 'b', card: 564, pair: '564, 565', ru: 'Голубовато-серый 564', en: 'bluish grey', hex: '#69878F',
+    note: LAZ + ' МЛ-12, МЛ-152. МЛ-152 also has a голубовато-серый 520, 521 with no value found.' },
+  { cls: 'b', card: 498, pair: '498, 499', ru: 'Зелёно-голубой 498', en: 'green-blue', hex: '#186575',
+    note: LAZ + ' МЛ-12, МЛ-152.' },
+  { cls: 'b', card: 356, pair: '356, 357', ru: 'Тёмный сине-зелёный', en: 'dark blue-green', hex: '#294948',
+    note: LAZ + ' НЦ-132.' },
+  { cls: 'b', card: 330, pair: '330, 387', ru: '«Морская волна»', en: 'sea-wave', hex: '#318084',
+    note: LAZ + ' ПФ-133 (freight rolling stock and containers, ГОСТ 926-82), МЛ-12. The list gives the pair\'s second swatch, 387, as #17707E. Conflict: МЛ-152 sea-wave is 377, 378.' },
+  { cls: 'b', card: 320, pair: '320, 326', ru: 'Бирюзовый', en: 'turquoise', hex: '#1E9E8F',
+    note: LAZ + ' МЛ-12. Светло-бирюзовый (379, 380) has no value found.' },
+  { cls: 'b', card: 388, pair: '388, 389', ru: 'Фисташковый', en: 'pistachio', hex: '#6F9B77',
+    note: LAZ + ' ПФ-115, ПФ-133, НЦ-132. Conflict: МЛ-12 pistachio is 381, 382; НЦ-132 also has фисташковый 309.' },
+  { cls: 'b', card: 381, pair: '381, 382', ru: 'Фисташковый (МЛ-12)', en: 'pistachio', hex: '#7AA27D',
+    note: LAZ + ' МЛ-12. Conflict: other enamels use this name for 388, 389.' },
+  { cls: 'b', card: 309, pair: '309, 328', ru: 'Фисташковый 309', en: 'pistachio', hex: '#7DAC80',
+    note: LAZ + ' НЦ-132.' },
+  { cls: 'b', card: 340, pair: '340, 360', ru: 'Бледно-зелёный', en: 'pale green', hex: '#A0CFAD',
+    note: LAZ + ' НЦ-132 (340, 360); МЛ-12 pairs it as 340, 368.' },
+  { cls: 'b', card: 505, pair: '505, 513', ru: 'Светло-серый 505', en: 'light grey', hex: '#9DB4AE',
+    note: LAZ + ' НЦ-132, МЛ-12, МЛ-152. ОСТ 36.13-90 lists светло-серый for panels without saying which light grey.' },
+  { cls: 'b', card: 881, pair: '881, 882', ru: 'Серый (ХВ-124)', en: 'grey', hex: '#708479',
+    note: LAZ + ' ХВ-124 (ГОСТ 10144-89); ОСТ 36.13-90 lists ХВ-124 серый, semi-matte, for panels.' },
+];
+// ГОСТ 22133-86 Appendix 4, Table 11: GOST row number to card, and recommended partners by row.
+const GOST_ROW = { 1: 224, 2: 661, 3: 619, 4: 319, 5: 365, 6: 397, 7: 858, 8: 840, 9: 810, 10: 832 };
+const PAIRINGS = [[4, [5, 6]], [5, [1, 4, 6, 7]], [6, [4, 5, 7]], [7, [3, 5, 6, 8, 9, 10]]];
+// Appendix 5: МЛ-165 hammer enamels (control samples only) and the main colours they go with.
+const HAMMER = [['Серо-бежевый', 'grey-beige', [1, 2, 3]], ['Серо-зелёный', 'grey-green', [1, 4, 5, 7]],
+  ['Серо-голубой', 'grey-blue', [6, 7, 9]], ['Голубовато-серый', 'bluish grey', [6, 7, 9, 10]],
+  ['Серебристый', 'silver', [7, 8, 9, 10]]];
+const paintName = (p) => `${p.card} ${p.ru}`;
+const LAYERS = ['batch', 'film', 'fade', 'runs', 'grime', 'wear'];
+const FEATURES = [
+  { kind: 'seam_h', y: 0.62 }, { kind: 'seam_v', x: 0.7 },
+  { kind: 'bolt', x: 0.06, y: 0.1, r: 4.5 }, { kind: 'bolt', x: 0.94, y: 0.1, r: 4.5 },
+  { kind: 'bolt', x: 0.06, y: 0.9, r: 4.5 }, { kind: 'bolt', x: 0.94, y: 0.9, r: 4.5 },
+  { kind: 'bolt', x: 0.7, y: 0.62, r: 6 },
+];
+const $ = (id) => document.getElementById(id);
+const k = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+
+const paintSel = $('paint');
+for (const [cls, label] of [['a', 'Class a: ГОСТ 22133-86'], ['b', 'Class b: hue guide, unverified']]) {
+  const g = document.createElement('optgroup'); g.label = label;
+  PAINTS.forEach((p, i) => {
+    if (p.cls !== cls) return;
+    const o = document.createElement('option'); o.value = i; o.textContent = paintName(p); g.appendChild(o);
+  });
+  paintSel.appendChild(g);
+}
+paintSel.value = String(PAINTS.findIndex((p) => p.card === 397));
+const finishSel = $('finish');
+for (const [key, f] of Object.entries(Finish.FINISHES)) {
+  const o = document.createElement('option'); o.value = key; o.textContent = f.label; finishSel.appendChild(o);
+}
+finishSel.value = 'orange_peel';
+
+function layerValues() {
+  const v = {};
+  for (const l of LAYERS) v[l] = +$(l).value / 100;
+  return v;
+}
+function options(hex, layers, finish, features) {
+  return {
+    finish: finish || finishSel.value, k, seed: +$('sd').value, colour: hex,
+    light: Finish.lightOf(+$('az').value, +$('el').value), ambient: 0.32,
+    paint: { colour: hex, primer: $('primer').value, features: features ?? FEATURES, ...layers },
+  };
+}
+function render(canvas, cssW, cssH, opt) {
+  canvas.width = Math.round(cssW * k); canvas.height = Math.round(cssH * k);
+  const ctx = canvas.getContext('2d');
+  const img = ctx.createImageData(canvas.width, canvas.height);
+  const t0 = performance.now();
+  const n = Finish.paint(img, { x: 0, y: 0, w: canvas.width, h: canvas.height }, { x: 0, y: 0, w: canvas.width, h: canvas.height }, opt);
+  const dt = performance.now() - t0;
+  ctx.putImageData(img, 0, 0);
+  return { n, dt };
+}
+
+// Theme tokens derived in Oklab from one paint colour.
+function tokens(hex) {
+  const [L, a, b] = Finish.hexToOklab(hex);
+  const C = Math.hypot(a, b), h = Math.atan2(b, a);
+  const at = (l, c, hh) => Finish.oklabToHex(Math.min(0.98, Math.max(0.05, l)), c * Math.cos(hh), c * Math.sin(hh));
+  const warm = 1.0; // rad: grime pulls hue towards orange-brown
+  const towards = (from, to, t) => from + Math.atan2(Math.sin(to - from), Math.cos(to - from)) * t;
+  const inkHex = L > 0.62 ? at(0.27, Math.min(C, 0.03), h) : at(0.92, 0.02, 1.4);
+  // Lamp: opposite hue, high chroma, readable either side of the paint.
+  const lamp = at(0.68, 0.17, C < 0.03 ? 0.6 : h + Math.PI);
+  return [
+    ['lit', at(L + 0.07, C * 0.95, h)], ['shade', at(L - 0.09, C * 1.05, h)],
+    ['recess', at(L * 0.62, C * 0.7, towards(h, warm, 0.35))], ['worn', at(L + 0.12, C * 0.55, h)],
+    ['ink', inkHex], ['lamp', lamp],
+  ];
+}
+function lchText(hex) {
+  const [L, a, b] = Finish.hexToOklab(hex);
+  const C = Math.hypot(a, b); let h = Math.atan2(b, a) * 180 / Math.PI; if (h < 0) h += 360;
+  return `L ${L.toFixed(3)} · C ${C.toFixed(3)} · h ${h.toFixed(0)}°`;
+}
+
+function renderPanel() {
+  const p = PAINTS[+paintSel.value];
+  const c = $('panel');
+  const w = c.parentElement.clientWidth - 30;
+  const r = render(c, w, Math.round(w * 0.55), options(p.hex, layerValues()));
+  $('stats').innerHTML = `<b>${paintName(p)}</b> (${p.en}, pair ${p.pair}, class ${p.cls}) ${p.hex} — ${lchText(p.hex)}\n${p.note}\n` +
+    `${c.width}×${c.height} px in <b>${r.dt.toFixed(0)} ms</b> (${(r.n / r.dt / 1000).toFixed(1)} Mpx/s, JavaScript, ` +
+    `finish + six paint layers + seven features). Texture memory: 0 B.`;
+}
+
+const enabled = new Set(['batch', 'film', 'fade', 'grime', 'wear']);
+function buildToggles() {
+  const t = $('layerToggles');
+  for (const l of LAYERS) {
+    const b = document.createElement('button'); b.textContent = l;
+    b.setAttribute('aria-pressed', enabled.has(l) ? 'true' : 'false');
+    b.onclick = () => { if (enabled.has(l)) enabled.delete(l); else enabled.add(l); b.setAttribute('aria-pressed', enabled.has(l) ? 'true' : 'false'); renderCompare(); };
+    t.appendChild(b);
+  }
+}
+function renderCompare() {
+  const p = PAINTS[+paintSel.value];
+  const w = $('flat').parentElement.clientWidth;
+  const zero = {}; for (const l of LAYERS) zero[l] = 0;
+  render($('flat'), w, Math.round(w * 0.5), { ...options(p.hex, zero, 'flat_baseline'), paint: null });
+  const v = layerValues(); const on = {};
+  for (const l of LAYERS) on[l] = enabled.has(l) ? Math.max(v[l], 0.35) : 0;
+  render($('painted'), w, Math.round(w * 0.5), options(p.hex, on));
+}
+
+function chipLabel(p) {
+  return `${paintName(p)}<span class="cls">${p.en} · pair ${p.pair} · class ${p.cls}</span>`;
+}
+function renderChips() {
+  const hosts = { a: $('chips-a'), b: $('chips-b') };
+  if (!hosts.a.children.length) {
+    PAINTS.forEach((p, i) => {
+      const d = document.createElement('div'); d.className = 'chip'; d.dataset.index = i;
+      const toks = tokens(p.hex).map(([n, hx]) => `<div style="background:${hx}" title="${n} ${hx}"><span>${n}</span></div>`).join('');
+      d.innerHTML = `<canvas title="Load into panel"></canvas><div class="meta"><span class="hex">${p.hex}</span><b>${chipLabel(p)}</b>` +
+        `<p>${p.note}<br><code>${lchText(p.hex)}</code></p><div class="tokens">${toks}</div></div>`;
+      d.querySelector('canvas').onclick = () => { paintSel.value = i; schedule(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+      hosts[p.cls].appendChild(d);
+    });
+  }
+  const chipLayers = { batch: 0.5, film: 0.6, fade: 0.25, runs: 0.15, grime: 0.4, wear: 0.3 };
+  const feats = [{ kind: 'bolt', x: 0.08, y: 0.18, r: 3.5 }, { kind: 'bolt', x: 0.92, y: 0.18, r: 3.5 }, { kind: 'seam_h', y: 0.72 }];
+  for (const d of [...hosts.a.children, ...hosts.b.children]) {
+    const i = +d.dataset.index;
+    const c = d.querySelector('canvas');
+    const w = c.parentElement.clientWidth;
+    render(c, w, Math.round(w / 2), { ...options(PAINTS[i].hex, chipLayers, 'dusty_matte', feats), seed: 3 + i });
+  }
+}
+
+function rowItem(row) {
+  const p = PAINTS.find((q) => q.card === GOST_ROW[row]);
+  return `<span class="item"><span class="sw" style="background:${p.hex}"></span>${row}. ${paintName(p)}</span>`;
+}
+function renderRules() {
+  $('rules').innerHTML = '<tr><th>Colour (Table 3 row)</th><th>Recommended with</th></tr>' +
+    PAIRINGS.map(([row, with_]) => `<tr><td>${rowItem(row)}</td><td class="with">${with_.map(rowItem).join('')}</td></tr>`).join('');
+  $('hammer').innerHTML = '<tr><th>МЛ-165 hammer enamel</th><th>Goes with main colours</th></tr>' +
+    HAMMER.map(([ru, en, with_]) => `<tr><td>${ru} (${en})</td><td class="with">${with_.map(rowItem).join('')}</td></tr>`).join('');
+}
+
+function labels() {
+  for (const id of [...LAYERS, 'az', 'el', 'sd']) {
+    const v = $(id).value;
+    $('v-' + id).textContent = id === 'az' || id === 'el' ? v + '°' : id === 'sd' ? v : v + '%';
+  }
+}
+let pending = 0;
+function schedule() {
+  if (pending) return;
+  pending = requestAnimationFrame(() => { pending = 0; renderPanel(); renderCompare(); });
+}
+for (const id of [...LAYERS, 'az', 'el', 'sd']) $(id).addEventListener('input', () => { labels(); schedule(); });
+for (const s of [paintSel, finishSel, $('primer')]) s.addEventListener('change', schedule);
+window.addEventListener('resize', schedule);
+labels(); buildToggles(); renderRules(); schedule();
+setTimeout(renderChips, 50);
+</script>
+</body>
+</html>
