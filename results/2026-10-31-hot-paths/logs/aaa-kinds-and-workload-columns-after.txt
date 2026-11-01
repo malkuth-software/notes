@@ -1,0 +1,23 @@
+m4ws: waiting for w2 before syncing
+== positive
+pipeline=0 aa rect fill     rows=114 columns=174 region=244 max_delta=1 first_case=3
+pipeline=0 line hairline    rows=4613 columns=4070 region=2030 max_delta=7 first_case=0
+pipeline=0 line w1          rows=4613 columns=4070 region=2030 max_delta=7 first_case=0
+pipeline=0 scaled image     rows=190 columns=214 region=292 max_delta=1 first_case=3
+pipeline=0 gradient rect    rows=158 columns=178 region=247 max_delta=1 first_case=3
+pipeline=0 rrect stroke w1  rows=76 columns=49 region=24 max_delta=2 first_case=3
+pipeline=1 aa rect fill     rows=156 columns=199 region=279 max_delta=1 first_case=3
+pipeline=1 line hairline    rows=4553 columns=3981 region=2070 max_delta=7 first_case=0
+pipeline=1 line w1          rows=4553 columns=3981 region=2070 max_delta=7 first_case=0
+pipeline=1 scaled image     rows=190 columns=214 region=292 max_delta=1 first_case=3
+pipeline=1 gradient rect    rows=158 columns=178 region=247 max_delta=1 first_case=3
+pipeline=1 rrect stroke w1  rows=75 columns=52 region=25 max_delta=2 first_case=12
+8
+COLUMNS after damage_1_1                               diff_px=1800 max_delta=2 columns=[0, 1, 2, 3, 4, 5, 6, 
+COLUMNS after damage_1_10                              diff_px=1800 max_delta=2 columns=[0, 1, 2, 3, 4, 5, 6, 
+COLUMNS after damage_1_100                             diff_px=1800 max_delta=2 columns=[0, 1, 2, 3, 4, 5, 6, 
+COLUMNS after pages_1_dock-and-anchor                  diff_px=1827 max_delta=3 columns=[300, 301, 302, 303, 3
+COLUMNS after pages_1_instrument                       diff_px=3364 max_delta=2 columns=[276, 277, 278, 279, 2
+COLUMNS after pages_1_ranges-and-progress              diff_px=3406 max_delta=3 columns=[447, 448, 449, 450, 4
+COLUMNS after pages_1_retained-layout-panels           diff_px=3995 max_delta=4 columns=[306, 307, 308, 309, 3
+COLUMNS after pages_1_tree-and-object-views            diff_px=690 max_delta=3 columns=[304, 305, 306, 307, 30

@@ -149,3 +149,23 @@ gui_forms `claude/aaa-clip-invariant` cac5a320 (WIP, not for folding). Logs:
   Open defects: stx_skia aa_scan_converter column-band random cases differ (large deltas,
   coverage blitter), and an ASan out-of-bounds read in blit_aaa_trapezoid_row from
   canvas_device's drawPoints.
+
+## AAA column invariance: finished (2026-10-31 late)
+
+Branch `claude/aaa-clip-invariant` 480dd3af (on main 6856347b). Three defects fixed after the
+partial state above:
+1. The ASan out-of-bounds read: the walk reached 32767 px, past the ±8191 that
+   SkScan::AntiFillPath guarantees, and a steep edge's SkFixed x wrapped (tiled canvas
+   corpus, ir 8190-8217 under a 0-8191 clip). The walk is now limited to ±8191.
+2. The random-path column-band failures (all 93 were rectangles): `blitFatAntiRect` reused
+   the top row's runs for the bottom row after a clip blitter had broken them in place.
+3. Anti-aliased clips cut by column bands (17337 px, up to 240 levels, in a new probe kind;
+   the workload's large deltas): the cut `blitAntiRect` was sent as blitV + blitRect, which
+   the SkAAClip builder cannot take; it is now one blitAntiRect with cut edge alphas 0.
+
+Workload column-band repaints: 61/69 frames identical (origin/main's stx_skia: 21/69). The 8
+left are one-row strips of 1-4 levels from hairlines and 1-pixel lines (SkScan_Antihair),
+identical on origin/main. Per-primitive probe (`logs/aaa-kinds-and-workload-columns-after.txt`):
+every AAA kind clean in rows, columns and regions; AA rect fill, image and gradient rects (1
+level), rrect stroke w1 (2) and hairlines (7) keep Skia's seams. Verification:
+`logs/aaa-columns-verification.txt`.
