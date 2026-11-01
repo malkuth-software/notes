@@ -36,3 +36,29 @@ Accepted: data errors, validation, dirty state, the new row, deleting rows,
 - **B1-3 (a):** the row header's editing icons (the pencil on the current
   row while it is dirty, the star on the new row) are drawn through glyph
   roles; their look goes to T4.
+
+### Batch 1 as built (2026-11-01, `claude/w-dgv-breadth`)
+
+- `data_error` (parsing, commit) with `cancel` defaulting to true; clearing
+  it discards the edit. Check box and choice stores raise it too.
+- `cell_validated`, `row_validating` (cancellable), `row_validated`;
+  `cell_enter`, `cell_leave`, `row_enter`, `row_leave`, in the order the
+  header states; `set_current_cell` from their handlers throws
+  `std::logic_error`.
+- `edit_mode` (five modes), `commit_edit`, `refresh_edit`,
+  `is_current_cell_dirty`, `is_current_row_dirty`,
+  `notify_current_cell_dirty`, `current_cell_dirty_state_changed`.
+- `allow_user_to_add_rows` and `allow_user_to_delete_rows` (both off by
+  default, a worker choice: Windows Forms defaults them on, which would
+  change every existing grid), `new_row_index`, `default_values_needed`,
+  `user_added_row`, `user_deleting_row`, `user_deleted_row`,
+  `cancel_row_edit` with `row_edit_cancelled` (the catalogue's
+  `CancelRowEdit` maps to these).
+- Error text by row ID for every source, a bound row falling back to its
+  record's errors; `show_cell_errors`, `show_row_errors`,
+  `show_editing_icon`; parts `cell_error` and `row_error`, rows gain the
+  `invalid` state; marks `pencil`, `asterisk`, `error` (provisional
+  drawings, look to T4).
+- Left for later: the new row in virtual mode (a provider call),
+  `CellErrorTextNeeded`/`RowErrorTextNeeded`, validation when focus leaves
+  the grid, error tooltips.
