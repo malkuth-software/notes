@@ -231,6 +231,13 @@ From the second review (2026-10-19, N1 to N10):
     is left, right, bottom, top (N8).
 54. **A flyout's resized extent is saved with the layout (N9),** in D7.
 55. **The Alt+F7 navigator lists auto-hidden panels (N10).**
+56. **A close request is one transaction (owner, 2026-10-31, D6):** a
+    cancel at any prompt, or a "no" to a deferred prompt, closes nothing,
+    including documents already allowed; the documents close together
+    after the last prompt allows them.
+57. **Close All Documents and Close Other Documents are in a document's
+    position menu (owner, 2026-10-31, D6),** as two `DockPositionCommand`
+    values that ask as the workspace's requests do.
 26. **Invalid drops float or snap back (D4-1);** threshold 4 units
     (D5-1); Ctrl suppresses docking (D6-1); caption drags move the stack,
     tab drags one panel (D7-1).
