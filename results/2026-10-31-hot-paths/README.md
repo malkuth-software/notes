@@ -184,3 +184,26 @@ level), rrect stroke w1 (2) and hairlines (7) keep Skia's seams. Verification:
 - Measured (headless sim, M4, 4 s steady): ranges page 21.7% -> 5.1% CPU across ProgressBar
   migration + travel pacing; animation page damage 331,080 -> 6,715 px/frame (CPU ~19%,
   EasingPreview at display rate); vsync lab occluded 11.6% -> 0.09%.
+
+### 2026-11-01: active surfaces removed (ADR-016, owner option 2)
+
+Branch `claude/hot-paths-remove-active-surface` (gui_forms, local), on inspector-poll
+19edd237: 875f347f removal, cbc35505 display digests, 0d2e5566 paint-gated caret blink and
+benchmark fix. Gone: `Window::activate_surface`, `Control::on_frame`, the active_surface
+request kind, `maximum_active_surfaces`, `minimum_active_surface_interval`,
+`FramePollResult::active_surface_ticks`, metrics `active_surface_count`,
+`maximum_active_surface_count`, `active_surface_ticks`. A `schedule_paint` deadline only
+repaints. TextBox and RichTextBox blink on a 530 ms UI timer, paint-gated (a blink that finds
+the box unpainted since the last stops; the next paint restarts it).
+
+Display digests moved (text only, traces diffed): instrument (page note "30 fps active-surface
+lease" -> "paint-gated 30 fps animation timer"), states-and-diagnostics (summary drops
+"active-surface"; MetricsView drops "N active surfaces").
+
+Benchmarks on the M4 (macOS arm64), base 19edd237 -> branch, 3 runs of the present workload:
+present_ns 867-896k -> 872-908k, screen_copy_ns 421-443k -> 429-446k (comparable);
+wall_ns 17.0-17.5 ms -> 16.67 ms (the active surface re-armed at now + interval and drifted;
+the AnimationTimer keeps phase). Renderer benchmark 30 Hz band: render p50 skia 27.2 -> 29.0 us,
+coregraphics 25.5 -> 25.3 us, 0 budget misses both. Its `scheduler_wakes` reads 300 -> 0:
+`Metrics::record_frame_poll` counts a wake only for deadlines and motion frames, not UI timer
+ticks (pre-existing definition; the JSON now reports `ui_timer_ticks` 300).
