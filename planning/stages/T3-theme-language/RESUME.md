@@ -13,7 +13,7 @@ up the work from here without the earlier conversation.
 | `ThemeCompileResult` as a result type | Committed locally; the coordinator has it for checkpoint 5 | `claude/t3-p12-custom` at aba9d2a5 (the coordinator's clone holds it as e7f17abb) |
 | P12a | Partial, not verified | `claude/t3-p12-custom` at 7b54b5b9, one commit above aba9d2a5 |
 | P12b | Not started | |
-| P11 | Not started | |
+| P11 | Built, claude/t3-p11 cf701bc9 | results/2026-11-01-t3-theme-language-gate; open: work counter, raster hashes |
 | User themes (`USER_THEMES.md`) | Designed, with the owner's decisions; no code | this directory |
 
 The gui_forms clone is `~/Developer/gui_forms_workers/w1/gui_forms`.
