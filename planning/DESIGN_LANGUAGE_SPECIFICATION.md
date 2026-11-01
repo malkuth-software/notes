@@ -892,7 +892,8 @@ actions and node fields controls publish to accessibility. Their machine
 forms are `admitted_custom_states` and `AccentIndex`
 (`gui_forms/anatomy/types`), `PartMark`, `DockShapeRegion` and the
 `PartPaint` fields (`gui_forms/theme/part_painting`; among them the content
-colour, `PartPaint::content_color` and `PartGeometry::content_color`),
+colour, `PartPaint::content_color` and `PartGeometry::content_color`, and
+the authored colours, `authored_background` and `authored_foreground`),
 `TextOrientation`
 (`gui_forms/types/paint_types`), and `SemanticRole`, `SemanticAction` and
 `SemanticNode` (`gui_forms/semantics/types`); the schema export lists them
@@ -967,10 +968,22 @@ through its well, edge and label (owner, T2 interview E2-1, §12.12; this
 replaces the 45 % opacity first written here). A part publishes it in its
 geometry record and a painter receives it with the part.
 
+**Authored colours** (owner decision T4-1, §12.14). A value, not a state:
+the background and foreground colours an application sets on one part, such
+as a DataGridView cell style's `BackColor` and `ForeColor`. They stand where
+an inline style's colours would stand for that one part: over the theme's
+ordinary declarations, under its `!important` ones, and never under forced
+high contrast, where the role's colours stand (§5.8: the host palette wins).
+Surface roles read the background; text, glyph and rule roles read the
+foreground. A disabled part's text keeps the theme's disabled colour, so
+disabled stays greyed. Unlike the content colour, they are a look the
+application chose, not data. A part publishes them in its geometry record.
+
 | Value | Carried by | Honoured by | Used by |
 |---|---|---|---|
 | accent index | any part | surface roles (tint over the material) | a ribbon's contextual tab sets (RB-22) |
 | content colour | any part | `fill` only (the colour in place of the material) | a colour picker's bar and palette swatches (W-7) |
+| authored colours | any part | surface roles (background), text, glyph and rule roles (foreground); never in forced high contrast | an application's styled cells and controls, such as DataGridView cell styles (T4-1) |
 
 **Semantic roles and node fields.** Besides the roles controls published
 before 2026-10-14, `split_button` (a button whose primary press acts, with a
@@ -1659,6 +1672,22 @@ is in the stage A brief. Atoms admitted (§12.7):
 
 Text selection and layout reach the hosts through on-demand window queries,
 not the snapshot.
+
+### 12.14 Owner decisions, stage T4, 2026-11-01
+
+- **T4-1: authored colours join the vocabulary** (option 1 of
+  `stages/T4-default-theme/STYLE_MAPPING.md`): `PartPaint` and
+  `PartGeometry` carry an optional authored background and foreground,
+  applied at the inline cascade level and dropped under forced high contrast
+  (§8.5). The schema export lists them under `vocabulary.values` as
+  `authored_color`.
+- **T4-2:** the default theme's id is `gui-forms`; `windows-professional`
+  stays as a Windows-familiar theme.
+- **T4-3:** the default's sheets are compiled at first use, gated by a
+  measured startup bound.
+- **T4-4:** EasingPreview, TypographySpecimen, MetricsView and PictureBox,
+  with DrawingSurface and RasterCanvas, draw application content; only their
+  frames and backgrounds go through the theme.
 
 ## Appendix A. Anti-models
 

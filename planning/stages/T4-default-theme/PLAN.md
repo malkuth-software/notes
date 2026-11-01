@@ -1,7 +1,7 @@
 # Stage T4 plan: the default theme and Windows-familiar themes
 
-Date: 2026-11-01. Status: proposed (T4 worker); phase 1 built, phases 2 to
-8 wait for the coordinator. Authority: the stage brief (`README.md`),
+Date: 2026-11-01. Status: accepted (owner, 2026-11-01: T4-1 to T4-4 as
+recommended); phase 1 built, phases 2 and 3 in progress. Authority: the stage brief (`README.md`),
 `RENDERING_REFERENCE.md` and `planning/DESIGN_LANGUAGE_SPECIFICATION.md`.
 Base: T3 complete (checkpoint 2026-11-01-4: P11 and user themes).
 
@@ -44,7 +44,7 @@ can start after phase 2 and run beside phase 3.
 
 ## Decisions
 
-Owner decisions T4 needs (numbered for the coordinator):
+Owner decisions (all accepted as recommended, 2026-11-01; design language §12.14):
 
 - **T4-1** How application colours reach a part (DataGridView cell styles):
   `STYLE_MAPPING.md`, options 1 to 4; recommended option 1, authored colours
@@ -56,20 +56,20 @@ Owner decisions T4 needs (numbered for the coordinator):
   (recommended, with phase 3's measured startup bound) or generated into C++
   data at build time.
 - **T4-4** Which controls draw content rather than chrome and so are exempt
-  from the census: phase 1 exempts only `DrawingSurface` and
-  `RasterCanvas` (they draw the application's pixels); `EasingPreview`,
-  `TypographySpecimen` and `MetricsView` are counted until decided.
+  from the census. Accepted: `DrawingSurface`, `RasterCanvas`,
+  `EasingPreview`, `TypographySpecimen`, `MetricsView` and `PictureBox`;
+  only their frames and backgrounds go through the theme.
 
 Dependencies outside T4 (for the coordinator):
 
-- The skeudoindustrial plan's open phase order. T4 does not depend on it:
-  phases 1 to 6 need none of its pieces. Both extend the engine's material
-  layer, so running its phase 1 (finishes) beside T4 phase 3 costs merge
-  work; if finishes land first, phase 3 may use one for the work pane's
-  surround.
+- The skeudoindustrial plan runs after T4 (owner, 2026-11-01) and does not
+  gate 0.5.
 - Host colour-scheme reporting (P8a, opt-in per the owner's 2026-10-28
   direction) is host work, needed before phase 5's dark variant can follow
   the host.
-- SK1b (one painter) is paused: until it lands, specimen sheets from
-  different hosts differ in their non-engine drawing, so phase 2 compares
-  runs on one host only.
+- Skia is on for every host (stx_skia in-tree; Windows since #427), so
+  phase 2's specimen sheets are compared across hosts where CI captures
+  them.
+- `windows-professional`'s accent-button plates failed its own text
+  contrast (1.0 to 1.3:1); fixed on a separate branch, since the theme
+  ships as a Windows-familiar theme.

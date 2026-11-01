@@ -1,8 +1,9 @@
 # Style mapping: DataGridView cell styles and control colours onto the theme
 
-Date: 2026-11-01. Status: proposed by T4 phase 1 for stage W's DataGridView
-batch 2 (styles and formatting). Everything but the colours is usable now;
-the colours wait on decision T4-1 below.
+Date: 2026-11-01. Status: accepted (owner, 2026-11-01: T4-1 option 1) for
+stage W's DataGridView batch 2 (styles and formatting). Everything but the
+colours is usable now; the colours are usable once `PartPaint`'s authored
+colours land (T4 branch, reported through the coordinator).
 
 ## Principle
 
@@ -44,7 +45,7 @@ like the rest of the theme, in light, dark and high contrast alike.
 | `CellBorderStyle`, `ColumnHeadersBorderStyle`, `RowHeadersBorderStyle`, `AdvancedCellBorderStyle` | Which `divider` parts exist is geometry: horizontal, vertical, both or none. `Raised` and `Sunken` (and their horizontal and vertical forms) publish the same dividers as `Single`; their look is the theme's divider. Raised and sunken cells are "too windowsy" for the house themes (stage brief, lessons); the Classic theme draws its dividers as bevel pairs. A recorded difference from Windows Forms. |
 | `EnableHeadersVisualStyles` | `true` (the default): the header styles' colours are not applied and the theme draws the headers, as Windows Forms ignores them under visual styles. Their font, alignment, padding and wrap mode still apply. `false`: the header colours apply as below. W checks the Windows Forms reference for which header colours visual styles ignore and follows it. |
 
-## The colours (decision T4-1)
+## The colours (decision T4-1: option 1, accepted)
 
 | Windows Forms | Part (role) | Colour read |
 |---|---|---|
