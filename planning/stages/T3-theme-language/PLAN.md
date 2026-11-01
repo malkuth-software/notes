@@ -406,6 +406,19 @@ only for text and colour roles).
   from it: `maximum_variable_combinations` 128 copies per rule (5.3 times
   24), `maximum_variable_steps` 4,096 candidate combinations per rule (32
   per admitted copy), `maximum_scoped_custom_properties` 64 (8 times 8).
+- **Owner decision (2026-10-31): inline definitions (P12b).** An inline
+  style that defines custom properties is compiled against the active
+  theme's source, which the program keeps. It yields copies of the theme's
+  rules that read those names, holding the inline values, each placed at
+  its theme rule's position in the cascade. Each theme rule records the
+  names it reads, and the engine skips a theme rule wherever an inline
+  definition wins for the part, so the copy takes its place. A theme
+  switch recompiles every such inline style and refuses the new theme if
+  one fails (the reverse case above). A control with no active theme yet
+  holds its inline style uncompiled and compiles it when it joins a
+  window with a theme, reporting failures then; this was the
+  implementer's choice, kept isolated so that refusing instead is a small
+  change, and the owner may still reverse it.
 - **What keeps the copies down** (built in P12a): a copy decides only the
   scoped names it reads given the candidates chosen above them (a decision
   tree, so a palette surface does not multiply by the accent the primary
