@@ -422,13 +422,17 @@ only for text and colour roles).
   theme where they apply, and a control with no inline style takes the
   default theme. A control outside any window compiles against the
   default theme; when it joins a window whose theme differs, its style is
-  compiled again against that theme (implementer's choice: a failure there
-  keeps the style as it was, unlogged, and its copies of the theme's rules
-  stop applying, being compiled for another theme's serial).
+  compiled again against that theme (decided 2026-10-31: a failure there
+  keeps the style as it was and writes one log line naming the control and
+  the first error; its copies of the theme's rules stop applying, being
+  compiled for another theme's serial).
 - **P12b as built (2026-10-31).** A theme compiled from a package keeps its
   source (`ThemeSourceRecord`: the closure's text, published values,
-  images, control types); a built-in theme keeps none, so a style compiled
-  against the default theme reads only its own definitions. The style is
+  images, control types, defined names, sheets); a theme made from a
+  definition alone, the built-in default among them, keeps the empty
+  sheet's (decided 2026-10-31, so that inline prevails over the default
+  theme the same way: its rules read no custom properties today, and T4's
+  default sheets will go there). The style is
   compiled alone, every definition it makes scoped and lowered whether it
   reads it or not; where the theme kept its source, the theme's text is
   compiled again with the style written after it as `*` sheet rules, and
@@ -439,8 +443,15 @@ only for text and colour roles).
   override and its removal compile each affected style first and are
   refused (`invalid_argument`, nothing changed) where one fails. Limits:
   a palette value or `@keyframes` reading a name the style defines where
-  the theme defines it more than once is E416; the style's own `var()` of
-  a name only the theme defines is not resolved. Gate:
+  the theme defines it more than once is E416. The style's own `var()` of
+  a name the theme defines reads the theme's definition (decided
+  2026-10-31): the style's compilation alone defers it, and the style's
+  rules are then lowered with the theme's text at the inline levels,
+  holding the theme's definitions of the scoped names they read below its
+  own; a theme no longer defining the name is refused (E409). Diagnostics
+  of the recompiled theme are placed in their own sheets, the style's in
+  the style, once. Theme refusal stays `invalid_argument` from the void
+  setters; a result-returning API comes with the C ABI. Gate:
   `gui_forms_theme_inline_custom_property_tests`.
 - **What keeps the copies down** (built in P12a): a copy decides only the
   scoped names it reads given the candidates chosen above them (a decision
