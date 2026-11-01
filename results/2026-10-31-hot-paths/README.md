@@ -84,3 +84,47 @@ Columns (a):
 2. GUI.Forms widens every damage rectangle to full rows. Simple, but it multiplies the painted
    area of small damage (a caret, a hovered button), against the CPU work in item 2.
 3. Record it as a known limitation.
+
+## Idle and animating CPU per Gallery page and lab (task 2, first pass)
+
+Measured on the M4 with a headless real-time simulation (`.hp/cpu_sim.cpp`
+on the gui_forms side, scratch): the window is polled at its own
+`next_wake`, damage is taken, aligned outward and painted into a SkiaRaster
+at scale 2, and presentation is acknowledged. This covers the core and the
+raster; it leaves out CoreGraphics presentation. The real AppKit host could
+not be measured: the M4's session is locked, so every window is occluded
+and paints nothing (the vsync lab's producer still showed 12.3% CPU and 56
+wake-ups a second there). Each stage settles 1.5 s and is measured 4 s; CPU
+is process user+system time over wall time. Logs: `logs/cpu-sim-before.txt`
+(origin/main 2fe87fd9), `logs/cpu-sim-inspector-after.txt` (with the fix).
+
+Steady state before any fix, every stage above zero (all other pages and
+labs measured 0.00% with no wake-ups; a page switch costs one full paint):
+
+| Stage | CPU % | Paints/s | Damage (window fraction) | Cause |
+| --- | --- | --- | --- | --- |
+| Gallery: ranges-and-progress | 22.0 | 48.5 | 0.062 | Four animated ProgressBars as 16 ms active surfaces (194 ticks/s); `fill_linear_gradient_spread` dominates the samples (lowp gradient stages, about 14-25 ns per pixel) |
+| Gallery: animation-laboratory | 20.6 | 49.0 | 0.315 | EasingPreview damages its whole face each frame; half the samples are HarfBuzz shaping and FreeType rasterizing of its static text, re-done because a rebuilt chunk drops its text caches |
+| Layered material lab | 15.7 | 3.7 | 1.000 | Inspector view and window-spanning overlay as 250 ms active surfaces; the scheduler repaints an active surface every tick |
+| Visual inspector lab | 14.1 | 4.0 | 1.000 | Same |
+| VSync lab | 13.3 | 4.2 | 0.045 | 240 Hz producer thread renders whether or not the window is visible (paint itself 1.3%) |
+| Seam proximity lab | 6.4 | 4.0 | 1.000 | Same as the inspector labs |
+| Gallery: instrument | 3.6 | 24.7 | 0.072 | 30 Hz active surface reaching 25 Hz; sweep advances per paint, not per time |
+| Gallery: timing-and-tooltips | 1.3 | 4.2 | 0.031 | 4 Hz UI timer by design, only while the page is shown |
+
+Fixed (clear defect, gui_forms `claude/hot-paths-inspector-quiet` e1676a27):
+the labs poll `refresh_if_changed()` from one UI timer; both inspector
+controls repaint only when what they would draw changed, and skip occluded
+windows. The view's pending-damage count is drawn but not compared, since it
+always counts the view's own repaint (comparing it made every poll repaint).
+After: layered material 0.11%, visual inspector 0.06%, seam proximity 0.10%,
+0 paints a second, 4.2 polls a second.
+
+Proposed fixes, ranked by measured cost, sent to the coordinator as options:
+ProgressBar animation (damage only the moving fill, hold the stripe tile,
+and the gradient kernel under section 8); a text-run cache that survives
+chunk rebuilds (memory budget is an owner decision); EasingPreview damaging
+only its marker tracks; pausing the vsync producer while not presented
+(owner decision: the lab exists to stress the producer); a time-based
+instrument sweep; and, as a framework option, an active surface whose
+on_frame reports whether it changed.
