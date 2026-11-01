@@ -408,7 +408,28 @@ unusable without a way back that needs no reading.
    help and `README.txt` in `themes/` are the way back (coordinator's
    reading, consistent with the locale decision).
 
-## 10. Where it lands
+## 10. As built (U1 to U4, 2026-11-01)
+
+- U1: the user levels, ThemeRuleSet, UserThemePolicy, the opacity floor.
+- U2: the `@theme` header (E207 misplaced) and `compile_user_theme`.
+- U3: the icon registry (`ApplicationResources::register_icon`, `icon`,
+  `program_icon`), overrides checked and held by the theme, W501 to W503.
+- U4: `include/gui_forms/application/user_themes/user_themes.hpp`:
+  `per_user_theme_folder`, `scan_user_themes`, `read_theme_command_line`,
+  `select_user_theme`, `export_user_themes` (and `export_theme_packages`
+  in the compiler, `ApplicationResources::compile_user_theme`). Every file
+  and environment use is behind `src/runtime/user_themes/theme_files.hpp`
+  (UTF-8 paths, no std::filesystem in the API) for the move onto
+  stx_auxlib (coordinator, 2026-11-01).
+- Limits as built: a package resource whose name is not `*.png` cannot
+  be a user theme's file; export leaves it out and reports it. On
+  Windows, write-never-overwrite is a check then a create until
+  stx_auxlib gives an exclusive open.
+- Not built, waiting for the settings store and page's owner: the
+  settings entries (the list, "Built-in" first, the saved choice,
+  "Export themes..."); the API they need is in place.
+
+## 11. Where it lands
 
 - **After P12 and P11** in T3, or as its own stage.
 - **The engine part** is small:
