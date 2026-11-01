@@ -169,3 +169,18 @@ identical on origin/main. Per-primitive probe (`logs/aaa-kinds-and-workload-colu
 every AAA kind clean in rows, columns and regions; AA rect fill, image and gradient rects (1
 level), rrect stroke w1 (2) and hairlines (7) keep Skia's seams. Verification:
 `logs/aaa-columns-verification.txt`.
+
+## 2026-11-01: ADR-016 migrations and AnimationTimer
+
+- **Owner decision (2026-11-01, relayed):** AnimationTimer keeps its `AnimationTickResult`
+  (`damaged` / `unchanged`) tick result as built. It is distinct from the changed/unchanged
+  return on `Control::on_frame` that ADR-016 rejected: it belongs to the helper's own tick
+  target, decides only whether the helper expects a paint before its next tick, and never
+  replaces a control's explicit damage.
+- Paint-rate rise on the animation page (47.7 -> 62.7 paints/s): not a new interval (both
+  16 ms). Active surfaces and the motion clock re-armed at `now + interval`, adding each
+  poll's lateness (~21 ms effective); UI timers keep phase. Kept the fixed cadence; the motion
+  clock now keeps phase too (two sample-bit goldens re-recorded on arm64).
+- Measured (headless sim, M4, 4 s steady): ranges page 21.7% -> 5.1% CPU across ProgressBar
+  migration + travel pacing; animation page damage 331,080 -> 6,715 px/frame (CPU ~19%,
+  EasingPreview at display rate); vsync lab occluded 11.6% -> 0.09%.
