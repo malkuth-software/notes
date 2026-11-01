@@ -61,3 +61,7 @@ Option 3 of the three considered (owner, 2026-10-31):
   settling timers that damage only what moves.
 - Rectangle damage still re-records the control's whole display chunk;
   ADR-015's prepared text keeps that from re-shaping text.
+
+## Amendment (owner, 2026-11-01)
+
+The shared paint-gated timer helper, `AnimationTimer` (approved 2026-11-01), returns `AnimationTickResult::damaged` or `::unchanged` from each tick, so a settled animation stays scheduled without a paint. The owner chose to keep it: it is a two-value result on the helper's own callback, not a counter and not a return value on `on_frame`, which point 3 still excludes.
