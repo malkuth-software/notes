@@ -109,10 +109,7 @@ The design sent earlier (2026-10-28) still guides the build where the owner did 
 
 ## Other remaining W work
 
-The coverage rows in [README.md](README.md) that are open or stale:
-- **`RichTextBox`**: built on the markdown stack. The README row still says "missing"; mark it done once checkpoint 5 lands.
-- **`ListView` and `TabControl`**: replace "item tooltips wait for a per-item tooltip seam" with the owner's decision above. Cut-off text reveal and the `TabPage` header tooltip are the tooltip work.
-- **`Splitter` and the dialog components** (`ThreadExceptionDialog`, `OpenFileDialog`, `SaveFileDialog`, `FolderBrowserDialog`, `ColorDialog`): they landed on main (#330, #346, #402 and the checkpoint merges). Their rows and the totals need a recount against main.
+The coverage rows in [README.md](README.md) were brought up to date on 2026-10-31: `RichTextBox`, `Splitter`, the dialog components and `ListView` are done, the `TabControl` row records the header tooltip, and the totals are recounted. What stays open:
 - **Partial by design:** the public bases `TextBoxBase`, `ListControl` and `UpDownBase`; `ToolStripControlHost` with arbitrary content; a public `ToolStripDropDown`; and the `DataGridView` editing controls as public types.
 - **Docking:** P8's navigation preset, and D6 to D8.
 - **TabControl:** `Multiline` wrapping is deferred by the owner.
