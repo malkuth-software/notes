@@ -326,10 +326,10 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `MenuStrip` | 24 | `MenuStrip` | done |
 | `StatusStrip` | 32 | `StatusStrip` | done (#86) |
 | `ContextMenuStrip` | 8 | `ContextMenu` | done |
-| `ToolStripContainer` | 48 | `ToolStripContainer` | done (#93); dragging strips between panels is DK phase D7 |
+| `ToolStripContainer` | 48 | `ToolStripContainer` | done (#93); strips are dragged between panels and rows (DK decision 58) and moved from the keyboard with the `move_panel` chord (DK decision 59); rafting outside a container is not supported |
 | `ToolStripPanel` | 57 | `ToolStripPanel` | done |
 | `ToolStripContentPanel` | 48 | `ToolStripContainer::content_panel()`, a `Panel` | done |
-| `ToolStripPanelRow` | 21 | the panel's rows | partial: not a public type |
+| `ToolStripPanelRow` | 21 | the panel's rows | partial: not a public type; several strips share a row (`ToolStripPanel::rows`, `join_row`) |
 | `ToolStripItem`, `ToolStripDropDownItem` | 246 | item records (`ToolStripItemKind`) | done |
 | `ToolStripButton`, `ToolStripLabel`, `ToolStripSeparator`, `ToolStripDropDownButton`, `ToolStripSplitButton` | 164 | item kinds | done |
 | `ToolStripComboBox`, `ToolStripTextBox`, `ToolStripProgressBar` | 195 | hosted item kinds | done (#93) |
