@@ -1521,6 +1521,11 @@ Per the brief, recorded under `results/`:
 5. **The byte-preserving round trip** of every untouched fixture and of the
    T4 default theme's sheets once they exist.
 
+As built (P11, owner decisions 2026-11-01): the drawing rows' fixtures carry
+the compiled material digest; raster reference hashes are added with the T4
+default theme (2a). The work bound is `ThemeCompileWork`, at most
+4 x `maximum_variable_combinations` operations per byte plus 4,096 (1a).
+
 ## 7. House-style points
 
 - **Caller-owned tables** (§6): the tokenizer, parser, lowering and
