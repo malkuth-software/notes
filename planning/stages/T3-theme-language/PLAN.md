@@ -504,6 +504,7 @@ refined in P1):
 | W2xx colour | warning | `literal_colour_unremappable` |
 | W3xx version | warning | `needs_newer_engine` (the sheet or a rule), `keyword_from_newer_engine`; W301 and W302 |
 | W4xx inline | warning | `inline_with_theme`, once per window (E1) |
+| W5xx icons | warning | `icon_unknown`, `icon_not_overridable`, `icon_refused`: a user theme's `icons/<identifier>.png`, ignored (USER_THEMES.md section 6) |
 
 The engine's own `RuleDiagnosticKind`s still run after T3 (the engine
 compiles what T3 hands it). T3 checks the same conditions first, so for a

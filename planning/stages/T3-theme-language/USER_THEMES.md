@@ -288,6 +288,12 @@ The rules for an override:
 - **Icons are resolved once at launch** through the compiled theme's
   image ownership (P10c).
 
+Built (U3): `ApplicationResources::register_icon(identifier, image,
+IconOverride)`, `icon_declarations()` (passed as `ThemeCompileOptions::icons`)
+and `icon(identifier)`; `Theme::icon_override`. Every refusal of an icon
+file is a warning (W501 unknown, W502 fixed, W503 the image rules) and the
+program's icon stays.
+
 New program-side API: icons are registered with an identifier and an
 overridable flag. That is a small `ApplicationResources` addition, for the
 T4 or FD work that draws icons.
