@@ -231,6 +231,25 @@ From the second review (2026-10-19, N1 to N10):
     is left, right, bottom, top (N8).
 54. **A flyout's resized extent is saved with the layout (N9),** in D7.
 55. **The Alt+F7 navigator lists auto-hidden panels (N10).**
+56. **A close request is one transaction (owner, 2026-10-31, D6):** a
+    cancel at any prompt, or a "no" to a deferred prompt, closes nothing,
+    including documents already allowed; the documents close together
+    after the last prompt allows them.
+57. **Close All Documents and Close Other Documents are in a document's
+    position menu (owner, 2026-10-31, D6),** as two `DockPositionCommand`
+    values that ask as the workspace's requests do.
+58. **Toolbar dragging shares the docking drag's mechanics (owner,
+    2026-11-01, refines 36; K2-1 option 1):** the 4-unit threshold, Ctrl
+    suppressing targets, Escape cancelling, the stamp and its motion live
+    in one shared piece (`src/controls/drag_gesture`) that DockSite uses;
+    ToolStripContainer drags strips on it with its four ToolStripPanels and
+    their rows as targets. Strips never enter dock stacks or float.
+59. **Keyboard strip moves use the docking chord (owner, 2026-11-01;
+    option 1):** the host key map's `move_panel` chord, pressed with the
+    focus in a strip, starts a keyboard move like DockSite's: arrows step
+    between rows (a new row or joining one) and positions, Tab between
+    the container's panels, Enter drops, Escape cancels; the focus
+    returns to the strip afterwards. No second chord is added.
 26. **Invalid drops float or snap back (D4-1);** threshold 4 units
     (D5-1); Ctrl suppresses docking (D6-1); caption drags move the stack,
     tab drags one panel (D7-1).

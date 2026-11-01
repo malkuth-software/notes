@@ -267,7 +267,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `TextBoxBase` | 75 | none public | partial: no public base; `TextBox` carries the surface |
 | `TextBox` | 42 | `TextBox` | done (single and multiple lines, auto-complete #123) |
 | `MaskedTextBox` | 102 | `MaskedTextBox` | done (#89) |
-| `RichTextBox` | 128 | none | missing: matrix row 42 places it as a P4 package; its scope is an owner decision |
+| `RichTextBox` | 128 | `RichTextBox` | done: an inline markdown field with its control bar, over TextBox's editing engine (W-Q1; checkpoint 5, #449) |
 
 ### Lists, trees and grids
 
@@ -277,7 +277,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ListBox` | 109 | `ListBox` | done |
 | `CheckedListBox` | 52 | `CheckedListBox` | done |
 | `ComboBox` | 129 | `ComboBox` | done (auto-complete #123, filtering #126) |
-| `ListView` | 181 | `ListView`, `ObjectView` | partial: label editing (F2 and the slow second click), the insertion mark, content-only owner drawing, groups (header and rule, not collapsible, not in virtual mode or the list view; the default group first) and the tile view (`TileSize`) are done; item tooltips wait for a per-item tooltip seam shared with `TabControl` and `TreeView` (#88) |
+| `ListView` | 181 | `ListView`, `ObjectView` | done: label editing (F2 and the slow second click), the insertion mark, content-only owner drawing, groups (header and rule, not collapsible, not in virtual mode or the list view; the default group first) and the tile view (`TileSize`) are done; items have no tooltips (owner decision, 2026-10-28; `ToolTipText` and `ShowItemToolTips` are not provided), and cut-off text is revealed in place in the details and list views (`claude/w-tooltips`) |
 | `ColumnHeader` | 27 | `ListViewColumn` records | done |
 | `TreeView` | 137 | `TreeView` | done |
 | `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149) |
@@ -314,8 +314,8 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `FlowLayoutPanel` | 9 | `FlowLayoutPanel` | done |
 | `TableLayoutPanel` | 39 | `TableLayoutPanel` | done |
 | `SplitContainer`, `SplitterPanel` | 130 | the same two | done |
-| `Splitter` | 57 | none | missing: matrix row 45 holds it to a migration facade over `SplitContainer`; building it is an owner decision |
-| `TabControl` | 98 | `TabControl` | partial: tab images (`ImageList`, `ImageIndex`, #343) and content-only owner drawing (#354) and the `Deselecting`, `Selecting`, `Deselected` and `Selected` events are done; `ShowToolTips` with `TabPage.ToolTipText` (the per-item tooltip seam) is not; `Multiline` wrapping is deferred by the owner (2026-10-28; tabs that do not fit scroll) (re-based on `PageStrip`, #137) |
+| `Splitter` | 57 | `Splitter` | done: the migration facade over the dock layout (W-Q2, owner decision 2 of 2026-10-25; #330) |
+| `TabControl` | 98 | `TabControl` | partial: tab images (`ImageList`, `ImageIndex`, #343) and content-only owner drawing (#354) and the `Deselecting`, `Selecting`, `Deselected` and `Selected` events are done; a `TabPage`'s own tooltip text shows over its header (`ShowToolTips` and `TabPage.ToolTipText` are not provided, owner decision 2026-10-28; `claude/w-tooltips`); `Multiline` wrapping is deferred by the owner (2026-10-28; tabs that do not fit scroll) (re-based on `PageStrip`, #137) |
 | `TabPage` | 55 | `TabPage` | done |
 
 ### Strips and menus
@@ -326,10 +326,10 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `MenuStrip` | 24 | `MenuStrip` | done |
 | `StatusStrip` | 32 | `StatusStrip` | done (#86) |
 | `ContextMenuStrip` | 8 | `ContextMenu` | done |
-| `ToolStripContainer` | 48 | `ToolStripContainer` | done (#93); dragging strips between panels is DK phase D7 |
+| `ToolStripContainer` | 48 | `ToolStripContainer` | done (#93); strips are dragged between panels and rows (DK decision 58) and moved from the keyboard with the `move_panel` chord (DK decision 59); rafting outside a container is not supported |
 | `ToolStripPanel` | 57 | `ToolStripPanel` | done |
 | `ToolStripContentPanel` | 48 | `ToolStripContainer::content_panel()`, a `Panel` | done |
-| `ToolStripPanelRow` | 21 | the panel's rows | partial: not a public type |
+| `ToolStripPanelRow` | 21 | the panel's rows | partial: not a public type; several strips share a row (`ToolStripPanel::rows`, `join_row`) |
 | `ToolStripItem`, `ToolStripDropDownItem` | 246 | item records (`ToolStripItemKind`) | done |
 | `ToolStripButton`, `ToolStripLabel`, `ToolStripSeparator`, `ToolStripDropDownButton`, `ToolStripSplitButton` | 164 | item kinds | done |
 | `ToolStripComboBox`, `ToolStripTextBox`, `ToolStripProgressBar` | 195 | hosted item kinds | done (#93) |
@@ -359,12 +359,12 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 
 | Windows Forms | Rows | GUI.Forms | State |
 |---|---:|---|---|
-| `CommonDialog` | 12 | none | missing |
-| `FileDialog` | 46 | none | missing |
-| `OpenFileDialog` | 18 | `HostOpenFileDialogRequest` | partial: a host service (`HostServices::show_dialog`) on every host, no Windows Forms-shaped component |
-| `SaveFileDialog` | 12 | `HostSaveFileDialogRequest` | partial: as `OpenFileDialog` |
-| `FolderBrowserDialog` | 31 | `HostFolderDialogRequest` | partial: as `OpenFileDialog` |
-| `ColorDialog` | 21 | `HostColorDialogRequest` | partial: as `OpenFileDialog` |
+| `CommonDialog` | 12 | the dialog components | done by design: no public base (house style §7, nothing needs one at run time); `ShowDialog`, `Reset` and `Tag`'s use are each dialog's own `show_dialog`, `reset` and component state. `HookProc`, `OwnerWndProc` and `RunDialog` are Win32 hooks and excluded; `HelpRequest` waits for a host help button, which no host dialog has |
+| `FileDialog` | 46 | `OpenFileDialog`, `SaveFileDialog` | done by design: no public base; the two dialogs share the filter parser and carry the members: title, initial directory, filter, `filter_index` (2026-11-01; counts from zero, the host request carries it and reports the chosen filter on every host), file names, `file_ok`, default and added extension (the chosen filter's first). Open: `ShowHiddenFiles`, `DereferenceLinks`, `CheckFileExists`/`CheckPathExists` and `ValidateNames` as settings (the hosts apply fixed rules). Excluded: the IFileDialog-only `ClientGuid`, `CustomPlaces`, `ShowPinnedPlaces`, `AutoUpgradeEnabled`, `OkRequiresInteraction`, `AddToRecent`; `RestoreDirectory` (no dialog changes the working directory) |
+| `OpenFileDialog` | 18 | `OpenFileDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
+| `SaveFileDialog` | 12 | `SaveFileDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
+| `FolderBrowserDialog` | 31 | `FolderBrowserDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
+| `ColorDialog` | 21 | `ColorDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
 | `FontDialog` | 40 | `FontDialog` | done (in the window, bundled faces only) |
 | `TaskDialog` | 9 | `TaskDialog` (provisional) | done (in the window) |
 | `MessageBox` | 22 | `show_message_box` (the host's message dialog) | done (host-drawn) |
@@ -381,10 +381,13 @@ ADR-001.
 ### Totals
 
 Of the 93 types in the tables above (rows that name several types count
-each): 68 done, 18 partial, 7 missing. The missing ones are `RichTextBox`, `Splitter`, two `DataGridView` column
-types, `CommonDialog`, `FileDialog` and `ThreadExceptionDialog`; four of the
-partial ones (`OpenFileDialog`, `SaveFileDialog`, `FolderBrowserDialog`,
-`ColorDialog`) lack only the component over an existing host service.
+each), recounted against `main` on 2026-10-31 with `claude/w-tooltips`:
+81 done, 12 partial, 0 missing (2026-11-01: `CommonDialog` and
+`FileDialog` are done by design, their members on the concrete dialogs;
+`filter_index` added). Since the count before that, `RichTextBox`,
+`Splitter`, the four dialog components, `ListView`,
+`ThreadExceptionDialog` and the `DataGridView` image and link columns are
+done.
 
 ### Advanced candidates
 

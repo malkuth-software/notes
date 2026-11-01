@@ -27,7 +27,30 @@ The follow-ups on (iii), after its first commit 4530dada:
 
 List markers are dimmed like every other marker. Measured in the screenshot, the darkest pixel of "- " is (130, 139, 149) and that of "##" is (118, 128, 138); body text is about (30, 42, 53).
 
-There is no tooltip branch. The tooltip build had not started when the stage paused.
+Checkpoint 5 (#449) holds the markdown stack, and its three branches are deleted. The tooltip build is in the next section.
+
+## The tooltip build (2026-10-31)
+
+Steps 3 to 10 below are done on `claude/w-tooltips` in w2, built on `origin/main` 2fe87fd9, and it goes into the next checkpoint:
+- 1586c8c3, steps 3 to 7: `Control::tool_tip_text` (bindable, UTF-8 checked, published as the semantic field `tool_tip`), the presenter in `src/core/window/tool_tips/`, the window and program switches, the window's `ToolTipSettings`, ToolTip forwarding, ErrorProvider setting its glyph's text, strip-item and tab-header tooltips, RibbonToolTip blocking and title fallback, and the field hints.
+- 2fc0ef95, steps 8 to 10: `detail::CutOffTextRevealer` in ListView (details and list views) and TreeView, the porting-guide rows, the docstrings and the regenerated schema.
+
+Verified on the M4: 34 touched tests pass plain and under `--sanitize`; the state-machine gate (`--changed-from origin/main`) reports no F1 or F2; house style, lifetime rules, `docs --check` and the registry and schema checks are clean.
+
+**Owner decisions (accepted 2026-10-31, as built):**
+- Cut-off text appears at once when the pointer arrives, with no delay.
+- A typed-text field shows its hint on any focus, by click or by Tab. A set placeholder wins, the editable ComboBox included.
+- A tooltip is inherited through ancestors, so a composite's parts show its text.
+- Keyboard focus shows the bubble only while the focus cue is visible.
+- The pointer must rest for the whole delay; moving restarts it.
+- After a press, nothing shows until the pointer leaves the thing.
+- The settings are window-wide and shared by every `ToolTip` of the window. ErrorProvider's private 250 ms delay is gone.
+- `ToolTip::remove_tool_tip` takes a non-const `Control&`.
+- `Window::show_tool_tip` ignores the switches.
+- A RibbonToolTip mapping on a whole control blocks the plain tooltip on all its parts.
+- `SemanticNode::tool_tip` is a new semantic field, so the schema export changes.
+
+The mockup for the first two is `~/Developer/gui_forms_workers/mockups/cut-off-reveal-and-field-hints.html`.
 
 ## Verified only on the M4 (macOS arm64)
 
@@ -86,10 +109,7 @@ The design sent earlier (2026-10-28) still guides the build where the owner did 
 
 ## Other remaining W work
 
-The coverage rows in [README.md](README.md) that are open or stale:
-- **`RichTextBox`**: built on the markdown stack. The README row still says "missing"; mark it done once checkpoint 5 lands.
-- **`ListView` and `TabControl`**: replace "item tooltips wait for a per-item tooltip seam" with the owner's decision above. Cut-off text reveal and the `TabPage` header tooltip are the tooltip work.
-- **`Splitter` and the dialog components** (`ThreadExceptionDialog`, `OpenFileDialog`, `SaveFileDialog`, `FolderBrowserDialog`, `ColorDialog`): they landed on main (#330, #346, #402 and the checkpoint merges). Their rows and the totals need a recount against main.
+The coverage rows in [README.md](README.md) were brought up to date on 2026-10-31: `RichTextBox`, `Splitter`, the dialog components and `ListView` are done, the `TabControl` row records the header tooltip, and the totals are recounted. What stays open:
 - **Partial by design:** the public bases `TextBoxBase`, `ListControl` and `UpDownBase`; `ToolStripControlHost` with arbitrary content; a public `ToolStripDropDown`; and the `DataGridView` editing controls as public types.
 - **Docking:** P8's navigation preset, and D6 to D8.
 - **TabControl:** `Multiline` wrapping is deferred by the owner.
