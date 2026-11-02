@@ -1,0 +1,13 @@
+presentation	text	ground	threshold	runs	smallest	recipe	states	controls
+light	#858F98	#E2E8EE	3	120	2.67	no recipe colour	disabled hot invalid pressed rest	command_bar drop_down_button scaled_group_box scaled_panel scrollable_control
+light	#848F99	#F4F7FB	4.5	82	3.07	no recipe colour	focus hot invalid pressed rest	property_grid property_list
+light	#848F99	#E5EAEF	3	18	2.72	no recipe colour	disabled hot invalid pressed rest	button scaled_panel
+light	#318B5E	#FFFFFF	4.5	8	4.21	no recipe colour	hot invalid pressed rest	table_layout_panel_compat
+light	#5C7180	#E2EBF1	4.5	8	4.21	no recipe colour	hot invalid pressed rest	instrument_rack
+light	#858F98	#C6DEF1	3	4	2.37	no recipe colour	disabled	scaled_panel scrollable_control
+light	#848F99	#CFE3F4	3	4	2.5	no recipe colour	disabled	check_box scaled_panel
+light	#848F99	#E2E7F6	3	4	2.67	no recipe colour	disabled	radio_button scaled_panel
+light	#858F98	#2774B8	3	4	1.49	no recipe colour	disabled	command_bar scaled_group_box
+light	#848F99	#EDE4F1	3	2	2.66	no recipe colour	disabled	scaled_panel
+light	#5B6B79	#CFE2FA	4.5	2	4.16	no recipe colour	toggled	card
+light	#FFFFFF	#7394C6	4.5	1	3.1	recipe colour (boundary/focus_inner/focus_outer/glyph/text) on other ground	pressed	block_panel
