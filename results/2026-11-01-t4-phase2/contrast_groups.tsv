@@ -1,0 +1,156 @@
+presentation	text	ground	threshold	runs	smallest	recipe	states	controls
+dark	#858F98	#E2E8EE	3	120	2.67	no recipe colour	disabled hot invalid pressed rest	command_bar drop_down_button scaled_group_box scaled_panel scrollable_control
+dark	#848F99	#E6E9EC	3	100	2.71	recipe colour (text) on other ground	disabled focus hot invalid pressed rest	choice_group color_value_editor combo_box domain_up_down expandable_sections flags_value_editor list_box numeric_up_down property_grid property_list split_container
+dark	#848F99	#F4F7FB	4.5	82	3.07	recipe colour (text) on other ground	focus hot invalid pressed rest	property_grid property_list
+dark	#848F99	#E5E8EB	3	38	2.68	recipe colour (text) on other ground	disabled hot invalid pressed rest	binding_navigator container_control expandable_sections flex_panel flow_layout_panel_compat grid_panel list_box master_detail_view panel scaled_group_box table_layout_panel_compat
+dark	#848F99	#E5EAEF	3	18	2.72	recipe colour (text) on other ground	disabled hot invalid pressed rest	button scaled_panel
+dark	#848F99	#E6E9EB	3	16	2.7	recipe colour (text) on other ground	disabled	flow_layout_panel_compat grid_panel numeric_up_down split_container splitter_panel table_layout_panel_compat
+dark	#76808A	#EAEFF4	4.5	16	3.47	recipe colour (muted_text) on other ground	focus hot pressed rest	binding_navigator
+dark	#848F99	#E9ECEE	3	15	2.78	recipe colour (text) on other ground	disabled	instrument_rack split_container splitter_panel
+dark	#848F99	#EAEDEF	3	14	2.8	recipe colour (text) on other ground	disabled	block_panel checked_list_box command_overflow_panel list_box review_card
+dark	#848F99	#EAECEF	3	14	2.79	recipe colour (text) on other ground	disabled	combo_box command_overflow_panel flags_value_editor grid_panel master_detail_view review_card
+dark	#848F99	#E4E7EA	3	11	2.66	recipe colour (text) on other ground	disabled	binding_navigator list_box menu_strip
+dark	#76808A	#FFFFFF	4.5	8	4.02	recipe pair muted_text fail	focus hot pressed rest	text_box
+dark	#318B5E	#FFFFFF	4.5	8	4.21	no recipe colour	hot invalid pressed rest	table_layout_panel_compat
+dark	#5C7180	#E2EBF1	4.5	8	4.21	no recipe colour	hot invalid pressed rest	instrument_rack
+dark	#848F99	#CFE3F4	3	6	2.5	recipe colour (text) on other ground	disabled	check_box scaled_panel
+dark	#848F99	#EEF0F2	3	6	2.89	recipe colour (text) on other ground	disabled	checked_list_box list_box review_card
+dark	#848F99	#E6E8EB	3	5	2.69	recipe colour (text) on other ground	disabled	flex_panel grid_panel
+dark	#1B2733	#3975B2	4.5	5	3.15	recipe colour (glyph/text) on other ground	focus hot invalid pressed rest	dock_site
+dark	#858F98	#C6DEF1	3	4	2.37	no recipe colour	disabled	scaled_panel scrollable_control
+dark	#848F99	#E2E7F6	3	4	2.67	recipe colour (text) on other ground	disabled	radio_button scaled_panel
+dark	#858F98	#2774B8	3	4	1.49	no recipe colour	disabled	command_bar scaled_group_box
+dark	#848F99	#EFF1F3	3	4	2.91	recipe colour (text) on other ground	disabled	checked_list_box list_box
+dark	#848F99	#D2D7DC	3	4	2.28	recipe colour (text) on other ground	disabled	choice_group expandable_sections list_box master_detail_view
+dark	#848F99	#E9EBEE	3	4	2.76	recipe colour (text) on other ground	disabled	checked_list_box list_box
+dark	#848F99	#E8EAED	3	4	2.74	recipe colour (text) on other ground	disabled	instrument_rack list_box master_detail_view
+dark	#848F99	#E7EAEC	3	4	2.73	recipe colour (text) on other ground	disabled	grid_panel tab_control
+dark	#848F99	#EBEEF0	3	4	2.83	recipe colour (text) on other ground	disabled	checked_list_box list_box review_card
+dark	#848F99	#E5E8EA	3	4	2.68	recipe colour (text) on other ground	disabled	flow_layout_panel_compat
+dark	#848F99	#E3E6E9	3	4	2.63	recipe colour (text) on other ground	disabled	block_panel review_card
+dark	#FFFFFF	#367DC5	4.5	4	4.29	recipe colour (boundary/glyph/text) on other ground	hot invalid pressed rest	table_layout_panel_compat
+dark	#848F99	#B8BEC4	3	3	1.76	recipe colour (text) on other ground	disabled	block_panel
+dark	#76808A	#D2D7DC	3	3	2.77	recipe colour (muted_text) on other ground	disabled	dock_site
+dark	#76808A	#D1D6DB	3	3	2.75	recipe colour (muted_text) on other ground	disabled	dock_site
+dark	#848F99	#EDE4F1	3	2	2.66	recipe colour (text) on other ground	disabled	scaled_panel
+dark	#848F99	#E1E8EE	3	2	2.67	recipe colour (text) on other ground	disabled	scaled_panel
+dark	#848F99	#E7E9EC	3	2	2.71	recipe colour (text) on other ground	disabled	color_value_editor list_box
+dark	#76808A	#F9D6D6	4.5	2	2.99	recipe colour (muted_text) on other ground	invalid	binding_navigator
+dark	#76808A	#D3D8DD	3	2	2.8	recipe colour (muted_text) on other ground	disabled	page_strip tab_control
+dark	#848F99	#EDEFF1	3	2	2.86	recipe colour (text) on other ground	disabled	checked_list_box
+dark	#FFFFFF	#377FC7	4.5	2	4.18	recipe colour (boundary/glyph/text) on other ground	invalid rest	block_panel
+dark	#848F99	#D7DCE0	3	2	2.39	recipe colour (text) on other ground	disabled	choice_group expandable_sections
+dark	#5B6B79	#C1DBF8	4.5	2	3.86	no recipe colour	toggled	card
+dark	#76808A	#F9D7D7	4.5	2	3.01	recipe colour (muted_text) on other ground	invalid	binding_navigator
+dark	#76808A	#D7DCE0	3	2	2.91	recipe colour (muted_text) on other ground	disabled	page_strip tab_control
+dark	#76808A	#F9D8D8	4.5	1	3.03	recipe colour (muted_text) on other ground	invalid	text_box
+dark	#848F99	#ECEEF0	3	1	2.83	recipe colour (text) on other ground	disabled	list_box
+dark	#FFFFFF	#EEF6FD	4.5	1	1.09	recipe colour (boundary/glyph/text) on other ground	hot	block_panel
+dark	#FFFFFF	#CDE4F6	4.5	1	1.31	recipe colour (boundary/glyph/text) on other ground	pressed	block_panel
+dark	#76808A	#D0D6DB	3	1	2.74	recipe colour (muted_text) on other ground	disabled	dock_site
+dark	#5B6B79	#F8D2D2	4.5	1	3.96	no recipe colour	invalid	card
+dark	#76808A	#FBE0E0	4.5	1	3.22	recipe colour (muted_text) on other ground	invalid	text_box
+dark	#848F99	#D8DDE1	3	1	2.41	recipe colour (text) on other ground	disabled	list_box
+dark	#FFFFFF	#488BC4	4.5	1	3.64	recipe colour (boundary/glyph/text) on other ground	hot	block_panel
+dark	#76808A	#D8DDE1	3	1	2.94	recipe colour (muted_text) on other ground	disabled	dock_site
+dark	#5B6B79	#F8D3D3	4.5	1	3.99	no recipe colour	invalid	card
+dark	#848F99	#ECEEF1	3	1	2.84	recipe colour (text) on other ground	disabled	review_card
+dark	#848F99	#D1D6DB	3	1	2.25	recipe colour (text) on other ground	disabled	master_detail_view
+high-contrast	#9DAEBB	#1E272F	7	170	6.64	no recipe colour	disabled hot invalid pressed rest	visual_inspector_view
+high-contrast	#858F98	#E2E8EE	7	120	2.67	no recipe colour	disabled hot invalid pressed rest	command_bar drop_down_button scaled_group_box scaled_panel scrollable_control
+high-contrast	#1C2732	#000000	7	110	1.39	no recipe colour	disabled focus hot invalid pressed rest	card dock_site expandable_sections page_view tab_control tab_page
+high-contrast	#848F99	#F4F7FB	7	102	3.07	recipe colour (text) on other ground	disabled focus hot invalid pressed rest	property_grid property_list
+high-contrast	#76808A	#000000	7	70	5.22	recipe pair muted_text fail	disabled focus hot invalid pressed rest	binding_navigator dock_site page_strip tab_control text_box
+high-contrast	#FFFFFF	#FFFFFF	7	54	1.0	recipe pair glyph/text fail	focus hot invalid pressed rest	property_grid property_list scaled_group_box scaled_panel user_control
+high-contrast	#182D42	#000000	7	32	1.49	no recipe colour	disabled focus hot invalid pressed rest	card tab_control tab_page
+high-contrast	#2B4152	#000000	7	30	1.98	no recipe colour	disabled hot invalid pressed rest	instrument_rack
+high-contrast	#40AAE8	#1E272F	7	30	5.87	no recipe colour	disabled hot invalid pressed rest	visual_inspector_view
+high-contrast	#2774B8	#FFFFFF	7	22	4.91	no recipe colour	disabled focus hot invalid pressed rest	correspondence_view easing_preview
+high-contrast	#000000	#000000	7	22	1.0	recipe colour (glyph/text) on other ground	disabled focus hot invalid pressed rest	tab_control tab_page
+high-contrast	#536776	#F9FBFC	7	20	5.67	no recipe colour	disabled hot invalid pressed rest	typography_specimen
+high-contrast	#848F99	#E5EAEF	7	18	2.72	recipe colour (text) on other ground	disabled hot invalid pressed rest	button scaled_panel
+high-contrast	#FFFFFF	#2774B8	7	18	4.91	recipe colour (boundary/glyph/text) on other ground	focus hot invalid pressed rest	command_bar scaled_group_box tree_view
+high-contrast	#FFFFFF	#F3F6FA	7	16	1.08	recipe colour (boundary/glyph/text) on other ground	focus hot invalid pressed rest	link_label scaled_panel
+high-contrast	#5B6B79	#FFFFFF	7	14	5.49	no recipe colour	disabled hot invalid pressed rest toggled	card text_block
+high-contrast	#858F98	#FFFFFF	7	12	3.29	no recipe colour	disabled	date_time_picker group_box scaled_group_box
+high-contrast	#76808A	#FFFFFF	7	12	4.02	recipe pair muted_text fail	disabled	dock_site page_strip tab_control
+high-contrast	#5B6B79	#EFF3F7	7	10	4.93	no recipe colour	disabled hot invalid pressed rest	scaled_panel
+high-contrast	#318B5E	#FFFFFF	7	10	4.21	no recipe colour	disabled hot invalid pressed rest	table_layout_panel_compat
+high-contrast	#5B6B79	#000000	7	10	3.82	no recipe colour	disabled focus hot invalid rest	card
+high-contrast	#1B2733	#000000	7	10	1.38	recipe colour (glyph/text) on other ground	focus hot invalid pressed rest	flags_value_editor
+high-contrast	#5C7180	#E2EBF1	7	10	4.21	no recipe colour	disabled hot invalid pressed rest	instrument_rack
+high-contrast	#EE66B8	#1E272F	7	10	5.21	no recipe colour	disabled hot invalid pressed rest	visual_inspector_view
+high-contrast	#FFFFFF	#CFE3F4	7	8	1.32	recipe colour (boundary/glyph/text) on other ground	hot invalid pressed rest	scaled_panel
+high-contrast	#A0A0A0	#F8F9FB	7	8	2.48	recipe colour (text) on other ground	disabled	scaled_panel user_control
+high-contrast	#FFFFFF	#426382	7	6	6.29	recipe colour (boundary/glyph/text) on other ground	disabled focus hot invalid pressed rest	breadcrumb_trail
+high-contrast	#FFFFFF	#326CA1	7	6	5.53	recipe colour (boundary/glyph/text) on other ground	disabled focus hot invalid pressed rest	breadcrumb_trail
+high-contrast	#858F98	#C6DEF1	7	4	2.37	no recipe colour	disabled	scaled_panel scrollable_control
+high-contrast	#848F99	#CFE3F4	7	4	2.5	recipe colour (text) on other ground	disabled	check_box scaled_panel
+high-contrast	#848F99	#E2E7F6	7	4	2.67	recipe colour (text) on other ground	disabled	radio_button scaled_panel
+high-contrast	#A0A0A0	#F3F6FA	7	4	2.41	recipe colour (text) on other ground	disabled	link_label scaled_panel
+high-contrast	#858F98	#2774B8	7	4	1.49	no recipe colour	disabled	command_bar scaled_group_box
+high-contrast	#A0A0A0	#F4F7FB	7	4	2.43	recipe colour (text) on other ground	disabled	property_grid property_list
+high-contrast	#A0A0A0	#CFE3F4	7	2	1.99	recipe colour (text) on other ground	disabled	scaled_panel
+high-contrast	#848F99	#EDE4F1	7	2	2.66	recipe colour (text) on other ground	disabled	scaled_panel
+high-contrast	#848F99	#F0F6FA	7	2	3.02	recipe colour (text) on other ground	disabled	scaled_panel
+high-contrast	#848F99	#F7F9FB	7	2	3.12	recipe colour (text) on other ground	disabled	label
+high-contrast	#858F98	#F8FAFC	7	2	3.15	no recipe colour	disabled	scaled_group_box
+high-contrast	#A0A0A0	#FFFFFF	7	2	2.61	recipe colour (text) on other ground	disabled	scaled_group_box
+high-contrast	#848F99	#000000	7	2	6.37	recipe colour (text) on other ground	disabled	flags_value_editor
+light	#858F98	#E2E8EE	3	120	2.67	no recipe colour	disabled hot invalid pressed rest	command_bar drop_down_button scaled_group_box scaled_panel scrollable_control
+light	#848F99	#E6E9EC	3	100	2.71	recipe colour (text) on other ground	disabled focus hot invalid pressed rest	choice_group color_value_editor combo_box domain_up_down expandable_sections flags_value_editor list_box numeric_up_down property_grid property_list split_container
+light	#848F99	#F4F7FB	4.5	82	3.07	recipe colour (text) on other ground	focus hot invalid pressed rest	property_grid property_list
+light	#848F99	#E5E8EB	3	38	2.68	recipe colour (text) on other ground	disabled hot invalid pressed rest	binding_navigator container_control expandable_sections flex_panel flow_layout_panel_compat grid_panel list_box master_detail_view panel scaled_group_box table_layout_panel_compat
+light	#848F99	#E5EAEF	3	18	2.72	recipe colour (text) on other ground	disabled hot invalid pressed rest	button scaled_panel
+light	#848F99	#E6E9EB	3	16	2.7	recipe colour (text) on other ground	disabled	flow_layout_panel_compat grid_panel numeric_up_down split_container splitter_panel table_layout_panel_compat
+light	#76808A	#EAEFF4	4.5	16	3.47	recipe colour (muted_text) on other ground	focus hot pressed rest	binding_navigator
+light	#848F99	#E9ECEE	3	15	2.78	recipe colour (text) on other ground	disabled	instrument_rack split_container splitter_panel
+light	#848F99	#EAEDEF	3	14	2.8	recipe colour (text) on other ground	disabled	block_panel checked_list_box command_overflow_panel list_box review_card
+light	#848F99	#EAECEF	3	14	2.79	recipe colour (text) on other ground	disabled	combo_box command_overflow_panel flags_value_editor grid_panel master_detail_view review_card
+light	#848F99	#E4E7EA	3	11	2.66	recipe colour (text) on other ground	disabled	binding_navigator list_box menu_strip
+light	#76808A	#FFFFFF	4.5	8	4.02	recipe pair muted_text fail	focus hot pressed rest	text_box
+light	#318B5E	#FFFFFF	4.5	8	4.21	no recipe colour	hot invalid pressed rest	table_layout_panel_compat
+light	#5C7180	#E2EBF1	4.5	8	4.21	no recipe colour	hot invalid pressed rest	instrument_rack
+light	#848F99	#CFE3F4	3	6	2.5	recipe colour (text) on other ground	disabled	check_box scaled_panel
+light	#848F99	#EEF0F2	3	6	2.89	recipe colour (text) on other ground	disabled	checked_list_box list_box review_card
+light	#848F99	#E6E8EB	3	5	2.69	recipe colour (text) on other ground	disabled	flex_panel grid_panel
+light	#1B2733	#3975B2	4.5	5	3.15	recipe colour (glyph/text) on other ground	focus hot invalid pressed rest	dock_site
+light	#858F98	#C6DEF1	3	4	2.37	no recipe colour	disabled	scaled_panel scrollable_control
+light	#848F99	#E2E7F6	3	4	2.67	recipe colour (text) on other ground	disabled	radio_button scaled_panel
+light	#858F98	#2774B8	3	4	1.49	no recipe colour	disabled	command_bar scaled_group_box
+light	#848F99	#EFF1F3	3	4	2.91	recipe colour (text) on other ground	disabled	checked_list_box list_box
+light	#848F99	#D2D7DC	3	4	2.28	recipe colour (text) on other ground	disabled	choice_group expandable_sections list_box master_detail_view
+light	#848F99	#E9EBEE	3	4	2.76	recipe colour (text) on other ground	disabled	checked_list_box list_box
+light	#848F99	#E8EAED	3	4	2.74	recipe colour (text) on other ground	disabled	instrument_rack list_box master_detail_view
+light	#848F99	#E7EAEC	3	4	2.73	recipe colour (text) on other ground	disabled	grid_panel tab_control
+light	#848F99	#EBEEF0	3	4	2.83	recipe colour (text) on other ground	disabled	checked_list_box list_box review_card
+light	#848F99	#E5E8EA	3	4	2.68	recipe colour (text) on other ground	disabled	flow_layout_panel_compat
+light	#848F99	#E3E6E9	3	4	2.63	recipe colour (text) on other ground	disabled	block_panel review_card
+light	#FFFFFF	#367DC5	4.5	4	4.29	recipe colour (boundary/glyph/text) on other ground	hot invalid pressed rest	table_layout_panel_compat
+light	#848F99	#B8BEC4	3	3	1.76	recipe colour (text) on other ground	disabled	block_panel
+light	#76808A	#D2D7DC	3	3	2.77	recipe colour (muted_text) on other ground	disabled	dock_site
+light	#76808A	#D1D6DB	3	3	2.75	recipe colour (muted_text) on other ground	disabled	dock_site
+light	#848F99	#EDE4F1	3	2	2.66	recipe colour (text) on other ground	disabled	scaled_panel
+light	#848F99	#E1E8EE	3	2	2.67	recipe colour (text) on other ground	disabled	scaled_panel
+light	#848F99	#E7E9EC	3	2	2.71	recipe colour (text) on other ground	disabled	color_value_editor list_box
+light	#76808A	#F9D6D6	4.5	2	2.99	recipe colour (muted_text) on other ground	invalid	binding_navigator
+light	#76808A	#D3D8DD	3	2	2.8	recipe colour (muted_text) on other ground	disabled	page_strip tab_control
+light	#848F99	#EDEFF1	3	2	2.86	recipe colour (text) on other ground	disabled	checked_list_box
+light	#FFFFFF	#377FC7	4.5	2	4.18	recipe colour (boundary/glyph/text) on other ground	invalid rest	block_panel
+light	#848F99	#D7DCE0	3	2	2.39	recipe colour (text) on other ground	disabled	choice_group expandable_sections
+light	#5B6B79	#C1DBF8	4.5	2	3.86	no recipe colour	toggled	card
+light	#76808A	#F9D7D7	4.5	2	3.01	recipe colour (muted_text) on other ground	invalid	binding_navigator
+light	#76808A	#D7DCE0	3	2	2.91	recipe colour (muted_text) on other ground	disabled	page_strip tab_control
+light	#76808A	#F9D8D8	4.5	1	3.03	recipe colour (muted_text) on other ground	invalid	text_box
+light	#848F99	#ECEEF0	3	1	2.83	recipe colour (text) on other ground	disabled	list_box
+light	#FFFFFF	#EEF6FD	4.5	1	1.09	recipe colour (boundary/glyph/text) on other ground	hot	block_panel
+light	#FFFFFF	#CDE4F6	4.5	1	1.31	recipe colour (boundary/glyph/text) on other ground	pressed	block_panel
+light	#76808A	#D0D6DB	3	1	2.74	recipe colour (muted_text) on other ground	disabled	dock_site
+light	#5B6B79	#F8D2D2	4.5	1	3.96	no recipe colour	invalid	card
+light	#76808A	#FBE0E0	4.5	1	3.22	recipe colour (muted_text) on other ground	invalid	text_box
+light	#848F99	#D8DDE1	3	1	2.41	recipe colour (text) on other ground	disabled	list_box
+light	#FFFFFF	#488BC4	4.5	1	3.64	recipe colour (boundary/glyph/text) on other ground	hot	block_panel
+light	#76808A	#D8DDE1	3	1	2.94	recipe colour (muted_text) on other ground	disabled	dock_site
+light	#5B6B79	#F8D3D3	4.5	1	3.99	no recipe colour	invalid	card
+light	#848F99	#ECEEF1	3	1	2.84	recipe colour (text) on other ground	disabled	review_card
+light	#848F99	#D1D6DB	3	1	2.25	recipe colour (text) on other ground	disabled	master_detail_view
