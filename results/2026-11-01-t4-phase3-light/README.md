@@ -42,7 +42,7 @@ with the history reset of 2026-10-27).
 | Raster reference hashes (T3 P11 item 2a) | `manifest.tsv`: 896 cells of the specimen sheet under `gui-forms`, light at scales 1 and 2; two captures byte-identical (0 differ) |
 | Contrast passes for light | recipe report `contrast_gui_forms.tsv`: 840 light rows, 0 fail (asserted). Pixels: see below |
 | Each new primitive against Plan Paint's pixels | no new primitive in this phase (see Open) |
-| First owner look at the light sheet | `sheet-light-1x-0.png` to `-3.png` here |
+| First owner look at the light sheet | `sheet-light-1x-0.png` to `-3.png` here; the owner, 2026-11-01: "it looks good" |
 
 ### Values changed from Plan Paint to meet the gate
 
@@ -83,9 +83,12 @@ theme ground fails.
 - **Tab stack and command plane reach no pixels yet.** The sheet's
   `::part(tab)` and `::part(face)` rules compile, but `PageStrip` and
   `ToolStrip` paint those parts without a `PartKey` naming them, so no rule
-  selects them. Phase 4 keys them (or the tab stack becomes the engine
-  primitive the plan foresees); then they are compared with Plan Paint's
-  pixels.
+  selects them. *Phase 4 (gui_forms d642ccfd, 8fa5cd3b): both now key their
+  parts and the tab stack draws. A material takes one border, or per-edge
+  borders only when square, so the tab's keyline is one border and its
+  lights and casts are box shadows; the first draft refused all 22 tab
+  materials for this. The command plane's face rule waits on a `ToolStrip`
+  specimen and on `MenuStrip` painting through parts.*
 - **Dotted focus ring.** The built-in recipe draws the ring solid (dark ink
   inside light faces, white inside the accent); the dotted ring needs a
   primitive.
