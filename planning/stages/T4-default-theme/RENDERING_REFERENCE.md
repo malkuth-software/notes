@@ -4,7 +4,7 @@ Date: 2026-10-12. The exact constructions the owner approved for the
 default theme, written for the engine (T2) and theme (T4) implementers.
 `planning/DESIGN_LANGUAGE_SPECIFICATION.md` §3.1, §3.5, §11 and §12.4–§12.5
 are authoritative; this file restates them with the working numbers of the
-approved studies. Plan Paint (`falseywinchnet/plan-paint` at `6b901fc`) is the
+approved studies. Plan Paint (`malkuth-software/plan-paint` at `5e28a5e`) is the
 source of truth for every Plan Paint value: read the source, sample the
 screenshot pixels, never approximate.
 

@@ -25,7 +25,7 @@ decisions in §12.3.
 | (DNA-xnn) | `DESIGN_DNA_006.md` principles and ledger (also embedded in `file_manager_demoboard/reference/frontend-concept-atlas-reference.html`) |
 | (DDV-007-nn) | `DESIGN_DNA_VERDICTS_007.md` |
 | (BRIEF), (ICONS), (CUES) | `FRONTEND_DESIGN_BRIEF_001.md`, `ICON_AUDIT_MIT_002.md`, `VISUAL_CUE_INVENTORY.md` |
-| (Plan Paint) | the owner's shipped program (`falseywinchnet/plan-paint` at `6b901fc`): `src/forms/ribbon.cpp`, `editor.cpp`, `surface.cpp`, `interface_theme.cpp`, `src/color_palette.cpp`, `src/canvas_backing.cpp`, `docs/THEMES_AND_RECOVERY.md`, `assets/screenshots/macos-home-1.1.jpg` (`macos-help.png` and `macos-colors.png` are historical captures of its earlier frontend) |
+| (Plan Paint) | the owner's shipped program (`malkuth-software/plan-paint` at `5e28a5e`): `src/forms/ribbon.cpp`, `editor.cpp`, `surface.cpp`, `interface_theme.cpp`, `src/color_palette.cpp`, `src/canvas_backing.cpp`, `docs/THEMES_AND_RECOVERY.md`, `assets/screenshots/macos-home-1.1.jpg` (`macos-help.png` and `macos-colors.png` are historical captures of its earlier frontend) |
 | (PlaySuite file) | PlaySuite (`falseywinchnet/games`): evidence of the owner's unconstrained taste, not a rule |
 | (interview GFnnn), (resources §n), (a11y round Xn / §n) | `planning/interview/GUI_FORMS_INTERVIEW_LEDGER.md`, `…/GUI_FORMS_RESOURCES_AND_CONFIGURATION.md`, `…/GUI_FORMS_ACCESSIBILITY_AND_TEXT_ROUND_001.md` |
 | (SYSTEM_MODEL §n), (CONTROL_DNA §n), (REGIONS §n), (MICROFEATURE §n) | `planning/DESIGN_LANGUAGE_SYSTEM_MODEL.md`, `planning/CONTROL_DNA_AND_STYLE_ADDRESSABILITY.md`, `planning/AUTHORITATIVE_CONTROL_REGIONS.md`, `planning/MICROFEATURE_CONSERVATION_PROTOCOL.md` |

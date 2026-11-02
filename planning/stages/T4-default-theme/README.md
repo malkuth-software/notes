@@ -106,7 +106,7 @@ custom range and frequency controls.
 - Variants are derived from the role model, not hand-forked. Today's
   hand-authored high-contrast arrays per role go away.
 - Sample Plan Paint, never approximate. Clone `falseywinchnet/plan-paint`,
-  check out `6b901fc`, read `src/forms/ribbon.cpp`, `editor.cpp`,
+  check out `5e28a5e`, read `src/forms/ribbon.cpp`, `editor.cpp`,
   `surface.cpp`, `interface_theme.cpp`, `src/color_palette.cpp`,
   `src/canvas_backing.cpp`, and sample `assets/screenshots/macos-home-1.1.jpg`.
 - Read the owner's visual verdicts before any visual judgement: the

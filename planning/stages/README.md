@@ -310,7 +310,7 @@ naming still need a reviewer reading against the full document.
 | Owner's architecture interview (GF001–GF020) and companion records | `planning/interview/` |
 | Owner's visual verdicts (V, M, C cue IDs, colour relation model, atmospheres, style families, DDV-007) | `frontend/planning/visual/` in `falseywinchnet/file_manager` (owner's local clone: `~/file_manager`) |
 | File Manager concept atlas (DNA principles) | `file_manager_demoboard/reference/frontend-concept-atlas-reference.html` |
-| Plan Paint, the reference realization | `falseywinchnet/plan-paint` at `6b901fc`: `src/forms/ribbon.cpp` (`action_material`, `make_tab_theme`, `paint_separator`), `src/color_palette.cpp`, `src/canvas_backing.cpp`, `assets/screenshots/macos-home-1.1.jpg` |
+| Plan Paint, the reference realization | `malkuth-software/plan-paint` at `5e28a5e`: `src/forms/ribbon.cpp` (`action_material`, `make_tab_theme`, `paint_separator`), `src/color_palette.cpp`, `src/canvas_backing.cpp`, `assets/screenshots/macos-home-1.1.jpg` |
 | PlaySuite, evidence of the owner's unconstrained taste and a GUI.Forms consumer | `falseywinchnet/games` (owner's local clone: `~/Developer/playsuite-games`) |
 | Earlier design-language drafts | `planning/DESIGN_LANGUAGE_SYSTEM_MODEL.md`, `planning/CONTROL_DNA_AND_STYLE_ADDRESSABILITY.md`, `planning/AUTHORITATIVE_CONTROL_REGIONS.md`, `planning/MICROFEATURE_CONSERVATION_PROTOCOL.md` |
 | Earlier implementation programme | `planning/MASTER_IMPLEMENTATION_PLAN.md`, `planning/CONTROL_COMPLETENESS_MATRIX.md`, `planning/PAINT_PIPELINE_AVAILABILITY.md` |
