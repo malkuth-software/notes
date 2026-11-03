@@ -250,6 +250,28 @@ From the second review (2026-10-19, N1 to N10):
     between rows (a new row or joining one) and positions, Tab between
     the container's panels, Enter drops, Escape cancels; the focus
     returns to the strip afterwards. No second chord is added.
+From the control superset study (owner, 2026-11-02; matrix row 46):
+
+60. **MDI is a presentation of the document area, not a second windowing
+    model.** A document shows as a tab, as an overlapping child frame
+    inside the document area, or as a floating window, keeping one
+    identity and one activation, focus and command context. A WinForms
+    surface (`IsMdiContainer`, `MdiParent`, `MdiChildren`,
+    `ActiveMdiChild`, `MdiChildActivate`, `LayoutMdi`, the window-list
+    menu) maps onto it. No `MDICLIENT` and no `WM_MDI*` messages.
+61. **MDI matches WinForms' observable behaviour in full:** overlapping
+    child frames that move and resize, minimize to icons inside the
+    area, and maximize to fill it, with the maximized child's caption
+    buttons on the parent's menu strip; cascade, tile horizontally, tile
+    vertically and arrange icons; Ctrl+F6/Ctrl+Tab cycling and Ctrl+F4
+    close (decision 46 applies). The child frames' chrome is drawn by the
+    theme engine and shared with the in-window dialog fallback. Children
+    are published as panes inside the window on every host. It is built
+    after the document area and before the exhibits (exhibit 13).
+62. **Menu merging is a general ToolStrip feature** (`MergeAction`,
+    `MergeIndex`), built independently of MDI. The active document's (or
+    MDI child's) menus merge into the main window's.
+
 26. **Invalid drops float or snap back (D4-1);** threshold 4 units
     (D5-1); Ctrl suppresses docking (D6-1); caption drags move the stack,
     tab drags one panel (D7-1).
