@@ -984,6 +984,7 @@ application chose, not data. A part publishes them in its geometry record.
 | accent index | any part | surface roles (tint over the material) | a ribbon's contextual tab sets (RB-22) |
 | content colour | any part | `fill` only (the colour in place of the material) | a colour picker's bar and palette swatches (W-7) |
 | authored colours | any part | surface roles (background), text, glyph and rule roles (foreground); never in forced high contrast | an application's styled cells and controls, such as DataGridView cell styles (T4-1) |
+| text tone | a part with text | text roles: `ordinary` in the recipe's text colour, `secondary` in its muted ink; disabled text of either tone is the disabled text | an item's secondary line, a menu shortcut, metadata columns, a calendar's day names and hint (§12.14) |
 
 **Semantic roles and node fields.** Besides the roles controls published
 before 2026-10-14, `split_button` (a button whose primary press acts, with a
@@ -1688,6 +1689,23 @@ not the snapshot.
 - **T4-4:** EasingPreview, TypographySpecimen, MetricsView and PictureBox,
   with DrawingSurface and RasterCanvas, draw application content; only their
   frames and backgrounds go through the theme.
+- **Progress effects (2026-11-02):** ProgressBar's stripes, luminance pulse
+  and laser are legacy, to be replaced by registered effects (bounded,
+  stateful effect programs over a control, a later stage); until then they
+  are the progress bar's only exemption from painting by part.
+- **Disabled text (2026-11-02):** disabled labels, captions and content use
+  the theme's own disabled-text colour everywhere.
+- **A text tone joins the vocabulary (2026-11-02):** a text part is
+  `ordinary` (the recipe's text) or `secondary` (its muted ink), §8.5. The
+  schema export lists it under `vocabulary.values` as `text_tone`.
+- **Search-match highlights (2026-11-02)** are a `selection` part behind
+  the matched text.
+- **CorrespondenceView's status (2026-11-02):** the status rail and state
+  word take accent indices for pinned and stale, and the `unavailable`
+  state for offline.
+- **A pointed face (2026-11-02):** the engine gains a pointed-face shape
+  (a face whose end is a nose) for the raised breadcrumb, and its hit
+  testing uses the same shape.
 
 ## Appendix A. Anti-models
 
