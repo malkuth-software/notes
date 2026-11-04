@@ -1,9 +1,14 @@
 # Stage T5: compositor cooperation
 
 Release: 0.3 Themeable. Depends on: T2. Runs in parallel with T3 and T4.
-Status 2026-10-25: plan accepted ([`PLAN.md`](PLAN.md)); the owner took
-the recommendation on all sixteen questions (below). C0 is next. Authority:
-`planning/FORWARD_PROGRAMME.md` §4 T5.
+Status 2026-11-04: C0 to C7 landed; C8 (the compositor lab per host, the
+gate record tool, the user page on transparency) committed on
+`claude/t5-c8` for the next checkpoint. Gate recorded for Windows 11
+(granted) and headless in every state
+(`results/2026-11-04-t5-compositor/`); Server 2022, transparency off,
+high contrast, macOS and X11 runs remain (listed there). Plan:
+[`PLAN.md`](PLAN.md); the owner took the recommendation on all sixteen
+questions (below). Authority: `planning/FORWARD_PROGRAMME.md` §4 T5.
 
 Read [the shared brief](../README.md) first.
 
