@@ -161,9 +161,12 @@ index of `planning/stages/README.md`.
     2026-11-03), which W carries after FD6.
 - **Dependencies:** T4, or the by-role paint path (ruling 2026-10-14).
 - **Owner decisions:** `Diagram` (DG) waits for the owner's interview.
-  `DataLayout` waits as well (W brief). Whether MDI, the small-controls
-  batch, the instruments beyond SweepScope and the 12 partial rows are part
-  of the 0.5 seal is unknown.
+  `DataLayout` waits as well (W brief). **0.5 scope (owner, 2026-11-03):**
+  the small-controls batch is in 0.5, built capability-first after M1;
+  of the instruments, only their part-role and semantic-role vocabulary is
+  in 0.5; MDI, Diagram, DataLayout and the partial rows (the FileDialog
+  settings, the first-letter menu fallback, DataGridView breadth and the
+  others) are explicitly after 0.5; themes naming effects is in 0.5.
 - **Parked:** nothing (`claude/w-message-box` was folded).
 
 **DP, damage-preserving painting:** complete (see the stage index); nothing
