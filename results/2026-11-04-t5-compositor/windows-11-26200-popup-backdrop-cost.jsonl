@@ -1,0 +1,15 @@
+{"blur":0,"width":64,"height":64,"none_us":1425.1,"cached_us":1250.0,"recomputed_us":1608.5,"occluded_us":1633.4,"recomputed_pixels":4096,"occluded_pixels":0}
+{"blur":0,"width":128,"height":96,"none_us":1212.3,"cached_us":1711.9,"recomputed_us":2328.1,"occluded_us":1418.1,"recomputed_pixels":12288,"occluded_pixels":0}
+{"blur":0,"width":256,"height":192,"none_us":1439.6,"cached_us":2306.2,"recomputed_us":6400.6,"occluded_us":2197.5,"recomputed_pixels":49152,"occluded_pixels":0}
+{"blur":4,"width":64,"height":64,"none_us":1146.3,"cached_us":1287.5,"recomputed_us":2029.9,"occluded_us":1310.5,"recomputed_pixels":4096,"occluded_pixels":0}
+{"blur":4,"width":128,"height":96,"none_us":1127.3,"cached_us":1425.0,"recomputed_us":3520.1,"occluded_us":1479.6,"recomputed_pixels":12288,"occluded_pixels":0}
+{"blur":4,"width":256,"height":192,"none_us":1139.4,"cached_us":2166.3,"recomputed_us":9790.7,"occluded_us":2382.4,"recomputed_pixels":49152,"occluded_pixels":0}
+{"blur":8,"width":64,"height":64,"none_us":1176.3,"cached_us":1342.8,"recomputed_us":2390.4,"occluded_us":1322.9,"recomputed_pixels":4096,"occluded_pixels":0}
+{"blur":8,"width":128,"height":96,"none_us":1140.3,"cached_us":1479.7,"recomputed_us":4026.1,"occluded_us":1394.0,"recomputed_pixels":12288,"occluded_pixels":0}
+{"blur":8,"width":256,"height":192,"none_us":1312.7,"cached_us":2170.4,"recomputed_us":11276.5,"occluded_us":2184.9,"recomputed_pixels":49152,"occluded_pixels":0}
+{"blur":16,"width":64,"height":64,"none_us":1109.0,"cached_us":1243.8,"recomputed_us":3052.7,"occluded_us":1200.7,"recomputed_pixels":4096,"occluded_pixels":0}
+{"blur":16,"width":128,"height":96,"none_us":1125.4,"cached_us":1386.2,"recomputed_us":5470.8,"occluded_us":1372.3,"recomputed_pixels":12288,"occluded_pixels":0}
+{"blur":16,"width":256,"height":192,"none_us":1105.8,"cached_us":2106.3,"recomputed_us":13994.3,"occluded_us":2091.2,"recomputed_pixels":49152,"occluded_pixels":0}
+{"blur":32,"width":64,"height":64,"none_us":1104.7,"cached_us":1195.8,"recomputed_us":5478.0,"occluded_us":1195.9,"recomputed_pixels":4096,"occluded_pixels":0}
+{"blur":32,"width":128,"height":96,"none_us":1116.2,"cached_us":1421.4,"recomputed_us":9734.5,"occluded_us":1368.1,"recomputed_pixels":12288,"occluded_pixels":0}
+{"blur":32,"width":256,"height":192,"none_us":1125.3,"cached_us":2172.1,"recomputed_us":21498.9,"occluded_us":2208.4,"recomputed_pixels":49152,"occluded_pixels":0}
