@@ -70,19 +70,19 @@ Checkpoint and commit: pending. Host: the M4 (arm64 macOS), Homebrew clang
   - the template harness `example_app` (form, model, theme package, rule),
     built against the local checkout's install with
     `harness/lockstep.py prefix`.
-- **Open point for the owner (wording, not engineering).** The Gallery pages
-  are generated in-tree by the same form compiler the SDK installs
-  (`GUIForms::form_compiler`), but they are not configured against the
-  installed prefix. Two ways to close the gap:
-  1. **(recommended)** Add one installed-consumer test that runs
-     `gui_forms_add_form` from the installed prefix over every
-     `demo/pages/*.form` and compiles each generated header. It does not
-     link the Gallery, so it proves the gate's wording with little build
-     cost.
-  2. Accept the in-tree generation together with the installed examples as
-     meeting the gate, and say so in this record.
+- **Every page from the installed SDK (owner 2026-11-08, option 1).**
+  `examples/reference/CMakeLists.txt` (GUI.Forms `claude/effects_lane-rules`
+  at `389ff85e`) globs `demo/pages/*.form`. It runs the installed
+  `GUIForms::form_compiler` over each page through `gui_forms_add_form`, and
+  compiles one source that includes every generated header against the
+  installed headers. The ctest `installed_gallery_page_forms` prints the
+  document count and its pass expression requires it. It runs in
+  `tools/ci_build.py`'s installed-examples step. Nothing of the Gallery is
+  linked: the document class templates' owner members are checked where the
+  Gallery instantiates them (in-tree, item 3's page tests).
 - **To record:** the page count, the page tests passing (plain and under
-  ASan, UBSan and LSan), and the installed-consumer results. **Pending.**
+  ASan, UBSan and LSan), `installed_gallery_page_forms`' printed count, and
+  the other installed consumers' results. **Pending.**
 
 ## Also in the stage brief (not gate items, recorded for the stage)
 
