@@ -63,6 +63,8 @@ owner's approvals.
 
 ## Reference comparison, control by control
 
+(Phase 7 adds macos-style after Puppertino, owner 2026-11-08; section below.)
+
 What our engine cannot express in any familiar theme yet: padding and
 minimum sizes (not recipe fields); more than one inner keyline ring;
 check and radio marks, tabs, scroll bars, the menu bar and the title bar
@@ -122,6 +124,33 @@ shadows; animation.
 | selection | `#3399ff` with white text | `#2878c9` (white on `#3399ff` is 2.9:1) | none |
 | disabled | `#f4f4f4`, `#adb2b5`, text `#838383`; fields `#f0f0f0`, `#afafaf` | exempt | none |
 
+### macos-style (Puppertino 2.0, light and dark)
+
+GUI.Forms 35c2f531. Read from https://puppertino.com/ and
+`puppertino.min.css` 2.0.0 (jsDelivr), not vendored. Puppertino's dark
+appearance (`.p-dark-mode`) is followed in a second floor sheet, carried
+by a new `ThemeDarkVariant::authored` (the theme's own dark records,
+measured by the contrast report). Puppertino draws no control frames;
+every contrast fix below is a frame or colour it lacks.
+
+| Control | Followed (light / dark) | Contrast fix (enabled) | Not expressible yet |
+|---|---|---|---|
+| surface | elevated background `#ffffff` / `#1c1c1e`; text `#000000d9` / `#ffffffd9` | muted `#00000090` / `#ffffff8f` (Puppertino's `#00000080` 3.7:1, `#ffffff8c` 4.4:1 on a pressed plate) | the window band material and blur |
+| push button | fill `#00000014`, hot `#0000001c`, pressed `#00000029`, disabled `#0000000a` / `#ffffff12`, `#ffffff1c`, `#ffffff29`, `#ffffff0a`; radius 6 | frame `#949494` / `#676767` | height 24 and padding 0 16px; font weight 510 |
+| default (accent) button | white text on the accent; disabled 40% tint, text `#ffffff80` | accent `#0069f9` / `#0a6cf0` (white on `#0088ff` 3.5:1, on `#0091ff` 3.2:1), pressed `#005bd9` / `#0a5fd6` | the colour-mix tint |
+| focus | solid 2-unit ring (structure) | opaque `#0069f9` / `#0091ff`, white on the accent (Puppertino's `#0088ff80` halo) | the 3.5-unit outer halo plus 1-unit inset |
+| field (editor) | `#ffffff` / `#1e1e1e`, radius 6, shadow `0 0.5px 2.5px #0000004d`; focused border `#007aff` / `#0091ff`; disabled `#ffffff80` / `#1e1e1e80` | frame `#949494` / `#676767` (ring `#00000014` is 1.1:1) | the 3-unit focus outline |
+| check and radio (choice) | box `#0000001a` / `#ffffff1a`, radius 5, disabled `#0000000d` / `#ffffff0a`; checked: accent | pressed `#00000029` / `#ffffff29` (Puppertino's `#00000030`, `#ffffff30`); frame | the accent-filled checked box with a white mark (the recipe's fill lies under the label too, so the mark takes the accent); round radio |
+| group box | notice: `#00000004` / `#ffffff04`, radius 12, no frame | card frame `#949494` / `#676767` | superellipse corners |
+| tabs, segmented, switch, slider, title bar | none | none | parts (no parts sheet) |
+| progress | track `#00000016` / `#ffffff16`, radius 3; fill `#0088ff` / `#0091ff` | text on the fill black | height 6 |
+| menus | item hover `#0069f9` with white text, radius 6 (ours) | none | menu surface `#d9d9d9ba` with blur, radius 12, shadow (menus are not a family) |
+| list selection | selected `#0165e2` / `#0a6cf0` white text; hover `#0000000d` / `#ffffff0d` | hot row frame `#949494` / `#676767` | none |
+| toolbar button | clear, hot `#0000001a` / `#ffffff17`, capsule radius 14 | hot frame | height 28 |
+| help tag (tool-tip) | `#ececece0` text `#1a1a1a`, shadows `0 2px 8px #0003, 0 0 2px #0006` / `#00000080` text `#f5f5f5`, rim `#ffffff26` | frame | the dark backdrop blur |
+| links | none | `#0069f9` / Puppertino's dark `#0091ff` kept (light `#0088ff` is 3.5:1) | none |
+| disabled text | tertiary `#00000040` / `#ffffff40` | exempt | none |
+
 ## Approvals (pending, the owner)
 
 | Theme | Light | Dark | High contrast |
@@ -131,3 +160,4 @@ shadows; animation.
 | modern-flat | pending | n/a | pending |
 | xp-style | pending | n/a | pending |
 | windows7-style | pending | n/a | pending |
+| macos-style | pending | pending | pending |
