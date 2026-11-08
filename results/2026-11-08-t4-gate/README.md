@@ -73,21 +73,37 @@ draw from the family recipes); a separate focus treatment beyond the
 structure's ring (no `:focus` family state); outline offsets; text
 shadows; animation.
 
-### classic (98.css)
+### classic (Windows 2000; owner 2026-11-08: authentic, not inspired)
 
-| Control | Changed to follow 98.css | Contrast fix (enabled) | Not expressible yet |
+Followed: Windows 2000's standard scheme (3D face `#d4d0c8`, highlight
+white, light `#d4d0c8`, shadow `#808080`, dark shadow `#404040`, selection
+`#0a246a`, tooltip `#ffffe1`) and DrawFrameControl/DrawEdge geometry. Seen
+on the controls-inspection page and the specimen sheets (GUI.Forms
+claude/t4-inspection; images kept locally under w1 dev/inspection).
+
+| Control | Now | Contrast fix (enabled) | Not yet authentic |
 |---|---|---|---|
-| surface | face `#d4d0c8` (Windows 2000) to silver `#c0c0c0` | none | none |
-| button | bevel white/`#808080` ring inside the frame; pressed ring `#808080`/`#dfdfdf` (inverted) | frame `#0a0a0a` on every side (98.css's white top-left is 1.8:1) | second ring (`#dfdfdf`/grey inside white/`#0a0a0a`); padding 0 12px, min 75x23 |
-| default button | outer `#0a0a0a` ring as `default-outline` | none | none |
-| focus | dotted black ring (structure) | none | offset -4px |
-| field | white well; outer edges `#808080` top-left / white bottom-right as per-edge frame, inner ring `#0a0a0a`/`#dfdfdf`; disabled silver | top-left edge `#696969` (`#808080` is 2.2:1) | none |
-| check and radio | none | none | marks are parts |
-| group box (card, notice) | silver groove: per-edge frame, white/`#808080` ring | top-left edge `#696969` | legend placement |
-| tabs, scroll bars, title bar | none | none | parts (title bar navy to `#1084d0`) |
-| progress | navy `#000080` fill; well track | none | segmented blocks |
-| menus and selection | navy `#000080` with white text | none | none |
-| pending frame | ours | `#705800` (`#8a6d00` is 2.7:1 on silver) | none |
+| surface | face `#d4d0c8` | none | Gallery page surfaces keep the Gallery's own pale ground (shell style, not the theme) |
+| button | raised soft: outer white/`#404040`, inner `#d4d0c8`/`#808080` | none (gate reads a bevel's strongest line) | focus does not add the black frame Windows draws round the focused button |
+| pressed button | black frame round a `#808080` line, content offset 1,1 | none | none |
+| default button | black outer ring (`default-outline`) | none | none |
+| focus | dotted black rectangle (structure) | none | inset |
+| field | sunken: outer `#808080`/white, inner `#404040`/`#d4d0c8`, white; disabled on the face | none | none |
+| check box | square sunken white well (well radius follows the theme's choice radius, capped at 2), black tick; pressed well shows the face | none | indeterminate is a dash, not Windows' grey dithered tick |
+| radio button | sunken circle: rounded single edges split at 45 degrees (new kernel ring), black dot | none | none |
+| group box | etched: panel's sunken outer edge, `#808080` over white | none | caption font follows the control's font |
+| panel (Fixed3D) | sunken edge | none | none |
+| card, notice | raised panel | none | none |
+| toolbar button | flat; thin raised while hot, thin sunken pressed | shadow side `#404040` (`#808080` is 2.6:1) | none |
+| progress | thin sunken track on the face, `#0a246a` fill | none | segmented blocks |
+| menus and selection | `#0a246a` with white text | none | none |
+| scroll bar | raised arrow buttons | none | dithered track (draws white) |
+| fonts | `font-family: content` | none | labels of check boxes, radios and group captions take the control's font, not the theme's |
+
+Engine changes for this: rounded single edges draw as one CSS-style ring
+split along 45-degree lines (keylines likewise), valid when the edges'
+widths are equal; the boundary gate reads a bevel (single edges and their
+keylines) by its strongest line.
 
 ### xp-style (XP.css)
 
