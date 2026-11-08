@@ -58,3 +58,7 @@ Each implementation tranche promotes exact rows in
 `generated/WINFORMS_API_CATALOGUE.tsv` only after behavior evidence. Work should
 prefer cross-cutting substrate over adding a class shell. Every partial row must
 retain its open behavior here or in a more specific experiment record.
+
+## Compatibility notes (dated)
+
+- **2026-11-08, GroupBox `TextChanged` (owner-approved schema addition).** WinForms raises `TextChanged` on GroupBox (inherited from Control). GUI.Forms now does too: GroupBox's caption is a capability cell (`text`, shared TextCapability) whose change raises `text_changed`, with the interaction registered in control-schema.json and the C ABI event catalog (families coder, branch claude/families_b-queue b66ba5b5; folds in cp21). `FontChanged` is not added: the approval named only `TextChanged`.
