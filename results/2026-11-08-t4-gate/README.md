@@ -41,11 +41,19 @@ owner's approvals.
 
 - Every familiar theme meets the same contrast gate as the default. Where a
   period look falls short, the sheet darkens the value and its comment says
-  which: classic's outer frame is the dark shadow `#404040` on every side and
-  its disabled text `#6d6d6d`; xp-style's field frame `#4f6f99` and disabled
-  text `#7a7765`; windows7-style's field frame `#7a7a7a`, default button
-  frame `#2c628b` and press gradient end `#98d1ef`; modern-flat's toolbar
-  and menu hover show a `#767676` or accent frame.
+  which: classic's outer frame is the dark shadow `#404040` on every side;
+  xp-style's field frame `#4f6f99`; windows7-style's field frame `#7a7a7a`
+  and press gradient end `#98d1ef`; modern-flat's toolbar and menu hover
+  show a `#767676` or accent frame.
+- Owner-accepted exceptions (2026-11-08): period values kept below the
+  gate, listed and not counted by `familiar_themes_tests`
+  (`accepted_exceptions`): classic disabled text `#808080` (2.6:1),
+  xp-style disabled text `#aca899` (1.9:1), windows7-style default button
+  frame `#3399ff` (2.6:1, boundary).
+- Visual references (owner, 2026-11-08), to build and mock up against, not
+  vendored: 7.css (https://khang-nd.github.io/7.css/) for windows7-style;
+  XP.css (https://botoxparty.github.io/XP.css/, which also covers
+  Windows 98) for xp-style and classic.
 - All four are light only (no derived dark variant); high contrast is
   derived as for every theme.
 - They are themes a window or application shows, not compile bases
