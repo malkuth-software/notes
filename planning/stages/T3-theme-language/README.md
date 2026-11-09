@@ -4,7 +4,8 @@ Release: 0.3 Themeable. Depends on: T1 (part and state names), T2 (the
 engine's properties, primitives, inputs and expressions). Unblocks T4, FD, D,
 H, V. Status 2026-10-25: interview rounds 001 and 002 answered (below); the
 phased build plan, [`PLAN.md`](PLAN.md), is revised to them and awaits the
-owner's last review before P1. No parser code yet. Authority:
+owner's last review before P1. No parser code then (2026-11-09: T3 is
+complete, 7c25c6fc5). Authority:
 `planning/FORWARD_PROGRAMME.md` §4 T3; design language §12.1 item 1.
 
 Read [the shared brief](../README.md) first.

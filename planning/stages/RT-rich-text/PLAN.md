@@ -47,8 +47,10 @@ Decisions this plan builds on:
 
 Read from main at `8d1f2be0`.
 
-- GUI.Forms has no RTF code (`git grep -w -i rtf -- src include` finds
-  nothing). `RichTextBox` is W's priority 4 and is not started.
+- GUI.Forms had no RTF code then (`git grep -w -i rtf -- src include` found
+  nothing), and `RichTextBox` was not started. (2026-11-09: RichTextBox over
+  markdown and the RTF conversion landed in 9e301b637,
+  `src/core/text/markdown/rtf_conversion.cpp`.)
 - `stx_zlib/` is the layout to copy. It has its own `CMakeLists.txt`
   (standalone project or subdirectory, `STX_ZLIB_TESTS`, warnings with
   `-Wconversion`), `include/stx_zlib/`, `src/`, `tests/`, `README.md`,

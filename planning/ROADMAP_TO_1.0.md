@@ -20,13 +20,14 @@ studies (projects repository, `desks/coordinator/`), and the stage index.
 **Checkpoints.** cp22 (#473) merged on 2026-11-09 with the 0.5 coder batch;
 main is c9b11f0a. cp24 (#474) is part 1 of the next fold: the gui-forms
 default theme switch and its fallout (525/525 on Windows; the macOS
-accessibility fixture fix c6b78b4b waits on the Mac rerun). cp25 is
-folding: the key and numeric ABI, TextBox styled runs, the focus stack
-(modal windows, window properties, focus), the data grid ABI, the ribbon
-gaps, the host file gaps, the theme host fixes, and the drag engine stack
-(value bar, drawing primitives, plots).
+accessibility fixture fix c6b78b4b waits on the Mac rerun). cp25 (#475)
+merged on 2026-11-09 (main e1fc3bf68): the key and numeric ABI, TextBox
+styled runs, modal and owned windows, window properties and the host file
+gaps. cp26 is folding the rest: focus, the data grid ABI, the ribbon gaps,
+the look integration, the theme host fixes, the swap-in library branches
+and the drag engine stack (value bar, drawing primitives, plots).
 
-**Coded, waiting in cp25** (no build yet; the integrator verifies):
+**Coded, folding in cp26** (not on main yet; the integrator verifies):
 - the declarative drag engine with the node canvas N0 skeleton (NodeGraph
   records, the orthogonal LinkRouter) (2.1, 2.4);
 - the value bar and scrub gesture (2.2);
@@ -80,7 +81,8 @@ own worker; their builds are pending.
 - PlaySuite: `is_key_down`, the playsuite theme package, and a gap list.
 - SwiftEdit: the reusable highlighter (CSS, form and inline) and the
   CodeEditor for the theme editor.
-- PlaySuite and SwiftEdit build once cp25's key and styled-run items land.
+- cp25's key and styled-run items are on main (#475), so PlaySuite and
+  SwiftEdit can now build against it.
 
 **Mac** (`MAC_HANDOFF_2026-11-09.md`):
 - the #474 macOS accessibility rerun;
@@ -148,7 +150,7 @@ The items the owner ruled after the seal, and the closure list's leftovers.
 | 0.5 | Record refresh: stage index, board, track pointers; this roadmap folded into `docs/dev/roadmap.md` | owner accepts this page | C | 0.5 | docs-only | in progress: this page and the coordinator desk refreshed 2026-11-09; `docs/dev/roadmap.md` and the board still to follow |
 | 0.6 | Owner discussions: the theme designer, the tools' licence class | none | O | - | feed Block 5 and question 3, 4 | **done** for the theme editor (the owner's POST_0.5 instructions); licence: freeware single seat, wording open |
 | 0.7 | cp24 (#474): the gui-forms default theme switch | the Mac rerun | B+M | 0.5 | part 1 of the post-0.5 fold | in CI; Windows 525/525 |
-| 0.8 | cp25 fold: the queued C ABI additions, products' prerequisites and Block 2 code | 0.7 | B | 3-4 | integrator, order in `INTEGRATION_QUEUE.md` | folding |
+| 0.8 | cp25 fold: the queued C ABI additions, products' prerequisites and Block 2 code | 0.7 | B | 3-4 | integrator, order in `INTEGRATION_QUEUE.md` | merged (#475, e1fc3bf68); cp26 folds the rest |
 | 0.9 | 0.5 release tail: ABI re-baseline and blocking audit, the 0.5 tag and SDK release, docs/wiki publication, roadmap.svg | none | C+B+O | 1 | gates nothing | open |
 
 **Mac handoff.** What we take: closure of the seal's deferred host rows, so
@@ -263,9 +265,9 @@ Block 1 total: about 6-7 U, all coder or study work, plus owner review.
 
 | # | Item | Depends on | Kind | U | Parallel with | Status 2026-11-09 |
 |---|---|---|---|---|---|---|
-| 2.1 | Declarative drag engine *(study first: 1.1)* | DK's drag session | C, then B | 3-4 | 2.2, 2.3, 2.5 | coded (drag-engine 850bf218: engine core, Splitter and SplitContainer on it, drag announcements); in cp25 |
-| 2.2 | Value bar (Blender-style) and drag-to-scrub *(study first: 1.5)* | the reduced-motion gate | C, then B | 1-1.5 | all | coded (value-bar 1bfa4a94: ValueBar, ScrubGesture); in cp25 |
-| 2.3 | Plot primitives, then the declarative plot layer, sparkline *(study first: 1.4)* | 1.7 | C, then B | 5-6 | all | coded: drawing primitives (32cd5cbd) and the plots package (d05561e4); in cp25. Backlog: a bulk FormSources path so `.form` bind() can feed plot series |
+| 2.1 | Declarative drag engine *(study first: 1.1)* | DK's drag session | C, then B | 3-4 | 2.2, 2.3, 2.5 | coded (drag-engine 850bf218: engine core, Splitter and SplitContainer on it, drag announcements); folding in cp26 |
+| 2.2 | Value bar (Blender-style) and drag-to-scrub *(study first: 1.5)* | the reduced-motion gate | C, then B | 1-1.5 | all | coded (value-bar 1bfa4a94: ValueBar, ScrubGesture); folding in cp26 |
+| 2.3 | Plot primitives, then the declarative plot layer, sparkline *(study first: 1.4)* | 1.7 | C, then B | 5-6 | all | coded: drawing primitives (32cd5cbd) and the plots package (d05561e4); folding in cp26. Backlog: a bulk FormSources path so `.form` bind() can feed plot series |
 | 2.4 | Node canvas: blueprint backgrounds, magnetic curved links, double-click edit *(study first: 1.2, 1.1)* | 2.1, pattern fills | C, then B | 4-5 | 2.3 | N0 coded (NodeGraph records, LinkRouter, in 850bf218); the canvas, backgrounds and port lamps (a new lamp part; green-red indicator style) open |
 | 2.5 | Final controls: W-1 to W-3, W-5b to W-9, and the superset's P1 rest (callout, wizard and step indicator, gauges, dial, seven-segment readout, lookup combo, in-window modal layer, About) | ImGui ranking (1.3) for any additions | C, then B | 8-12 | all | open |
 | 2.6 | Effects taken from Dear ImGui, as effect programs *(study first: 1.3)* | EP | C, then B | 1-2 | all | open (study done) |
@@ -300,12 +302,12 @@ Block 2 total: about 40.5-51 U, of which about three quarters is coder work.
 
 | # | Item | Depends on | Kind | U | Notes |
 |---|---|---|---|---|---|
-| 3.0 | C ABI additions for the swap-in: keys and numeric, modal and owned windows, window properties, focus (composites, focus restore, `focusable` in the schema), the data grid, TextBox styled runs | the sealed 1.1 baseline | C+B | 3-4 | **coded, in cp25**; additive; the audit and the version number need a recorded owner decision (question 10) |
+| 3.0 | C ABI additions for the swap-in: keys and numeric, modal and owned windows, window properties, focus (composites, focus restore, `focusable` in the schema), the data grid, TextBox styled runs | the sealed 1.1 baseline | C+B | 3-4 | **partly on main**: keys and numeric, modal and owned windows, window properties and styled runs landed in cp25 (#475); focus and the data grid fold in cp26; additive; the audit and the version number need a recorded owner decision (question 10) |
 | 3.1 | C ABI band declaration: window presentation in the windows table | 2.8's declaration shape | C+B+O | 0.5-1 | additive; needs a recorded owner decision (sealed interface) |
 | 3.2 | Drawing ABI seal (`gd_*`) | 1.7, 2.3, 2.4, Block 4's demonstrators | C+B+O | 1-2 | sealed only after the demonstrators stress it |
 | 3.3 | R: SDRSharp reflection rebuilt on the current ABI | T4, F | C+B+W+M | 2-3 | precedes S (forward programme); **in progress through the swap-in** (facade-v1 on `gf_abi`, 927/933 members; 5.5) |
 | 3.4 | S: generated C# bindings, the WinForms-shaped package, the corpus | 3.3, C | C+B+W+V | 6-10 | its own repository |
-| 3.5 | PlaySuite and SwiftEdit as full ports to the C ABI | ABI 1.1 | C+B | 2-3 each | owner, 2026-11-03; both ported forward by their workers (C++ consumers so far), builds pending cp25 |
+| 3.5 | PlaySuite and SwiftEdit as full ports to the C ABI | ABI 1.1 | C+B | 2-3 each | owner, 2026-11-03; both ported forward by their workers (C++ consumers so far), builds against main (cp25 landed) pending |
 | 3.6 | 1.0 conditions: normative traces on Windows, macOS and X11; the member manifest; two-consumer conformance | 3.5 | B+W+M | 2-3 | release-1.0 conditions 2 to 4 |
 | 3.7 | Help H9: C ABI `help` table, the help fields in the schema, the C# binding | 2.19, 3.0 | C+B+O | 0.5 | joins ABI 1.2 with 3.0 (question 10) |
 
@@ -324,7 +326,7 @@ Visual-Studio-bound.
 
 | # | Item | Depends on | Kind | U | Status 2026-11-09 |
 |---|---|---|---|---|---|
-| 4.1 | SwiftEdit revised to the new standard and interface; syntax highlighting, CSS first | 3.5, a styled-run seam in the text editor | C+B+O | 2-3 | coded (claude/swiftedit-new-standard 32cf3d9; the styled-run seam is in cp25); build pending |
+| 4.1 | SwiftEdit revised to the new standard and interface; syntax highlighting, CSS first | 3.5, a styled-run seam in the text editor | C+B+O | 2-3 | coded (claude/swiftedit-new-standard 32cf3d9; the styled-run seam landed in cp25, #475); build pending |
 | 4.2 | Plan Paint: the canonical ribbon with soft large bubble buttons; robust file handling; the new `stx_conv` algorithm | RB, 0.3 | C+B+O | 2.5-3 | in progress (Plan Paint worker): file handling and `stx_conv` done; ribbon option b; waits on 2.10's CSS snippet, then the QAT placement and the sweep |
 | 4.3 | PlaySuite migrated forward: custom skinning through themes, with a gap list | 3.5 | C+B+O | 2-3 | coded (claude/playsuite-cp22 82906c2: theme package, gap list); build pending |
 | 4.4 | D1 node graph, D3 ImGui-class and D4 ImPlot-class demonstrators | 2.4, 2.5, 2.6, 2.3 | C+B | 4-5 | open |
@@ -334,7 +336,7 @@ Visual-Studio-bound.
 | 4.8 | Emscripten build | `stx_skia` | C+B | 3-5 | open |
 | 4.9 | First exhibits: E2 oscilloscope, E4 process control, E14 wizard, E9 data entry | 2.3, 2.5 | C+B | 1-2 each | open |
 | 4.10 | Website: template example screenshots for `malkuth-software/malkuthsoft.com` | 0.2, the examples | C+O | 0.5 | open (owner, 2026-11-09) |
-| 4.11 | GUI.Forms gaps from the product ports: macOS open-files from Finder, Linux dialog filters ignoring case | none | C+B+M | 0.5 | coded (host-file-gaps 1744d23b3), in cp25; Mac check in the handoff |
+| 4.11 | GUI.Forms gaps from the product ports: macOS open-files from Finder, Linux dialog filters ignoring case | none | C+B+M | 0.5 | landed (host-file-gaps 1744d23b3, cp25 #475); Mac check in the handoff |
 | 4.12 | Help H10: Plan Paint's help as records (replaces `help_content.hpp`, converts its JSON help entries), the library HelpBook, F1 to context pages | 2.19, the Plan Paint locale migration | C, then B, O | 1 | 4.2 | open |
 
 **SwiftEdit.** What we take: the editor on the 0.5 shape (forms, properties

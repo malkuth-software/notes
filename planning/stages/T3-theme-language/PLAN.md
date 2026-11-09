@@ -1,7 +1,9 @@
 # Stage T3 plan: the theme language front end
 
 Status 2026-10-25: revised to interview round 002, for the owner's last
-review before P1. No parser code exists yet. The decisions it builds on are
+review before P1. No parser code existed then (2026-11-09: T3 is complete,
+7c25c6fc5; the front end is in `src/core/engine/theme_rules/` and the user
+guide is `docs/user/theme-language.md`). The decisions it builds on are
 in [`README.md`](README.md): "Owner decisions, interview round 001
 (2026-10-25)", cited here by their letters (A1 to E3), and "Owner
 decisions, interview round 002 (2026-10-25)", cited as R2-01 to R2-21.
