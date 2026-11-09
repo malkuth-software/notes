@@ -1,8 +1,8 @@
 # GUI.Forms forward programme
 
-Date: 2026-10-12. Status: agreed direction; stage scopes and gates are a draft
-for owner review. Open owner decisions are listed in section 9 and are not
-assumed anywhere below.
+Date: 2026-10-12, state updated 2026-11-08. Status: agreed direction;
+stage scopes and gates are a draft for owner review. Open owner decisions
+are listed in section 9 and are not assumed anywhere below.
 
 This plan sequences the next body of work after the documentation and
 house-style stage. It is written for sibling threads: read section 1 and the
@@ -78,6 +78,22 @@ D  Interface builder (dogfooded) ──────── needs T3, L, FD       
 H  HTML import + WYSIWYG layout designer ─ needs L, T3                │
 V  WYSIWYG theme designer ─────────────── needs T4, D core ───────────┘
 ```
+
+State on 2026-11-08 (checkpoint 22, `checkpoint/2026-11-08-cp22`): the
+next release is 0.5, the ABI and API seal; 0.3 and 0.4 were not tagged and
+their content ships in it. A, F, T1, T2, T3, Z, DP, L and SK are complete.
+C, the property capabilities (PC), effect programs (EP), threaded
+sub-surfaces (SS), the application, windows, rules and Splash (AW), FD and W
+are in checkpoint 22; T4 and T5 are in with their gate rows to measure. What
+0.5 seals, what remains before the seal and what moves after it are in
+`planning/ROADMAP_TO_0.5.md`; the stage index carries each stage's status.
+
+Releases after 0.5 (owner, 2026-10-27, amended since): the final controls
+and S lead to **1.0 (backend)**, the library, its ABI and its C# bindings;
+then the closed-source **tools** (the conversion program, the visual editor,
+D, Visual Studio integration); then a cleanup round and **1.0 Stable**. H
+moves after 1.0. The release names 0.6 Bindings and 0.7 Designers are
+retired.
 
 State on 2026-10-27 (main tagged `checkpoint-2026-10-27`): 0.2 Verified
 shipped as v0.2.0. A, F, T1, T2, Z and DP are complete. T3 is in progress
@@ -219,7 +235,9 @@ Build the default theme from `DESIGN_LANGUAGE_SPECIFICATION.md` as theme data;
 move every stock control's hand-written paint onto the engine; ship
 Windows-familiar themes (at least Classic and a modern flat look; others per
 owner decision). The current only and default theme, `windows-professional`,
-becomes one of the Windows-familiar themes. High-contrast and dark variants
+becomes one of the Windows-familiar themes. State 2026-11-08: four familiar
+themes (classic, xp-style, 7-style, macos-style) approved by the owner, and
+the default switches to `gui-forms` in 0.5. High-contrast and dark variants
 are derived, per the specification.
 
 Gate: the Gallery renders every stock control with no control-specific paint
@@ -329,7 +347,9 @@ error model, exposes the schema of T1 and the engine of T2, and is a superset
 of what the C# Forms surface needs.
 
 Gate: the breaking-change audit and the two-consumer conformance condition in
-`docs/dev/roadmap.md` "Before 1.0".
+`docs/dev/roadmap.md` "1.0 Stable". At 0.5 the ABI (version 1.1) is sealed:
+its baseline is re-recorded from the seal head and the audit becomes
+blocking (owner, 2026-11-08).
 
 ### S. C# sibling: Windows Forms swap-in
 
@@ -343,11 +363,17 @@ is obsolete .NET 2.0-era duplication. Developed on the shadow desktop with
 Visual Studio; a sibling thread dogfoods it only after R, C and the binding
 layer exist. GUI.Forms itself still never depends on .NET.
 
+Placed in 1.0 (backend), after the seal.
+
 Gate: each corpus application builds by swapping the package reference and
 runs on all three platforms; a visual differential against the same
 application on real Windows Forms is within tolerance.
 
 ## 6. Tools
+
+The tools follow 1.0 (backend). The conversion program, the visual editor,
+the interface builder and the Visual Studio integration are closed source
+(owner, 2026-10-27); whether V is among them is open. H comes after 1.0.
 
 ### D. Interface builder
 
@@ -453,3 +479,11 @@ controls and the engine address (design language §12.7); the ribbon plan
 (RB) and the docking stage (DK) are admitted; the advanced candidates
 above are admitted (matrix rows 51 to 57), `PageView` is studied inside
 DK, and grids and tree lists use stable row identity (W decision 4).
+
+Decided 2026-11-07 and 2026-11-08 (0.5): 0.5 is the ABI and API seal,
+widened to the application, windows, rules and Splash; smooth scrolling is
+in 0.5; the default theme becomes `gui-forms` and the four familiar themes
+are approved; `examples/reference` is the reference application, and the
+template_harness example moves after the seal; the ABI baseline is
+re-recorded at the seal with the audit blocking; the Mac checks come after
+0.5; outer-edge effects (the active border) come after the seal.

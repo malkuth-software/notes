@@ -1,272 +1,102 @@
-# What's left to 0.5
+# 0.5: the ABI and API seal
 
-Date: 2026-10-27, from main at the checkpoint `checkpoint-2026-10-27`
-(14164ee5). Status: the list of remaining work from the checkpoint to 0.5 ABI
-candidate, by release. `planning/FORWARD_PROGRAMME.md` stays authoritative for
-scope and gates, and each stage brief under `planning/stages/` for its own
-decisions. Where this page says **unknown**, nothing recorded settles it;
-nothing here is a guess.
+Date: 2026-11-08, from checkpoint 22 (`checkpoint/2026-11-08-cp22`,
+1416c6d3). Status: what 0.5 is, what it seals, what remains before the seal
+and what moves after it. `planning/FORWARD_PROGRAMME.md` stays authoritative
+for scope and gates, and each stage brief under `planning/stages/` for its
+own decisions. The item-by-item closure list, with effort units and owners,
+is the coordinator's `CLOSURE_0.5.md` (projects repository,
+`desks/coordinator/`). The 2026-10-27 version of this page, a remainder list
+by release, is in git history.
 
-What has landed since v0.2.0 is in `docs/dev/roadmap.md` and in the stage
-index of `planning/stages/README.md`.
+## What 0.5 is
 
-## First item of the next leg: integrity findings (#401)
+There are no 0.3 or 0.4 tags (owner, 2026-10-27): their content ships in
+0.5, and the next release is v0.5.0. The owner defined 0.5 on 2026-11-03,
+and widened it on 2026-11-07 and 2026-11-08, as an internal candidate that
+finalises the ABI, the API and the languages, then touches them up and
+records the seal. After the seal, a change to a sealed interface needs a
+recorded owner decision.
 
-- **What:** #401 adds a source checker for code whose storage, lifetime or
-  bounds invariants are not evident locally, and its first report. That
-  report covers 963 first-party files and lists 44 candidates. They are a
-  review queue, not confirmed defects.
-- **Next:** land the checker, review the candidates, and fix the likely bugs
-  it found.
-- **Dependencies:** none.
-- **Open owner decisions:** whether the checker becomes a gate, and over
-  which scopes: unknown.
-- **Parked:** #401 is open and set aside, and its branch is kept.
+## What is sealed
 
-## 0.3 Themeable: the remainder
+| Area | Contents | Stages | State at cp22 |
+|---|---|---|---|
+| The C ABI | version 1.1, installed, with an error model, the breaking-change audit against a recorded baseline, the conformance kit and C# interop; tables for the application (`GF_TABLE_APPLICATION`), rules (`GF_TABLE_RULES`), sub-surfaces and the splashscreen | C | built; the baseline is re-recorded at the seal |
+| Properties as capabilities | every property a cell, a view or a collection cell: `(*c).text = "OK"` writes, `.read()` reads, `as_type` converts, child properties such as `(*grid).area[*c]`; setters for properties removed (M-S) | PC, W | in cp22; the residual setter audit (R1) is open |
+| The application, windows and rules | `Application::create` and one current application whose theme compiles once; the generated window class bound at construction; window rules over a closed vocabulary | APP_WINDOW_RULES_DESIGN.md (coordinator desk) | in cp22 |
+| Window kinds | Window, Popup and Splash: warm tooltip windows, menus and drop-downs on Popups, the splashscreen, the `transient_surfaces` capability | SPLASH_NOTES.md (coordinator desk) | in cp22 |
+| The form language | `.form` documents, in-slot bindings, generated window and user-control classes, the refusals | FD | in cp22; the FD-7 gate record is a draft |
+| The theme language and effects | selectors, specificity and origins, `:family()`, backdrops, user themes, effect programs | T3, EP | T3 gate recorded 2026-11-01; EP-1 to EP-8 in |
+| Theming | the GUI.Forms theme with derived dark and high-contrast variants, theme variants, the four familiar themes, compositor cooperation | T4, T5 | in cp22; the T4 gate record is a draft; T5 C8 rows open |
+| Sub-surfaces | threaded regions with their own input, effects and accessibility | SS | S1 to S7 in |
+| The creation-cost contract | window creation does no hidden work, enforced by a benchmark gate | K (APP_WINDOW_RULES_DESIGN.md) | in cp22; baselines on the M4 only |
+| Windows Forms coverage | every 2026-10-27 row, the small controls, the instruments vocabulary | W | in; W-1 to W-3 and W-5b to W-9 ruled after 0.5 |
+| Smooth scrolling | a notched wheel, the scroll bar's arrows and track, and paging glide; precise deltas apply at once; reduced motion is instant; focus scrolls into view | (W) | on `claude/scroll-0.5`, queued for the seal checkpoint |
 
-**T3, the theme language front end.**
-- **Done:** P1 to P7a are on main:
-  - tokens and diagnostics, the syntax tree and its round trip;
-  - selectors, values and expressions;
-  - the lowering onto the engine;
-  - authored materials P6a to P6f (recipe fields, filters, images and
-    borders);
-  - transitions P7a.
-- **Left:**
-  - P7b (motion: `@keyframes`, `animation` and ambient loops);
-  - P8 (colour roles, em, text roles and `@media`);
-  - P9 (inline styles and `!important`);
-  - P10 (packages, imports and atomic replacement);
-  - P12 (custom properties through the cascade);
-  - P11 (the gate). The plan runs P12 before P11.
-- **Dependencies:** T1 and T2, both done.
-- **Owner decisions:** P7b is "strict for now" (decided), as are the
-  engine-version lower bound and spring() damping. Open: none recorded in
-  the brief; whether later phases raise new ones is unknown.
-- **Parked:** nothing.
+## Owner rulings, 2026-11-08
 
-**T4, the default theme and the Windows-familiar themes.**
-- **State:** design decided; build not started.
-- **Dependencies:** T1, T2, and T3. Whether T4 can start before T3's gate,
-  on a subset of phases, is unknown.
-- **Owner decisions:** decided in the design language §12.3 to §12.5 and the
-  brief (2026-10-13). Open: none recorded.
-- **Parked:** nothing.
+- **Smooth scrolling is in 0.5.**
+- **The default theme becomes `gui-forms`** (T4 phase 6), and the four
+  familiar themes (classic, xp-style, 7-style, macos-style) are approved.
+- **`examples/reference` is the reference application.** The
+  template_harness example moves onto the 0.5 shape after the seal.
+- **The ABI baseline is re-recorded at the seal** (`gf_abi-0.5.json` gains
+  the 1.1 additions; `GF_ABI_MINOR` stays 1) and the audit becomes blocking.
+- **The Mac checks come after 0.5**: Cmd-Q, logout, the resize check and
+  T5 C8's macOS rows.
 
-**T5, compositor cooperation.**
-- **Done:** C0 to C6 are on main: the Windows, macOS and X11 adapters, the
-  XWayland probe, the engine join (C5) and full-fidelity glass (C6).
-- **Left:**
-  - C7 (reflection);
-  - C8 (the stage gate: a compositor lab program on each host);
-  - the Mac bench rerun with an active-window probe.
-- **Dependencies:** C7 needs C6 (done). The bench rerun needs the owner's
-  Mac mini M4.
-- **Owner decisions:** the Wayland direction is an open owner concern, not
-  a decision (T5 brief, with T5-Q9); T5 plans no Wayland-native work.
-- **Parked:** nothing.
+## Before the seal
 
-**SK, universal Skia.**
-- **Done:** SK1a (the Windows CPU Skia archive built and published by CI),
-  plus #386, the fix for the CI jobs that a skipped Skia job had skipped.
-- **Left:**
-  - SK1b (pin the archive; Skia mandatory on every platform);
-  - SK2 (BGRA8 premultiplied everywhere, PNG only at the image seam);
-  - SK3 (the Windows host on Skia);
-  - SK4 (CoreGraphicsRaster removed);
-  - SK5 (goldens re-recorded once).
-- **Paused by the owner (2026-10-26).** When it resumes is the open owner
-  decision.
-- **Later:** the swap from Skia to `stx_skia` comes after SK; its release is
-  unknown.
-- **Dependencies:** SK1a (done).
-- **Parked:** the SK1b worktree has no commits; its resume steps are in the
-  state-machines worker's track file.
+In order (CLOSURE_0.5.md section 3 has the detail):
 
-## 0.4 Flexible: the remainder
+1. Land checkpoint 22: the harness test fix, the harness and stx pins on
+   merged commits, the first full CI run and the Windows verification.
+2. Measure the gate records: T4 (G1), FD-7 (G2), T5 C8's Windows and X11
+   rows (G3) and the creation gate per host (G4).
+3. The default-theme switch to `gui-forms`, with traces re-recorded and a
+   difference count.
+4. The seal checkpoint: the switch, smooth scrolling, the setter audit, the
+   documentation and these notes, folded and fully verified.
+5. The seal: the ABI baseline re-recorded, the audit blocking, the seal
+   record under `results/`, signed by the owner.
 
-**L, real dynamic layout.**
-- **Done:** L0 to L8a are on main:
-  - the layout oracle;
-  - FlexPanel, GridPanel and BlockPanel;
-  - the `TextBlock` leaf;
-  - the Windows Forms containers with full right-to-left mirroring;
-  - the L7 box gate (181 fixtures, 0 over tolerance);
-  - the resize fix #360.
-- **Left:** L8b, the text corpus. This adds the text-scale dimension the
-  box gate did not exercise.
-- **Dependencies:** L8a (done).
-- **Owner decisions:** open: none recorded.
-- **Parked:** `claude/l8b-text-corpus`.
+## After 0.5
 
-**FD, form documents.**
-- **State:** not started; format decided.
-- **Dependencies:** T1 (done) and T3.
-- **Owner decisions:** decided 2026-10-13 (the CSS-family syntax, and the
-  Gallery DML migrates). Open: none recorded.
-- **Parked:** nothing.
+The trajectory (owner, 2026-10-27, amended since) after the seal:
 
-**W, Windows Forms control coverage.** All of W lands before v0.5.0 (owner,
-2026-10-27).
-- **Done since v0.2.0:**
-  - the Open, Save, FolderBrowser and Color dialogs, and
-    ThreadExceptionDialog;
-  - TabControl images and the DataGridView image column;
-  - the ListView insertion mark and label editing;
-  - content-only owner drawing;
-  - Splitter.
-- **Done since this page was written** (checked against main feacf6d4,
-  2026-11-03; every row of the 2026-10-27 "Left" list is on main):
-  - MessageBox (`show_message_box`, main c1901297), with its breadth since
-    cd652af4: the AbortRetryIgnore and CancelTryContinue button sets, the
-    fourth default button, the right-to-left options, and the help button
-    (`Window::help_requested`, then the window's `HelpProvider`); tests
-    `tests/message_box_tests.cpp`;
-  - the link role (`ControlVisualRole::link` and `visited_link`) and the
-    DataGridView link column (`DataGridViewColumnKind::link`; tests in
-    `tests/data_grid_view_tests.cpp`), c1901297;
-  - plain-letter menu mnemonics in an open menu
-    (`test_menu_plain_letter_mnemonics`), c1901297;
-  - the slow-click label edit (`slow_click_label_editing` in
-    `tests/list_view_tests.cpp`), c1901297;
-  - the RichTextBox run model, then RichTextBox over the MD4C-backed
-    markdown framework with RTF conversion and one editing engine under
-    TextBox and RichTextBox (9e301b63; owner 2026-10-28), which replaced
-    the run model;
-  - the ListView groups and tile view and the TabControl Deselecting,
-    Selecting, Deselected and Selected events (67fc629e);
-  - tooltips owned by the thing, one presenter per window (c6baab4d);
-  - DataGridView breadth batches 1 to 3, wrapped text, auto sizing, column
-    order and per-row heights;
-  - strip and menu merging (MergeAction and MergeIndex, cd652af4).
-- **Not provided by owner decision (2026-10-28):** ListView
-  `ShowItemToolTips` and item `ToolTipText`, TabControl `ShowToolTips`;
-  TabControl `Multiline` is deferred (tabs that do not fit scroll).
-- **Left:**
-  - the Win32 first-letter fallback for menu items without a mnemonic;
-  - the FileDialog settings the hosts fix today (`ShowHiddenFiles`,
-    `DereferenceLinks`, `CheckFileExists`, `CheckPathExists`,
-    `ValidateNames`);
-  - DataGridView breadth beyond the batches above (see
-    `stages/W-winforms-controls/DATAGRIDVIEW_AUDIT.md`);
-  - MDI, admitted 2026-11-02 as a presentation of DK's document area (DK
-    decisions 60 to 62, matrix row 46);
-  - the small-controls batch (toggle switch, spinner and progress ring,
-    toast, info banner, badge, empty state, search field, segmented
-    control), admitted to W after FD (superset study decision 1);
-  - the instruments package (gauges, knob, seven-segment readout,
-    sparkline; decision 2b), whose first control, SweepScope, is on main;
-  - the property-capabilities migration of every control (study accepted
-    2026-11-03), which W carries after FD6.
-- **Dependencies:** T4, or the by-role paint path (ruling 2026-10-14).
-- **Owner decisions:** `Diagram` (DG) waits for the owner's interview.
-  `DataLayout` waits as well (W brief). **0.5 scope (owner, 2026-11-03):**
-  the small-controls batch is in 0.5, built capability-first after M1;
-  of the instruments, only their part-role and semantic-role vocabulary is
-  in 0.5; MDI, Diagram, DataLayout and the partial rows (the FileDialog
-  settings, the first-letter menu fallback, DataGridView breadth and the
-  others) are explicitly after 0.5; themes naming effects is in 0.5.
-- **Parked:** nothing (`claude/w-message-box` was folded).
+1. **The final controls**, then **1.0 (backend)**: the library, its ABI and
+   its C# bindings. S, the C# sibling, belongs here; PlaySuite and SwiftEdit
+   become full ports to the C ABI (owner, 2026-11-03).
+2. **The closed-source tools**: the Windows Forms conversion program, the
+   visual editor, the interface builder (D) and Visual Studio integration.
+   Whether the theme designer (V) is one of them is open.
+3. **A final cleanup round**, better documentation and tutorials, then
+   **1.0 Stable** (`planning/stages/release-1.0/`).
 
-**DP, damage-preserving painting:** complete (see the stage index); nothing
-left.
+Placed after the seal:
 
-## 0.5 ABI candidate
+- the Mac checks (above);
+- outer-edge effects: the active border, the window band and host shaping
+  (ACTIVE_BORDER_STUDY.md, ruled after the seal 2026-11-07);
+- Splash, further: baking on a worker thread, menus as their own Splash
+  kind;
+- rules in form documents (built-in actions only) and public run-time form
+  loading;
+- the template_harness example on the 0.5 shape;
+- the consumer conversions (PlaySuite, Plan Paint, SwiftEdit, the benchmark
+  demonstrations, the File Manager frontend) and the capability
+  demonstrators (TRAJECTORY_TO_1.0.md);
+- the Emscripten build, after `stx_skia`;
+- the exhibits, before 1.0 (EXHIBITS_PLAN.md).
 
-**C, the stable installed C ABI.**
-- **State:** an experimental 0.x ABI (version 0.26) is built and tested but
-  not installed.
-- **Left:** a versioned, installed ABI with an error model, exposing the T1
-  schema and the T2 engine.
-- **Dependencies:** T1 and T2 (done).
-- **Owner decisions:** decided 2026-10-13 (C brief). Open: none recorded.
-- **Parked:** nothing.
+After 1.0: HTML import (H), a light FreeType fork, identical floating-point
+results on every architecture.
 
-**The breaking-change audit.**
-- **What:** an audit of the C function tables and error model, with the C++
-  wrappers as RAII conveniences over them, not a second contract.
-- **Dependencies:** C.
-- **Owner decisions:** open: unknown.
+## Superseded
 
-**Two independent native consumers.**
-- **What:** two consumers that pass the ownership, thread and callback
-  conformance tests against the installed SDK.
-- **Dependencies:** C.
-- **Owner decisions:** the consumers for 1.0 were decided on 2026-10-13
-  (PlaySuite and Plan Paint, then the interface builder and the demoboard
-  program). Whether the same two count for 0.5 is unknown.
-- **Supporting work:** `claude/consumer-contract` (the consumer tooling
-  contract and its test) is parked for the template harness (plan phase D).
-
-## Addendum 2026-10-31: the consumer refactor that concludes 0.5 (owner)
-
-Planned work not yet in the stages above, recorded as the owner gave it. Where
-it says nothing about a detail, the detail is unknown.
-
-**stx_conv, folded in and optimized further.**
-- **State:** the standalone stx_conv work was advanced by alternating Codex
-  and Claude threads and is now faster and better than before. It is done in
-  its standalone folder.
-- **Left:** fold it into GUI.Forms. Then more SIMD optimization of its
-  additional logic: rotations, perspective warp and the like.
-
-**Too much CPU on some screens.**
-- **Observation:** running the demonstration programs (2026-10-29 builds), the
-  owner found some screens using too much CPU for the optimization done so far.
-  Even animations should not sustain as much as they do.
-- **Treated as:** part of the overall refactor below, not a separate fix. The
-  benchmark programs are themselves dogfood for the framework and help find hot
-  paths that are too expensive or under-optimized, so they get touched up as
-  the stages go.
-
-**Everyone moves to the theme engine at once.** All consumers move forward
-together onto the GUI.Forms theme engine and built-in capabilities.
-- **PlaySuite** performs well and looks good, so it is the challenge: GUI.Forms
-  must deliver a visually identical or superior result, or adapt until it can.
-- **Plan Paint** is not taken to 100 % identical behaviour, since the standard
-  appearances change some things. Its interfaces are refactored to GUI.Forms
-  standards, and it uses the new stx_conv for nicer results. Separately, and
-  strictly outside the GUI.Forms division, it needs a touch-up for image
-  format issues the owner has spotted.
-- **The File Manager frontend and the standalone file picker** move to
-  properly themed in-house control collections. The aim is not to stay
-  identical to what exists but to follow our styles and the interviews for a
-  good look. That file picker then becomes Plan Paint's file picker.
-- **SwiftEdit** is properly modernized.
-
-**Order (staged).**
-1. Theming is formalized.
-2. PlaySuite, right after.
-3. Plan Paint, right after that. 0.5 lands around this time.
-4. SwiftEdit, PlaySuite, Plan Paint, the benchmark demos and the File Manager
-   frontend all land, correctly themed and behaving. That concludes 0.5.
-
-The benchmark programs are touched up throughout.
-
-**0.6.**
-- Testing all of the above for regressions, and for equally good behaviour on
-  Windows.
-- The shadow desktop picks back up here, and Mac work pauses.
-- After that: the SDRSharp experiments and the Visual Studio .NET work.
-
-**Relation to the stages above (unknown):**
-- whether these consumers are the 0.5 "two independent native consumers";
-- how this order maps onto T3's remaining items;
-- where the stx_conv fold sits in the stage list.
-
-## Also listed, outside the releases above
-
-- **A, accessibility verification:** complete in 0.2 Verified; nothing left
-  is recorded.
-- **"T6":** the forward programme defines no stage T6. What it refers to is
-  unknown.
-- **The Emscripten target:** planned and owner-approved, after `stx_skia`.
-  WebGL is used only as its presentation backend; painting stays on the CPU.
-  Its release is unknown.
-- **After 0.5:**
-  - S, the C# sibling (0.6), needs R and C;
-  - R, SDRSharp reflection, needs T4 and F;
-  - the visual tools (0.7): D, the interface builder, needs T3, L and FD;
-    H, HTML import, needs L and T3; V, the theme designer, needs T4 and D's
-    core.
+The release names 0.6 Bindings and 0.7 Designers are retired: S moves into
+1.0 (backend), D and V into the tools step, H after 1.0. The 2026-10-31
+addendum's order (0.5 landing during the consumer refactor, 0.6 as
+regression testing and the shadow desktop) is superseded by the seal
+definition above; the consumer conversions follow the seal.

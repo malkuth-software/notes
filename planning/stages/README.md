@@ -1,6 +1,6 @@
 # Stage briefs
 
-Date: 2026-10-12. Status: working briefs for the stages of
+Date: 2026-10-12, index updated 2026-11-08. Status: working briefs for the stages of
 `planning/FORWARD_PROGRAMME.md`. The programme is authoritative for scope,
 dependencies and gates. `planning/DESIGN_LANGUAGE_SPECIFICATION.md` is
 authoritative for appearance. Where a brief and either file disagree, those
@@ -27,62 +27,57 @@ stage's brief, then the documents the brief lists under "Read first".
 ## Stage index
 
 Releases are the public roadmap's chevrons (`docs/dev/roadmap.md`,
-`tools/make_roadmap_svg.py`). Everything listed is before 1.0.
+`tools/make_roadmap_svg.py`). 0.3 and 0.4 were not tagged; their content
+ships in 0.5, the ABI and API seal. After 0.5 come 1.0 (backend), the tools
+and 1.0 Stable; the release names 0.6 Bindings and 0.7 Designers are retired
+(`planning/ROADMAP_TO_0.5.md`).
 
-| Stage | Brief | Release | Depends on (gates recorded) | Status 2026-11-03 |
+| Stage | Brief | Release | Depends on (gates recorded) | Status 2026-11-08 |
 |---|---|---|---|---|
 | A | [Accessibility verified on every host](A-accessibility/README.md) | 0.2 Verified | none | complete 2026-10-23: client tests read the whole Gallery through MSAA and UI Automation (`results/2026-10-19-a-w1-msaa-gallery`, `results/2026-10-20-a-w3-uia-gallery`), AT-SPI (`results/2026-10-20-a-l2-linux-gallery`) and AX (`results/2026-10-20-a-macos`); editable text ranges on all three hosts (#263, #271, #273); every native host advertises the capability (#277); the macOS AX client settles before it reads (#249, #266, #275) |
 | F | [Font substitution](F-font-substitution/README.md) | 0.2 Verified | none | complete 2026-10-23: gate recorded in `results/2026-10-23-f-font-substitution` (CI run 40049449883, all four native hosts); it declares 0.2. Earlier: plan accepted (brief decisions 4 to 17); F1 measurement tool `tools/font_metrics_differential`, first runs `results/2026-10-23-f1-metrics-harness`, engine against engine (Cousine and Tinos exact; Carlito and Arimo exact but for kerning and one glyph; Selawik nearest only; Tahoma Bold has no face within 5%); Arimo, Tinos and Selawik downloaded with approval, F3 adds them |
 | T1 | [Anatomy: articulated controls and one schema](T1-anatomy/README.md) | 0.2 Verified | none | complete 2026-10-13 (`results/2026-10-13-t1-anatomy-gate`): 60 of 60 controls; item systems, per-part states, interactions, schema export and one-name-three-spellings merged; owner signed off, and declared T1 sealed once the follow-on DP and host work (#80, #81) was in |
 | T2 | [Engine core](T2-engine-core/README.md) | 0.3 Themeable | T1 | sealed 2026-10-23 (`results/2026-10-23-t2-engine-gate/SEALED.md`; gate run 40027309396: 4 hosts, 144 images, 308 sample images, 77 features, 0 differences, 0 busy idle counters): E1 to E11 plus E7r, E9.6 and E10; bake costs measured on a quiet machine (#293) |
 | T3 | [Theme language front end](T3-theme-language/README.md) | 0.3 Themeable | T1, T2 | complete 2026-11-01: P1 to P12 and the gate P11 on main (`results/2026-11-01-t3-theme-language-gate`; main 7c25c6fc, with user themes U1 to U4: layered or replacing user themes, `@theme` packages, icon overrides, the themes folders, `--theme` and export) |
-| T4 | [Default theme and Windows-familiar themes](T4-default-theme/README.md) | 0.3 Themeable | T1, T2, T3 | in progress since 2026-11-01: phases 1 to 3 and part of phase 4 on main (263ebd89, 560f3767, cf2ad98c, 193a570c; the paint census on main counts 318 stock calls in 36 files); phase 4's gate (zero stock calls, four exemptions agreed by the owner) is met on the `claude/t4-themes` branch, for the next checkpoint; phase 5 (derived dark and high-contrast variants) in progress; the theme-variants design (D1/D2: `color-scheme` and `prefers-color-scheme` variants, automatic switching with the `gui-forms` dark fallback, inline-colour warnings and relocation) approved by the owner 2026-11-03, not built; phases 6 (the switch to `gui-forms`), 7 (Windows-familiar themes) and 8 (the gate) not started |
-| T5 | [Compositor cooperation](T5-compositor/README.md) | 0.3 Themeable | T2 | in progress: plan accepted ([PLAN.md](T5-compositor/PLAN.md)), decisions T5-Q1 to T5-Q16 (2026-10-25); C0 to C6 on main; C7 (reflection of a part's face and of the backplane, bake weight measured) done on a branch for the next checkpoint; the Mac bench rerun recorded 2026-11-03 (criteria 0 to 3 pass; 8 of 12 materials tint on macOS 26.7); C8 (the stage gate: a compositor lab per host) not started; owner 2026-11-03: glass should draw its recipe material over the blur (a T4 phase 7 need); the Wayland direction remains an open owner concern |
+| T4 | [Default theme and Windows-familiar themes](T4-default-theme/README.md) | 0.3 Themeable | T1, T2, T3 | in checkpoint 22: phases 1 to 5, theme variants i to vii, the CSS-authored floor, and phase 7, the familiar themes classic (Windows 2000), xp-style, 7-style and macos-style; the owner approved the four familiar themes and the switch of the default to `gui-forms` (phase 6) on 2026-11-08; the gate record (phase 8) is a draft on `claude/t4-gate`, measurements pending |
+| T5 | [Compositor cooperation](T5-compositor/README.md) | 0.3 Themeable | T2 | C0 to C7, the glass recipe and native popups in; C8 (the stage gate) open: the Windows fallback and settings rows and X11 with and without a compositor before the seal; the macOS rows after 0.5 (owner, 2026-11-08); the Wayland direction remains an open owner concern |
 | L | [Real dynamic layout](L-layout/README.md) | 0.4 Flexible | T1 | box gate recorded 2026-10-26 (`results/2026-10-26-l-layout-gate`): FlexPanel, GridPanel, BlockPanel and positioning, LayoutDirection with full mirroring in the Windows Forms containers; 181 fixtures, 17,440 nodes in both directions, 0 over tolerance, 160 recorded differences (compatibility containers only); L8a (the `TextBlock` leaf) and the resize fix (#360) on main; text corpus L8b recorded 2026-10-28 (`results/2026-10-28-l8b-text-corpus`): 30 text fixtures at text scales 100 % and 150 %, 0 over tolerance, 1 recorded difference (hyphen-digit break, kept by owner decision 2026-10-28) |
-| FD | [Form documents](FD-form-documents/README.md) | 0.4 Flexible | T1, T3 | in progress since 2026-11-03 (in W): FD1 to FD6.1 on main (4bde249d: the form grammar in the T3 parser, the document model and validation, the run-time loader, the byte-preserving editor, the C++ generator `gui_forms_form_compiler`, fonts, item lists and application types); FD6.2 (the Gallery's DML becomes `demo/gallery.form`) and FD6.3 (the Gallery pages as form documents, reviewed by intent with every visual difference explained, owner 2026-11-03) in progress; form binding syntax not designed; gate not recorded |
+| FD | [Form documents](FD-form-documents/README.md) | 0.4 Flexible | T1, T3 | in checkpoint 22: FD1 to FD6.2, FD-3, FD-4 (every Gallery page a form), FD-5 (a program invokes a theme), FD-5b refusals, FD-6 bindings and rules migration, FD-7 (the installed SDK compiles every page form); the gate record is a draft on `claude/fd7-gate`, measurements pending |
 | DP | [Damage-preserving painting](DP-damage-preserving-painting/README.md) | 0.4 Flexible | none | complete 2026-10-25 (#320): rectangle sets painted on every host, paint contract version 2 (#59 to #78), X11 direct live frames (#80); gate records `results/2026-10-13-dp-gate-windows`, `results/2026-10-25-dp-gate-x11` and `results/2026-10-25-dp-gate-macos`; the owner accepted macOS's copy (AppKit's union over unchanged pixels) as recorded |
 | SK | [Universal Skia: one painter, one pixel format](SK-universal-skia/README.md) | 0.3 Themeable | none | complete 2026-11-03 on `stx_skia` (owner decision 2026-10-27: SK resumes aimed at `stx_skia`): SK1b (`stx_skia` in-tree and mandatory on every host) and SK2 (BGRA8 premultiplied everywhere, PNG only at the image seam; 4af21b7f), SK3 (the Windows host draws with the Skia CPU raster, DibPainter removed; b92d26da), SK4 (CoreGraphicsRaster removed) and SK5 (goldens re-recorded) on main (008d8064); the arm64 goldens re-checked on the Mac 2026-11-02; an AVX2 tier, pixel-identical to SSE2, on a branch for the next checkpoint; the Emscripten target follows |
-| W | [Windows Forms control coverage (.NET 8+ only)](W-winforms-controls/README.md) | 0.4 Flexible to 0.6 Bindings | T4, or the by-role paint path (ruling 2026-10-14) | in progress since 2026-10-14 under the by-role paint path; every row of the 2026-10-27 list is on main: MessageBox with its breadth (button sets, Button4, right-to-left options, the help button and `Window::help_requested`), the link role and the DataGridView link column, plain-letter menu mnemonics, the slow-click label edit (c1901297, cd652af4), RichTextBox over the markdown framework, which replaced the run model (9e301b63), the ListView groups and tile view and the TabControl selecting events (67fc629e), tooltips (c6baab4d) and strip merging (cd652af4); coverage 81 done, 12 partial (mostly by design), 0 missing; next: the property-capabilities migration (study accepted 2026-11-03), the small-controls batch (admitted after FD), MDI as a presentation of DK's document area |
+| W | [Windows Forms control coverage (.NET 8+ only)](W-winforms-controls/README.md) | 0.4 Flexible to 0.5 ABI seal | T4, or the by-role paint path (ruling 2026-10-14) | every 2026-10-27 row in; the property-capabilities migration (with PC), the small controls (W-4) and the instruments vocabulary (W-5) in checkpoint 22; smooth scrolling in 0.5 (owner, 2026-11-08), on `claude/scroll-0.5`; W-1 to W-3 and W-5b to W-9 ruled after 0.5 |
 | R | [SDRSharp reflection](R-sdrsharp-reflection/README.md) | not on the public site | T4, F | last run 2026-08-10 |
-| C | [Stable installed C ABI](C-c-abi/README.md) | 0.5 ABI candidate | T1, T2 | built and installed: ABI 1.1 (`include/gui_forms/c/gf_abi.h`), C1 to C5 (c5e034ea, 7ae52c98), C6 to C8 on the GUI.Forms side (5a3202f8: generated C# interop and C++ wrappers, the 0.5 baseline `gf_abi-0.5.json` with 0 audit findings, the installed conformance kit), window interactions and the effect listing since 1.1 (cd652af4); left: TSan runs of the kit on macOS and Linux (Mac side), the schema generated from the property tables, and the sub-surface table; owner 2026-11-03: PlaySuite and SwiftEdit are full ports to the C ABI after 0.5, not kit runs |
-| PC | Property capabilities (study in the coordinator desk, `PROPERTY_CAPABILITIES_STUDY.md`) | 0.5 ABI candidate | T1, C | study accepted by the owner 2026-11-03 (decisions 1 to 11: CRTP capability mixins with real dot syntax, one dirty structure per UI thread owned by the surface root, a per-type constexpr table generating the schema, content regions); migration M0 (the shared dirty structure) to M-S (setters removed) not started; built in W |
-| EP | Effect programs (design in the coordinator desk, `EFFECT_PROGRAMS_DESIGN.md`) | 0.5 ABI candidate | T2 | M1 and M2 on main (cd652af4): the bounded effect contract, the metered effect canvas, the registry, five progress effects and the SweepScope sweep, the clang plugin's effect pass loading on Windows and macOS; left: themes naming effects (the `effect` theme property), effects reading colour roles, backdrop sampling and per-corner part clips |
-| SS | Threaded sub-surfaces (design in the coordinator desk, `THREADED_SUBSURFACES_DESIGN.md`) | 0.5 ABI candidate | T5, EP | design accepted by the owner 2026-11-03 (decisions 1 to 9); S1 (the SurfaceRoot extraction) in progress on a branch; S2 to S7 not started |
-| S | [C# sibling: Windows Forms swap-in](S-csharp-swap-in/README.md) | 0.6 Bindings | R, C | not started |
+| C | [Stable installed C ABI](C-c-abi/README.md) | 0.5 ABI seal | T1, T2 | ABI 1.1 installed with C-1 to C-12: the audit baseline `gf_abi-0.5.json`, the conformance kit, C# interop, macOS TSan clean, the application and rules tables and the splashscreen entries (checkpoint 22); at the seal the baseline is re-recorded with the 1.1 additions and the audit becomes blocking (owner, 2026-11-08); PlaySuite and SwiftEdit are full ports to the C ABI after 0.5 |
+| PC | Property capabilities (study in the coordinator desk, `PROPERTY_CAPABILITIES_STUDY.md`) | 0.5 ABI seal | T1, C | in: M0 to M3, families A and B, collections cells, the generator assigning cells, M-S1 to M-S8 (setters for properties removed) and C-8; the residual audit of the surviving public setters (R1) is open |
+| EP | Effect programs (design in the coordinator desk, `EFFECT_PROGRAMS_DESIGN.md`) | 0.5 ABI seal | T2 | EP-1 to EP-8 in, including the compile-time effect-name check |
+| SS | Threaded sub-surfaces (design in the coordinator desk, `THREADED_SUBSURFACES_DESIGN.md`) | 0.5 ABI seal | T5, EP | S1 to S7 in: SurfaceRoot, SubSurface and its host, the pacer, input, effects, accessibility, the table and the DataGridView cell region |
+| AW | Application, windows, rules and Splash (designs in the coordinator desk, `APP_WINDOW_RULES_DESIGN.md`, `SPLASH_NOTES.md`) | 0.5 ABI seal | T4, FD, SS | in checkpoint 22: `Application::create` and the current application, generated window classes, interaction state and the rule engine (`GF_TABLE_RULES`), the creation-cost gate (baselines on the M4 only), Window, Popup and Splash (warm tooltip windows, menus and drop-downs on Popups, the splashscreen); Splash moved before 0.5 by the owner 2026-11-07
+| S | [C# sibling: Windows Forms swap-in](S-csharp-swap-in/README.md) | 1.0 (backend) | R, C | not started; after the seal (C# interop over the ABI is already in C) |
 | RB | [Ribbon framework: study, interview, decisions, plan](RB-ribbon/README.md) | to be placed by its plan | none to start | complete 2026-10-14: study, interview round 001, 27 decisions and the plan, accepted by the owner; the ribbon is built in W (`RB-ribbon/PLAN.md`), phase 0 first |
 | DK | [Docking and windowing: study, interview, decisions, plan](DK-docking/README.md) | to be placed by its plan | none to start | started 2026-10-14 (admitted by the owner, matrix row 43): complete 2026-10-17: studies, interview round 001 (43 decisions, look studies published) and the plan, accepted by the owner; built in a DK window-layer stage (W0) and in W (`DK-docking/PLAN.md`) |
 | DG | [Diagram control: study, interview, decisions, plan](DG-diagram/README.md) | to be placed by its plan | none to start | started 2026-10-19 (matrix row 55): study written; the interview waits for the owner |
 | RT | [`stx_rtf2md`: the RTF and rich-markdown library](RT-rich-text/PLAN.md) | to be placed by its plan | none to start; W's `RichTextBox` depends on its RT1 | plan accepted 2026-10-26 (owner decisions in PLAN.md section 12; built by the SwiftEdit worker under W-Q1); RT1 (model and markdown), RT2 (reading RTF) and RT3 (writing RTF) on main; RT4 (SwiftEdit import) is SwiftEdit's |
 | Z | [Owned zlib replacement: study and threat model](Z-zlib/README.md) | 0.2 Verified (done; owner decision 2026-10-23) | none for study; owner acceptance before code | complete: stx_zlib and stx_png in production on every host, WIC decoding removed, FreeType built without zlib (GA record #240, `Z-zlib/GA_RECORD.md`); then stx_conv (CONV interpolation, the face-variant generator). CNG (#270, #276) was removed 2026-10-26 by owner decision: PNG is the only image codec |
-| D | [Interface builder](D-interface-builder/README.md) | 0.7 Designers | T3, L, FD | not started |
-| H | [HTML import and layout designer](H-html-import/README.md) | 0.7 Designers | L, T3 | earlier attempt discarded |
-| V | [Theme designer](V-theme-designer/README.md) | 0.7 Designers | T4, D core | not started |
+| D | [Interface builder](D-interface-builder/README.md) | Tools (after 1.0 backend) | T3, L, FD | not started; a closed-source tool (owner, 2026-10-27) |
+| H | [HTML import and layout designer](H-html-import/README.md) | after 1.0 | L, T3 | earlier attempt discarded; placed after 1.0 (owner, 2026-10-27) |
+| V | [Theme designer](V-theme-designer/README.md) | Tools (after 1.0 backend) | T4, D core | not started; whether it is one of the closed-source tools is open |
 | 1.0 | [Release gate](release-1.0/README.md) | 1.0 Stable | all of the above | conditions defined |
 
 A, F, T1 and DP could start at once. A and F run beside everything else. T1
 to T4 are the spine: almost every later stage reads the anatomy and the
 engine.
 
-**Where to pick up (2026-11-03).** Main is at checkpoint 14 (feacf6d4,
-#464). 0.2 Verified shipped as v0.2.0; A, F, T1, T2, T3, Z, DP, L and SK
-are complete, and the C ABI is installed at version 1.1. There are no 0.3
-or 0.4 tags (owner, 2026-10-27): the next release is v0.5.0. The owner
-redefined 0.5 on 2026-11-03 as a nominal internal candidate that finalises
-the ABI, the API and the languages: the C ABI, property capabilities (PC),
-the form language (FD), the theme language and effect programs (EP),
-theming (T4 through phase 8, T5 through C8, theme variants), threaded
-sub-surfaces (SS) and all of W, then a touch-up of the roadmap, the
-documentation and the template example program. The consumer conversions
-(PlaySuite, Plan Paint, SwiftEdit, the benchmark demos, the File Manager
-frontend) come just after 0.5; the Gallery and the demoboards are the first
-customer and the reference. In progress: **T4**, **T5**, **FD**, **W**,
-**EP** and **SS**; **PC** is next in W. The work left before 0.5 is in
-[`planning/ROADMAP_TO_0.5.md`](../ROADMAP_TO_0.5.md), and the coordinator's
-closure checklist (projects repository, `desks/coordinator/CLOSURE_0.5.md`)
-lists it item by item. The integrity checker of #401 is on main and runs
-in the fold checks. Read `planning/stages/T2-engine-core/README.md`
-and its gate record before starting T3, T4, T5 or C, and
-`planning/stages/T1-anatomy/README.md` "Hand-off" before T3, L, FD or C.
+**Where to pick up (2026-11-08).** Checkpoint 22 (`checkpoint/2026-11-08-cp22`,
+#473) carries the 0.5 content: 0.2 Verified shipped as v0.2.0; A, F, T1,
+T2, T3, Z, DP, L and SK are complete; C, PC, EP, SS, AW, FD and W are in,
+and T4 and T5 are in with their gate rows to measure. The next release is
+v0.5.0, the ABI and API seal (`planning/ROADMAP_TO_0.5.md`): the gate
+records, the default-theme switch to `gui-forms`, smooth scrolling and the
+setter audit go into the seal checkpoint, then the ABI baseline is
+re-recorded with the audit blocking. The Mac checks come after 0.5. The
+consumer conversions (PlaySuite, Plan Paint, SwiftEdit, the benchmark
+demonstrations, the File Manager frontend), the final controls and S lead to
+1.0 (backend).
 
 When a stage starts or a gate is recorded, update the status column here, the
 stage brief's status line, and the stage board linked from `AGENTS.md`.
