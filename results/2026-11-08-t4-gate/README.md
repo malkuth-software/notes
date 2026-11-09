@@ -167,6 +167,28 @@ every contrast fix below is a frame or colour it lacks.
 | links | none | `#0069f9` / Puppertino's dark `#0091ff` kept (light `#0088ff` is 3.5:1) | none |
 | disabled text | tertiary `#00000040` / `#ffffff40` | exempt | none |
 
+### Final visual round (GUI.Forms 52c7637f, 2026-11-08)
+
+Compared on the controls-inspection page (light and dark, x1 and x2;
+before/after images kept under w1 dev/inspection) against Windows 2000,
+Windows XP Luna, Windows 7 Aero and AppKit. Each familiar theme now has a
+compiled parts sheet over its floor; these rows supersede the tables above
+where they differ.
+
+| Theme | Now | Engine limit (not reached) |
+|---|---|---|
+| all four | the bundled body face at the reference size: 11 px (Tahoma 8 pt) for classic and xp-style, 12 px (Segoe UI 9 pt), 13 px (macOS system face); stand-ins, the reference faces are not bundled | none |
+| classic | default button: black ring round the outer bevel pair (white, `#404040`); scroll track dithered (`#d4d0c8` under 45-degree white stripes at 1.414 px); progress in navy blocks (the page shows `visual_style` blocks; the control's default stays continuous); etched group box `#808080` over white; captions clear the controls | one keyline, so the default button drops the inner `#808080` line; the dither is a stripe approximation (gradients take only `100% 100%` sizes); a disabled default button shows the plain bevel |
+| xp-style | Luna's blue scroll thumb and arrows and the combo drop button (`#d4e1fd` to `#b6cbf6`, frame `#98b1ea`, slate arrows `#4d6185`), pale scroll track; the default button's blue inner light, orange while hot; the choice well `#1c5180` round `#dcdcd7` to white, mark `#107a10` | the group box keeps the panel's `#aca899` frame and a black caption (its rules and caption take the panel's colours; a part takes no text colour); spin buttons keep the push-button plate (no keyed parts) |
+| windows7-style | pale grey scroll track, grey gloss thumb in `#979797`, arrows clear until hot, thumb blue while hot | the check mark stays `#222222`; spin buttons as above |
+| macos-style | AppKit's accent default button with white text, checked check box and radio as accent wells with white marks, the combo drop button accent with a white chevron; white push buttons and wells in light mode; capsule scroll thumb on a pale track, clear arrows; a disabled default button loses the accent and its ring | scroll arrows remain (the scroll bar always has them); frames keep the theme's `#949494` contrast fix |
+
+Engine change: a push button's face part carries the disabled state, so
+`:disabled` part rules reach it. Found, not fixed (not T4's): NumericUpDown,
+DomainUpDown, TreeView, BreadcrumbTrail, ObjectView and CorrespondenceView
+set `style().paper` as an authored background at construction, so in a
+dark scheme they stay white (visible in macos-style dark).
+
 ## Approvals (pending, the owner)
 
 | Theme | Light | Dark | High contrast |
