@@ -22,10 +22,10 @@ main is c9b11f0a. cp24 (#474) is part 1 of the next fold: the gui-forms
 default theme switch and its fallout (525/525 on Windows; the macOS
 accessibility fixture fix c6b78b4b waits on the Mac rerun). cp25 (#475)
 merged on 2026-11-09 (main e1fc3bf68): the key and numeric ABI, TextBox
-styled runs, modal and owned windows, window properties and the host file
-gaps. cp26 is folding the rest: focus, the data grid ABI, the ribbon gaps,
-the look integration, the theme host fixes, the swap-in library branches
-and the drag engine stack (value bar, drawing primitives, plots).
+styled runs, the focus stack (modal and owned windows, window properties,
+focus) and the host file gaps. cp26 is folding the rest: the data grid ABI,
+the ribbon gaps, the look integration and the drag engine stack (value bar,
+drawing primitives, plots).
 
 **Coded, folding in cp26** (not on main yet; the integrator verifies):
 - the declarative drag engine with the node canvas N0 skeleton (NodeGraph
@@ -302,7 +302,7 @@ Block 2 total: about 40.5-51 U, of which about three quarters is coder work.
 
 | # | Item | Depends on | Kind | U | Notes |
 |---|---|---|---|---|---|
-| 3.0 | C ABI additions for the swap-in: keys and numeric, modal and owned windows, window properties, focus (composites, focus restore, `focusable` in the schema), the data grid, TextBox styled runs | the sealed 1.1 baseline | C+B | 3-4 | **partly on main**: keys and numeric, modal and owned windows, window properties and styled runs landed in cp25 (#475); focus and the data grid fold in cp26; additive; the audit and the version number need a recorded owner decision (question 10) |
+| 3.0 | C ABI additions for the swap-in: keys and numeric, modal and owned windows, window properties, focus (composites, focus restore, `focusable` in the schema), the data grid, TextBox styled runs | the sealed 1.1 baseline | C+B | 3-4 | **partly on main**: keys and numeric, modal and owned windows, window properties, focus and styled runs landed in cp25 (#475); the data grid folds in cp26; additive; the audit and the version number need a recorded owner decision (question 10) |
 | 3.1 | C ABI band declaration: window presentation in the windows table | 2.8's declaration shape | C+B+O | 0.5-1 | additive; needs a recorded owner decision (sealed interface) |
 | 3.2 | Drawing ABI seal (`gd_*`) | 1.7, 2.3, 2.4, Block 4's demonstrators | C+B+O | 1-2 | sealed only after the demonstrators stress it |
 | 3.3 | R: SDRSharp reflection rebuilt on the current ABI | T4, F | C+B+W+M | 2-3 | precedes S (forward programme); **in progress through the swap-in** (facade-v1 on `gf_abi`, 927/933 members; 5.5) |
