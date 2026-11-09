@@ -199,3 +199,15 @@ dark scheme they stay white (visible in macos-style dark).
 | xp-style | pending | n/a | pending |
 | windows7-style | pending | n/a | pending |
 | macos-style | pending | pending | pending |
+
+## Engine gaps closed (claude/t4-inspection 19030b44, on 52c7637f)
+
+| Gap | Engine change | Theme use | Seen in r12 |
+|---|---|---|---|
+| one keyline ring per part | `keylines:` takes two comma-separated rings (ring k at inset 1+k) | classic default button: black/white ring, then #ffffff/#404040, then #d4d0c8/#808080 | full Windows 2000 double bevel |
+| striped scroll track | `pattern(name, ground, figure [, tile])`, new procedural `checker` (E10 idle generation) | classic track `pattern(checker, #d4d0c8, #ffffff)` | 1-px dither at 1x (2x2 at 2x); specimen sheet now settles idle patterns before capture |
+| no text colour on parts | color/muted-color/glyph-color on a named part; `Theme::resolve(..., part)` | xp group-box caption #0046d5, disabled #aca899 | blue caption, grey when disabled |
+| spin buttons unkeyed | NumericUpDown (increment/decrement) and DomainUpDown (up/down) paint arrow and glyph parts | xp blue plates, windows7 grey gloss with blue hover | styled |
+| scroll arrows fixed | `ThemeGeometryTokens::scroll_arrows` | macos-style false | no arrows |
+
+Verified on the M4 (w1): 18 touched tests plain and sanitized (gate failure procedural.checker fixed with a feature sample, then 3/3 rerun both modes); house style, lifetime, state machines clean. Images: w1/dev/inspection/*-before-after.png (r0 vs r12) and w1/dev/inspection/gaps/*-gaps-2x.png (r10 vs r12).
