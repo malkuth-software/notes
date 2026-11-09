@@ -478,12 +478,12 @@ Still open:
     decisions.
 13. **DockPanel Suite under the swap-in:** option a now (its own code on our
     facade). Recommendation: the shim over DK (option b) after SDR# runs.
-14. **Help system, revision 1's questions** (`HELP_SYSTEM_STUDY.md`
-    section 9): where built-in help bodies are written (recommendation:
-    code or an embedded built-in locale file, both into one store); controls
-    without a body in the contents (recommendation: omitted, their help line
-    on the parent's page); F1 with no help (recommendation: walk up to the
-    window page, then home).
+14. **Help system, revision 1's questions:** answered by the owner
+    (2026-11-09), so the study is accepted. Built-in help bodies live in an
+    embedded built-in locale file (short help lines may stay in code).
+    Controls without a body are left out of the contents, with their help
+    line shown on the parent's page. F1 with no help walks up to the window
+    page, then home.
 
 The first version's questions, as asked:
 
