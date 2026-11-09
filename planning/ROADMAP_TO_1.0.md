@@ -179,6 +179,7 @@ public form of Blender's value bars, so 1.2 and 1.5 share a reading.
 | 1.5 | Blender's value bars *(required)* | Blender, BUI | 2.2 | S+O | 0.5 | **done** (with 1.2) |
 | 1.6 | Mirrored-mode feasibility *(required)* | .NET hosting, facades, startup hooks | 5.5 | S+W+O | 1-1.5 | **done** (`MIRRORED_MODE_STUDY.md`); P0 GO on .NET 10 (hostfxr TPA swap); R2R composite needs a preflight |
 | 1.7 | Drawing ABI inventory (`gd_*` before its seal) | the drawing headers, the above studies | 3.2 | S | 0.5 | partly: the additions are in gd 0.3 (2.3); the full inventory before 3.2 is open |
+| 1.8 | Help system: CHM-shaped viewer on Plan Paint paper; help as translatable text records | CHM public documentation and behaviour (clean-room), Plan Paint's help | 2.13-2.20, 3.7, 4.12 | S+O | 0.5 | **done** (`HELP_SYSTEM_STUDY.md`, revision 1); owner rulings 1-7, A(a), B(a) recorded; its questions 1-3 open (question 14 below) |
 
 **Declarative dragging.** The paper's model: an author lists the model
 states a dragged element may reach; the engine speculatively lays out each
@@ -256,7 +257,7 @@ Windows host with a small free WinForms program. Test of the study: the probe
 runs and its log lists every unsupported member it met; the full test plan
 is in 5.5.
 
-Block 1 total: about 5.5-6.5 U, all coder or study work, plus owner review.
+Block 1 total: about 6-7 U, all coder or study work, plus owner review.
 
 ## Block 2: engine and final controls (Wave B)
 
@@ -272,8 +273,16 @@ Block 1 total: about 5.5-6.5 U, all coder or study work, plus owner review.
 | 2.8 | Active border phase 3: the window band, host shaping, band textures and effects | pattern fills (2.4) | C, then B, W, M, O | 6.5 | 2.5 | the band itself landed in 0.5 (window-band, no resize edge); host shaping, textures and effects open |
 | 2.9 | DK and RB phases still open (to audit against their plans) | - | C, then B | audit first | all | open; RB's look rows are in 2.10 |
 | 2.10 | **Theming: the look integration** (owner, 2026-11-09: theming is not done) | the look studies in notes | C, then B, O | 3-5 | all | in progress (w1, `LOOK_INTEGRATION_LEDGER.md`): 23 rows implemented on the branch, 8 left, N1-N7 to the owner; Plan Paint's tab features and the ribbon gaps (94a8934e9) included |
-| 2.11 | Ribbon behaviour still "not yet": the minimized ribbon's temporary popup, the QAT on the tab row, the help question mark with a window help card | 2.10; the help-system design for the card | C, then B | 1.5-2 | all | open (ledger N3, N4) |
+| 2.11 | Ribbon behaviour still "not yet": the minimized ribbon's temporary popup, the QAT on the tab row, the help question mark with a window help card | 2.10; the card through 2.19 (design: 1.8) | C, then B | 1.5-2 | all | open (ledger N3, N4) |
 | 2.12 | Per-tab transitions: key PageStrip and TabControl tab parts by page | T4 | C, then B | 0.5 | all | backlog (cp24 ruling) |
+| 2.13 | Help H1: `help-line`, `help` (markdown) and `keywords` fields in the text record; locale XML, template export, user overrides, the way back; HelpProvider as a view onto them *(study: 1.8)* | the language-file implementation | C, then B | 1.5 | all | open |
+| 2.14 | Help H2: stand-alone topic records and the contents tree generated from the skeleton walk (windows, panels and groups, controls) | 2.13 | C, then B | 1 | all | open |
+| 2.15 | Help H3: the helpbook section in the language-file compiler (link and image validation, keyword and search indexes, contents; same pass at load for user files) | 2.13, 2.14 | C, then B | 1.5 | all | open |
+| 2.16 | Help H4: `HelpBook`, the paper topic pane on theme parts (collapsible sections, callouts, stable-ID links, PNG images) | 2.15, 2.10 | C, then B, O | 1.5 | all | open |
+| 2.17 | Help H5: `HelpBookViewer` and `HelpBookWindow` (CHM tabs, history, bookmarks, sync, toolbar), accessibility on three hosts | 2.16 | C, then B, W, M | 2-3 | all | open |
+| 2.18 | Help H6: search v1 (term table, AND, phrases, titles-only), measured on 2,000 records | 2.15, 2.17 | C, then B | 0.5-1 | all | open |
+| 2.19 | Help H7: F1 through records, default handler for HelpProvider and RibbonToolTip, ribbon "?" and window card, What's This and the paper popup | 2.17; closes 2.11's card | C, then B | 1 | all | open |
+| 2.20 | Help H8: printing a page and a book | 2.17, print path | C, then B | 0.5 | all | open |
 
 Coder work is most of Block 2 and can run four or five rows at a time; the
 verification lands in two or three integrator checkpoints. Host shaping
@@ -282,7 +291,10 @@ border and the band visually. The band follows the owner's 2026-11-07
 answers (fixed reservation, textures on the band only, the focus ring stays
 on its own path) and 2026-11-08's (no resize-edge role).
 
-Block 2 total: about 31-40 U, of which about three quarters is coder work.
+The help rows (2.13-2.20) follow `HELP_SYSTEM_STUDY.md`; help after 1.0
+(fast-search layouts for its term table, greaseboard tours) is H11 there.
+
+Block 2 total: about 40.5-51 U, of which about three quarters is coder work.
 
 ## Block 3: ABI additions and C# (Wave B into C)
 
@@ -295,6 +307,7 @@ Block 2 total: about 31-40 U, of which about three quarters is coder work.
 | 3.4 | S: generated C# bindings, the WinForms-shaped package, the corpus | 3.3, C | C+B+W+V | 6-10 | its own repository |
 | 3.5 | PlaySuite and SwiftEdit as full ports to the C ABI | ABI 1.1 | C+B | 2-3 each | owner, 2026-11-03; both ported forward by their workers (C++ consumers so far), builds pending cp25 |
 | 3.6 | 1.0 conditions: normative traces on Windows, macOS and X11; the member manifest; two-consumer conformance | 3.5 | B+W+M | 2-3 | release-1.0 conditions 2 to 4 |
+| 3.7 | Help H9: C ABI `help` table, the help fields in the schema, the C# binding | 2.19, 3.0 | C+B+O | 0.5 | joins ABI 1.2 with 3.0 (question 10) |
 
 **C ABI band declaration.** What we take: C and C# programs can declare a
 window band, which today only C++ can, because the windows table has no
@@ -304,7 +317,7 @@ passes against the sealed baseline with only additions; a C conformance
 test and a C# interop test declare, light, flash and undeclare a band and
 read the reserved rectangle back.
 
-Block 3 total: about 16-25 U; S is the long pole and is Windows- and
+Block 3 total: about 16.5-25.5 U; S is the long pole and is Windows- and
 Visual-Studio-bound.
 
 ## Block 4: consumers and demonstrators (Wave C)
@@ -322,6 +335,7 @@ Visual-Studio-bound.
 | 4.9 | First exhibits: E2 oscilloscope, E4 process control, E14 wizard, E9 data entry | 2.3, 2.5 | C+B | 1-2 each | open |
 | 4.10 | Website: template example screenshots for `malkuth-software/malkuthsoft.com` | 0.2, the examples | C+O | 0.5 | open (owner, 2026-11-09) |
 | 4.11 | GUI.Forms gaps from the product ports: macOS open-files from Finder, Linux dialog filters ignoring case | none | C+B+M | 0.5 | coded (host-file-gaps 1744d23b3), in cp25; Mac check in the handoff |
+| 4.12 | Help H10: Plan Paint's help as records (replaces `help_content.hpp`, converts its JSON help entries), the library HelpBook, F1 to context pages | 2.19, the Plan Paint locale migration | C, then B, O | 1 | 4.2 | open |
 
 **SwiftEdit.** What we take: the editor on the 0.5 shape (forms, properties
 as capabilities, the `gui-forms` theme) and syntax highlighting, at least
@@ -344,7 +358,7 @@ difference with a reason.
 
 **1.0 (backend) is declared** when Blocks 2 to 4 are in, the drawing ABI is
 sealed and the release-1.0 conditions chosen for it (question 1) are
-recorded. Block 4 total: about 18-24 U plus the File Manager and the exhibits.
+recorded. Block 4 total: about 19-25 U plus the File Manager and the exhibits.
 
 ## Block 5: the tools (after 1.0 backend)
 
@@ -428,10 +442,10 @@ identical floating-point results on every architecture.
 | Block | U | Coder share |
 |---|---|---|
 | 0 Seal tail | 4-5 | about half |
-| 1 Studies | 5.5-6.5 | all, plus owner review |
-| 2 Engine and final controls | 31-40 | about three quarters |
-| 3 ABI and C# | 16-25 | about half (Windows- and VS-bound) |
-| 4 Consumers and demonstrators | 18-24, plus exhibits | about two thirds |
+| 1 Studies | 6-7 | all, plus owner review |
+| 2 Engine and final controls | 40.5-51 | about three quarters |
+| 3 ABI and C# | 16.5-25.5 | about half (Windows- and VS-bound) |
+| 4 Consumers and demonstrators | 19-25, plus exhibits | about two thirds |
 | 5 Tools | 24-36 | about half |
 | Formal 1.0 | 6.5-10.5 | about half |
 
@@ -464,6 +478,12 @@ Still open:
     decisions.
 13. **DockPanel Suite under the swap-in:** option a now (its own code on our
     facade). Recommendation: the shim over DK (option b) after SDR# runs.
+14. **Help system, revision 1's questions** (`HELP_SYSTEM_STUDY.md`
+    section 9): where built-in help bodies are written (recommendation:
+    code or an embedded built-in locale file, both into one store); controls
+    without a body in the contents (recommendation: omitted, their help line
+    on the parent's page); F1 with no help (recommendation: walk up to the
+    window page, then home).
 
 The first version's questions, as asked:
 
