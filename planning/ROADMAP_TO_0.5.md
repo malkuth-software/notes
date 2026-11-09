@@ -107,7 +107,8 @@ index of `planning/stages/README.md`.
   Gallery DML migrates). Open: none recorded.
 - **Parked:** nothing.
 
-**W, Windows Forms control coverage.** It lands across 0.4 to 0.6.
+**W, Windows Forms control coverage.** All of W lands before v0.5.0 (owner,
+2026-10-27).
 - **Done since v0.2.0:**
   - the Open, Save, FolderBrowser and Color dialogs, and
     ThreadExceptionDialog;
@@ -115,20 +116,58 @@ index of `planning/stages/README.md`.
   - the ListView insertion mark and label editing;
   - content-only owner drawing;
   - Splitter.
+- **Done since this page was written** (checked against main feacf6d4,
+  2026-11-03; every row of the 2026-10-27 "Left" list is on main):
+  - MessageBox (`show_message_box`, main c1901297), with its breadth since
+    cd652af4: the AbortRetryIgnore and CancelTryContinue button sets, the
+    fourth default button, the right-to-left options, and the help button
+    (`Window::help_requested`, then the window's `HelpProvider`); tests
+    `tests/message_box_tests.cpp`;
+  - the link role (`ControlVisualRole::link` and `visited_link`) and the
+    DataGridView link column (`DataGridViewColumnKind::link`; tests in
+    `tests/data_grid_view_tests.cpp`), c1901297;
+  - plain-letter menu mnemonics in an open menu
+    (`test_menu_plain_letter_mnemonics`), c1901297;
+  - the slow-click label edit (`slow_click_label_editing` in
+    `tests/list_view_tests.cpp`), c1901297;
+  - the RichTextBox run model, then RichTextBox over the MD4C-backed
+    markdown framework with RTF conversion and one editing engine under
+    TextBox and RichTextBox (9e301b63; owner 2026-10-28), which replaced
+    the run model;
+  - the ListView groups and tile view and the TabControl Deselecting,
+    Selecting, Deselected and Selected events (67fc629e);
+  - tooltips owned by the thing, one presenter per window (c6baab4d);
+  - DataGridView breadth batches 1 to 3, wrapped text, auto sizing, column
+    order and per-row heights;
+  - strip and menu merging (MergeAction and MergeIndex, cd652af4).
+- **Not provided by owner decision (2026-10-28):** ListView
+  `ShowItemToolTips` and item `ToolTipText`, TabControl `ShowToolTips`;
+  TabControl `Multiline` is deferred (tabs that do not fit scroll).
 - **Left:**
-  - MessageBox;
-  - the link role and link column;
-  - menu letter mnemonics;
-  - the slow-click label edit;
-  - the RichTextBox run model;
-  - the remaining ListView and TabControl gaps.
-- **Dependencies:** T4, or the by-role paint path (ruling 2026-10-14). The
-  RichTextBox run model reads `stx_rtf2md` (RT1 to RT3 done; RT4 is
-  SwiftEdit's).
+  - the Win32 first-letter fallback for menu items without a mnemonic;
+  - the FileDialog settings the hosts fix today (`ShowHiddenFiles`,
+    `DereferenceLinks`, `CheckFileExists`, `CheckPathExists`,
+    `ValidateNames`);
+  - DataGridView breadth beyond the batches above (see
+    `stages/W-winforms-controls/DATAGRIDVIEW_AUDIT.md`);
+  - MDI, admitted 2026-11-02 as a presentation of DK's document area (DK
+    decisions 60 to 62, matrix row 46);
+  - the small-controls batch (toggle switch, spinner and progress ring,
+    toast, info banner, badge, empty state, search field, segmented
+    control), admitted to W after FD (superset study decision 1);
+  - the instruments package (gauges, knob, seven-segment readout,
+    sparkline; decision 2b), whose first control, SweepScope, is on main;
+  - the property-capabilities migration of every control (study accepted
+    2026-11-03), which W carries after FD6.
+- **Dependencies:** T4, or the by-role paint path (ruling 2026-10-14).
 - **Owner decisions:** `Diagram` (DG) waits for the owner's interview.
-  `DataLayout` waits as well (W brief). Which W rows count toward 0.4 rather
-  than 0.5 or 0.6 is unknown.
-- **Parked:** `claude/w-message-box`.
+  `DataLayout` waits as well (W brief). **0.5 scope (owner, 2026-11-03):**
+  the small-controls batch is in 0.5, built capability-first after M1;
+  of the instruments, only their part-role and semantic-role vocabulary is
+  in 0.5; MDI, Diagram, DataLayout and the partial rows (the FileDialog
+  settings, the first-letter menu fallback, DataGridView breadth and the
+  others) are explicitly after 0.5; themes naming effects is in 0.5.
+- **Parked:** nothing (`claude/w-message-box` was folded).
 
 **DP, damage-preserving painting:** complete (see the stage index); nothing
 left.

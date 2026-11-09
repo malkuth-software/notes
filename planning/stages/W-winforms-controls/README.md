@@ -2,8 +2,15 @@
 
 Release: lands across 0.4 Flexible to 0.6 Bindings. Depends on: T4 (new
 controls are built articulated and engine-painted from the start). Feeds S,
-and the 1.0 manifest condition. Status 2026-10-14: started; coverage
-surveyed 2026-10-25 (see "Coverage, 2026-10-25"). The catalogue is
+and the 1.0 manifest condition. Status 2026-11-03: in progress; all of W
+lands before v0.5.0 (owner, 2026-10-27), and every row of the 2026-10-27
+list (MessageBox, the link role and column, menu letter mnemonics, the
+slow-click label edit, the RichTextBox run model, the ListView and
+TabControl gaps) is on main (checked against feacf6d4); W also carries
+FD (form documents) since 2026-11-03 and, after FD6, the
+property-capabilities migration of every control (study accepted
+2026-11-03). Coverage surveyed 2026-10-25 and recounted since (see
+"Coverage, 2026-10-25"). The catalogue is
 regenerated from the official surface (deliverable 1); the by-role paint path
 new controls paint through is in place; decision 1 is revised (decision 3).
 Added on the owner's request. Authority: `planning/FORWARD_PROGRAMME.md` §5 W.
@@ -60,7 +67,8 @@ Everything else in that surface is admitted, then ordered by priority.
   page).
 - 72 GUI.Forms control types (`manifests/controls.json`).
 
-Missing or partial, per the matrix:
+Missing or partial, per the matrix (2026-10-14; every type below has
+since landed, see "Coverage, 2026-10-25"):
 
 | Priority | Controls |
 |---|---|
@@ -280,7 +288,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ListView` | 181 | `ListView`, `ObjectView` | done: label editing (F2 and the slow second click), the insertion mark, content-only owner drawing, groups (header and rule, not collapsible, not in virtual mode or the list view; the default group first) and the tile view (`TileSize`) are done; items have no tooltips (owner decision, 2026-10-28; `ToolTipText` and `ShowItemToolTips` are not provided), and cut-off text is revealed in place in the details and list views (`claude/w-tooltips`) |
 | `ColumnHeader` | 27 | `ListViewColumn` records | done |
 | `TreeView` | 137 | `TreeView` | done |
-| `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149) |
+| `DataGridView` | 513 | `DataGridView` (provisional) | partial: text, check-box, combo-box, button, image and link columns (#90, #117, #149); since 2026-11-01 the editing lifecycle (batch 1), cell styles through the theme (batch 2), sort modes, SortCompare and the clipboard (batch 3), wrapped text, column auto sizing and order, and per-row heights from an indexed height structure; the remaining breadth is in `DATAGRIDVIEW_AUDIT.md` |
 | `DataGridViewTextBoxColumn`, `CheckBoxColumn`, `ComboBoxColumn`, `ButtonColumn` | 68 | `DataGridViewColumnKind` | done |
 | `DataGridViewImageColumn` | 19 | `DataGridViewColumnKind::image` | done |
 | `DataGridViewLinkColumn` | 20 | `DataGridViewColumnKind::link` | done: `link_text`, `track_visited_state`, `link_visited`, underlined (`cell_link_underline`, the `underline` mark); `LinkBehavior` not supported |
@@ -308,7 +316,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ScrollableControl` | 37 | `ScrollableControl` | done |
 | `ContainerControl` | 42 | `ContainerControl` | done |
 | `UserControl` | 25 | `UserControl` | done |
-| `Form` | 224 | `Window`, `Application` | partial: the top level is `Window`, not a control; MDI is excluded |
+| `Form` | 224 | `Window`, `Application` | partial: the top level is `Window`, not a control; MDI was admitted on 2026-11-02 as a presentation of DK's document area (DK decisions 60 to 62, matrix row 46), not built yet |
 | `Panel` | 22 | `Panel` | done |
 | `GroupBox` | 41 | `GroupBox` | done |
 | `FlowLayoutPanel` | 9 | `FlowLayoutPanel` | done |
@@ -322,7 +330,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 
 | Windows Forms | Rows | GUI.Forms | State |
 |---|---:|---|---|
-| `ToolStrip` | 156 | `ToolStrip` | done (#86, #93) |
+| `ToolStrip` | 156 | `ToolStrip` | done (#86, #93); merging (`MergeAction`, `MergeIndex`) as a general strip feature (DK decision 62, 2026-11-03) |
 | `MenuStrip` | 24 | `MenuStrip` | done |
 | `StatusStrip` | 32 | `StatusStrip` | done (#86) |
 | `ContextMenuStrip` | 8 | `ContextMenu` | done |
@@ -367,7 +375,7 @@ the member rows is deliverable 3. "Rows" is the type's own admitted rows.
 | `ColorDialog` | 21 | `ColorDialog` | done: a component over the host service (`HostServices::show_dialog`), the same on every host (#346, #402) |
 | `FontDialog` | 40 | `FontDialog` | done (in the window, bundled faces only) |
 | `TaskDialog` | 9 | `TaskDialog` (provisional) | done (in the window) |
-| `MessageBox` | 22 | `show_message_box` (the host's message dialog) | done (host-drawn) |
+| `MessageBox` | 22 | `show_message_box` (the host's message dialog) | done (host-drawn), with the AbortRetryIgnore and CancelTryContinue button sets, the fourth default button, the right-to-left options and an optional help button: `Window::help_requested` first, then the window's `HelpProvider`s (owner, 2026-11-02); F1 in an open box on Windows and X11 |
 | `ThreadExceptionDialog` | 5 | `ThreadExceptionDialog` (a `TaskDialog` preset) | done (in the window) |
 
 ### Excluded
@@ -460,7 +468,8 @@ columns paint with roles that exist.
    two missing column kinds, painted by role with the `image` and `label`
    roles that exist.
 
-Not in the batch, because each needs an owner decision first: `RichTextBox`
+Not in the batch, because each needed an owner decision first (all since
+decided and built): `RichTextBox`
 (its scope; matrix row 42), `Splitter` (row 45's facade), a `MessageBox`
 facade (`TaskDialog` and the host message dialog both exist; which one
 `show` uses), and the `ListView` and `TabControl` gaps above, which are
