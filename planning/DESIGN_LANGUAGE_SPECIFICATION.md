@@ -1660,6 +1660,47 @@ is in the stage A brief. Atoms admitted (§12.7):
 Text selection and layout reach the hosts through on-demand window queries,
 not the snapshot.
 
+## 13. Owner rulings, 2026-11-09 and 2026-11-10
+
+These rulings close questions that §11 and §12 left open or that the look
+integration raised. The look integration ledger
+(`planning/stages/T4-default-theme/LOOK_INTEGRATION_LEDGER.md`) records how
+each was applied.
+
+**Ribbon and tabs (2026-11-09).**
+- N1: the stock rail colour is `#93ADD0`; Plan Paint keeps `#9BB5D8` in its
+  own package. This settles the §11 item 4 / item 8 conflict.
+- N2: tab heights +3: unselected tabs 24, the selected tab 28 (27 plus one
+  unit into the plane). This settles the RIBBON_STUDY 29/23 conflict.
+- N3: the minimized ribbon's temporary popup and the QAT on the tab row are a
+  follow-up RB item, not part of the look integration.
+- N4: the help question mark at the right end of the tab row is a reserved
+  `help_button` part, drawn and wired with the help system.
+- N5: overtaken: the default theme is gui-forms since cp24 (#474).
+- N6: each material field cascades on its own (per-field cascade).
+- N7: screenshots in the owner's Downloads folder are references, not
+  rulings.
+- Tab shape (owner correction): no lip where the selected tab meets the
+  plane; a smooth faded shadow runs from each tab into the next (tabs tuck
+  underneath); every tab is clipped and tapered on its right edge. These
+  apply to the stock gui-forms ribbon too.
+- Tab colour: only File (the application button's colour) and contextual
+  tabs (their set's tint, shared with the plane, set label and strip) carry
+  a colour; no other tab has its own.
+
+**Themes (2026-11-10).**
+- windows-professional is a blend of Windows 2000, Office 2003 and Office
+  2007, touched toward Windows 10: crisper and flatter on large surfaces,
+  keeping depth and pop. High contrast stays derived.
+- The public site's images use windows-professional.
+- A theme may name any bundled font by its family name
+  (`font-family: Selawik`, `"Portsmouth Rapids"`, Carlito, Cousine; ASCII
+  case-insensitive; the role names still stand for their roles). An unknown
+  name is a diagnostic; a host font is never used.
+- Dials, gauges and overlays get design-language parts: `arc`, `needle`,
+  `beak` and `scrim` (option a), with `stroke-width`, `needle-shape` and
+  `scrim-color` in the theme language.
+
 ## Appendix A. Anti-models
 
 Rejected for the default and, unless a row says otherwise, every shipped house

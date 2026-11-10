@@ -105,3 +105,18 @@ conformance runs under `results/`.
 - `planning/interview/GUI_FORMS_INTERVIEW_LEDGER.md` GF017, GF014–GF016
 - `planning/MASTER_IMPLEMENTATION_PLAN.md` §4.10 and M11
 - `docs/user/consume-the-sdk.md`, `docs/dev/roadmap.md` "1.0 Stable"
+
+## Owner rulings, 2026-11-10
+
+- **Automation is off by default.** A C ABI window on Windows enables the
+  WM_COPYDATA automation channel only for the `GF_WINDOW_RUN_AUTOMATION` run
+  flag or `GUI_FORMS_AUTOMATION=1` (audit G2; kept minimal: no capture
+  confinement or sender checks). The channel is not extended further;
+  automation moves toward an MCP integration later, after a short study
+  (transport, authorisation, command scope, macOS and Linux parity).
+- **Unhandled callback failures fail fast** in the C# sibling (audit N70);
+  see `planning/stages/S-csharp-swap-in/README.md`.
+- **The seal batch** of the audit addendum (non-OK means not taken, caller
+  arrays stepped by `struct_size`, and the rest of option a) is coded in
+  `claude/abi-seal-fixes` and rides in cp27; arrays must now repeat
+  `struct_size` (`planning/audits/README.md`).

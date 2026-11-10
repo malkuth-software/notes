@@ -309,6 +309,16 @@ naming still need a reviewer reading against the full document.
   whose work GUI.Forms may absorb; ADR-013's panel reservation was retired
   on 2026-10-13). Check the code and tests before relying on a record.
 
+
+**Timing tests (owner, 2026-11-09).** Do not engineer determinism into
+nondeterministic tests. A wall-clock or thread-timing test gets an injected
+clock when the code supports one cheaply, or goes to the non-gating `timing`
+label (logged, not blocking). One quick pass at most per flaky timing test.
+
+**One combined build (owner, 2026-11-10).** Coders finish coding without
+separate builds; the integrator merges every registered head into one tree,
+builds GUI.Forms and the products once, fixes what breaks, then pushes.
+
 ## Where the sources live
 
 | What | Where |

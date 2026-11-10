@@ -113,3 +113,33 @@ Still open, minor: package identity and naming on NuGet.
   `ADR-014-lifecycle-contract.md`
 - `planning/MASTER_IMPLEMENTATION_PLAN.md` §4.10, M11
 - `docs/user/for-windows-forms-developers.md`
+
+## Owner rulings, 2026-11-09 and 2026-11-10
+
+- **Interactive desktop for SDR# (2026-11-09).** SDR# may run through the
+  swap-in on the owner's interactive desktop with network access. This
+  applies to SDR# runs only; GUI.Forms suites stay on private desktops.
+- **Look, not mechanics (2026-11-10).** The swap-in emulates how WinForms and
+  SDR# controls look, through the theme (`themes/sdrsharp`), never their
+  internal mechanics: no WndProc or WM_PAINT self-repaint emulation for
+  SDR#'s double-buffered combo box, text box and numeric up-down. "Our
+  approach is better."
+- **Callback failures fail fast (2026-11-10, audit N70).** A managed callback
+  failure under `windows.run` or `windows.show_modal` is raised at once
+  through `CallbackFailure.unhandled`; unhandled, it ends the process
+  (`UnhandledCallbackPolicy.fail_fast`, the default).
+  `continue_running` stays available as an opt-in only. SDR#'s author
+  prefers fail fast, so the swap-in does not opt out.
+- **The SDR# zip (2026-11-10).** It runs in place in a copy of SDR#; it
+  carries the launcher, the facade, the GUI.Forms Release DLLs, the sdrsharp
+  theme, a README and the third-party notices, and no SDR# files. The
+  launcher and facade ship with no licence of their own; there is no
+  contact line (it is handed over directly). The owner tests it before
+  handing it to Youssef Touil.
+
+Milestone, 2026-11-09: the real SDR# (AIRSPY SDR# Studio 1.0.0.1922) ran on
+GUI.Forms through the .NET 10 swap-in on the owner's desktop with a live
+radio, waterfall and audio running. The worker's state log and the owner
+session are copied here (`SWAPIN_WORKER_STATE_2026-11-10.md`,
+`SDRSHARP_SESSION_2026-11-09.md`) because the swap-in repository has no
+remote; open gaps are in `planning/GAPS.md`.
