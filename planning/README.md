@@ -53,6 +53,10 @@ absorb the other's authority.
   2026-10-29 direction for build time: dependencies on their own cached
   repositories, main-line cache reuse on branches, sanitizers off by default,
   a standalone test repository for the remote workers.
+- [`BUILD_EFFICIENCY.md`](BUILD_EFFICIENCY.md) — practice guide from the
+  2026-11-10 churn study: build reuse and ccache settings, CPU budgets,
+  batch hand-in, background builds, frozen packaging snapshots, runtime
+  theme sheets, review hygiene and pitfalls.
 - [`PAINT_PIPELINE_AVAILABILITY.md`](PAINT_PIPELINE_AVAILABILITY.md)
 - [`WINFORMS_API_CATALOGUE.md`](WINFORMS_API_CATALOGUE.md)
 - [`WINFORMS_BEHAVIOR_GAP_CATALOGUE.md`](WINFORMS_BEHAVIOR_GAP_CATALOGUE.md)
