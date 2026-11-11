@@ -24,6 +24,8 @@ Use contiguous, length-bearing arrays. Index live elements directly; use dot-acc
 
 A function that returns a borrow of an argument refuses temporaries: delete its rvalue overload, so a borrow of a value that ends with the statement cannot compile. Declare a borrower after what it borrows, so it is destroyed first; an object that reports into another, including from its destructor, must not outlive it.
 
+Recursion over runtime-shaped data is forbidden unless a finite maximum depth is established and enforced before traversal. Otherwise, use explicit bounded work storage. The prohibition includes control trees, document trees, parsers, dependency graphs, and nested event dispatch. The call stack is memory with a fixed, unchecked capacity: a deep structure need not be a large one, so state the enforced limit and the stack budget per level where recursion remains, and refuse the input or mutation that would exceed it before any state changes. Tear deep owning structures down iteratively.
+
 Keep small temporaries local. Put persistent state and reusable workspaces on their owner. Allocate substantial or runtime-sized storage before repeated processing, then reuse it. Shared scratch fields create dependencies between calls; use them deliberately.
 
 Use standard growable collections for growth and ordinary strings for text. Use specialized heap arrays for substantial buffers edited in place or for specific alignment and allocation needs.
