@@ -72,3 +72,46 @@ scheduled by assignments, not the assignment sequence itself.
 
 - The normative order for control families not yet implemented.
 - The threshold for classifying an retired compatibility specimen difference as a blocking incompatibility.
+
+## Amendment 2026-11-12: input event order
+
+**DECIDED (owner, 2026-11-12):** input events follow six rules, chosen for
+fewer bugs over matching Windows Forms. They replace Windows Forms' order
+(MouseUp after Click and MouseClick) as GUI.Forms' one published order.
+
+1. **Physical first, in causal order.** Pointer: preview, MouseDown, any
+   MouseMove, MouseUp. Keys: PreviewKeyDown, KeyDown, KeyPress, KeyUp.
+2. **Derived events after the completing physical event, on the same target
+   only.** Click and MouseClick (or DoubleClick and MouseDoubleClick) follow
+   MouseUp, and only on the control the same button pressed; KeyPress
+   follows KeyDown.
+3. **Handled cancels derived events.** A MouseUp left handled cancels Click,
+   MouseClick and the activation (and DoubleClick and MouseDoubleClick); a
+   KeyDown left handled, by the window or the control, cancels the KeyPress
+   and the key's text, as SuppressKeyPress does. An input method's commit
+   while a composition is open is not cancelled. A control that activates
+   on its click therefore leaves its own release unhandled.
+4. **State is already updated.** At MouseUp the button is up and the capture
+   released; MouseCaptureChanged is raised at the end of the sequence.
+5. **A broken sequence drops the rest.** When a handler disposes the
+   control, opens a modal window or a modal layer or menu (a focus scope),
+   or the capture is lost before the release, the remaining derived events
+   of that sequence are dropped.
+6. **Recorded.** The order of each interaction sequence is published in the
+   event catalogue's order data (`manifests/abi/interaction_order.json` in
+   gui_forms, written by `tools/abi_event_catalog.py`).
+
+**DECIDED:** the second press of a double-click raises MouseDown, MouseUp,
+DoubleClick and MouseDoubleClick only: no Click, no MouseClick and no
+activation. A full double-click is therefore down, up, Click, MouseClick,
+down, up, DoubleClick, MouseDoubleClick. A control without
+standard_double_click (Button) raises a second Click instead.
+
+Keyboard activation (Space or Enter on a button) raises the button's Click
+after KeyUp, with no mouse events.
+
+**Consequence:** the C# package's OnMouseUp, OnClick, OnMouseClick,
+OnDoubleClick, OnMouseDoubleClick and OnKeyDown documentation, and the
+Windows Forms conversion tool, state the difference from Windows Forms. The
+normative traces that placed MouseUp after the clicks move under rules 1 and
+2.
