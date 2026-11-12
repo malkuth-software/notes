@@ -75,7 +75,8 @@ scheduled by assignments, not the assignment sequence itself.
 
 ## Amendment 2026-11-12: input event order
 
-**DECIDED (owner, 2026-11-12):** input events follow six rules, chosen for
+**DECIDED (owner, 2026-11-12; rule 3 worded with explicit suppression
+fields the same day):** input events follow six rules, chosen for
 fewer bugs over matching Windows Forms. They replace Windows Forms' order
 (MouseUp after Click and MouseClick) as GUI.Forms' one published order.
 
@@ -85,12 +86,15 @@ fewer bugs over matching Windows Forms. They replace Windows Forms' order
    only.** Click and MouseClick (or DoubleClick and MouseDoubleClick) follow
    MouseUp, and only on the control the same button pressed; KeyPress
    follows KeyDown.
-3. **Handled cancels derived events.** A MouseUp left handled cancels Click,
-   MouseClick and the activation (and DoubleClick and MouseDoubleClick); a
-   KeyDown left handled, by the window or the control, cancels the KeyPress
-   and the key's text, as SuppressKeyPress does. An input method's commit
-   while a composition is open is not cancelled. A control that activates
-   on its click therefore leaves its own release unhandled.
+3. **Explicit suppression cancels derived events.** A MouseUp that sets
+   suppress_click cancels Click, MouseClick and the activation (and
+   DoubleClick and MouseDoubleClick on a second press); a KeyDown that sets
+   suppress_key_press, on the window or the control, cancels the KeyPress
+   and the key's text, as SuppressKeyPress does. handled keeps its routing
+   meaning only (it ends the route) and cancels nothing: the stock controls
+   already use it for routing and bubbling, so reusing it would take Click
+   from them. An input method's commit while a composition is open is not
+   cancelled.
 4. **State is already updated.** At MouseUp the button is up and the capture
    released; MouseCaptureChanged is raised at the end of the sequence.
 5. **A broken sequence drops the rest.** When a handler disposes the
