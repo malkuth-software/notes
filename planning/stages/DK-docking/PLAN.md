@@ -10,7 +10,7 @@ disagree, the decision governs; fix the plan.
 Where it is built (decision 2): the window layer underneath is a DK build
 stage of its own (phase W0 below); the PageView family and the docking
 controls are built in stage W, as the ribbon is. Every part is painted
-through `paint_part` under the atom vocabulary ruling (design language
+through `paint_part` under the atom vocabulary rule (design language
 §12.7); the look recorded in decisions 41 and 42 is the T4 theme's to draw,
 and the motion (stamp, tile fade, flyout slide) is T2's. Until T4 and T2 the
 controls draw from today's recipes and animate with plain interpolation, as

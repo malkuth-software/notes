@@ -6,9 +6,7 @@ commits behind main. Each finding below was checked again, read-only, against
 origin/main at ae189ff4b (#477, after cp26), in a detached worktree. Line
 numbers in the audit no longer match; the status column cites main.
 
-**The owner decides which findings we act on.** Every verdict is a
-recommendation, and the batches at the end are options, not assignments.
-Nothing has been routed to a worker.
+Status: not routed.
 
 Columns:
 

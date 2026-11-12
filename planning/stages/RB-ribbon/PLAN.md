@@ -7,7 +7,7 @@ round 001, `planning/interview/RIBBON_INTERVIEW_ROUND_001.md`) and the study,
 `RIBBON_STUDY.md`. Where this plan and a recorded decision disagree, the
 decision governs; fix the plan.
 
-The ribbon is built in stage W (decision 1), under the atom vocabulary ruling
+The ribbon is built in stage W (decision 1), under the atom vocabulary rule
 (design language §12.7): every part is painted through `paint_part`, the
 controls use only admitted atoms, and its look comes from the theme (T4) and
 its motion from the engine (T2).

@@ -151,7 +151,7 @@ Counts are at the end.
 - **N4. Help question mark: resolved.** The `help_button` part is reserved in the Ribbon's anatomy now (R23); it is drawn and wired with the help-system design.
 - **N5. Default theme: overtaken.** main switched the default to gui-forms (cp24, #474); this branch is rebased onto it. The Gallery's own sheet now has a dark variant (separate commit), so the dark Gallery is dark outside the ribbon too.
 - **N6. Per-part cascade: resolved.** Per-field cascade is the intent, as implemented.
-- **N7. Downloads screenshots: resolved.** References, not rulings; no rows.
+- **N7. Downloads screenshots: resolved.** References, not decisions; no rows.
 
 **Colour rule (owner correction, 2026-11-09).** Only File (the application button's colour) and contextual tabs (their set's tint, T4-2) carry a colour; no other tab has its own. A contextual tab's tint is its set's ramp colour, which the plane under it and any set label or strip share (R41).
 

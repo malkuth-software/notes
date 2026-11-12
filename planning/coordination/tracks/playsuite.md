@@ -61,7 +61,7 @@ Pin: GUI.Forms 6fd0071a (2026-10-13); main e077f9d5 is 1282 commits later (inclu
 - Other drift: workflows and docs name falseywinchnet/gui_forms and falseywinchnet/books.
   GUI.Forms options PlaySuite sets all still exist.
 
-## Owner decisions in force (2026-10-27, via the coordinator)
+## Current owner decisions (2026-10-27, via the coordinator)
 1. Releases: keep publish-on-green-main; GAMES_BASE_VERSION 0.6.0 before the first release (done in #31).
 2. readme.yml: a PR check (make_readme.py --check), never a push to main (done in #31).
 3. Branch protection + auto-merge: the owner applies them once I send PlaySuite's required check

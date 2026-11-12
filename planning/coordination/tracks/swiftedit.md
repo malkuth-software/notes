@@ -134,7 +134,7 @@ Phase: P0 done; item 1 done (PR open); P1 in progress.
    0.2 requests together with item 3.
 5. P1-P4 per the brief.
 
-## Decisions in force
+## Current decisions
 - RT4 option 1: SwiftEdit builds only the standalone stx_rtf2md package from
   a second gui_forms pin; fold into the SDK pin when it moves.
 - Don't touch picker code (windows.cpp picker windows, show_picker/hide_picker,

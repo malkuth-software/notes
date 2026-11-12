@@ -448,7 +448,7 @@ Consequences (Inferred):
   that GUI.Forms should reproduce are the image-size and row transitions; the
   label-drop transitions have no counterpart and are recorded only to measure
   how much width labels cost.
-- Two places are not "dropping" in the canonical sense and need an owner ruling
+- Two places are not "dropping" in the canonical sense and need an owner decision
   (question 7.3): toolbar-style groups whose commands are authored without
   labels at every size (Bold, Italic, alignment), and tab labels, which WRF
   truncates when the tab row is narrow (UX7).

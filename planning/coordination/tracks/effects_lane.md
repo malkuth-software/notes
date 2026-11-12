@@ -125,7 +125,7 @@ REMAINS:
    anchored-overlays, commands-and-menus, live-surfaces (w7 owns the semantics-heavy ten).
 3. Rebase onto main when the coordinator says cp19 has merged.
 
-RULES IN FORCE
+Current rules
 - Layout panel styles (coordinator, option 1): a text `style` property per GridPanel/FlexPanel/BlockPanel and an
   `item_style` child property, read by LayoutStyleReader and read back by describe_layout_style (helper
   src/controls/scrollable_control/container_control/layout_style_property.{hpp,cpp}). A panel admits only the fields it
@@ -164,7 +164,7 @@ PITFALLS
 - Branch claude/fd-on-m3 on cp19 (835c3599): 99820100 (child properties) + abb4b354 (panel settings, retained page)
   + b7bf2037 "Layout panel styles; Responsive Layouts and CSS Layout Panels as forms" + c49a754a (scroller face in code, ct20). Verified ct19 (21 tests plain +
   sanitize, style, lifetime, docs, schema, gate clean) after ct18 (schema written + copied back, all targets).
-- Coordinator ruling (option 1): GridPanel/FlexPanel/BlockPanel `style` (text property) and `item_style` (child
+- Coordinator decision (option 1): GridPanel/FlexPanel/BlockPanel `style` (text property) and `item_style` (child
   property), LayoutStyleReader + describe_layout_style round trip (helper
   src/controls/scrollable_control/container_control/layout_style_property.{hpp,cpp}). Refusals throw
   invalid_argument -> form_load_refused; reader warnings refuse too (never silent). Grid style REFUSES

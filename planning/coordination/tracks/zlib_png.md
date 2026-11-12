@@ -9,7 +9,7 @@ Written 2026-10-21, when the first worker on this track retired (context about 8
 - **Merging (line, top first):** #240 (GA record, codec-differential.yml) → #239 (I5: Skia without libpng/zlib, FreeType without zlib, no googlesource zlib fetch) → #238 (I4: stx_png package, stx-packages.yml) → #236 (one CRC-32/Adler-32) → #235 (Z-S: state-machine audit, malformed-input sweeps, fuzz-smoke.yml).
 - **Records:** `planning/stages/Z-zlib/README.md` (§11 decisions), `PNG_CODEC.md`, `STATE_MACHINE_AUDIT.md`, `GA_RECORD.md`.
 
-## Owner decisions in force
+## Current owner decisions
 - **Codec and hosts:** owned PNG codec (Z-2B); WIC removed; the macOS TIFF clipboard fallback removed; FreeType's zlib compiled out.
 - **Validation and budgets:** strict validation; 64 KiB inflate / 1 MiB deflate workspace ceilings.
 - **Verification:** no sustained fuzz campaigns. Code is safe by construction (state machines, house style §1/§9), verified by sweeps, differential CI and sanitizers, plus a light fuzz smoke run per PR on CI only.

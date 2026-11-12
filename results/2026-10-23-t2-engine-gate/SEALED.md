@@ -1,8 +1,8 @@
-# T2 engine gate: sealed 2026-10-23
+# T2 engine gate: passed 2026-10-23
 
-T2 (the engine core) is sealed. Every evidence run below shows all four
-hosts identical. The seal reopens if any later gate run finds a host that
-differs.
+T2 (the engine core) passed its gate. Every evidence run below shows all
+four hosts identical. Any later gate run that finds a host differing reopens
+T2.
 
 - **Evidence runs** (`GUI.Forms source and compiler cache`, job
   `engine-gate`; each run's `t2-engine-gate-record` artifact holds the
@@ -29,7 +29,7 @@ differs.
 - **Idle counters:** once settled, every window runs no frame for two
   seconds (part 2). Cost fallback and reduced motion (parts 3 and 4) are
   covered by the primitives' own tests, which the gate README lists.
-- **Owner sign-off on the specimen sheet** (#299's flag): the owner
+- **Owner review of the specimen sheet** (#299's flag): the owner
   accepted the finish constants and starting tokens as starting values.
 - **The effort amendment:** the owner's rule is "cure effort, not time".
   Work bounds, including bake bounds and budgets, are counted in integer
@@ -38,5 +38,3 @@ differs.
 - **Costs:** the quiet-machine measurement (#293,
   `planning/stages/T2-engine-core/README.md`, "Bake costs on a quiet
   machine") is now used only to choose the relative effort weights.
-
-Sealed 2026-10-23. Reopened if any host differs.

@@ -3,10 +3,10 @@
 Date: 2026-11-08, written after the owner declared 0.5 done; updated
 2026-11-09 and 2026-11-10 with the decisions and the work since (sections
 "Status 2026-11-10" and "Status 2026-11-09", and the **Status** columns).
-Open gaps are listed in `planning/GAPS.md`; the owner rulings of these two
+Open gaps are listed in `planning/GAPS.md`; the owner decisions of these two
 days are indexed in `planning/DECISIONS_2026-11.md`. The owner answered the first
 version's questions on 2026-11-08; nothing else below is decided unless it
-cites an owner ruling. `planning/FORWARD_PROGRAMME.md` stays authoritative
+cites an owner decision. `planning/FORWARD_PROGRAMME.md` stays authoritative
 for stage scopes and gates, and each stage brief under `planning/stages/` for
 its own decisions. `planning/ROADMAP_TO_0.5.md` records what 0.5 sealed.
 
@@ -246,7 +246,7 @@ public form of Blender's value bars, so 1.2 and 1.5 share a reading.
 | 1.5 | Blender's value bars *(required)* | Blender, BUI | 2.2 | S+O | 0.5 | **done** (with 1.2) |
 | 1.6 | Mirrored-mode feasibility *(required)* | .NET hosting, facades, startup hooks | 5.5 | S+W+O | 1-1.5 | **done** (`MIRRORED_MODE_STUDY.md`); P0 GO on .NET 10 (hostfxr TPA swap); R2R composite needs a preflight |
 | 1.7 | Drawing ABI inventory (`gd_*` before its seal) | the drawing headers, the above studies | 3.2 | S | 0.5 | partly: the additions are in gd 0.3 (2.3); the full inventory before 3.2 is open |
-| 1.8 | Help system: CHM-shaped viewer on Plan Paint paper; help as translatable text records | CHM public documentation and behaviour (clean-room), Plan Paint's help | 2.13-2.20, 3.7, 4.12 | S+O | 0.5 | **done** (`HELP_SYSTEM_STUDY.md`, revision 1); owner rulings 1-7, A(a), B(a) recorded; its questions 1-3 open (question 14 below) |
+| 1.8 | Help system: CHM-shaped viewer on Plan Paint paper; help as translatable text records | CHM public documentation and behaviour (clean-room), Plan Paint's help | 2.13-2.20, 3.7, 4.12 | S+O | 0.5 | **done** (`HELP_SYSTEM_STUDY.md`, revision 1); owner decisions 1-7, A(a), B(a) recorded; its questions 1-3 open (question 14 below) |
 
 **Declarative dragging.** The paper's model: an author lists the model
 states a dragged element may reach; the engine speculatively lays out each
@@ -341,7 +341,7 @@ Block 1 total: about 6-7 U, all coder or study work, plus owner review.
 | 2.9 | DK and RB phases still open (to audit against their plans) | - | C, then B | audit first | all | open; RB's look rows are in 2.10 |
 | 2.10 | **Theming: the look integration** (owner, 2026-11-09: theming is not done) | the look studies in notes | C, then B, O | 3-5 | all | coded (`claude/look-integration` f528d4f76, in cp27 #480): 28 rows implemented, N1-N7 ruled (`planning/DESIGN_LANGUAGE_SPECIFICATION.md` §13); leftovers in `planning/GAPS.md` T3; the windows-professional redesign follows (`claude/professional-theme`) |
 | 2.11 | Ribbon behaviour still "not yet": the minimized ribbon's temporary popup, the QAT on the tab row, the help question mark with a window help card | 2.10; the card through 2.19 (design: 1.8) | C, then B | 1.5-2 | all | open: ruled a follow-up RB item (N3); the help "?" part reserved (N4) |
-| 2.12 | Per-tab transitions: key PageStrip and TabControl tab parts by page | T4 | C, then B | 0.5 | all | backlog (cp24 ruling) |
+| 2.12 | Per-tab transitions: key PageStrip and TabControl tab parts by page | T4 | C, then B | 0.5 | all | backlog (cp24 decision) |
 | 2.13 | Help H1: `help-line`, `help` (markdown) and `keywords` fields in the text record; locale XML, template export, user overrides, the way back; HelpProvider as a view onto them *(study: 1.8)* | the language-file implementation | C, then B | 1.5 | all | coded (`claude/help-system` ecf4167f4, in cp27 #480) |
 | 2.14 | Help H2: stand-alone topic records and the contents tree generated from the skeleton walk (windows, panels and groups, controls) | 2.13 | C, then B | 1 | all | coded (`claude/help-system`, in cp27 #480) |
 | 2.15 | Help H3: the helpbook section in the language-file compiler (link and image validation, keyword and search indexes, contents; same pass at load for user files) | 2.13, 2.14 | C, then B | 1.5 | all | coded (`claude/help-system`, in cp27 #480) |
@@ -446,7 +446,7 @@ real target now, not after 1.0 (backend).
 | 5.2 | WYSIWYG designer (D) with in-line theme override | 2.1, L, FD, 5.1's rule panel | C+B+O | 8-12 | open |
 | 5.3 | Visual Studio integration and package, for VS and C# | 3.4, 5.2 | C+B+W+V | 3-5 | open |
 | 5.4 | Windows Forms conversion program | 3.4 | C+B+W | 3-4 | open |
-| 5.5 | WinForms mirrored-mode launcher *(study first: 1.6)* | 3.0 (not 3.4 for SDR#) | C+B+W | 4-8 | **in progress**: proof of concept 2026-11-09 (real SDR# with a live radio); rulings: look not mechanics, fail fast (`planning/stages/S-csharp-swap-in/README.md`); the release zip is built after the combined build; open list in `planning/GAPS.md` |
+| 5.5 | WinForms mirrored-mode launcher *(study first: 1.6)* | 3.0 (not 3.4 for SDR#) | C+B+W | 4-8 | **in progress**: proof of concept 2026-11-09 (real SDR# with a live radio); decisions: look not mechanics, fail fast (`planning/stages/S-csharp-swap-in/README.md`); the release zip is built after the combined build; open list in `planning/GAPS.md` |
 | 5.6 | Exhibits continue; E12, the .NET open-source port | 3.4 | C+B+W | per exhibit | open |
 
 **Theme editor.** It is two things (owner, 2026-11-08), built on SwiftEdit.
@@ -558,7 +558,7 @@ The first version's questions, as asked:
    to 5 (ABI audit, two consumers, manifest, normative traces, native
    accessibility) and the drawing ABI seal; packaging (condition 6) at
    formal 1.0.
-2. **Which two conformance consumers?** The 2026-10-13 ruling names
+2. **Which two conformance consumers?** The 2026-10-13 decision names
    PlaySuite and Plan Paint; 2026-11-03 makes PlaySuite and SwiftEdit the C
    ABI ports. Recommendation: PlaySuite and SwiftEdit through the C ABI
    satisfy the condition; Plan Paint stays a C++ consumer.

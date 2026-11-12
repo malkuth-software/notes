@@ -69,7 +69,7 @@ Sources, by short name:
 | DOCK-STUDY | `planning/stages/DK-docking/DOCKING_STUDY.md` (form of this study; §5.3 layout transactions) |
 | DOCK-PLAN | `planning/stages/DK-docking/PLAN.md` (accepted 2026-10-17) |
 | RIBBON-STUDY | `planning/stages/RB-ribbon/RIBBON_STUDY.md` (form; §8 question style) |
-| SPEC | `planning/DESIGN_LANGUAGE_SPECIFICATION.md` (§8 atoms, §12.7 the ruling) |
+| SPEC | `planning/DESIGN_LANGUAGE_SPECIFICATION.md` (§8 atoms, §12.7 the rule) |
 | HOUSE | `HOUSE_STYLE.md` on this repository's `main` branch |
 
 Products not opened at a primary page in this study, and so reported only as
@@ -377,7 +377,7 @@ DiagramLayer       id, name, visible, locked, printable
 `NodeKind` and arrowhead kinds are declared enumerations (house style §7:
 templates and enums for declared choices; no universal callable framework);
 a node's look comes from its kind and the theme, its content from text and an
-image, never from an application paint callback (the atom ruling, SPEC
+image, never from an application paint callback (the atom rule, SPEC
 §12.7). Application data is an opaque handle the model stores and returns,
 never interprets (Inferred: GoJS models hold arbitrary data objects; GUI.Forms
 would hold a typed handle or key instead).
@@ -416,7 +416,7 @@ model bounds (Inferred).
 ### 5.5 What is not proposed
 
 - No graph-layout engine in GUI.Forms (section 6.6, question J1).
-- No arbitrary application-drawn node bodies (the atom ruling); custom looks
+- No arbitrary application-drawn node bodies (the atom rule); custom looks
   come from declared node kinds the theme draws.
 - No file format promised beyond the model's own XML (matrix row 55; section
   6.5).
@@ -588,7 +588,7 @@ Recommendation: 1, as `DockLayout`/`DockSite` and every system read.
    content.
 2. Application-drawn node bodies through a callback.
 3. Both, the callback as an escape hatch.
-Recommendation: 1 (the atom ruling, SPEC §12.7); kinds can be added as
+Recommendation: 1 (the atom rule, SPEC §12.7); kinds can be added as
 vocabulary.
 
 **A4. Verify the Unverified sources first?**

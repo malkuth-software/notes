@@ -18,7 +18,7 @@ touched tests + sanitizer only, `gh pr update-branch` to sync, stacks at most tw
 | #271 | `claude/a-ax-text` | `c2cf549b` | MERGED (macOS text attributes). |
 | #277 | `claude/a-advertise` | `78482c6d` | Item 6: macOS, Windows and Linux advertise HostCapability::accessibility; each host's test checks the bit; docs (capability table, roadmap, FORWARD_PROGRAMME §3 A Today, stage brief). Worktree `D:\gui_forms_w4\advertise`. Draft, HELD until #249 passes (coordinator chose option 2, 2026-10-22: the gate claim rests on all three hosts' out-of-process client tests). Windows tests + sanitizer 2/2. CI pending (first macOS/Linux compile of the test lines). |
 
-## Decisions in force
+## Current decisions
 
 - Owner vocabulary interview (`planning/interview/A_VOCABULARY_ROUND_001.md`, design language 12.13):
   every recommended option. `modal` is a node **field** (bool), not a state; `checkable` and

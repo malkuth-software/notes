@@ -34,7 +34,7 @@ recorded owner decision.
 | Windows Forms coverage | every 2026-10-27 row, the small controls, the instruments vocabulary | W | in; W-1 to W-3 and W-5b to W-9 ruled after 0.5 |
 | Smooth scrolling | a notched wheel, the scroll bar's arrows and track, and paging glide; precise deltas apply at once; reduced motion is instant; focus scrolls into view | (W) | on `claude/scroll-0.5`, queued for the seal checkpoint |
 
-## Owner rulings, 2026-11-08
+## Owner decisions, 2026-11-08
 
 - **Smooth scrolling is in 0.5.**
 - **The default theme becomes `gui-forms`** (T4 phase 6), and the four

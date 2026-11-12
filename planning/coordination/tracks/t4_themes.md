@@ -242,7 +242,7 @@ gui_forms. Only this file is pushed (projects main).
   explicit specificity (state where :family sits vs type selectors), ABI/schema impact, pixel
   identity family by family vs the reference set. (D) rebase (b) onto the latest integrator batch
   head (w3 integration/batch*), redo colour moves in .form files, keep owner colours.
-- 2026-11-08 owner ruling on the selector audit (desks/coordinator/THEME_SELECTORS_AUDIT.md):
+- 2026-11-08 owner decision on the selector audit (desks/coordinator/THEME_SELECTORS_AUDIT.md):
   OPTION 2. After item 2, each its own commit: (1) CSS specificity (ids; classes+pseudo-classes;
   types+pseudo-elements) and the base sheet as a lower user-agent-like origin (re-record moved
   goldens, explain each); (2) :family, :not, :where; (3) gui-forms floor as family blocks, proven
@@ -527,7 +527,7 @@ gui_forms. Only this file is pushed (projects main).
   rules -> Window::set_backdrop_chain (role tints resolved per scheme/HC). `popup`
   rules: parse and hold; lower only once hot paths' native popup seam lands.
   (3) phases 6-8; (4) TV-2 relocate_colours.py.
-- Owner rulings in force: blur() = ask the compositor for its blurred backing (system
+- Current owner decisions: blur() = ask the compositor for its blurred backing (system
   material), never sample other windows; NO frost operation (grammar stays blur,
   saturate, tint). "Popup" = native owned alert-like window only (TaskDialog/FontDialog
   panels); menus/drop-downs/tooltips are OVERLAYS (open_popup -> open_overlay rename by
@@ -593,13 +593,13 @@ gui_forms. Only this file is pushed (projects main).
   Progress effects (stripes, luminance, laser in range_control_rendering,
   13 calls) still direct: decision asked (engine primitives with motion
   phase vs content exemption).
-- f12d96da OWNER RULING 2026-11-02 (supersedes keeping the part path's
+- f12d96da Owner decision 2026-11-02 (supersedes keeping the part path's
   muted ink): disabled labels/captions/content use the theme's own
   disabled text (recipe.text resolved in the disabled state). Correction:
   my 4635aef3 report swapped the hexes; main had #848f99 (theme disabled
-  text), the part path's muted ink was #76808a; the ruling restores
+  text), the part path's muted ink was #76808a; the decision restores
   #848f99.
-- OWNER RULING 2026-11-02 (progress effects): option 2 as the interim.
+- Owner decision 2026-11-02 (progress effects): option 2 as the interim.
   The 13 stripes/pulse/laser calls are legacy, to be replaced; the census
   exempts range_control/range_control_rendering.cpp with that reason (the
   progress bar's only exemption). Replacement = registered effects incl.
@@ -771,7 +771,7 @@ gui_forms. Only this file is pushed (projects main).
 
 ## Design note: theme variants, automatic scheme, colour ownership (D1/D2, 2026-11-03)
 
-Owner rulings in force: D2 option 2 (no host palette: GUI.Forms' own
+Current owner decisions: D2 option 2 (no host palette: GUI.Forms' own
 high-contrast palette, swapped at paint time); D1 replaced by theme
 variants; colour belongs to the theme, not to inline styles. Status:
 DESIGN, sent to the coordinator; implement after acknowledgement.
@@ -970,7 +970,7 @@ theme capability.
 
 ## Cascade spec: where styles live (owner model, 2026-11-04; simplified the same day)
 
-Rulings: themes live in two places only. (1) The project-associated theme,
+Decisions: themes live in two places only. (1) The project-associated theme,
 built on the active library themes, with light and dark variants; user
 themes are layered over it under the existing policy. (2) Truly inline
 code: a program's C++ or C# setting a value on an instance. That is
@@ -1042,7 +1042,7 @@ preview and editor surface, never inside a program's own forms.
    selector (E105). Form documents and layout styles refuse all escapes,
    as before.
 
-## Font properties: the set (owner ruling 2026-11-04, note before the build)
+## Font properties: the set (owner decision 2026-11-04, note before the build)
 
 Fonts join the theme language. W107 no longer covers the five longhands below;
 the rest of the font family (font-variant, font-stretch, font-feature-settings,
@@ -1081,7 +1081,7 @@ Invalidation: the resolved font is cached per control and dropped on a theme,
 scheme, class or attach change; a change of the resolved font marks LAYOUT dirty
 (re-measure plus repaint), never paint only.
 
-## Decisions in force
+## Current decisions
 
 - T4-1 authored colours, inline level, dropped in forced HC (approved).
 - T4-2 default theme id `gui-forms`; windows-professional stays.

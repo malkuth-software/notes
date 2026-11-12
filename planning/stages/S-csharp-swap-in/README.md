@@ -114,7 +114,7 @@ Still open, minor: package identity and naming on NuGet.
 - `planning/MASTER_IMPLEMENTATION_PLAN.md` §4.10, M11
 - `docs/user/for-windows-forms-developers.md`
 
-## Owner rulings, 2026-11-09 and 2026-11-10
+## Owner decisions, 2026-11-09 and 2026-11-10
 
 - **Interactive desktop for SDR# (2026-11-09).** SDR# may run through the
   swap-in on the owner's interactive desktop with network access. This

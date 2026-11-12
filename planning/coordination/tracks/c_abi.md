@@ -222,7 +222,7 @@ The stx_skia track that held this workspace is paused: leave its branches
   Gate: both runs recorded under `results/`, plain and sanitized.
 - The 0.x ABI keeps building, uninstalled, until the facade (R) migrates.
 
-### Owner decisions in force (answered 2026-11-01, relayed by the coordinator)
+### Current owner decisions (answered 2026-11-01, relayed by the coordinator)
 1. **Numbering:** major 1. Nothing is truly sealed until 1.0. ABI 1 is the 0.5
    stability target; the 0.5 audit baseline is a recorded snapshot. Between
    0.5 and 1.0 changes are allowed, but every break is recorded with its
@@ -781,7 +781,7 @@ holds Painter&). C++ events are typed accessors named as the interaction.
   Gates: c_abi 30/30 plain and sanitized; installed consumers 2/2; docs, style, lifetime,
   state machines clean.
 
-- 2026-11-02: owner rulings (relayed): (1) .NET in CI is option (a): gui_forms_abi_csharp
+- 2026-11-02: owner decisions (relayed): (1) .NET in CI is option (a): gui_forms_abi_csharp
   uses a preinstalled SDK of major 10 or later and otherwise skips with a notice
   (SKIP_REGULAR_EXPRESSION "gui_forms_abi_csharp: SKIPPED"); nothing is downloaded.
   (2) PlaySuite and SwiftEdit get a full port to the C ABI, planned separately; C8's gate
@@ -793,7 +793,7 @@ holds Painter&). C++ events are typed accessors named as the interaction.
 ## Next step
 WINDOW EVENTS DONE (2026-11-02): branch claude/c-abi-window-events (W's 715fb281 + merge of
 c-abi-c6 934260bd), head 4b532603. Commits: 40cfffc5 the C# test skips without a .NET 10 SDK
-(owner ruling (1), ctest SKIP_REGULAR_EXPRESSION, nothing downloaded); ece5cfb5 Window
+(owner decision (1), ctest SKIP_REGULAR_EXPRESSION, nothing downloaded); ece5cfb5 Window
 declares its seven interactions (static Window::append_interactions, WindowHandle forwards,
 catalog HOSTED connectors, Theme field deferred); 104d0c72 ABI 1.1: GF_ABI_MINOR 1,
 windows.interaction_count/interaction_at/request_help since 1.1 in their own commit
@@ -843,7 +843,7 @@ stacked on claude/effect-pass 24f966f1 (the Mac's pass, on 6f7d1b5b). Commits:
   properties (schema + docs regenerated), EffectInstance::queue_input (lesser of grant and
   declaration, 8 a frame), bubbles take pointer presses; the marquee alone keeps the timer.
 - bc496678 woven stripes in one pass (setup stores drawing order): pass bound run 3,772,
-  setup 4,210; budget back to 6,000 (owner ruling: restructure, don't raise).
+  setup 4,210; budget back to 6,000 (owner decision: restructure, don't raise).
 - 52c6fef1 verification records match name AND state size; effect_load_diagnostics() with a
   one-line stderr diagnostic for the first unverified effect; MetricsSnapshot
   effect_ambient_frames, effects_unverified; API docs and inventory regenerated.
@@ -950,7 +950,7 @@ docs, schema, registry clean; SM only the known C3 advisory.
 ## cp14 static-check fixes (2026-11-03, after the shutdown)
 - claude/instrument-sweep-scope 76cd6a7b (on 3888a8f5): paint census classes EffectCanvas vocabulary
   calls (on a name declared `EffectCanvas&`, drawing members only) as `effect`, never stock
-  (coordinator ruling); baseline: progress_bar_effects 0 stock/16 effect, range_control_rendering 12;
+  (coordinator decision); baseline: progress_bar_effects 0 stock/16 effect, range_control_rendering 12;
   test_paint_census +1 test. effect_registry I05: name printed to at most 256 bytes. Docs:
   api_docs_rst.clean_signature drops GUI_FORMS_EFFECT_VOCABULARY marks (Sphinx could not parse them);
   effect_fraction docstring reworded (no |x|). Checked in w5 and on the fold (22fbaedd already holds
@@ -1255,7 +1255,7 @@ coordinator at once. Scripts: D:/gui_forms_w5/dev/tools/s12_split.py (already ap
 Also pending: rerun the 2 sanitized UIA tests when the foreground lock is free. Then S2 (ask coordinator for hot
 paths' resize lessons first).
 
-### Coordinator rulings for S6 (2026-11-05)
+### Coordinator decisions for S6 (2026-11-05)
 - Caller-thread `run` slot: left out of S6 (decision 9 allows, does not require); revisit after the 1.1 seal.
 - Schema interactions `stopped` / `pairing_missed`: left out of S6. FOLLOW-UP: add them to the subsurface_host schema type after S6 lands.
 - SubSurfaceHost registry record stays category Drawing, status provisional.
@@ -1273,7 +1273,7 @@ paths' resize lessons first).
 - Follow-ups: schema interactions stopped/pairing_missed for subsurface_host; `run` caller-thread slot after the seal.
 
 ## RESUME POINTER (2026-11-05, S7 part 1 in progress)
-- Coordinator ruling: S7 option 1 (snapshot of the visible row window posted in batches; UI thread keeps data, events, editor, headers, scroll bars; redraw-all with a new epoch on scroll/resize/column width; virtual-mode provider on the UI thread; opt-in cells_on_subsurface, off by default). Part 1 now (outside DataGridView's files); wiring into DataGridView's paint/layout after W's P-5 lands (the coordinator sends W's head).
+- Coordinator decision: S7 option 1 (snapshot of the visible row window posted in batches; UI thread keeps data, events, editor, headers, scroll bars; redraw-all with a new epoch on scroll/resize/column width; virtual-mode provider on the UI thread; opt-in cells_on_subsurface, off by default). Part 1 now (outside DataGridView's files); wiring into DataGridView's paint/layout after W's P-5 lands (the coordinator sends W's head).
 - FOLLOW-UP: virtual-mode provider on the sub-surface thread (decision 3a second half).
 - Branch claude/subsurface-s7 on claude/subsurface-s6 2c87fdb0 (uncommitted while the first M4 run goes). Contents:
   - core: SubSurfaceContentUpdate + SubSurfaceContent::apply_update; SubSurfaceConfiguration::update (carried over a coalesced configuration; updates_applied/updates_coalesced statistics); SubSurfaceHost::redraw_all(update) -> epoch (0 while not configured; waits for the first configuration; set_content drops it); every configuration now repaints the root whole (each epoch gets a frame: pairing).
