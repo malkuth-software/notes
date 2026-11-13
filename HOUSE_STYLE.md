@@ -26,7 +26,7 @@ A function that returns a borrow of an argument refuses temporaries: delete its 
 
 Recursion over runtime-shaped data is forbidden unless a finite maximum depth is established and enforced before traversal. Otherwise, use explicit bounded work storage. The prohibition includes control trees, document trees, parsers, dependency graphs, and nested event dispatch. The call stack is memory with a fixed, unchecked capacity: a deep structure need not be a large one, so state the enforced limit and the stack budget per level where recursion remains, and refuse the input or mutation that would exceed it before any state changes. Tear deep owning structures down iteratively.
 
-Keep small temporaries local. Put persistent state and reusable workspaces on their owner. Allocate substantial or runtime-sized storage before repeated processing, then reuse it. Shared scratch fields create dependencies between calls; use them deliberately.
+Local variables and static locals are allowed, mutable ones included. A pointer or reference to a local never outlives the local: it is not returned, not stored in an object, callback or deferred work that outlasts the scope, and not left in a foreign structure after the call that used it. Keep small temporaries local. Put persistent state and reusable workspaces on their owner. Allocate substantial or runtime-sized storage before repeated processing, then reuse it. Shared scratch fields create dependencies between calls; use them deliberately.
 
 Use standard growable collections for growth and ordinary strings for text. Use specialized heap arrays for substantial buffers edited in place or for specific alignment and allocation needs.
 
