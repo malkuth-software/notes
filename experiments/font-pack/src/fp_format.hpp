@@ -8,6 +8,50 @@
 
 namespace fp {
 
+// ---- container ---------------------------------------------------------------
+//
+// A pack is a container of groups. Each group is a complete, independent set
+// of streams over its own fonts (a "body"); no match, context or shared table
+// reaches from one group into another, so any group decodes alone and a
+// later group's decode never touches an earlier one.
+//
+//   "FPK2"
+//   varint group count                      1..kMaxGroups
+//   per group:
+//     varint name length, name bytes        1..kMaxNameBytes
+//     u8 flags                              kGroupEager or 0
+//     varint font count                     1..kMaxFonts (all groups together)
+//     varint font bytes                     sum of the group's font sizes
+//     varint stream bytes                   sum of the group's decoded stream sizes (a number counts 2 bytes)
+//     varint body size                      coded bytes of the body
+//     per font:
+//       varint name length, name bytes      1..kMaxNameBytes
+//       varint size                         1..kMaxFontBytes
+//       u32 little-endian CRC-32 of the font (fp_crc.hpp)
+//   per group, in the same order: body, then kStreamPadding bytes
+//
+// A body is, for the group's fonts in order, kStreamCount varints each (the
+// font's start in every stream), then kStreamCount varints (each stream's
+// coded size), then the coded streams.
+//
+// Limits a loader enforces before it allocates anything for a group. Each
+// one is also enforced by the packer, so every pack the packer writes loads.
+enum : std::uint32_t {
+    kMaxGroups = 16,
+    kMaxFonts = 256,                    // in the whole pack
+    kMaxNameBytes = 128,
+    kMaxFontBytes = 64u << 20,          // one font file (the largest bundled font is 16.5 MB)
+    kMaxGroupFontBytes = 256u << 20,    // all fonts of one group
+    // Decoded streams may exceed the fonts they describe (a CFF number of one
+    // byte is held as 2), but never by more than this factor.
+    kMaxStreamExpansion = 4,
+    // A group's fonts are at most this many times its body size. Ties every
+    // size claim to bytes actually present in the pack, so a short damaged
+    // pack cannot claim a large group. The bundled set packs at 2.35x.
+    kMaxDecodeRatio = 64,
+    kGroupEager = 1
+};
+
 // Every font contributes to the same set of streams, in font order, so a
 // stream is "solid" across fonts and matches reach into earlier fonts.
 enum StreamId : std::uint32_t {

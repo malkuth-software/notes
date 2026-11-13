@@ -3,20 +3,30 @@
 // Order of work, each step a set of independent jobs run on worker threads:
 //   1. decode the leading streams: the ones other streams' contexts and the
 //      rebuild plan are derived from (triplet flags, CFF operator/count
-//      pairs and their tables, the recipes);
+//      pairs and their tables, the recipes), and plan the rebuild; the
+//      font storage is allocated only after the plan has confirmed every
+//      font's size;
 //   2. decode every other stream;
 //   3. rebuild the fonts: one job per font, plus one job per chunk of CFF
-//      charstrings.
+//      charstrings;
+//   4. check every rebuilt font against its stored CRC-32, in pieces of
+//      kCheckPieceBytes so a large font is checked on several threads.
+// All of this is per group: a group's body is a complete set of streams,
+// and pack_load_group decodes exactly one group.
 // A stream's chunks decode in parallel; the worker that finishes a stream's
 // last chunk then copies that stream's matches.
 // Stream contexts are produced per chunk into a worker buffer, never for a
 // whole stream, to keep scratch memory low.
 //
 // Every read from a decoded stream and every write into a font is bounds
-// checked; a damaged pack makes pack_load return false.
+// checked; a damaged pack makes pack_load_group refuse the group. Before any
+// of that allocates, every decoded size the group claims is checked against
+// the format limits and against the container's totals (see "bounded
+// claims" in pack_load_group).
 #include "fp_load.hpp"
 
 #include "fp_codec.hpp"
+#include "fp_crc.hpp"
 #include "fp_glyph.hpp"
 
 #include <atomic>
@@ -108,6 +118,7 @@ struct FontEntry {
     const char* name;
     std::uint32_t name_length;
     std::uint32_t size;
+    std::uint32_t crc;           // from the container
     std::uint8_t* out;
     std::uint32_t starts[kStreamCount];
 };
@@ -151,8 +162,14 @@ struct FontPlan {
     std::uint32_t tail_kind;
 };
 
-// One chunk of CFF items to rebuild.
+// One chunk of CFF items to rebuild. The plan is made before the font
+// storage exists (so that font sizes are confirmed by decoded data before
+// they are allocated); offsets and data are set from font, offsets_at and
+// data_at once it does.
 struct CffChunk {
+    std::uint32_t font;
+    std::uint32_t offsets_at;    // where the INDEX's offset array starts in the font file
+    std::uint32_t data_at;       // where its item bytes start
     std::uint8_t* offsets;       // the INDEX's offset array
     std::uint32_t off_size;
     std::uint8_t* data;          // the INDEX's item bytes
@@ -204,6 +221,10 @@ struct Loader {
     std::uint8_t pair_op[kCffPairCount];
     std::uint8_t pair_count[kCffPairCount];
     std::atomic<bool> failed;
+    std::atomic<bool> no_memory;       // an allocation failed (set with failed)
+    // Step 4: piece p of font f has its CRC-32 at piece_crc[piece_first[f] + p].
+    std::vector<std::uint32_t> piece_first;   // font_count + 1 entries
+    std::vector<std::uint32_t> piece_crc;
     std::atomic<std::size_t> scratch_now;
     std::atomic<std::size_t> scratch_peak;
     const Job* jobs;
@@ -224,6 +245,7 @@ struct Loader {
 void* scratch_take(Loader& loader, std::size_t size) {
     void* memory = std::malloc(size == 0 ? 1 : size);
     if (memory == nullptr) {
+        loader.no_memory.store(true);
         loader.failed.store(true);
         return nullptr;
     }
@@ -657,6 +679,13 @@ bool plan_fonts(Loader& loader) {
             return false;
         }
         if (plan.mode == 0) {
+            // A verbatim font is its own bytes in kStreamRawOther, up to the
+            // next font's start there: its size must be exactly that extent.
+            const std::uint32_t raw_end =
+                f + 1 < loader.font_count ? loader.fonts[f + 1].starts[kStreamRawOther] : loader.decoders[kStreamRawOther].size;
+            if (raw_end < font.starts[kStreamRawOther] || raw_end - font.starts[kStreamRawOther] != font.size) {
+                return false;
+            }
             continue;
         }
         plan.table_count = take_varint(meta);
@@ -752,8 +781,12 @@ bool plan_fonts(Loader& loader) {
                             loader.decoded[kStreamCffIndex] + static_cast<std::size_t>(index_entry + c) * kCffIndexEntryBytes;
                         CffChunk chunk;
                         chunk.off_size = region.off_size;
-                        chunk.offsets = font.out + table.offset + region.start + 3;
-                        chunk.data = font.out + table.offset + region.start + region.header_bytes;
+                        // Both lie inside the table: region_end <= table.length was checked above.
+                        chunk.font = f;
+                        chunk.offsets_at = table.offset + region.start + 3;
+                        chunk.data_at = table.offset + region.start + region.header_bytes;
+                        chunk.offsets = nullptr;
+                        chunk.data = nullptr;
                         chunk.data_length = region.data_length;
                         chunk.item_first = c * kCffChunkItems;
                         chunk.item_count = region.count - chunk.item_first;
@@ -1376,6 +1409,23 @@ void job_cff_chunk(Loader& loader, const Job& job, Worker& worker) {
     }
 }
 
+
+// ---- check -----------------------------------------------------------------
+
+enum : std::uint32_t { kCheckPieceBytes = 1u << 20 };
+
+// a: font, b: piece. CRC-32 of one piece of a rebuilt font.
+void job_check_piece(Loader& loader, const Job& job, Worker& worker) {
+    static_cast<void>(worker);
+    const FontEntry& font = loader.fonts[job.a];
+    const std::size_t start = static_cast<std::size_t>(job.b) * kCheckPieceBytes;
+    std::size_t length = font.size - start;
+    if (length > kCheckPieceBytes) {
+        length = kCheckPieceBytes;
+    }
+    loader.piece_crc[loader.piece_first[job.a] + job.b] = crc32(0, font.out + start, length);
+}
+
 void loader_release(Loader& loader, Worker* workers, std::uint32_t worker_count) {
     for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
         if (loader.opened[s]) {
@@ -1398,25 +1448,152 @@ void loader_release(Loader& loader, Worker* workers, std::uint32_t worker_count)
     std::free(loader.fonts);
 }
 
-}  // namespace
-
-void pack_free(LoadedPack& pack) {
-    std::free(pack.storage);
-    std::free(pack.fonts);
-    pack.storage = nullptr;
-    pack.storage_bytes = 0;
-    pack.fonts = nullptr;
-    pack.font_count = 0;
-}
-
-bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t threads, LoadedPack& out) {
-    const double time_start = seconds_now();
+void group_reset(LoadedGroup& out, std::uint32_t group) {
+    out.group = group;
     out.storage = nullptr;
     out.storage_bytes = 0;
     out.fonts = nullptr;
     out.font_count = 0;
+    out.refusal = kGroupLoaded;
     out.scratch_peak = 0;
+    out.storage_requested = 0;
     std::memset(&out.timings, 0, sizeof(out.timings));
+}
+
+// Records the first reason a load stopped.
+void refuse(GroupRefusal& refusal, bool ok, GroupRefusal reason) {
+    if (!ok && refusal == kGroupLoaded) {
+        refusal = reason;
+    }
+}
+
+}  // namespace
+
+// ---- container ---------------------------------------------------------------
+
+bool pack_open(const std::uint8_t* pack, std::size_t pack_size, PackIndex& index) {
+    index.pack = nullptr;
+    index.pack_size = 0;
+    index.group_count = 0;
+    index.font_count = 0;
+    Reader reader = reader_make(pack, pack_size);
+    const std::uint8_t* magic = get_span(reader, 4);
+    if (reader.failed || std::memcmp(magic, "FPK2", 4) != 0) {
+        return false;
+    }
+    const std::uint64_t group_count = get_varint(reader);
+    if (reader.failed || group_count == 0 || group_count > kMaxGroups) {
+        return false;
+    }
+    std::uint32_t font_total = 0;
+    for (std::uint32_t g = 0; g < group_count; g += 1) {
+        PackGroup& group = index.groups[g];
+        const std::uint64_t name_length = get_varint(reader);
+        if (reader.failed || name_length == 0 || name_length > kMaxNameBytes) {
+            return false;
+        }
+        group.name_length = static_cast<std::uint32_t>(name_length);
+        group.name = reinterpret_cast<const char*>(get_span(reader, group.name_length));
+        const std::uint32_t flags = get_u8(reader);
+        const std::uint64_t font_count = get_varint(reader);
+        group.font_bytes = get_varint(reader);
+        group.stream_bytes = get_varint(reader);
+        const std::uint64_t body_size = get_varint(reader);
+        // Order matters: once font_bytes is known to be at most
+        // kMaxGroupFontBytes (2^28), the expansion product cannot overflow.
+        // The ratio test is ceil(font_bytes / ratio) > body_size, which is
+        // font_bytes > ratio * body_size without the multiplication.
+        if (reader.failed || (flags & ~static_cast<std::uint32_t>(kGroupEager)) != 0 || font_count == 0 ||
+            font_count > kMaxFonts - font_total || group.font_bytes > kMaxGroupFontBytes ||
+            group.stream_bytes > kMaxStreamExpansion * group.font_bytes || body_size > pack_size ||
+            (group.font_bytes + kMaxDecodeRatio - 1) / kMaxDecodeRatio > body_size) {
+            return false;
+        }
+        group.eager = flags == kGroupEager;
+        group.font_first = font_total;
+        group.font_count = static_cast<std::uint32_t>(font_count);
+        group.body = nullptr;
+        group.body_size = static_cast<std::size_t>(body_size);
+        // At most kMaxFonts sizes of at most kMaxFontBytes (2^26) each: the sum
+        // stays below 2^34 and cannot overflow.
+        std::uint64_t size_sum = 0;
+        for (std::uint32_t f = 0; f < group.font_count; f += 1) {
+            PackFont& font = index.fonts[font_total + f];
+            const std::uint64_t font_name_length = get_varint(reader);
+            if (reader.failed || font_name_length == 0 || font_name_length > kMaxNameBytes) {
+                return false;
+            }
+            font.name_length = static_cast<std::uint32_t>(font_name_length);
+            font.name = reinterpret_cast<const char*>(get_span(reader, font.name_length));
+            const std::uint64_t size = get_varint(reader);
+            const std::uint8_t* crc = get_span(reader, 4);
+            // Test failed before reading the CRC: a failed span may hold fewer than 4 bytes.
+            if (reader.failed || size == 0 || size > kMaxFontBytes) {
+                return false;
+            }
+            font.size = static_cast<std::uint32_t>(size);
+            font.crc = le32(crc);
+            font.group = g;
+            size_sum += size;
+        }
+        if (size_sum != group.font_bytes) {
+            return false;
+        }
+        font_total += group.font_count;
+    }
+    for (std::uint32_t g = 0; g < group_count; g += 1) {
+        index.groups[g].body = get_span(reader, index.groups[g].body_size);
+        // The stream decoders read up to kStreamPadding bytes past a body.
+        get_span(reader, kStreamPadding);
+        if (reader.failed) {
+            return false;
+        }
+    }
+    if (reader.cursor != reader.end) {
+        return false;
+    }
+    index.pack = pack;
+    index.pack_size = pack_size;
+    index.group_count = static_cast<std::uint32_t>(group_count);
+    index.font_count = font_total;
+    return true;
+}
+
+// ---- group -------------------------------------------------------------------
+
+void group_free(LoadedGroup& group) {
+    std::free(group.storage);
+    std::free(group.fonts);
+    group.storage = nullptr;
+    group.storage_bytes = 0;
+    group.fonts = nullptr;
+    group.font_count = 0;
+}
+
+bool pack_load_group(const PackIndex& index, std::uint32_t group_index, std::uint32_t threads, LoadedGroup& out) {
+    const double time_start = seconds_now();
+    group_reset(out, group_index);
+
+    // The index is trusted only as pack_open leaves it; what this function
+    // relies on is rechecked, because it is cheap.
+    if (group_index >= index.group_count) {
+        out.refusal = kGroupBadIndex;
+        return false;
+    }
+    const PackGroup& group = index.groups[group_index];
+    bool index_ok = group.body != nullptr && group.font_count != 0 && group.font_first <= index.font_count &&
+                    group.font_count <= index.font_count - group.font_first && group.font_bytes <= kMaxGroupFontBytes &&
+                    group.stream_bytes <= kMaxStreamExpansion * group.font_bytes;
+    std::uint64_t size_sum = 0;
+    for (std::uint32_t f = 0; f < group.font_count && index_ok; f += 1) {
+        const std::uint32_t size = index.fonts[group.font_first + f].size;
+        index_ok = size != 0 && size <= kMaxFontBytes;
+        size_sum += size;
+    }
+    if (!index_ok || size_sum != group.font_bytes) {
+        out.refusal = kGroupBadIndex;
+        return false;
+    }
 
     if (threads == 0) {
         threads = std::thread::hardware_concurrency();
@@ -1435,6 +1612,7 @@ bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t th
     loader.fonts = nullptr;
     loader.font_count = 0;
     loader.failed.store(false);
+    loader.no_memory.store(false);
     loader.scratch_now.store(0);
     loader.scratch_peak.store(0);
     for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
@@ -1448,76 +1626,78 @@ bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t th
     for (std::int32_t value = -kValueLimit; value <= kValueLimit; value += 1) {
         loader.value_tokens[value + kValueLimit] = static_cast<std::uint16_t>(token_from_value(value));
     }
-    // The helpers start while the header is parsed.
+    // The helpers start while the body header is parsed.
     pool_start(loader, workers, threads - 1);
+    GroupRefusal refusal = kGroupLoaded;
 
-    // Header.
-    Reader reader = reader_make(pack, pack_size);
-    const std::uint8_t* magic = get_span(reader, 4);
-    bool ok = !reader.failed && std::memcmp(magic, "FPK1", 4) == 0;
-    std::uint64_t font_count = 0;
-    std::uint64_t storage_bytes = 0;
-    if (ok) {
-        font_count = get_varint(reader);
-        ok = !reader.failed && font_count <= pack_size;
+    // Fonts: names, sizes and check values from the container; stream starts
+    // from the body. font_count is at most kMaxFonts, so this allocation is
+    // bounded by the format.
+    loader.font_count = group.font_count;
+    loader.fonts = static_cast<FontEntry*>(std::malloc((static_cast<std::size_t>(group.font_count) + 1) * sizeof(FontEntry)));
+    bool ok = loader.fonts != nullptr;
+    refuse(refusal, ok, kGroupNoMemory);
+    if (!ok) {
+        loader.font_count = 0;
     }
-    if (ok) {
-        loader.font_count = static_cast<std::uint32_t>(font_count);
-        loader.fonts = static_cast<FontEntry*>(std::malloc((static_cast<std::size_t>(font_count) + 1) * sizeof(FontEntry)));
-        ok = loader.fonts != nullptr;
-    }
+    Reader reader = reader_make(group.body, group.body_size);
     for (std::uint32_t f = 0; f < loader.font_count && ok; f += 1) {
+        const PackFont& source = index.fonts[group.font_first + f];
         FontEntry& font = loader.fonts[f];
-        const std::uint64_t name_length = get_varint(reader);
-        if (reader.failed || name_length > pack_size) {
-            ok = false;
-            break;
-        }
-        font.name_length = static_cast<std::uint32_t>(name_length);
-        font.name = reinterpret_cast<const char*>(get_span(reader, font.name_length));
-        const std::uint64_t size = get_varint(reader);
-        if (reader.failed || size > 0x7FFFFFFFu) {
-            ok = false;
-            break;
-        }
-        font.size = static_cast<std::uint32_t>(size);
+        font.name = source.name;
+        font.name_length = source.name_length;
+        font.size = source.size;
+        font.crc = source.crc;
         font.out = nullptr;
         for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
             const std::uint64_t start = get_varint(reader);
-            if (start > 0x7FFFFFFFu || (f != 0 && start < loader.fonts[f - 1].starts[s])) {
+            if (reader.failed || start > 0x7FFFFFFFu || (f != 0 && start < loader.fonts[f - 1].starts[s])) {
                 ok = false;
             }
             font.starts[s] = static_cast<std::uint32_t>(start);
         }
-        storage_bytes += (size + 7) & ~static_cast<std::uint64_t>(7);
     }
-    ok = ok && !reader.failed && storage_bytes <= 0x7FFFFFFFu;
     for (std::uint32_t s = 0; s < kStreamCount && ok; s += 1) {
         const std::uint64_t size = get_varint(reader);
-        ok = !reader.failed && size <= pack_size;
+        ok = !reader.failed && size <= group.body_size;
         loader.blob_sizes[s] = static_cast<std::size_t>(size);
     }
     for (std::uint32_t s = 0; s < kStreamCount && ok; s += 1) {
         loader.blobs[s] = get_span(reader, loader.blob_sizes[s]);
         ok = !reader.failed;
     }
-    // The stream decoders read a little past their own bytes.
-    ok = ok && static_cast<std::size_t>(reader.end - reader.cursor) >= kStreamPadding;
+    // The body is exactly its parts; the container's padding follows it.
+    ok = ok && reader.cursor == reader.end;
 
-    // Output storage and stream decoders.
-    std::uint8_t* storage = nullptr;
-    if (ok) {
-        // Zeroed so that no byte of a font is ever uninitialised, whatever the pack says.
-        storage = static_cast<std::uint8_t*>(std::calloc(static_cast<std::size_t>(storage_bytes) + 8, 1));
-        ok = storage != nullptr;
+    // Bounded claims. Every stream begins with its decoded size (for the
+    // number stream, its count of numbers, each held as 2 bytes). All of them
+    // are read and their sum compared with the container's stream total
+    // before any stream allocates tables or output. That total was itself
+    // checked by pack_open against kMaxStreamExpansion times the group's
+    // font bytes, which were checked against kMaxGroupFontBytes and
+    // kMaxDecodeRatio times the body size. So no decoded size below can
+    // exceed what the format allows for a body of this size.
+    std::uint64_t declared[kStreamCount];
+    std::memset(declared, 0, sizeof(declared));
+    std::uint64_t declared_total = 0;
+    for (std::uint32_t s = 0; s < kStreamCount && ok; s += 1) {
+        Reader peek = reader_make(loader.blobs[s], loader.blob_sizes[s]);
+        declared[s] = get_varint(peek);
+        ok = !peek.failed && declared[s] <= 0x7FFFFFFFu;
+        // Each term is below 2^32 and there are kStreamCount (33) of them: no overflow.
+        declared_total += s == kStreamCffNumbers ? 2 * declared[s] : declared[s];
     }
-    if (ok) {
-        std::uint64_t at = 0;
-        for (std::uint32_t f = 0; f < loader.font_count; f += 1) {
-            loader.fonts[f].out = storage + at;
-            at += (static_cast<std::uint64_t>(loader.fonts[f].size) + 7) & ~static_cast<std::uint64_t>(7);
+    ok = ok && declared_total == group.stream_bytes;
+    // Every font's stream starts must lie inside the streams.
+    for (std::uint32_t f = 0; f < loader.font_count && ok; f += 1) {
+        for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
+            if (loader.fonts[f].starts[s] > declared[s]) {
+                ok = false;
+            }
         }
     }
+    refuse(refusal, ok, kGroupBadClaims);
+
     std::vector<Job> jobs;
     Job job;
     job.a = 0;
@@ -1533,12 +1713,10 @@ bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t th
         jobs.clear();
         ok = !loader.failed.load();
     }
-    // Every font's stream starts must lie inside the streams.
-    for (std::uint32_t f = 0; f < loader.font_count && ok; f += 1) {
-        for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
-            if (loader.fonts[f].starts[s] > loader.decoders[s].size) {
-                ok = false;
-            }
+    // A stream must decode to the size it declared (the same varint; kept as a guard).
+    for (std::uint32_t s = 0; s < kStreamCount && ok; s += 1) {
+        if (loader.decoders[s].size != declared[s]) {
+            ok = false;
         }
     }
     const double time_opened = seconds_now();
@@ -1595,6 +1773,38 @@ bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t th
     if (ok) {
         ok = plan_fonts(loader);
     }
+    refuse(refusal, ok || !loader.no_memory.load(), kGroupNoMemory);
+    refuse(refusal, ok, kGroupBadStreams);
+
+    // Output storage, only now: plan_fonts has tied every font's size to its
+    // decoded recipe (table placement and tail, or a verbatim font's extent),
+    // so a size claim the streams do not bear out is refused before this
+    // allocation. Each font is rounded up to 8 bytes: at most kMaxFonts times
+    // 7 bytes above font_bytes, far inside 64 bits and below 2^31.
+    std::uint64_t storage_bytes = 0;
+    for (std::uint32_t f = 0; f < loader.font_count && ok; f += 1) {
+        storage_bytes += (static_cast<std::uint64_t>(loader.fonts[f].size) + 7) & ~static_cast<std::uint64_t>(7);
+    }
+    std::uint8_t* storage = nullptr;
+    if (ok) {
+        // Zeroed so that no byte of a font is ever uninitialised, whatever the pack says.
+        out.storage_requested = static_cast<std::size_t>(storage_bytes) + 8;
+        storage = static_cast<std::uint8_t*>(std::calloc(out.storage_requested, 1));
+        ok = storage != nullptr;
+        refuse(refusal, ok, kGroupNoMemory);
+    }
+    if (ok) {
+        std::uint64_t at = 0;
+        for (std::uint32_t f = 0; f < loader.font_count; f += 1) {
+            loader.fonts[f].out = storage + at;
+            at += (static_cast<std::uint64_t>(loader.fonts[f].size) + 7) & ~static_cast<std::uint64_t>(7);
+        }
+        for (std::size_t c = 0; c < loader.cff_chunks.size(); c += 1) {
+            CffChunk& chunk = loader.cff_chunks[c];
+            chunk.offsets = loader.fonts[chunk.font].out + chunk.offsets_at;
+            chunk.data = loader.fonts[chunk.font].out + chunk.data_at;
+        }
+    }
     const double time_streams = seconds_now();
 
     // Step 2: every other stream. The longest stream's chunks go first so its
@@ -1649,13 +1859,58 @@ bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t th
             jobs.push_back(job);
         }
         run_jobs(loader, jobs, workers);
+        jobs.clear();
         ok = !loader.failed.load();
     }
+    refuse(refusal, ok || !loader.no_memory.load(), kGroupNoMemory);
+    refuse(refusal, ok, kGroupBadStreams);
     const double time_rebuilt = seconds_now();
+
+    // Step 4: check. A font of size n has ceil(n / kCheckPieceBytes) pieces
+    // (at least one, since n > 0); the pieces' values are combined in order.
+    if (ok) {
+        loader.piece_first.resize(static_cast<std::size_t>(loader.font_count) + 1);
+        std::uint32_t pieces = 0;
+        for (std::uint32_t f = 0; f < loader.font_count; f += 1) {
+            loader.piece_first[f] = pieces;
+            pieces += (loader.fonts[f].size + kCheckPieceBytes - 1) / kCheckPieceBytes;
+        }
+        loader.piece_first[loader.font_count] = pieces;
+        loader.piece_crc.assign(pieces, 0);
+        scratch_note(loader, loader.piece_first.capacity() * sizeof(std::uint32_t) +
+                                 loader.piece_crc.capacity() * sizeof(std::uint32_t));
+        job.run = job_check_piece;
+        for (std::uint32_t f = 0; f < loader.font_count; f += 1) {
+            const std::uint32_t count = loader.piece_first[f + 1] - loader.piece_first[f];
+            for (std::uint32_t p = 0; p < count; p += 1) {
+                job.a = f;
+                job.b = p;
+                jobs.push_back(job);
+            }
+        }
+        run_jobs(loader, jobs, workers);
+        jobs.clear();
+        for (std::uint32_t f = 0; f < loader.font_count && ok; f += 1) {
+            const FontEntry& font = loader.fonts[f];
+            const std::uint32_t first = loader.piece_first[f];
+            const std::uint32_t count = loader.piece_first[f + 1] - first;
+            std::uint32_t crc = loader.piece_crc[first];
+            for (std::uint32_t p = 1; p < count; p += 1) {
+                // Every piece but the last is full; the last holds the remainder.
+                const std::uint32_t length =
+                    p + 1 < count ? static_cast<std::uint32_t>(kCheckPieceBytes) : font.size - p * kCheckPieceBytes;
+                crc = crc32_combine(crc, loader.piece_crc[first + p], length);
+            }
+            ok = crc == font.crc;
+        }
+        refuse(refusal, ok, kGroupBadCheck);
+    }
+    const double time_checked = seconds_now();
 
     if (ok) {
         out.fonts = static_cast<LoadedFont*>(std::malloc((static_cast<std::size_t>(loader.font_count) + 1) * sizeof(LoadedFont)));
         ok = out.fonts != nullptr;
+        refuse(refusal, ok, kGroupNoMemory);
     }
     if (ok) {
         for (std::uint32_t f = 0; f < loader.font_count; f += 1) {
@@ -1670,6 +1925,7 @@ bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t th
     } else {
         std::free(storage);
     }
+    out.refusal = refusal;
     out.scratch_peak = loader.scratch_peak.load();
     pool_stop(loader);
     loader_release(loader, workers, threads);
@@ -1679,8 +1935,74 @@ bool pack_load(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t th
     out.timings.streams_seconds = time_streams - time_opened;
     out.timings.dependent_seconds = time_dependent - time_streams;
     out.timings.rebuild_seconds = time_rebuilt - time_dependent;
+    out.timings.check_seconds = time_checked - time_rebuilt;
     out.timings.total_seconds = time_end - time_start;
     return ok;
+}
+
+// ---- lazy set ----------------------------------------------------------------
+
+bool set_open(const std::uint8_t* pack, std::size_t pack_size, std::uint32_t threads, LoadedSet& set) {
+    set.threads = threads;
+    for (std::uint32_t g = 0; g < kMaxGroups; g += 1) {
+        group_reset(set.groups[g], g);
+        set.loaded[g] = false;
+        set.refused[g] = false;
+    }
+    if (!pack_open(pack, pack_size, set.index)) {
+        return false;
+    }
+    for (std::uint32_t g = 0; g < set.index.group_count; g += 1) {
+        if (set.index.groups[g].eager && !set_need_group(set, g)) {
+            set_free(set);
+            return false;
+        }
+    }
+    return true;
+}
+
+bool set_need_group(LoadedSet& set, std::uint32_t group) {
+    if (group >= set.index.group_count) {
+        return false;
+    }
+    if (set.loaded[group]) {
+        return true;
+    }
+    if (set.refused[group]) {
+        return false;
+    }
+    if (!pack_load_group(set.index, group, set.threads, set.groups[group])) {
+        set.refused[group] = true;
+        return false;
+    }
+    set.loaded[group] = true;
+    return true;
+}
+
+const LoadedFont* set_find_font(LoadedSet& set, const char* name, std::uint32_t name_length) {
+    for (std::uint32_t f = 0; f < set.index.font_count; f += 1) {
+        const PackFont& font = set.index.fonts[f];
+        if (font.name_length != name_length || std::memcmp(font.name, name, name_length) != 0) {
+            continue;
+        }
+        if (!set_need_group(set, font.group)) {
+            return nullptr;
+        }
+        return &set.groups[font.group].fonts[f - set.index.groups[font.group].font_first];
+    }
+    return nullptr;
+}
+
+void set_free(LoadedSet& set) {
+    for (std::uint32_t g = 0; g < kMaxGroups; g += 1) {
+        if (set.loaded[g]) {
+            group_free(set.groups[g]);
+        }
+        set.loaded[g] = false;
+        set.refused[g] = false;
+    }
+    set.index.group_count = 0;
+    set.index.font_count = 0;
 }
 
 }  // namespace fp

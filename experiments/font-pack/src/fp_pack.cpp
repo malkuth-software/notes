@@ -4,9 +4,11 @@
 #include "fp_pack.hpp"
 
 #include "fp_codec.hpp"
+#include "fp_crc.hpp"
 #include "fp_glyph.hpp"
 
 #include <algorithm>
+#include <fnmatch.h>
 
 namespace fp {
 
@@ -1370,31 +1372,35 @@ const char* stream_name(std::uint32_t stream) {
     return names[stream];
 }
 
-}  // namespace
-
-bool pack_fonts(const std::vector<PackInput>& fonts, Bytes& out, bool verbose) {
+// Codes one group's fonts into a body (see fp_format.hpp) and fills in the
+// group's container fields. Every stream is solid across the group's fonts
+// and nothing outside them: this is the whole of the group split.
+void pack_group_body(const std::vector<PackInput>& fonts, const PackGroupSpec& spec, ContainerGroup& group, bool verbose) {
     Streams* streams = new Streams;
+    group.name = spec.name;
+    group.eager = spec.eager;
+    group.fonts.clear();
+    group.font_bytes = 0;
+    group.body.clear();
+    Bytes& out = group.body;
     // Where each font starts in every stream, so the loader can rebuild fonts independently.
     std::vector<std::size_t> starts;
-    for (std::size_t f = 0; f < fonts.size(); f += 1) {
+    for (std::size_t k = 0; k < spec.fonts.size(); k += 1) {
+        const PackInput& font = fonts[spec.fonts[k]];
         for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
             starts.push_back(s == kStreamCffNumbers ? (*streams).numbers.size() : (*streams).bytes[s].size());
         }
-        font_transform(fonts[f].data, *streams);
+        font_transform(font.data, *streams);
+        ContainerFont entry;
+        entry.name = font.name;
+        entry.size = font.data.size();
+        entry.crc = crc32(0, font.data.data(), font.data.size());
+        group.fonts.push_back(entry);
+        group.font_bytes += font.data.size();
     }
-
-    out.clear();
-    out.push_back('F');
-    out.push_back('P');
-    out.push_back('K');
-    out.push_back('1');
-    put_varint(out, fonts.size());
-    for (std::size_t f = 0; f < fonts.size(); f += 1) {
-        put_varint(out, fonts[f].name.size());
-        out.insert(out.end(), fonts[f].name.begin(), fonts[f].name.end());
-        put_varint(out, fonts[f].data.size());
+    for (std::size_t k = 0; k < spec.fonts.size(); k += 1) {
         for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
-            put_varint(out, starts[f * kStreamCount + s]);
+            put_varint(out, starts[k * kStreamCount + s]);
         }
     }
 
@@ -1403,6 +1409,15 @@ bool pack_fonts(const std::vector<PackInput>& fonts, Bytes& out, bool verbose) {
     if (!(*streams).group_ops.empty()) {
         cff_number_classes(*streams, number_plan);
         cff_pair_stream(*streams);
+    }
+    // The decoded sizes the loader will find at the head of each coded
+    // stream; their sum is the group's stream claim. A number is held as a
+    // 16-bit value, so it counts 2 bytes.
+    group.stream_bytes = 2 * static_cast<std::uint64_t>((*streams).numbers.size());
+    for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
+        if (s != kStreamCffNumbers) {
+            group.stream_bytes += (*streams).bytes[s].size();
+        }
     }
 
     std::vector<Bytes> coded(kStreamCount);
@@ -1506,8 +1521,182 @@ bool pack_fonts(const std::vector<PackInput>& fonts, Bytes& out, bool verbose) {
     for (std::uint32_t s = 0; s < kStreamCount; s += 1) {
         out.insert(out.end(), coded[s].begin(), coded[s].end());
     }
-    out.insert(out.end(), kStreamPadding, 0);
     delete streams;
+}
+
+// Leading and trailing spaces and tabs removed.
+std::string trimmed(const std::string& line) {
+    std::size_t first = 0;
+    std::size_t last = line.size();
+    while (first < last && (line[first] == ' ' || line[first] == '\t' || line[first] == '\r')) {
+        first += 1;
+    }
+    while (last > first && (line[last - 1] == ' ' || line[last - 1] == '\t' || line[last - 1] == '\r')) {
+        last -= 1;
+    }
+    return line.substr(first, last - first);
+}
+
+// The packer's own copy of the loader's limits, as messages.
+bool group_within_limits(const ContainerGroup& group, std::string& error) {
+    if (group.name.empty() || group.name.size() > kMaxNameBytes) {
+        error = "group name length outside 1.." + std::to_string(static_cast<unsigned>(kMaxNameBytes)) + ": " + group.name;
+        return false;
+    }
+    for (std::size_t f = 0; f < group.fonts.size(); f += 1) {
+        const ContainerFont& font = group.fonts[f];
+        if (font.name.empty() || font.name.size() > kMaxNameBytes || font.size == 0 || font.size > kMaxFontBytes) {
+            error = "font name or size outside the format limits: " + font.name;
+            return false;
+        }
+    }
+    if (group.font_bytes > kMaxGroupFontBytes) {
+        error = "group " + group.name + " holds more than kMaxGroupFontBytes";
+        return false;
+    }
+    if (group.stream_bytes > kMaxStreamExpansion * group.font_bytes) {
+        error = "group " + group.name + " decodes to more than kMaxStreamExpansion times its fonts";
+        return false;
+    }
+    if (group.font_bytes > kMaxDecodeRatio * static_cast<std::uint64_t>(group.body.size())) {
+        error = "group " + group.name + " compresses better than kMaxDecodeRatio; the loader would refuse it";
+        return false;
+    }
+    return true;
+}
+
+}  // namespace
+
+bool manifest_groups(const std::string& text, const std::vector<PackInput>& fonts, std::vector<PackGroupSpec>& groups,
+                     std::string& error) {
+    groups.clear();
+    // Patterns per group, in manifest order.
+    std::vector<std::vector<std::string> > patterns;
+    std::size_t at = 0;
+    std::uint32_t line_number = 0;
+    while (at < text.size()) {
+        std::size_t end = text.find('\n', at);
+        if (end == std::string::npos) {
+            end = text.size();
+        }
+        const std::string line = trimmed(text.substr(at, end - at));
+        at = end + 1;
+        line_number += 1;
+        if (line.empty() || line[0] == '#') {
+            continue;
+        }
+        if (line.compare(0, 6, "group ") == 0) {
+            const std::string rest = trimmed(line.substr(6));
+            const std::size_t space = rest.find_first_of(" \t");
+            const std::string mode = space == std::string::npos ? std::string() : trimmed(rest.substr(space));
+            if (space == std::string::npos || (mode != "eager" && mode != "lazy")) {
+                error = "manifest line " + std::to_string(line_number) + ": expected 'group <name> eager|lazy'";
+                return false;
+            }
+            PackGroupSpec spec;
+            spec.name = rest.substr(0, space);
+            spec.eager = mode == "eager";
+            for (std::size_t g = 0; g < groups.size(); g += 1) {
+                if (groups[g].name == spec.name) {
+                    error = "manifest line " + std::to_string(line_number) + ": group " + spec.name + " named twice";
+                    return false;
+                }
+            }
+            groups.push_back(spec);
+            patterns.push_back(std::vector<std::string>());
+            continue;
+        }
+        if (groups.empty()) {
+            error = "manifest line " + std::to_string(line_number) + ": a pattern before the first group";
+            return false;
+        }
+        patterns.back().push_back(line);
+    }
+    if (groups.empty() || groups.size() > kMaxGroups) {
+        error = "the manifest must name 1.." + std::to_string(static_cast<unsigned>(kMaxGroups)) + " groups";
+        return false;
+    }
+    // Each font joins the first group, in manifest order, with a pattern
+    // matching its file name. Fonts keep their command-line order in a group.
+    for (std::size_t f = 0; f < fonts.size(); f += 1) {
+        bool placed = false;
+        for (std::size_t g = 0; g < groups.size() && !placed; g += 1) {
+            for (std::size_t k = 0; k < patterns[g].size() && !placed; k += 1) {
+                if (fnmatch(patterns[g][k].c_str(), fonts[f].name.c_str(), 0) == 0) {
+                    groups[g].fonts.push_back(static_cast<std::uint32_t>(f));
+                    placed = true;
+                }
+            }
+        }
+        if (!placed) {
+            error = "no manifest group matches " + fonts[f].name;
+            return false;
+        }
+    }
+    for (std::size_t g = 0; g < groups.size(); g += 1) {
+        if (groups[g].fonts.empty()) {
+            error = "manifest group " + groups[g].name + " matches no font";
+            return false;
+        }
+    }
+    return true;
+}
+
+void container_write(const std::vector<ContainerGroup>& groups, Bytes& out) {
+    out.clear();
+    out.push_back('F');
+    out.push_back('P');
+    out.push_back('K');
+    out.push_back('2');
+    put_varint(out, groups.size());
+    for (std::size_t g = 0; g < groups.size(); g += 1) {
+        const ContainerGroup& group = groups[g];
+        put_varint(out, group.name.size());
+        out.insert(out.end(), group.name.begin(), group.name.end());
+        out.push_back(static_cast<std::uint8_t>(group.eager ? kGroupEager : 0));
+        put_varint(out, group.fonts.size());
+        put_varint(out, group.font_bytes);
+        put_varint(out, group.stream_bytes);
+        put_varint(out, group.body.size());
+        for (std::size_t f = 0; f < group.fonts.size(); f += 1) {
+            const ContainerFont& font = group.fonts[f];
+            put_varint(out, font.name.size());
+            out.insert(out.end(), font.name.begin(), font.name.end());
+            put_varint(out, font.size);
+            put_le32(out, font.crc);
+        }
+    }
+    for (std::size_t g = 0; g < groups.size(); g += 1) {
+        out.insert(out.end(), groups[g].body.begin(), groups[g].body.end());
+        out.insert(out.end(), kStreamPadding, 0);
+    }
+}
+
+bool pack_fonts(const std::vector<PackInput>& fonts, const std::vector<PackGroupSpec>& groups, Bytes& out, bool verbose) {
+    out.clear();
+    std::size_t font_total = 0;
+    for (std::size_t g = 0; g < groups.size(); g += 1) {
+        font_total += groups[g].fonts.size();
+    }
+    if (groups.empty() || groups.size() > kMaxGroups || font_total > kMaxFonts) {
+        std::printf("pack: 1..%u groups and at most %u fonts\n", static_cast<unsigned>(kMaxGroups),
+                    static_cast<unsigned>(kMaxFonts));
+        return false;
+    }
+    std::vector<ContainerGroup> coded(groups.size());
+    for (std::size_t g = 0; g < groups.size(); g += 1) {
+        if (verbose) {
+            std::printf("group %s (%s, %zu fonts)\n", groups[g].name.c_str(), groups[g].eager ? "eager" : "lazy",
+                        groups[g].fonts.size());
+        }
+        pack_group_body(fonts, groups[g], coded[g], verbose);
+        std::string error;
+        if (!group_within_limits(coded[g], error)) {
+            std::printf("pack: %s\n", error.c_str());
+            return false;
+        }
+    }
+    container_write(coded, out);
     return true;
 }
 

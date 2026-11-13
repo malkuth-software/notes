@@ -262,7 +262,11 @@ bool stream_open(StreamDecoder& decoder, const std::uint8_t* blob, std::size_t b
     }
 
     const std::uint64_t chunk_count = get_varint(reader);
-    if (reader.failed || chunk_count == 0 || chunk_count > decoder.size) {
+    // Each chunk record that follows is five varints of at least one byte, so
+    // a count the remaining header cannot hold is refused before the chunk
+    // array is allocated.
+    if (reader.failed || chunk_count == 0 || chunk_count > decoder.size ||
+        chunk_count > static_cast<std::uint64_t>(reader.end - reader.cursor) / 5) {
         stream_close(decoder);
         return false;
     }
@@ -703,7 +707,11 @@ bool number_open(NumberDecoder& decoder, const std::uint8_t* blob, std::size_t b
         }
     }
     const std::uint64_t chunk_count = get_varint(reader);
-    if (reader.failed || chunk_count == 0 || chunk_count > decoder.count) {
+    // Each chunk record that follows is 2 + kNumberPayloads varints of at
+    // least one byte; a count the remaining header cannot hold is refused
+    // before the chunk array is allocated.
+    if (reader.failed || chunk_count == 0 || chunk_count > decoder.count ||
+        chunk_count > static_cast<std::uint64_t>(reader.end - reader.cursor) / (2 + kNumberPayloads)) {
         number_close(decoder);
         return false;
     }
