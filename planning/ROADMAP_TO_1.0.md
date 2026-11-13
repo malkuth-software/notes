@@ -1,14 +1,16 @@
 # From 0.5 to 1.0
 
 Date: 2026-11-08, written after the owner declared 0.5 done; updated
-2026-11-09 and 2026-11-10 with the decisions and the work since (sections
-"Status 2026-11-10" and "Status 2026-11-09", and the **Status** columns).
-Open gaps are listed in `planning/GAPS.md`; the owner rulings of these two
-days are indexed in `planning/DECISIONS_2026-11.md`. The owner answered the first
-version's questions on 2026-11-08; nothing else below is decided unless it
-cites an owner ruling. `planning/FORWARD_PROGRAMME.md` stays authoritative
-for stage scopes and gates, and each stage brief under `planning/stages/` for
-its own decisions. `planning/ROADMAP_TO_0.5.md` records what 0.5 sealed.
+2026-11-09, 2026-11-10 and 2026-11-13 with the decisions and the work since
+(sections "Status 2026-11-13", "Status 2026-11-10" and "Status 2026-11-09",
+and the **Status** columns, now dated 2026-11-13). Open gaps are listed in
+`planning/GAPS.md`; the owner rulings of 2026-11-08 to 2026-11-10 are indexed
+in `planning/DECISIONS_2026-11.md`, those of 2026-11-13 in the coordinator's
+`DECISIONS_2026-11-13.md`. The owner answered the first version's questions
+on 2026-11-08; nothing else below is decided unless it cites an owner ruling.
+`planning/FORWARD_PROGRAMME.md` stays authoritative for stage scopes and
+gates, and each stage brief under `planning/stages/` for its own decisions.
+`planning/ROADMAP_TO_0.5.md` records what 0.5 sealed.
 
 Sources: the coordinator's `POST_0.5_BACKLOG.md` (the owner's post-0.5
 items, 2026-11-08), `TRAJECTORY_TO_1.0.md`, `CONTROL_SUPERSET_STUDY.md`,
@@ -16,6 +18,174 @@ items, 2026-11-08), `TRAJECTORY_TO_1.0.md`, `CONTROL_SUPERSET_STUDY.md`,
 `CLOSURE_0.5.md`, `STATE.md`, `INTEGRATION_QUEUE.md`,
 `LOOK_INTEGRATION_LEDGER.md`, `MAC_HANDOFF_2026-11-09.md` and the Block 1
 studies (projects repository, `desks/coordinator/`), and the stage index.
+The 2026-11-13 update also draws on `WINDOWS_HANDOFF_PLAN.md`,
+`CP32_PLAN.md`, `DECISIONS_2026-11-13.md`, `FONT_FACE_IDENTITY.md`,
+`FONT_PACK_INTEGRATION.md`, `D5_TEAPOT_ENGINE_STUDY.md`,
+`D5_PLOTTING_CONVENTIONS.md` and `TRACER_THEME_BAKING_STUDY.md` in the same
+desk.
+
+## Status 2026-11-13
+
+**Checkpoints.** cp27 (#480), cp28 (#481) and cp29 to cp31 in one pull
+request (#482) are merged; main is 96d369693, published as `v0.6.1541`, the
+first build under the 0.6 package number (owner, 2026-11-12). What they
+carried:
+- cp27: menus and popups, the invalidation overlay, the look integration's
+  rows, the final controls, the help system H1-H8, the drag engine, the
+  value bar, the drawing primitives and the plots package (rows 2.1-2.5,
+  2.10, 2.13-2.20);
+- cp28: C ABI 1.2 (owner decision D9) with the window, focus, decoration,
+  anchored overlay, data grid, docking and font surfaces, the data-provider
+  binding and the help table (rows 3.0, 3.7); window tree cost; canvas
+  scroll copies; TreeListView virtual rows; fail-fast native boundaries;
+- cp29-cp31: flat control headers, export lists, C ABI 1.3 class tables,
+  per-event raisers, `Control::RightToLeft`, borrowed views with checked
+  builds, the member manifest (row 3.6), VirtualRowsView, DragTracker,
+  paragraph layout, ImageAtlas, allocation statistics, the `stx_btree` row
+  index, industrial surfaces (finishes, light planes, the GOST palette,
+  IndicatorLamp, the danger key), custom states in selectors, the canvas
+  theme and the public NodeCanvas (row 2.4). Its gate included a libstdc++
+  syntax compile of every changed file, which every fold's gate now does
+  (owner, 2026-11-12).
+
+**cp32 is folding** on the M4 (folds A-F): the engine batches (class
+bridge guard, cp31 follow-ups, exhibit gaps, curved paths in the Painter
+and `gd_*`, the locale from the host, Heroicons stock icons, the ImGui
+effects of row 2.6, the active border phase 2 of row 2.7); font face
+identity (`FontFamilyId`, family stacks); the content boundary (C ABI 1.4,
+`GF_TABLE_CONTENT`); the demonstrator gaps (`gd_*` 0.4 and 0.5, curves at
+0.6); the ribbon rows 2.11 and 2.12 with the W deferrals (menu first-letter
+jumps, file dialog checks, DataGridView breadth); the VoiceOver focus fix.
+
+**cp33 is written,** unbuilt: the font pack (stage 3 package; stage 4
+wiring after fold B), DataGridView on VirtualRowsView's engine, the
+final-virtuals warning cleanup, the window band and control border in C
+ABI 1.3 (row 3.1), the Mac 1.0 conditions (Cmd-Q, live resize, smooth
+scrolling, macOS and X11 normative trace tooling, TSan), and D5's three
+parts: `stx_conv::surface`, `stx_raster3d` and `Plot3DView`. The
+demonstrators D1-D4 (repository `malkuth-software/demonstrators`, branches
+`claude/d1-d2` and `claude/d3-d4`) and D5 (`claude/d5`) are written and
+are built against the cp32 and cp33 heads. The documentation overhaul
+(`claude/cp33-docs-user`, `claude/cp33-docs-dev`) is written.
+
+**The plan to the Windows hand-back** (coordinator,
+`WINDOWS_HANDOFF_PLAN.md`, started 2026-11-13): 1.0 (backend) without its
+Windows-only parts is finished on the Mac side, then handed back for the C#
+package, NuGet, Visual Studio and Concord, the Windows traces and the 1.0
+seal. Its streams:
+
+| Stream | Contents | State 2026-11-13 |
+|---|---|---|
+| A Font identity | `FontFamilyId` registry (bundled only) and family stacks; the family across the C ABI and C# (F1); prepared text uses the family (F2); theme fallback with a warning | written, cp32 fold B |
+| B Content boundary | content surface on its own execution context, stale frames, watchdog, termination, validation; content editing mode; HarfBuzz/FreeType symbol isolation with a consumer test; hosted mode on macOS and Linux (the Windows part with the hand-back) | written, cp32 fold C |
+| C Engine and controls | cp32 items, exhibit gaps E1-E12, help gaps H1-H5, theming leftovers, rows 2.6, 2.7, 2.11, 2.12, the W deferrals (MDI with DK still open) | written, cp32 folds A, E, F; cp33 grid engine |
+| D Demonstrators | D1-D5, then the `gd_*` inventory (1.7) and the drawing ABI seal (3.2) with owner review | D1-D5 written; inventory and seal open |
+| E Font pack | stage 3 package beside stx_zlib and stx_png; stage 4 wiring (embedded, every Portsmouth face eager, other groups lazy) | stage 3 written (cp33); stage 4 after cp32 fold B |
+| F STXlib swap-in | owned boundary types, the platform layer, development-build exception shadowing, as STXlib's proposals arrive | waits on STXlib deliveries |
+| G 1.0 conditions, Mac share | macOS and X11 normative traces; Cmd-Q, logout, live resize, smooth scroll; TSan (P2) | written (cp33 mac-conditions); logout done by the owner, VoiceOver checked by the owner |
+| H Consumers | Plan Paint's text tool on the content editing mode; the PlaySuite zc_phys hull fix; conformance rebases after STXlib; the Emscripten Plan Paint demonstration, planned separately | prep branches in progress against 96d3696 |
+
+The sequence, as planned:
+1. cp32 folds A-F, then the cp32 checkpoint pull request (the owner
+   pushes), CI and merge.
+2. cp33: font pack stage 4, the DataGridView grid engine, the final-virtuals
+   cleanup, then the STXlib row-index switch in one fold once STXlib sends a
+   pinnable commit.
+3. Demonstrators D1-D4 against the cp32 and cp33 heads, D5 from conv-teapot;
+   then the `gd_*` inventory and the drawing ABI seal with owner review.
+4. The STXlib swap-in proper: owned boundary types, the platform layer and
+   development-build shadowing, folded as checkpoints.
+5. The Mac 1.0 conditions.
+6. The conformance rebases, once: template_harness, SwiftEdit, PlaySuite
+   (with the zc_phys hull fix), Plan Paint (text tool on the content
+   editing mode, curved paths) and Pocket Library, onto the release that
+   carries steps 1-5, with the full suite as the conformance condition.
+   Product pins do not move before then (owner, 2026-11-13).
+7. The hand-back to Windows.
+
+**STXlib polish in the hand-back** (owner, 2026-11-13): the Windows side may
+also take up STXlib items, folded in with the GUI.Forms hand-over, most
+valuable first: the full STXlib suite natively on Windows (death tests,
+two-module tests with real DLLs); console and child processes on a real
+console; NTFS files and paths (unpaired-surrogate names, long paths, copy
+onto self, write-through, atomic replace); clocks and ICU zone lookup; Win32
+threads and the 4 MiB stack; x86-64 CPU detection and the bit-identity test
+on real hardware; desktop open and reveal; the allocation and row-height
+benchmarks; STXlib packaged through stx on Windows. The list is
+`planning/stages/A2-windows-handoff-stxlib.md` on the notes `stxlib` branch.
+Items return as `claude/windows-<item>` branches to the STXlib coordinator,
+whose integrator folds and pushes STXlib main; STXlib's rules apply (no
+exceptions in release, failures as data, no `std::` in public headers).
+
+**Owner decisions of 2026-11-13** (coordinator desk:
+`DECISIONS_2026-11-13.md`, `FONT_FACE_IDENTITY.md`,
+`FONT_PACK_INTEGRATION.md`, `D5_TEAPOT_ENGINE_STUDY.md`,
+`D5_PLOTTING_CONVENTIONS.md`, `TRACER_THEME_BAKING_STUDY.md`). The rows
+they change say so.
+- **Conformance consumers:** the full suite, SwiftEdit, PlaySuite, Plan
+  Paint and Pocket Library (question 2 closed).
+- **Drawing ABI seal:** all demonstrators D1-D5 exist before the `gd_*`
+  ABI is sealed (row 3.2).
+- **D5:** built on the 3D engine of the Utah teapot demonstrator
+  (`malkuth-software/conv-teapot`), which the owner made MIT; PlaySuite's
+  own code, zc_phys included, keeps its licence. The study's ten
+  recommendations are accepted: the CONV surface in `stx_conv` and a new
+  `stx_raster3d`; CONV interpolation by default; raster only; headlight and
+  Lambert plus specular; labels in the 2D overlay; single-threaded first;
+  bit-exact per platform; no 3D in `gd_*` (the 3D control's C API is
+  separate); transparency later; a house-style rewrite with conv-teapot's
+  pictures as the oracle. Only the CPU engine is ported. Plotting follows
+  matplotlib's conventions: perspective, turntable rotation, wheel zoom,
+  screen-facing axis labels by default with along-the-axis available,
+  strided downsampling kept available, a matplotlib-look theme later
+  (row 4.6).
+- **Tracer theme baking:** all eight recommendations accepted; the bfft
+  tracer pieces and the beam compiler are MIT; a playground comes before
+  any engine work; the lamp baker is extended (new row 2.21).
+- **Emscripten:** a support shim and a few harmless behaviour changes,
+  planned separately and demonstrated with Plan Paint (row 4.8).
+- **File Manager:** its own larger project with a dedicated seat that
+  talks to the owner; GUI.Forms provides its file-picker interface (our own
+  dialogs) (row 4.7).
+- **Interface and content fonts:** interface text uses only bundled
+  families, and programs cannot register fonts with the interface engine;
+  content may use any font, drawn by the program's own engine into its own
+  sub-surfaces. Registered families through themes wait for a formally
+  verified FreeType, after 1.0. A theme naming an unavailable family falls
+  back with a warning.
+- **Content boundary:** a content editing mode for 1.0 (the program lays
+  out and draws; GUI.Forms keeps caret, input, undo, clipboard and
+  accessibility); presented as an integrity boundary, never a security
+  boundary; two topologies (GUI.Forms as front end, where a program's crash
+  ends the process; GUI.Forms as host around a sub-surface program in its
+  own process, whose crash does not).
+- **Font pack:** embedded in the library; the interface faces (every
+  Portsmouth face, Portsmouth Mono and the content face) decoded eagerly,
+  other groups lazily on first need. Admitting the format as a first-party
+  codec package is still open.
+- **STXlib:** replaces stx_auxlib and lands before 1.0 (owned boundary
+  types, the platform layer, development-build exception shadowing).
+  Release builds of GUI.Forms without exceptions, formal verification and
+  freestanding builds are GUI.Forms 2.0. A native C++ callback that throws
+  into GUI.Forms is caught at the invoke site, recorded and fails fast. The
+  pins stay at stx_auxlib 3d9bed2 (stx 08c8132) until STXlib carries the
+  btree. A FreeBSD build of the X11 host after 1.0 is a proposal, timing
+  ours.
+- **Window band and control border in the C ABI:** approved as additions
+  (row 3.1); Windows DWM shaping goes with the hand-back.
+- **Locale** comes from the OS; no culture tables of our own.
+- **Drawing:** GUI.Drawing keeps bold and oblique synthesis; a curved path
+  type is added (E7); GUI.Drawing may reach host faces for a program's own
+  drawing.
+- **Stock icons:** Heroicons v2.2.0 (MIT), stored as vectors and baked at
+  launch.
+- **Theme vocabulary:** sufficient for most purposes; terms are added as
+  needed, moving a little closer to CSS.
+
+**Owner items open:** reviewing the ASTRA and Fable themes; font face
+storage and variable axes; the font pack's admission as a codec package;
+the DockPanel Suite shim (question 13); the tools' licence wording
+(question 11).
 
 ## Status 2026-11-10
 
@@ -206,17 +376,17 @@ review, not its U total.
 
 The items the owner ruled after the seal, and the closure list's leftovers.
 
-| # | Item | Depends on | Kind | U | Notes | Status 2026-11-09 |
+| # | Item | Depends on | Kind | U | Notes | Status 2026-11-13 |
 |---|---|---|---|---|---|---|
-| 0.1 | Mac handoff: Cmd-Q, logout, the resize check, T5 C8's macOS rows | the seal head on the M4 | M+O+B | 0.5-1 | first Mac session; records under `results/` | open: `MAC_HANDOFF_2026-11-09.md` (adds the #474 rerun, the focus stack's AppKit paths, smooth-scroll feel) |
+| 0.1 | Mac handoff: Cmd-Q, logout, the resize check, T5 C8's macOS rows | the seal head on the M4 | M+O+B | 0.5-1 | first Mac session; records under `results/` | in progress: Cmd-Q, live resize, smooth scrolling, normative trace tooling and TSan written (`claude/cp33-mac-conditions`); logout done (owner); VoiceOver checked by the owner by hand, and its focus fix written (`claude/cp32-macos-voiceover-focus`) |
 | 0.2 | template_harness example on the 0.5 shape | harness pins on main | C+B | 1-1.5 | harness PR by hand (owner rule) | coded (example-app-0.5 6853272); the harness PR by hand and the 0.5 SDK pin are open |
 | 0.3 | Plan Paint opens `.PNG`: case-insensitive extension matching | none | C+B | 0.25 | a defect; take it now, not with the revision | **done**: the cause was trailing bytes after IEND, not case; fixed on the Plan Paint branch |
-| 0.4 | Splash, further: baking on a worker thread; menus as their own Splash kind | none | C+B+O | 1.5-2 | perceptual check by the owner (snappiness, slide) | coded: tooltip baking on the run's worker thread (`claude/splash-baking` 703d7ac87, in cp27 #480); menus stay Popups (Part S) |
-| 0.5 | Record refresh: stage index, board, track pointers; this roadmap folded into `docs/dev/roadmap.md` | owner accepts this page | C | 0.5 | docs-only | in progress: this page and the coordinator desk refreshed 2026-11-09; `docs/dev/roadmap.md` and the board still to follow |
+| 0.4 | Splash, further: baking on a worker thread; menus as their own Splash kind | none | C+B+O | 1.5-2 | perceptual check by the owner (snappiness, slide) | **done**: tooltip baking on the run's worker thread (cp27, #480); menus stay Popups (Part S) |
+| 0.5 | Record refresh: stage index, board, track pointers; this roadmap folded into `docs/dev/roadmap.md` | owner accepts this page | C | 0.5 | docs-only | **done** for this page (refreshed 2026-11-13) and `docs/dev/roadmap.md` (written, `claude/cp33-docs-dev`); the board still to follow |
 | 0.6 | Owner discussions: the theme designer, the tools' licence class | none | O | - | feed Block 5 and question 3, 4 | **done** for the theme editor (the owner's POST_0.5 instructions); licence: freeware single seat, wording open |
-| 0.7 | cp24 (#474): the gui-forms default theme switch | the Mac rerun | B+M | 0.5 | part 1 of the post-0.5 fold | in CI; Windows 525/525 |
-| 0.8 | cp25 fold: the queued C ABI additions, products' prerequisites and Block 2 code | 0.7 | B | 3-4 | integrator, order in `INTEGRATION_QUEUE.md` | merged (#475, e1fc3bf68); cp26 merged (#476) |
-| 0.9 | 0.5 release tail: ABI re-baseline and blocking audit, the 0.5 tag and SDK release, docs/wiki publication, roadmap.svg | none | C+B+O | 1 | gates nothing | open |
+| 0.7 | cp24 (#474): the gui-forms default theme switch | the Mac rerun | B+M | 0.5 | part 1 of the post-0.5 fold | **done**: merged (#474) |
+| 0.8 | cp25 fold: the queued C ABI additions, products' prerequisites and Block 2 code | 0.7 | B | 3-4 | integrator, order in `INTEGRATION_QUEUE.md` | **done**: merged (#475, e1fc3bf68); cp26 merged (#476) |
+| 0.9 | 0.5 release tail: ABI re-baseline and blocking audit, the 0.5 tag and SDK release, docs/wiki publication, roadmap.svg | none | C+B+O | 1 | gates nothing | partly: the ABI audit is blocking against 1.1 and 1.2 (cp28); the package moved to 0.6 and `v0.6.1541` is published (owner, 2026-11-12); no separate 0.5 tag; docs rewritten (cp33 docs branches) |
 
 **Mac handoff.** What we take: closure of the seal's deferred host rows, so
 the 0.5 record is complete on all three hosts. Test: each check is a
@@ -237,7 +407,7 @@ clean-room rule of `CONTROL_SUPERSET_STUDY.md` section 1: behaviour and
 appearance only, no code read for transcription. BUI is also the closest
 public form of Blender's value bars, so 1.2 and 1.5 share a reading.
 
-| # | Study | Source | Feeds | Kind | U | Status 2026-11-09 |
+| # | Study | Source | Feeds | Kind | U | Status 2026-11-13 |
 |---|---|---|---|---|---|---|
 | 1.1 | Declarative dragging *(required)* | declarative-dragging.github.io; Horowitz, Blinn and Heer, UIST 2026 | 2.1, 2.4, DK drag, list reorder | S+O | 0.5-1 | **done** (`DECLARATIVE_DRAGGING_STUDY.md`); recommendations adopted |
 | 1.2 | BUI node engine *(required)* | github.com/ppmpreetham/BUI (finish reading) | 2.4, D1 | S+O | 1 | **done** (`NODE_ENGINE_AND_VALUE_BAR_STUDY.md`, clean-room); node canvas = records |
@@ -245,7 +415,7 @@ public form of Blender's value bars, so 1.2 and 1.5 share a reading.
 | 1.4 | ImPlot: plot layer and primitives *(required)* | ImPlot demo and API | 2.3, D4, D5 | S+O | 1 | **done** (`IMGUI_IMPLOT_STUDY.md`); batch/polyline drawing and conic gradient accepted before the drawing seal |
 | 1.5 | Blender's value bars *(required)* | Blender, BUI | 2.2 | S+O | 0.5 | **done** (with 1.2) |
 | 1.6 | Mirrored-mode feasibility *(required)* | .NET hosting, facades, startup hooks | 5.5 | S+W+O | 1-1.5 | **done** (`MIRRORED_MODE_STUDY.md`); P0 GO on .NET 10 (hostfxr TPA swap); R2R composite needs a preflight |
-| 1.7 | Drawing ABI inventory (`gd_*` before its seal) | the drawing headers, the above studies | 3.2 | S | 0.5 | partly: the additions are in gd 0.3 (2.3); the full inventory before 3.2 is open |
+| 1.7 | Drawing ABI inventory (`gd_*` before its seal) | the drawing headers, the above studies | 3.2 | S | 0.5 | partly: the additions are in gd 0.3 on main, gd 0.4-0.6 written (cp32: demonstrator gaps, curves); the full inventory waits for D1-D5 (owner, 2026-11-13: all demonstrators before the seal) |
 | 1.8 | Help system: CHM-shaped viewer on Plan Paint paper; help as translatable text records | CHM public documentation and behaviour (clean-room), Plan Paint's help | 2.13-2.20, 3.7, 4.12 | S+O | 0.5 | **done** (`HELP_SYSTEM_STUDY.md`, revision 1); owner rulings 1-7, A(a), B(a) recorded; its questions 1-3 open (question 14 below) |
 
 **Declarative dragging.** The paper's model: an author lists the model
@@ -328,28 +498,29 @@ Block 1 total: about 6-7 U, all coder or study work, plus owner review.
 
 ## Block 2: engine and final controls (Wave B)
 
-| # | Item | Depends on | Kind | U | Parallel with | Status 2026-11-09 |
+| # | Item | Depends on | Kind | U | Parallel with | Status 2026-11-13 |
 |---|---|---|---|---|---|---|
-| 2.1 | Declarative drag engine *(study first: 1.1)* | DK's drag session | C, then B | 3-4 | 2.2, 2.3, 2.5 | coded (drag-engine 850bf218: engine core, Splitter and SplitContainer on it, drag announcements); in cp27 (#480) |
-| 2.2 | Value bar (Blender-style) and drag-to-scrub *(study first: 1.5)* | the reduced-motion gate | C, then B | 1-1.5 | all | coded (value-bar 1bfa4a94: ValueBar, ScrubGesture); in cp27 (#480) |
-| 2.3 | Plot primitives, then the declarative plot layer, sparkline *(study first: 1.4)* | 1.7 | C, then B | 5-6 | all | in cp27 (#480): drawing primitives (32cd5cbd) and the plots package (d05561e4), with the drag engine and value bar (rows 2.1, 2.2). Backlog: a bulk FormSources path so `.form` bind() can feed plot series |
-| 2.4 | Node canvas: blueprint backgrounds, magnetic curved links, double-click edit *(study first: 1.2, 1.1)* | 2.1, pattern fills | C, then B | 4-5 | 2.3 | N0 coded (NodeGraph records, LinkRouter, in 850bf218); the canvas, backgrounds and port lamps (a new lamp part; green-red indicator style) open |
-| 2.5 | Final controls: W-1 to W-3, W-5b to W-9, and the superset's P1 rest (callout, wizard and step indicator, gauges, dial, seven-segment readout, lookup combo, in-window modal layer, About) | ImGui ranking (1.3) for any additions | C, then B | 8-12 | all | coded (`claude/final-controls` e5e4e2d6b, in cp27 #480), with the arc, needle, beak and scrim parts (option a); deferred W-1, W-2, W-3, W-7, W-8 (`planning/GAPS.md` W1) |
-| 2.6 | Effects taken from Dear ImGui, as effect programs *(study first: 1.3)* | EP | C, then B | 1-2 | all | open (study done) |
-| 2.7 | Active border phase 2: the control border | none | C, then B, O | 2.5 | all | open |
-| 2.8 | Active border phase 3: the window band, host shaping, band textures and effects | pattern fills (2.4) | C, then B, W, M, O | 6.5 | 2.5 | the band itself landed in 0.5 (window-band, no resize edge); host shaping, textures and effects open |
-| 2.9 | DK and RB phases still open (to audit against their plans) | - | C, then B | audit first | all | open; RB's look rows are in 2.10 |
-| 2.10 | **Theming: the look integration** (owner, 2026-11-09: theming is not done) | the look studies in notes | C, then B, O | 3-5 | all | coded (`claude/look-integration` f528d4f76, in cp27 #480): 28 rows implemented, N1-N7 ruled (`planning/DESIGN_LANGUAGE_SPECIFICATION.md` §13); leftovers in `planning/GAPS.md` T3; the windows-professional redesign follows (`claude/professional-theme`) |
-| 2.11 | Ribbon behaviour still "not yet": the minimized ribbon's temporary popup, the QAT on the tab row, the help question mark with a window help card | 2.10; the card through 2.19 (design: 1.8) | C, then B | 1.5-2 | all | open: ruled a follow-up RB item (N3); the help "?" part reserved (N4) |
-| 2.12 | Per-tab transitions: key PageStrip and TabControl tab parts by page | T4 | C, then B | 0.5 | all | backlog (cp24 ruling) |
-| 2.13 | Help H1: `help-line`, `help` (markdown) and `keywords` fields in the text record; locale XML, template export, user overrides, the way back; HelpProvider as a view onto them *(study: 1.8)* | the language-file implementation | C, then B | 1.5 | all | coded (`claude/help-system` ecf4167f4, in cp27 #480) |
-| 2.14 | Help H2: stand-alone topic records and the contents tree generated from the skeleton walk (windows, panels and groups, controls) | 2.13 | C, then B | 1 | all | coded (`claude/help-system`, in cp27 #480) |
-| 2.15 | Help H3: the helpbook section in the language-file compiler (link and image validation, keyword and search indexes, contents; same pass at load for user files) | 2.13, 2.14 | C, then B | 1.5 | all | coded (`claude/help-system`, in cp27 #480) |
-| 2.16 | Help H4: `HelpBook`, the paper topic pane on theme parts (collapsible sections, callouts, stable-ID links, PNG images) | 2.15, 2.10 | C, then B, O | 1.5 | all | coded (`claude/help-system`, in cp27 #480) |
-| 2.17 | Help H5: `HelpBookViewer` and `HelpBookWindow` (CHM tabs, history, bookmarks, sync, toolbar), accessibility on three hosts | 2.16 | C, then B, W, M | 2-3 | all | coded (`claude/help-system`, in cp27 #480) |
-| 2.18 | Help H6: search v1 (term table, AND, phrases, titles-only), measured on 2,000 records | 2.15, 2.17 | C, then B | 0.5-1 | all | coded (`claude/help-system`, in cp27 #480); ASCII folding only |
-| 2.19 | Help H7: F1 through records, default handler for HelpProvider and RibbonToolTip, ribbon "?" and window card, What's This and the paper popup | 2.17; closes 2.11's card | C, then B | 1 | all | coded (`claude/help-system`, in cp27 #480) |
-| 2.20 | Help H8: printing a page and a book | 2.17, print path | C, then B | 0.5 | all | coded as a print layout (`claude/help-system`); device printing deferred (no print path) |
+| 2.1 | Declarative drag engine *(study first: 1.1)* | DK's drag session | C, then B | 3-4 | 2.2, 2.3, 2.5 | **done** (cp27, #480); DragTracker public (cp29-31, #482) |
+| 2.2 | Value bar (Blender-style) and drag-to-scrub *(study first: 1.5)* | the reduced-motion gate | C, then B | 1-1.5 | all | **done** (cp27, #480) |
+| 2.3 | Plot primitives, then the declarative plot layer, sparkline *(study first: 1.4)* | 1.7 | C, then B | 5-6 | all | **done** (cp27, #480); plot gaps P1-P11 written (`claude/cp32-demonstrator-gaps`). Backlog: a bulk FormSources path so `.form` bind() can feed plot series |
+| 2.4 | Node canvas: blueprint backgrounds, magnetic curved links, double-click edit *(study first: 1.2, 1.1)* | 2.1, pattern fills | C, then B | 4-5 | 2.3 | **done**: NodeGraph undo and save format (cp29), the public NodeCanvas with the canvas theme, item looks, link flow and lamps (cp31, #482); D1 moved onto it (`claude/d1-d2`) |
+| 2.5 | Final controls: W-1 to W-3, W-5b to W-9, and the superset's P1 rest (callout, wizard and step indicator, gauges, dial, seven-segment readout, lookup combo, in-window modal layer, About) | ImGui ranking (1.3) for any additions | C, then B | 8-12 | all | **done** (cp27, #480); W-2 DataGridView breadth and W-7, W-8 written (`claude/cp32-ribbon-w`); W-3 MDI (with DK) open; W-1 open (`planning/GAPS.md` W1) |
+| 2.6 | Effects taken from Dear ImGui, as effect programs *(study first: 1.3)* | EP | C, then B | 1-2 | all | **done** as written: drop_pulse and scrub_glow effects (`claude/cp32-engine-batch1` batch 4, cp32 fold E) |
+| 2.7 | Active border phase 2: the control border | none | C, then B, O | 2.5 | all | **done** as written: `Control::set_active_border` (cp32 fold E); the control border as schema properties written with the band (`claude/cp33-window-band`) |
+| 2.8 | Active border phase 3: the window band, host shaping, band textures and effects | pattern fills (2.4) | C, then B, W, M, O | 6.5 | 2.5 | in progress: per-edge reservations, cycling, colour roles, textures, the host shaping report and corner capability written (`claude/cp33-window-band`); Windows DWM shaping with the hand-back |
+| 2.9 | DK and RB phases still open (to audit against their plans) | - | C, then B | audit first | all | open; RB's look rows are in 2.10; MDI with DK (W-3) open |
+| 2.10 | **Theming: the look integration** (owner, 2026-11-09: theming is not done) | the look studies in notes | C, then B, O | 3-5 | all | **done** (cp27, #480): 28 rows, N1-N7 ruled (`planning/DESIGN_LANGUAGE_SPECIFICATION.md` §13); the windows-professional redesign landed (cp28); leftovers in `planning/GAPS.md` T3 |
+| 2.11 | Ribbon behaviour still "not yet": the minimized ribbon's temporary popup, the QAT on the tab row, the help question mark with a window help card | 2.10; the card through 2.19 (design: 1.8) | C, then B | 1.5-2 | all | **done** as written: the minimized ribbon's popup, the QAT on the tab row, the help button and window card (`claude/cp32-ribbon-w`, cp32 fold F) |
+| 2.12 | Per-tab transitions: key PageStrip and TabControl tab parts by page | T4 | C, then B | 0.5 | all | **done** as written: tab part records follow their pages (tests; `claude/cp32-ribbon-w`) |
+| 2.13 | Help H1: `help-line`, `help` (markdown) and `keywords` fields in the text record; locale XML, template export, user overrides, the way back; HelpProvider as a view onto them *(study: 1.8)* | the language-file implementation | C, then B | 1.5 | all | **done** (cp27, #480) |
+| 2.14 | Help H2: stand-alone topic records and the contents tree generated from the skeleton walk (windows, panels and groups, controls) | 2.13 | C, then B | 1 | all | **done** (cp27, #480) |
+| 2.15 | Help H3: the helpbook section in the language-file compiler (link and image validation, keyword and search indexes, contents; same pass at load for user files) | 2.13, 2.14 | C, then B | 1.5 | all | **done** (cp27, #480) |
+| 2.16 | Help H4: `HelpBook`, the paper topic pane on theme parts (collapsible sections, callouts, stable-ID links, PNG images) | 2.15, 2.10 | C, then B, O | 1.5 | all | **done** (cp27, #480) |
+| 2.17 | Help H5: `HelpBookViewer` and `HelpBookWindow` (CHM tabs, history, bookmarks, sync, toolbar), accessibility on three hosts | 2.16 | C, then B, W, M | 2-3 | all | **done** (cp27, #480) |
+| 2.18 | Help H6: search v1 (term table, AND, phrases, titles-only), measured on 2,000 records | 2.15, 2.17 | C, then B | 0.5-1 | all | **done** (cp27, #480); ASCII folding only |
+| 2.19 | Help H7: F1 through records, default handler for HelpProvider and RibbonToolTip, ribbon "?" and window card, What's This and the paper popup | 2.17; closes 2.11's card | C, then B | 1 | all | **done** (cp27, #480) |
+| 2.20 | Help H8: printing a page and a book | 2.17, print path | C, then B | 0.5 | all | **done** as a print layout (cp27, #480); device printing deferred (no print path) |
+| 2.21 | Tracer theme baking: the owner's light-field tracer (bfft) and the teapot bake as a build-time baker for lamp and lit-key light planes, contact shadows and relief; caustics through the bfft beam compiler later *(study: `TRACER_THEME_BAKING_STUDY.md`)* | the study's playground | S+C+O | open | 2.8 | planned (owner, 2026-11-13: all eight recommendations accepted; the bfft pieces are MIT; a playground before any engine work) |
 
 Coder work is most of Block 2 and can run four or five rows at a time; the
 verification lands in two or three integrator checkpoints. Host shaping
@@ -365,16 +536,16 @@ Block 2 total: about 40.5-51 U, of which about three quarters is coder work.
 
 ## Block 3: ABI additions and C# (Wave B into C)
 
-| # | Item | Depends on | Kind | U | Notes |
+| # | Item | Depends on | Kind | U | Notes; status 2026-11-13 |
 |---|---|---|---|---|---|
-| 3.0 | C ABI additions for the swap-in: keys and numeric, modal and owned windows, window properties, focus (composites, focus restore, `focusable` in the schema), the data grid, TextBox styled runs | the sealed 1.1 baseline | C+B | 3-4 | **partly on main**: keys and numeric, modal and owned windows, window properties, focus and styled runs (cp25, #475); the data grid (cp26, #476); the docking table GF_TABLE_DOCKING, tooltips shown (overlays 7-8) and the diagnostics overlay switch in cp27 (#480); additive; the audit and the version number need a recorded owner decision (question 10) |
-| 3.1 | C ABI band declaration: window presentation in the windows table | 2.8's declaration shape | C+B+O | 0.5-1 | additive; needs a recorded owner decision (sealed interface) |
-| 3.2 | Drawing ABI seal (`gd_*`) | 1.7, 2.3, 2.4, Block 4's demonstrators | C+B+O | 1-2 | sealed only after the demonstrators stress it |
+| 3.0 | C ABI additions for the swap-in: keys and numeric, modal and owned windows, window properties, focus (composites, focus restore, `focusable` in the schema), the data grid, TextBox styled runs | the sealed 1.1 baseline | C+B | 3-4 | **done**: keys and numeric, windows, focus and styled runs (cp25), the data grid (cp26), docking and overlays (cp27), all in ABI 1.2 (owner decision D9, cp28); class tables in ABI 1.3 (cp29); the content table as ABI 1.4 written (cp32 fold C) |
+| 3.1 | C ABI band declaration: window presentation in the windows table | 2.8's declaration shape | C+B+O | 0.5-1 | **approved** (owner, 2026-11-13: band declaration, appearance, full-screen behaviour, corner preference, content rectangle and shaping queries, the control border as schema properties; additive) and **written** in ABI 1.3 (`claude/cp33-window-band`) |
+| 3.2 | Drawing ABI seal (`gd_*`) | 1.7, 2.3, 2.4, Block 4's demonstrators | C+B+O | 1-2 | sealed only after all five demonstrators exist (owner, 2026-11-13), with owner review |
 | 3.3 | R: SDRSharp reflection rebuilt on the current ABI | T4, F | C+B+W+M | 2-3 | precedes S (forward programme); **in progress through the swap-in** (facade-v1 on `gf_abi`, 927/933 members; 5.5) |
 | 3.4 | S: generated C# bindings, the WinForms-shaped package, the corpus | 3.3, C | C+B+W+V | 6-10 | its own repository |
-| 3.5 | PlaySuite and SwiftEdit as full ports to the C ABI | ABI 1.1 | C+B | 2-3 each | owner, 2026-11-03; both ported forward by their workers (C++ consumers so far), builds against main (cp25 landed) pending |
-| 3.6 | 1.0 conditions: normative traces on Windows, macOS and X11; the member manifest; two-consumer conformance | 3.5 | B+W+M | 2-3 | release-1.0 conditions 2 to 4 |
-| 3.7 | Help H9: C ABI `help` table, the help fields in the schema, the C# binding | 2.19, 3.0 | C+B+O | 0.5 | joins ABI 1.2 with 3.0 (question 10) |
+| 3.5 | PlaySuite and SwiftEdit as full ports to the C ABI | ABI 1.1 | C+B | 2-3 each | superseded by the conformance rebases (owner, 2026-11-13): SwiftEdit and PlaySuite are rebased once, after the STXlib swap-in; prep branches against 96d3696 in progress |
+| 3.6 | 1.0 conditions: normative traces on Windows, macOS and X11; the member manifest; two-consumer conformance | 3.5 | B+W+M | 2-3 | in progress: the member manifest is **done** (`manifests/members.json`, cp29); macOS and X11 normative trace tooling written (cp33); conformance is the full suite plus SwiftEdit, PlaySuite, Plan Paint and Pocket Library (owner, 2026-11-13); Windows traces with the hand-back |
+| 3.7 | Help H9: C ABI `help` table, the help fields in the schema, the C# binding | 2.19, 3.0 | C+B+O | 0.5 | **done** (help table in ABI 1.2, cp28, #481) |
 
 **C ABI band declaration.** What we take: C and C# programs can declare a
 window band, which today only C++ can, because the windows table has no
@@ -389,19 +560,19 @@ Visual-Studio-bound.
 
 ## Block 4: consumers and demonstrators (Wave C)
 
-| # | Item | Depends on | Kind | U | Status 2026-11-09 |
+| # | Item | Depends on | Kind | U | Status 2026-11-13 |
 |---|---|---|---|---|---|
-| 4.1 | SwiftEdit revised to the new standard and interface; syntax highlighting, CSS first | 3.5, a styled-run seam in the text editor | C+B+O | 2-3 | complete (SwiftEdit e411177, theme editor 6dabb58); parked by the owner; pins move to the post-cp27 main |
-| 4.2 | Plan Paint: the canonical ribbon with soft large bubble buttons; robust file handling; the new `stx_conv` algorithm | RB, 0.3 | C+B+O | 2.5-3 | complete (claude/png-open-fix fcdf6b6, -look 30e3a11, bb7702a; dialogs-as-windows on claude/combined-build); parked; language packs need a native-speaker check |
-| 4.3 | PlaySuite migrated forward: custom skinning through themes, with a gap list | 3.5 | C+B+O | 2-3 | complete (claude/playsuite-cp22 c181871, 25 games pass the play check); parked; tile hover blink open (`planning/GAPS.md` P5) |
-| 4.4 | D1 node graph, D3 ImGui-class and D4 ImPlot-class demonstrators | 2.4, 2.5, 2.6, 2.3 | C+B | 4-5 | open |
-| 4.5 | D2 flame graph and profiler viewer | 2.3 | C+B | 2 | open |
-| 4.6 | D5 ImPlot3D-class plotting | owner relicensing of PlaySuite's 3D parts to MIT | O, then C+B | 2-3 | open |
-| 4.7 | File Manager frontend, benchmark demonstrations | per their plans | C+B | per plan | open |
-| 4.8 | Emscripten build | `stx_skia` | C+B | 3-5 | open |
+| 4.1 | SwiftEdit revised to the new standard and interface; syntax highlighting, CSS first | 3.5, a styled-run seam in the text editor | C+B+O | 2-3 | complete (SwiftEdit e411177, theme editor 6dabb58); rebased with the conformance rebases after STXlib (owner, 2026-11-13); prep branch in progress |
+| 4.2 | Plan Paint: the canonical ribbon with soft large bubble buttons; robust file handling; the new `stx_conv` algorithm | RB, 0.3 | C+B+O | 2.5-3 | complete; text tool on the content editing mode and curved paths come with its conformance rebase; prep branch in progress |
+| 4.3 | PlaySuite migrated forward: custom skinning through themes, with a gap list | 3.5 | C+B+O | 2-3 | complete (25 games pass the play check); views move onto the per-event raisers, drag views onto DragTracker (owner, option C, provisional); the zc_phys hull fix with its rebase; tile hover blink open (`planning/GAPS.md` P5) |
+| 4.4 | D1 node graph, D3 ImGui-class and D4 ImPlot-class demonstrators | 2.4, 2.5, 2.6, 2.3 | C+B | 4-5 | **written**: D1 node graph and D2 (`claude/d1-d2`), D3 and D4 (`claude/d3-d4`) in `malkuth-software/demonstrators`; built against the cp32 and cp33 heads |
+| 4.5 | D2 flame graph and profiler viewer | 2.3 | C+B | 2 | **written** (`claude/d1-d2`: flame graph and profiler viewer over PlotViewModel and VirtualRowsView) |
+| 4.6 | D5 ImPlot3D-class plotting | owner relicensing of PlaySuite's 3D parts to MIT | O, then C+B | 2-3 | **written**: from conv-teapot's 3D engine (MIT, owner 2026-11-13): `stx_conv::surface`, `stx_raster3d`, `Plot3DView` (cp33) and the demonstrator (`claude/d5`); matplotlib conventions (`D5_PLOTTING_CONVENTIONS.md`) |
+| 4.7 | File Manager frontend, benchmark demonstrations | per their plans | C+B | per plan | moved to its own project and seat (owner, 2026-11-13); GUI.Forms provides the file-picker interface (our own dialogs) |
+| 4.8 | Emscripten build | `stx_skia` | C+B | 3-5 | planned separately: a support shim and small behaviour changes, demonstrated with Plan Paint on a web page (owner, 2026-11-13) |
 | 4.9 | First exhibits: E2 oscilloscope, E4 process control, E14 wizard, E9 data entry | 2.3, 2.5 | C+B | 1-2 each | in progress: mockups E2, E4, E8, E9 (owner scope 2026-11-09, `planning/EXHIBITS_SELECTION.md`); working apps later; 12 GUI.Forms gaps in `planning/GAPS.md` |
 | 4.10 | Website: template example screenshots for `malkuth-software/malkuthsoft.com` | 0.2, the examples | C+O | 0.5 | published 2026-11-10 (malkuthsoft.com, all images in windows-professional); recapture against the lockstep SDK after cp27 and the professional redesign |
-| 4.11 | GUI.Forms gaps from the product ports: macOS open-files from Finder, Linux dialog filters ignoring case | none | C+B+M | 0.5 | landed (host-file-gaps 1744d23b3, cp25 #475); Mac check in the handoff |
+| 4.11 | GUI.Forms gaps from the product ports: macOS open-files from Finder, Linux dialog filters ignoring case | none | C+B+M | 0.5 | **done** (cp25, #475); Mac check in the handoff |
 | 4.12 | Help H10: Plan Paint's help as records (replaces `help_content.hpp`, converts its JSON help entries), the library HelpBook, F1 to context pages | 2.19, the Plan Paint locale migration | C, then B, O | 1 | 4.2 | open |
 
 **SwiftEdit.** What we take: the editor on the 0.5 shape (forms, properties
@@ -439,7 +610,7 @@ Certificates (Authenticode, an Apple Developer ID) come before the first
 distribution. The swap-in launcher (5.5) has moved forward: SDR# is its first
 real target now, not after 1.0 (backend).
 
-| # | Tool | Depends on | Kind | U | Status 2026-11-09 |
+| # | Tool | Depends on | Kind | U | Status 2026-11-13 |
 |---|---|---|---|---|---|
 | 5.0 | Licence wording, certificates, the title-bar branding line and About | owner | O, then C | 0.5-1 | branding decided; licence wording open |
 | 5.1 | Theme editor: the screencap utensil and the visual editor | 4.1, T4 provenance | C+B+O | 5-6 | started (malkuth-tools claude/theme-editor a53dd6c, on SwiftEdit's CodeEditor); v1 uses the winning-rule query |
@@ -530,27 +701,27 @@ Blender produce and the compositing their widgets need. 6. .NET 10.0.
 7. An internal engine, dogfed on the node engine. 8. Plots as a package.
 9. Band declaration as ABI 1.2.
 
+Answered on 2026-11-09 and 2026-11-10: 10. The C ABI additions joined the
+band declaration in ABI 1.2 (owner decision D9, cp28); class tables followed
+in ABI 1.3. 12. The look integration's N1-N7 are ruled
+(`planning/DESIGN_LANGUAGE_SPECIFICATION.md` §13). 14. The help system's
+revision 1 questions: built-in help bodies live in an embedded built-in
+locale file (short help lines may stay in code); controls without a body are
+left out of the contents, with their help line shown on the parent's page;
+F1 with no help walks up to the window page, then home.
+
+Answered on 2026-11-13: 2. Conformance is the full test suite plus
+SwiftEdit, PlaySuite, Plan Paint and Pocket Library, rebased once after the
+STXlib swap-in (`DECISIONS_2026-11-13.md`). The first version's question 1
+is refined the same day: the drawing ABI seal waits for all five
+demonstrators.
+
 Still open:
 
-2. **Which two conformance consumers?** (below, unchanged)
-10. **Versioning the C ABI additions (3.0).** The swap-in additions are
-    additive over the sealed 1.1 baseline. Recommendation: they join the
-    band declaration in ABI 1.2, recorded as one owner decision, with the
-    blocking audit passing on additions only.
 11. **The tools' licence wording:** scope (a/b/c) and seat (a/b), and the
     text of the line under the title bar.
-12. **The look integration's N1-N7** (`LOOK_INTEGRATION_LEDGER.md`): rail
-    colour, tab heights, the ribbon's "not yet" behaviour, the help question
-    mark, the default theme base, per-field cascade, which screenshots are
-    decisions.
 13. **DockPanel Suite under the swap-in:** option a now (its own code on our
     facade). Recommendation: the shim over DK (option b) after SDR# runs.
-14. **Help system, revision 1's questions:** answered by the owner
-    (2026-11-09), so the study is accepted. Built-in help bodies live in an
-    embedded built-in locale file (short help lines may stay in code).
-    Controls without a body are left out of the contents, with their help
-    line shown on the parent's page. F1 with no help walks up to the window
-    page, then home.
 
 The first version's questions, as asked:
 
