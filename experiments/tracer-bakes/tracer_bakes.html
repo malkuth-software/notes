@@ -28,30 +28,31 @@
 </head>
 <body>
 <h1>Tracer bakes</h1>
-<p>Four control-sized scenes lit three ways. Each cell is composited here from linear light planes baked once
-at unit white: <code>rgb = albedo &times; (fixed colour &times; power &times; F + lamp colour &times; power &times; L)</code>,
-then <code>1 &minus; e<sup>&minus;1.3v</sup></code> as in GUI.Forms light planes. Colours and powers never re-bake.
-Times are the generator's medians of three runs, at 1, 4 and all threads.</p>
+<p>Four control-sized scenes, each given to the owner's engines in the geometry that engine takes. Every cell
+holds two linear radiance planes at unit white light (albedo included): F for the one fixed light, L for the
+lamp. They are composited here as <code>rgb = fixed colour &times; power &times; F + lamp colour &times; power &times; L</code>,
+then <code>1 &minus; e<sup>&minus;1.3v</sup></code> as in GUI.Forms light planes, so colours and powers never re-bake.
+The engines use different units and framings; "normalise" scales each plane by its own 99th percentile so that
+looks can be compared. Times are medians of three whole engine runs at 1, 4 and all threads.</p>
 
 <div id="controls">
   <label>Fixed light <input id="fixedColour" type="color" value="#fff4e6"></label>
   <label>power <input id="fixedPower" type="range" min="0" max="3" step="0.05" value="1"><output id="fixedPowerOut"></output></label>
   <label>Lamp <input id="lampColour" type="color" value="#ff5a2a"></label>
-  <label>power <input id="lampPower" type="range" min="0" max="16" step="0.1" value="4"><output id="lampPowerOut"></output></label>
+  <label>power <input id="lampPower" type="range" min="0" max="16" step="0.1" value="1"><output id="lampPowerOut"></output></label>
   <label>Exposure <input id="exposure" type="range" min="0.25" max="4" step="0.05" value="1"><output id="exposureOut"></output></label>
+  <label><input id="normalise" type="checkbox" checked> normalise</label>
   <label>View
     <select id="view">
       <option value="composite">Composite</option>
       <option value="fixed">Fixed-light plane only</option>
       <option value="lamp">Lamp plane only</option>
-      <option value="difference">Difference from window (red brighter, blue darker, &times;4)</option>
     </select>
   </label>
 </div>
 
-<div id="missing" hidden>No baked planes found. Build and run the generator beside this page:
-<code>mkdir -p build/tracer_bakes &amp;&amp; c++ -std=c++20 -O2 -ffp-contract=off -pthread -o build/tracer_bakes_gen tracer_bakes.cpp &amp;&amp; build/tracer_bakes_gen build/tracer_bakes 160</code>,
-then reload.</div>
+<div id="missing" hidden>No baked planes found. In this folder run <code>make run</code> (see README.md), or copy
+<code>build/tracer_bakes/</code> from the machine that ran it, then reload.</div>
 
 <table id="grid"></table>
 
@@ -60,11 +61,12 @@ then reload.</div>
 "use strict";
 
 const methodInfo = {
-  relief: ["Relief / SDF (today)", "Lambert, k-pixel drop shadow, open-sky ambient, SDF lamp glow without occlusion, no bounce."],
-  teapot: ["conv-teapot", "Point visibility, open fraction (32 Fibonacci directions), six-pass transfer gather."],
-  window: ["bfft source windows", "As conv-teapot, with every source integrated over its exact visible windows (soft, exact penumbrae)."],
+  lamp_keys: ["lamp_keys (today)", "The shipped lamp baker on its own families: SDF lenses, the participating-child law."],
+  teapot: ["conv-teapot", "The teapot engine's bake: exact shadow edges, open fraction, transfer gather. Fixed light only."],
+  bfft: ["bfft", "The photonic transport engine: exact source windows for every area light, retained diffuse field."],
+  playground: ["Playground (not an engine)", "This folder's own height-field version of the source-window idea, kept as an extra."],
 };
-const methodOrder = ["relief", "teapot", "window"];
+const methodOrder = ["lamp_keys", "teapot", "bfft", "playground"];
 
 function decode(text) {
   const binary = atob(text);
@@ -83,6 +85,16 @@ function encode(v) { return Math.round(255 * Math.pow(Math.min(Math.max(v, 0), 1
 const data = window.TRACER_BAKES;
 const cells = [];
 
+// 99th percentile of a plane's luminance, for normalising.
+function percentile99(rgb) {
+  const n = rgb.length / 3;
+  const lum = new Float32Array(n);
+  for (let t = 0; t < n; t += 1) { lum[t] = 0.2126 * rgb[t * 3] + 0.7152 * rgb[t * 3 + 1] + 0.0722 * rgb[t * 3 + 2]; }
+  lum.sort();
+  const v = lum[Math.min(n - 1, Math.floor(0.99 * n))];
+  return v > 0 ? v : 1;
+}
+
 function build() {
   const grid = document.getElementById("grid");
   const head = document.createElement("tr");
@@ -96,76 +108,62 @@ function build() {
   for (const scene of data.scenes) {
     const row = document.createElement("tr");
     const label = document.createElement("th");
-    label.innerHTML = scene.title + "<small>" + data.size + " &times; " + data.size + " texels</small>";
+    label.innerHTML = scene.title + "<small>" + data.size + " px</small>";
     row.appendChild(label);
-    const albedo = decode(scene.albedo);
-    const planes = {};
-    for (const method of methodOrder) {
-      planes[method] = { fixed: decode(scene.methods[method].fixed), lamp: decode(scene.methods[method].lamp) };
-    }
     for (const method of methodOrder) {
       const td = document.createElement("td");
+      const info = scene.cells[method];
+      const text = document.createElement("div");
+      text.className = "timing";
+      if (!info.present) {
+        text.textContent = info.note;
+        td.appendChild(text);
+        row.appendChild(td);
+        continue;
+      }
       const canvas = document.createElement("canvas");
-      canvas.width = data.size;
-      canvas.height = data.size;
+      canvas.width = info.width;
+      canvas.height = info.height;
+      canvas.style.height = (320 * info.height / info.width) + "px";
       td.appendChild(canvas);
-      const info = scene.methods[method];
-      const timing = document.createElement("div");
-      timing.className = "timing";
       const parts = data.threads.map(function (t, k) { return t + (t === 1 ? " thread " : " threads ") + info.ms[k].toFixed(1) + " ms"; });
-      timing.innerHTML = parts.join(" &middot; ") + (info.identical ? " &middot; identical bytes" : " &middot; <span class=\"bad\">differs by thread count</span>");
-      td.appendChild(timing);
+      text.innerHTML = parts.join(" &middot; ") + (info.bakes_per_run > 1 ? " (a run bakes " + info.bakes_per_run + ")" : "") +
+        (info.identical ? " &middot; identical bytes" : " &middot; <span class=\"bad\">differs by thread count</span>") +
+        "<br>" + info.note;
+      td.appendChild(text);
       row.appendChild(td);
-      cells.push({ canvas: canvas, albedo: albedo, planes: planes[method], reference: planes.window });
+      const fixed = decode(info.fixed);
+      const lamp = decode(info.lamp);
+      cells.push({ canvas: canvas, width: info.width, height: info.height, fixed: fixed, lamp: lamp,
+                   fixedScale: 1 / percentile99(fixed), lampScale: 1 / percentile99(lamp) });
     }
     grid.appendChild(row);
   }
 }
 
-function shade(albedo, fixed, lamp, t, settings) {
-  const out = [0, 0, 0];
-  for (let c = 0; c < 3; c += 1) {
-    const light = settings.fixedColour[c] * settings.fixedPower * fixed[t] + settings.lampColour[c] * settings.lampPower * lamp[t];
-    out[c] = 1 - Math.exp(-1.3 * settings.exposure * albedo[t * 3 + c] * light);
-  }
-  return out;
-}
-
 function render() {
-  const settings = {
-    fixedColour: linearColour(document.getElementById("fixedColour").value),
-    lampColour: linearColour(document.getElementById("lampColour").value),
-    fixedPower: Number(document.getElementById("fixedPower").value),
-    lampPower: Number(document.getElementById("lampPower").value),
-    exposure: Number(document.getElementById("exposure").value),
-    view: document.getElementById("view").value,
-  };
-  document.getElementById("fixedPowerOut").textContent = settings.fixedPower.toFixed(2);
-  document.getElementById("lampPowerOut").textContent = settings.lampPower.toFixed(1);
-  document.getElementById("exposureOut").textContent = settings.exposure.toFixed(2);
-  const zero = new Float32Array(data.size * data.size);
+  const fixedColour = linearColour(document.getElementById("fixedColour").value);
+  const lampColour = linearColour(document.getElementById("lampColour").value);
+  const fixedPower = Number(document.getElementById("fixedPower").value);
+  const lampPower = Number(document.getElementById("lampPower").value);
+  const exposure = Number(document.getElementById("exposure").value);
+  const normalise = document.getElementById("normalise").checked;
+  const view = document.getElementById("view").value;
+  document.getElementById("fixedPowerOut").textContent = fixedPower.toFixed(2);
+  document.getElementById("lampPowerOut").textContent = lampPower.toFixed(1);
+  document.getElementById("exposureOut").textContent = exposure.toFixed(2);
   for (const cell of cells) {
     const context = cell.canvas.getContext("2d");
-    const image = context.createImageData(data.size, data.size);
+    const image = context.createImageData(cell.width, cell.height);
     const pixels = image.data;
-    const n = data.size * data.size;
+    const f = (view === "lamp" ? 0 : fixedPower) * (normalise ? cell.fixedScale : 1);
+    const l = (view === "fixed" ? 0 : lampPower) * (normalise ? cell.lampScale : 1);
+    const n = cell.width * cell.height;
     for (let t = 0; t < n; t += 1) {
-      let rgb;
-      if (settings.view === "fixed") {
-        rgb = shade(cell.albedo, cell.planes.fixed, zero, t, settings);
-      } else if (settings.view === "lamp") {
-        rgb = shade(cell.albedo, zero, cell.planes.lamp, t, settings);
-      } else if (settings.view === "difference") {
-        const mine = shade(cell.albedo, cell.planes.fixed, cell.planes.lamp, t, settings);
-        const ref = shade(cell.albedo, cell.reference.fixed, cell.reference.lamp, t, settings);
-        const d = 4 * ((mine[0] + mine[1] + mine[2]) - (ref[0] + ref[1] + ref[2])) / 3;
-        rgb = [0.08 + Math.max(d, 0), 0.08, 0.08 + Math.max(-d, 0)];
-      } else {
-        rgb = shade(cell.albedo, cell.planes.fixed, cell.planes.lamp, t, settings);
+      for (let c = 0; c < 3; c += 1) {
+        const v = fixedColour[c] * f * cell.fixed[t * 3 + c] + lampColour[c] * l * cell.lamp[t * 3 + c];
+        pixels[t * 4 + c] = encode(1 - Math.exp(-1.3 * exposure * v));
       }
-      pixels[t * 4] = encode(rgb[0]);
-      pixels[t * 4 + 1] = encode(rgb[1]);
-      pixels[t * 4 + 2] = encode(rgb[2]);
       pixels[t * 4 + 3] = 255;
     }
     context.putImageData(image, 0, 0);
@@ -176,7 +174,7 @@ if (!data) {
   document.getElementById("missing").hidden = false;
 } else {
   build();
-  for (const id of ["fixedColour", "fixedPower", "lampColour", "lampPower", "exposure", "view"]) {
+  for (const id of ["fixedColour", "fixedPower", "lampColour", "lampPower", "exposure", "normalise", "view"]) {
     document.getElementById(id).addEventListener("input", render);
   }
   render();

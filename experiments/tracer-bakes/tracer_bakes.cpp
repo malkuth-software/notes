@@ -1,40 +1,38 @@
-// Tracer bakes: three ways to light four control-sized scenes, each timed at
-// 1, 4 and all threads, written as linear light planes for tracer_bakes.html.
+// Tracer bakes: the playground's driver. It runs the owner's engines on four
+// control-sized scenes, times every bake at 1, 4 and all threads, and writes
+// their linear light planes for tracer_bakes.html.
 //
-// Methods (see README.md for the derivations and what each leaves out):
-//   relief  today's approach: Lambert shading, a k-pixel drop shadow (the
-//           relief primitive's contact-shadow rule), unoccluded hemisphere
-//           ambient and an SDF-style lamp glow that ignores occlusion.
-//   teapot  conv-teapot's light: hard point visibility of each source, the
-//           open fraction from 32 cosine-weighted Fibonacci directions rotated
-//           per texel by a hash (quarter first), and the transfer gather: six
-//           Jacobi passes of B = B0 + (1/N) sum over blocked rays of rho*B_land.
-//   window  as teapot, but each source (the fixed light's disc and the
-//           spherical lamp) is integrated over an exact visibility partition in
-//           the spirit of bfft's source windows: for every column of the source
-//           the horizon decides exactly where the visible part ends, class
-//           changes across columns are located by bisection, fully visible runs
-//           are integrated in closed form and only partial runs by quadrature.
+// Columns (README.md has what each engine is given and what it leaves out):
+//   lamp_keys   today's baker, engines/lamp_keys/lamp_keys.cpp, on its own
+//               families: keycap for the keycap scene, indicator for the lamp
+//               scene. It has no geometry for the strip or the open well.
+//   conv-teapot the teapot engine's own bake (open fraction, transfer gather,
+//               exact shadow edges) through teapot_bake.cpp; fixed light only.
+//   bfft        the photonic transport engine (regime_scene_native) with the
+//               scenes in its own geometry (tracer_scenes.hpp): exact source
+//               windows for every area light, retained diffuse field.
+//   playground  not an engine: this file's own height-field version of the
+//               source-window idea plus a 32-direction gather, kept as a
+//               labelled extra.
 //
-// Scene model: a height field over the unit chart, seen from the front; x
-// right, y up (row 0 is the top), z out of the panel. Plane values are the
-// multiplier on a texel's albedo: outgoing radiance = albedo x plane. The
-// fixed light has unit irradiance at normal incidence, the sky radiance 0.22
-// of it; the lamp is a sphere of unit radiance, and lens texels emit 1.
+// Every engine runs as its own process with TRACER_THREADS set to 1, 4 and the
+// hardware count, three times each; the median wall time of the whole process
+// is reported (scene build, bake and file writes included), and the planes of
+// each thread count are compared byte for byte with the single-thread ones.
+// The playground column is timed in process.
 //
-// Usage: tracer_bakes <output directory> [size, even, 32..512, default 160]
-// Writes, per scene, <scene>_albedo.f32 (int32 width, height, 3; then RGB
-// float32 interleaved) and <scene>_<method>.f32 (int32 width, height, 2; then
-// the fixed-light plane and the lamp plane, float32), plus planes.js for the
-// page and timings.json. Every bake is repeated three times per thread count
-// and the median is reported; the planes of every thread count are compared
-// byte for byte with the single-thread planes.
+// Usage: tracer_bakes [size, even, 32..512, default 160]
+// Run from this folder after `make` (see README.md). Writes build/tracer_bakes/:
+// one <scene>_<column>.f32 per cell (int32 width, height; then fixed-light
+// radiance RGB float32 and lamp radiance RGB float32, row 0 at the top),
+// planes.js for the page and timings.json. Engine work files stay in
+// build/tracer_bakes/work/.
 //
-// Build: c++ -std=c++20 -O2 -ffp-contract=off -pthread -o build/tracer_bakes tracer_bakes.cpp
-// Determinism: no FMA contraction and a fixed order in every sum, so output is
-// identical for any thread count on one host. Bytes across hosts are not
-// claimed: std::sin, std::cos, std::asin and std::atan come from libm (the
-// engine port replaces them with tables, as the finish kernels do).
+// Determinism of the playground column: no FMA contraction and a fixed order
+// in every sum, so its output is identical for any thread count on one host;
+// libm supplies sin, cos, asin and atan, so bytes across hosts are not claimed.
+
+#include "scenes.hpp"
 
 #include <algorithm>
 #include <array>
@@ -51,7 +49,6 @@
 
 namespace tracer_bakes {
 
-constexpr double pi = 3.14159265358979323846;
 constexpr double golden_angle = 2.39996322972865332;
 constexpr int direction_count = 32;
 constexpr int quarter_stride = 4;
@@ -61,253 +58,6 @@ constexpr double sky_radiance = 0.22;
 constexpr double sun_angular_radius = 0.06;
 constexpr double lamp_radiance = 1.0;
 constexpr double far_distance = 3.0;
-
-struct Vec3 final {
-    double x{};
-    double y{};
-    double z{};
-};
-
-Vec3 add(Vec3 a, Vec3 b) { return Vec3{a.x + b.x, a.y + b.y, a.z + b.z}; }
-Vec3 sub(Vec3 a, Vec3 b) { return Vec3{a.x - b.x, a.y - b.y, a.z - b.z}; }
-Vec3 scale(Vec3 a, double s) { return Vec3{a.x * s, a.y * s, a.z * s}; }
-double dot(Vec3 a, Vec3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-Vec3 cross(Vec3 a, Vec3 b) { return Vec3{a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x}; }
-double length(Vec3 a) { return std::sqrt(dot(a, a)); }
-Vec3 normalized(Vec3 a) { return scale(a, 1.0 / length(a)); }
-
-double smoothstep(double a, double b, double x) {
-    const double t = std::clamp((x - a) / (b - a), 0.0, 1.0);
-    return t * t * (3.0 - 2.0 * t);
-}
-
-// The one fixed light, from the upper left (pointing towards the light).
-Vec3 fixed_light_direction() { return normalized(Vec3{-0.45, 0.55, 0.70}); }
-
-// ---- scenes ------------------------------------------------------------------------------
-
-enum class Material : std::uint8_t { plate = 0, floor = 1, cap = 2, bezel = 3, wall = 4, lens = 5 };
-
-constexpr std::array<std::array<float, 3>, 6> material_albedo{{
-    {0.40f, 0.43f, 0.38f},  // plate: grey-green enamel
-    {0.16f, 0.16f, 0.15f},  // floor: dark well floor
-    {0.80f, 0.77f, 0.68f},  // cap: ivory keycap
-    {0.52f, 0.53f, 0.55f},  // bezel: grey metal
-    {0.86f, 0.85f, 0.82f},  // wall: white enamel well
-    {0.92f, 0.92f, 0.90f},  // lens: white diffuser
-}};
-
-double albedo_luma(Material material) {
-    const std::array<float, 3>& rgb = material_albedo[static_cast<int>(material)];
-    return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
-}
-
-struct Lamp final {
-    Vec3 centre{};   // sphere centre
-    double radius{}; // sphere radius
-    double glow{};   // relief method only: SDF spill width beyond the sphere
-};
-
-struct Scene final {
-    std::string name{};
-    std::string title{};
-    int size{};
-    std::vector<double> height{};     // size x size, row-major, row 0 at the top
-    std::vector<Material> material{}; // size x size
-    std::vector<Vec3> position{};     // texel centre on the surface
-    std::vector<Vec3> normal{};
-    Lamp lamp{};
-    double height_max{};
-};
-
-struct TexelShape final {
-    double height{};
-    Material material{Material::plate};
-};
-
-double rounded_box(double x, double y, double cx, double cy, double hx, double hy, double r) {
-    const double qx = std::abs(x - cx) - hx + r;
-    const double qy = std::abs(y - cy) - hy + r;
-    const double ox = std::max(qx, 0.0);
-    const double oy = std::max(qy, 0.0);
-    const double outside = std::sqrt(ox * ox + oy * oy);
-    const double inside = std::min(std::max(qx, qy), 0.0);
-    return outside + inside - r;
-}
-
-// Quarter-circle rise over `width` inwards from an edge at signed distance d.
-double rounded_rise(double d, double width) {
-    const double s = std::clamp(-d / width, 0.0, 1.0);
-    const double from_top = 1.0 - s;
-    return std::sqrt(std::max(0.0, 1.0 - from_top * from_top));
-}
-
-double dome(double r, double radius) {
-    const double u = r / radius;
-    return std::sqrt(std::max(0.0, 1.0 - u * u));
-}
-
-// A keycap in a well, with an indicator lens inset at its upper right.
-TexelShape shape_keycap(double x, double y, double wall) {
-    TexelShape shape{};
-    const double well = rounded_box(x, y, 0.5, 0.5, 0.36, 0.36, 0.05);
-    shape.height = -0.12 * (1.0 - smoothstep(-wall, wall, well));
-    shape.material = well < 0.0 ? Material::floor : Material::plate;
-    const double cap = rounded_box(x, y, 0.5, 0.5, 0.29, 0.29, 0.06);
-    if (cap < 0.0) {
-        const double rx = x - 0.5;
-        const double ry = y - 0.5;
-        const double dish = 0.012 * (1.0 - std::clamp((rx * rx + ry * ry) / 0.09, 0.0, 1.0));
-        const double top = -0.12 + 0.18 * rounded_rise(cap, 0.035) - dish;
-        shape.height = std::max(shape.height, top);
-        shape.material = Material::cap;
-    }
-    const double lens_r = std::hypot(x - 0.68, y - 0.68);
-    if (lens_r < 0.035) {
-        shape.height += 0.008 * dome(lens_r, 0.035);
-        shape.material = Material::lens;
-    }
-    return shape;
-}
-
-// A domed lamp lens in a seat, ringed by a raised bezel.
-TexelShape shape_lamp(double x, double y, double) {
-    TexelShape shape{};
-    const double r = std::hypot(x - 0.5, y - 0.5);
-    if (r < 0.20) {
-        shape.height = 0.015;
-        shape.material = Material::bezel;
-        if (r < 0.17) {
-            shape.height = 0.015 + 0.075 * dome(r, 0.17);
-            shape.material = Material::lens;
-        }
-    } else if (r < 0.32) {
-        shape.height = 0.10 * dome(r - 0.26, 0.06);
-        shape.material = Material::bezel;
-    }
-    return shape;
-}
-
-// A bar lying on the plate (contact crease) with a slot lamp at its right end,
-// and a low strip below it (a one-to-two-pixel contact shadow).
-TexelShape shape_contact(double x, double y, double) {
-    TexelShape shape{};
-    const double strip = rounded_box(x, y, 0.5, 0.2, 0.35, 0.03, 0.01);
-    if (strip < 0.0) {
-        shape.height = 0.012 * rounded_rise(strip, 0.008);
-        shape.material = Material::bezel;
-    }
-    const double bar = rounded_box(x, y, 0.5, 0.5, 0.35, 0.08, 0.03);
-    if (bar < 0.0) {
-        shape.height = 0.05 * rounded_rise(bar, 0.02);
-        shape.material = Material::cap;
-    }
-    const double lens_r = std::hypot(x - 0.78, y - 0.5);
-    if (lens_r < 0.025) {
-        shape.height += 0.006 * dome(lens_r, 0.025);
-        shape.material = Material::lens;
-    }
-    return shape;
-}
-
-// A deep white key well with a lamp in its floor: walls lit directly, the floor
-// around the lamp only by light returned from the walls.
-TexelShape shape_well(double x, double y, double wall) {
-    TexelShape shape{};
-    const double well = rounded_box(x, y, 0.5, 0.5, 0.30, 0.30, 0.06);
-    shape.height = -0.30 * (1.0 - smoothstep(-wall, wall, well));
-    shape.material = well < 0.0 ? Material::wall : Material::plate;
-    if (std::hypot(x - 0.5, y - 0.5) < 0.06) {
-        shape.material = Material::lens;
-    }
-    return shape;
-}
-
-using ShapeFunction = TexelShape (*)(double x, double y, double wall);
-
-struct SceneSpec final {
-    const char* name{};
-    const char* title{};
-    ShapeFunction shape{};
-    Lamp lamp{};
-};
-
-const std::array<SceneSpec, 4> scene_specs{{
-    {"keycap", "Keycap in a well, inset lens", shape_keycap, Lamp{Vec3{0.68, 0.68, 0.075}, 0.03, 0.08}},
-    {"lamp", "Lamp lens and bezel", shape_lamp, Lamp{Vec3{0.5, 0.5, 0.05}, 0.10, 0.10}},
-    {"contact", "Contact-shadow strip and bar", shape_contact, Lamp{Vec3{0.78, 0.5, 0.056}, 0.02, 0.06}},
-    {"well", "Inter-reflection in a key well", shape_well, Lamp{Vec3{0.5, 0.5, -0.265}, 0.05, 0.10}},
-}};
-
-int texel_index(const Scene& scene, int i, int j) { return j * scene.size + i; }
-
-Scene make_scene(const SceneSpec& spec, int size) {
-    Scene scene{};
-    scene.name = spec.name;
-    scene.title = spec.title;
-    scene.size = size;
-    scene.lamp = spec.lamp;
-    const std::size_t count = static_cast<std::size_t>(size) * static_cast<std::size_t>(size);
-    scene.height.resize(count);
-    scene.material.resize(count);
-    scene.position.resize(count);
-    scene.normal.resize(count);
-    const double wall = 1.5 / size; // walls are softened over three texels
-    scene.height_max = -1.0e300;
-    for (int j = 0; j < size; ++j) {
-        for (int i = 0; i < size; ++i) {
-            const double x = (i + 0.5) / size;
-            const double y = 1.0 - (j + 0.5) / size;
-            const TexelShape shape = spec.shape(x, y, wall);
-            const int index = texel_index(scene, i, j);
-            scene.height[index] = shape.height;
-            scene.material[index] = shape.material;
-            scene.position[index] = Vec3{x, y, shape.height};
-            scene.height_max = std::max(scene.height_max, shape.height);
-        }
-    }
-    for (int j = 0; j < size; ++j) {
-        for (int i = 0; i < size; ++i) {
-            const int il = std::max(i - 1, 0);
-            const int ir = std::min(i + 1, size - 1);
-            const int ju = std::max(j - 1, 0); // the row above has the larger y
-            const int jd = std::min(j + 1, size - 1);
-            const double dhdx = (scene.height[texel_index(scene, ir, j)] - scene.height[texel_index(scene, il, j)]) *
-                                size / (ir - il);
-            const double dhdy = (scene.height[texel_index(scene, i, ju)] - scene.height[texel_index(scene, i, jd)]) *
-                                size / (jd - ju);
-            scene.normal[texel_index(scene, i, j)] = normalized(Vec3{-dhdx, -dhdy, 1.0});
-        }
-    }
-    return scene;
-}
-
-// ---- geometry queries ---------------------------------------------------------------------
-
-// Bilinear height at a chart point; outside the chart the edge texels extend.
-double height_at(const Scene& scene, double x, double y) {
-    const int n = scene.size;
-    const double fx = std::clamp(x * n - 0.5, 0.0, n - 1.0);
-    const double fy = std::clamp((1.0 - y) * n - 0.5, 0.0, n - 1.0);
-    const int i0 = std::min(static_cast<int>(fx), n - 2);
-    const int j0 = std::min(static_cast<int>(fy), n - 2);
-    const double tx = fx - i0;
-    const double ty = fy - j0;
-    const double h00 = scene.height[texel_index(scene, i0, j0)];
-    const double h10 = scene.height[texel_index(scene, i0 + 1, j0)];
-    const double h01 = scene.height[texel_index(scene, i0, j0 + 1)];
-    const double h11 = scene.height[texel_index(scene, i0 + 1, j0 + 1)];
-    const double top = h00 + (h10 - h00) * tx;
-    const double bottom = h01 + (h11 - h01) * tx;
-    return top + (bottom - top) * ty;
-}
-
-int texel_at(const Scene& scene, double x, double y) {
-    const int n = scene.size;
-    const int i = std::clamp(static_cast<int>(std::floor(x * n)), 0, n - 1);
-    const int j = std::clamp(static_cast<int>(std::floor((1.0 - y) * n)), 0, n - 1);
-    return texel_index(scene, i, j);
-}
 
 struct Hit final {
     bool blocked{};
@@ -494,45 +244,18 @@ double cone_visible_fraction(const Scene& scene, Vec3 origin, Vec3 axis, double 
 }
 
 // ---- direct light -------------------------------------------------------------------------
-
-enum class Method : int { relief = 0, teapot = 1, window = 2 };
-
-constexpr std::array<Method, 3> methods{Method::relief, Method::teapot, Method::window};
-
-const char* method_name(Method method) {
-    switch (method) {
-    case Method::relief:
-        return "relief";
-    case Method::teapot:
-        return "teapot";
-    case Method::window:
-        return "window";
-    default:
-        return "unknown";
-    }
-}
-
-// Relief method: the contact-shadow rule k = max(1, floor(min(s, 2) + 0.5))
-// pixels, applied as a drop shadow offset towards the light. s is the relief
-// size in pixels at this chart size (2 at 160 px).
-double relief_shadow(const Scene& scene, int i, int j) {
-    const Vec3 light = fixed_light_direction();
-    const double s = scene.size / 80.0;
-    const int k = std::max(1, static_cast<int>(std::floor(std::min(s, 2.0) + 0.5)));
-    const double horizontal = std::sqrt(light.x * light.x + light.y * light.y);
-    const int oi = std::clamp(i + static_cast<int>(std::lround(light.x / horizontal * k)), 0, scene.size - 1);
-    const int oj = std::clamp(j - static_cast<int>(std::lround(light.y / horizontal * k)), 0, scene.size - 1);
-    const double own = scene.height[texel_index(scene, i, j)];
-    const double other = scene.height[texel_index(scene, oi, oj)];
-    return other > own + 0.01 ? 0.45 : 1.0;
-}
+//
+// Fixed light: n.l times the visible fraction of its disc. Lamp: a sphere of
+// radius r at distance d gives irradiance Le * pi * sin^2(beta) * cos(theta)
+// unoccluded, beta = asin(r / d); the plane stores irradiance / pi, times the
+// sphere's visible fraction. Lens texels emit 1.
 
 struct DirectLight final {
     double sun{};
     double lamp{};
 };
 
-DirectLight direct_light(const Scene& scene, Method method, int i, int j) {
+DirectLight direct_light(const Scene& scene, int i, int j) {
     const int index = texel_index(scene, i, j);
     const Vec3 n = scene.normal[index];
     const Vec3 origin = surface_origin(scene, index);
@@ -540,20 +263,12 @@ DirectLight direct_light(const Scene& scene, Method method, int i, int j) {
     const double n_dot_l = dot(n, light);
     DirectLight result{};
     if (n_dot_l > 0.0) {
-        if (method == Method::relief) {
-            result.sun = n_dot_l * relief_shadow(scene, i, j);
-        } else if (method == Method::teapot) {
-            result.sun = march(scene, origin, light, far_distance).blocked ? 0.0 : n_dot_l;
-        } else {
-            result.sun = n_dot_l * cone_visible_fraction(scene, origin, light, sun_angular_radius, far_distance);
-        }
+        result.sun = n_dot_l * cone_visible_fraction(scene, origin, light, sun_angular_radius, far_distance);
     }
     if (scene.material[index] == Material::lens) {
-        result.lamp = lamp_radiance; // the lens emits; albedo x 1 shows the lamp colour
+        result.lamp = lamp_radiance;
         return result;
     }
-    // Sphere of radius r at distance d: irradiance Le * pi * sin^2(beta) * cos(theta)
-    // unoccluded, beta = asin(r / d); the plane stores irradiance / pi.
     const Vec3 to_lamp = sub(scene.lamp.centre, origin);
     const double distance = length(to_lamp);
     const Vec3 direction = scale(to_lamp, 1.0 / distance);
@@ -563,16 +278,8 @@ DirectLight direct_light(const Scene& scene, Method method, int i, int j) {
     }
     const double sin_beta = scene.lamp.radius / distance;
     const double unoccluded = lamp_radiance * sin_beta * sin_beta * n_dot;
-    const double to_surface = distance - scene.lamp.radius;
-    if (method == Method::relief) {
-        const double reach = std::hypot(to_lamp.x, to_lamp.y) - scene.lamp.radius;
-        result.lamp = unoccluded * (1.0 - smoothstep(0.0, scene.lamp.glow, reach));
-    } else if (method == Method::teapot) {
-        result.lamp = march(scene, origin, direction, to_surface).blocked ? 0.0 : unoccluded;
-    } else {
-        const double beta = std::asin(sin_beta);
-        result.lamp = unoccluded * cone_visible_fraction(scene, origin, direction, beta, to_surface);
-    }
+    const double beta = std::asin(sin_beta);
+    result.lamp = unoccluded * cone_visible_fraction(scene, origin, direction, beta, distance - scene.lamp.radius);
     return result;
 }
 
@@ -588,7 +295,6 @@ std::uint32_t texel_hash(int i, int j) {
 
 struct Bake final {
     const Scene* scene{};
-    Method method{};
     int coarse{};                      // coarse side: texels four times the area of the fine ones
     std::vector<double> sun{};         // fine
     std::vector<double> lamp{};        // fine
@@ -626,7 +332,7 @@ void direct_rows(Bake* bake, int first_row, int end_row) {
     const Scene& scene = *(*bake).scene;
     for (int j = first_row; j < end_row; ++j) {
         for (int i = 0; i < scene.size; ++i) {
-            const DirectLight light = direct_light(scene, (*bake).method, i, j);
+            const DirectLight light = direct_light(scene, i, j);
             const int index = texel_index(scene, i, j);
             (*bake).sun[index] = light.sun;
             (*bake).lamp[index] = light.lamp;
@@ -785,10 +491,9 @@ struct Planes final {
     std::vector<float> lamp{};
 };
 
-Planes bake_scene(const Scene& scene, Method method, int threads) {
+Planes bake_scene(const Scene& scene, int threads) {
     Bake bake{};
     bake.scene = &scene;
-    bake.method = method;
     bake.coarse = scene.size / 2;
     const std::size_t fine = scene.height.size();
     const std::size_t coarse = static_cast<std::size_t>(bake.coarse) * static_cast<std::size_t>(bake.coarse);
@@ -798,14 +503,6 @@ Planes bake_scene(const Scene& scene, Method method, int threads) {
     Planes planes{};
     planes.fixed.resize(fine);
     planes.lamp.resize(fine);
-    if (method == Method::relief) {
-        for (std::size_t t = 0; t < fine; ++t) {
-            const double ambient = sky_radiance * (0.5 + 0.5 * scene.normal[t].z);
-            planes.fixed[t] = static_cast<float>(bake.sun[t] + ambient);
-            planes.lamp[t] = static_cast<float>(bake.lamp[t]);
-        }
-        return planes;
-    }
     bake.open.assign(coarse, 0.0);
     bake.landing.assign(coarse * direction_count, -1);
     bake.weight.assign(coarse * direction_count, 0);
@@ -836,22 +533,312 @@ Planes bake_scene(const Scene& scene, Method method, int threads) {
     return planes;
 }
 
-// ---- output ------------------------------------------------------------------------------
+// ---- cells -------------------------------------------------------------------------------
 
-bool write_planes(const std::string& path, int width, int height, const std::vector<const std::vector<float>*>& planes,
-                  int channels) {
+// One cell of the page: radiance planes at unit white light (albedo included).
+struct Cell final {
+    bool present{};
+    std::string note{};
+    int width{};
+    int height{};
+    std::vector<float> fixed{}; // width x height x 3
+    std::vector<float> lamp{};  // width x height x 3
+    std::array<double, 3> ms{};
+    bool identical{true};
+    int bakes_per_run{1};
+};
+
+bool same_planes(const Cell& a, const Cell& b) {
+    return a.width == b.width && a.height == b.height && a.fixed.size() == b.fixed.size() && a.lamp.size() == b.lamp.size() &&
+           std::memcmp(a.fixed.data(), b.fixed.data(), a.fixed.size() * sizeof(float)) == 0 &&
+           std::memcmp(a.lamp.data(), b.lamp.data(), a.lamp.size() * sizeof(float)) == 0;
+}
+
+std::vector<char> read_file(const std::string& path) {
+    std::vector<char> bytes{};
+    std::FILE* file = std::fopen(path.c_str(), "rb");
+    if (file == nullptr) {
+        return bytes;
+    }
+    std::array<char, 65536> chunk{};
+    while (true) {
+        const std::size_t got = std::fread(chunk.data(), 1, chunk.size(), file);
+        bytes.insert(bytes.end(), chunk.data(), chunk.data() + got);
+        if (got < chunk.size()) {
+            break;
+        }
+    }
+    std::fclose(file);
+    return bytes;
+}
+
+std::int32_t read_int(const std::vector<char>& bytes, std::size_t offset) {
+    std::int32_t value = 0;
+    std::memcpy(&value, bytes.data() + offset, sizeof(value));
+    return value;
+}
+
+// Read `count` float32 values at `offset`; false if the file is too short.
+bool read_floats(const std::vector<char>& bytes, std::size_t offset, std::size_t count, std::vector<float>& out) {
+    if (offset + count * sizeof(float) > bytes.size()) {
+        return false;
+    }
+    out.resize(count);
+    std::memcpy(out.data(), bytes.data() + offset, count * sizeof(float));
+    return true;
+}
+
+// The playground's own cell format and teapot_bake's: int32 width, height;
+// fixed RGB; lamp RGB.
+bool read_pair(const std::string& path, Cell& cell) {
+    const std::vector<char> bytes = read_file(path);
+    if (bytes.size() < 8) {
+        return false;
+    }
+    cell.width = read_int(bytes, 0);
+    cell.height = read_int(bytes, 4);
+    const std::size_t count = static_cast<std::size_t>(cell.width) * static_cast<std::size_t>(cell.height) * 3;
+    return read_floats(bytes, 8, count, cell.fixed) && read_floats(bytes, 8 + count * sizeof(float), count, cell.lamp);
+}
+
+// bfft's --out-linear: int32 width, height; RGB float32.
+bool read_linear(const std::string& path, int& width, int& height, std::vector<float>& rgb) {
+    const std::vector<char> bytes = read_file(path);
+    if (bytes.size() < 8) {
+        return false;
+    }
+    width = read_int(bytes, 0);
+    height = read_int(bytes, 4);
+    return read_floats(bytes, 8, static_cast<std::size_t>(width) * static_cast<std::size_t>(height) * 3, rgb);
+}
+
+// lamp_keys' buffers: int32 width, height, lamps; the room image, each lamp's
+// image (RGB float32, premultiplied by coverage) and the coverage plane. The
+// lamp plane is the sum of the lamps' images (all lamps at unit power).
+bool read_lamp_keys(const std::string& path, Cell& cell) {
+    const std::vector<char> bytes = read_file(path);
+    if (bytes.size() < 12) {
+        return false;
+    }
+    cell.width = read_int(bytes, 0);
+    cell.height = read_int(bytes, 4);
+    const int lamps = read_int(bytes, 8);
+    const std::size_t count = static_cast<std::size_t>(cell.width) * static_cast<std::size_t>(cell.height) * 3;
+    if (!read_floats(bytes, 12, count, cell.fixed)) {
+        return false;
+    }
+    cell.lamp.assign(count, 0.0f);
+    std::vector<float> glow{};
+    for (int l = 0; l < lamps; ++l) {
+        if (!read_floats(bytes, 12 + (1 + static_cast<std::size_t>(l)) * count * sizeof(float), count, glow)) {
+            return false;
+        }
+        for (std::size_t k = 0; k < count; ++k) {
+            cell.lamp[k] += glow[k];
+        }
+    }
+    return true;
+}
+
+bool write_pair(const std::string& path, const Cell& cell) {
     std::FILE* file = std::fopen(path.c_str(), "wb");
     if (file == nullptr) {
         return false;
     }
-    const std::array<std::int32_t, 3> header{width, height, channels};
+    const std::array<std::int32_t, 2> header{cell.width, cell.height};
     bool ok = std::fwrite(header.data(), sizeof(std::int32_t), header.size(), file) == header.size();
-    for (const std::vector<float>* plane : planes) {
-        ok = ok && std::fwrite((*plane).data(), sizeof(float), (*plane).size(), file) == (*plane).size();
-    }
+    ok = ok && std::fwrite(cell.fixed.data(), sizeof(float), cell.fixed.size(), file) == cell.fixed.size();
+    ok = ok && std::fwrite(cell.lamp.data(), sizeof(float), cell.lamp.size(), file) == cell.lamp.size();
     ok = (std::fclose(file) == 0) && ok;
     return ok;
 }
+
+double median_of(std::array<double, repeats> times) {
+    std::sort(times.begin(), times.end());
+    return times[repeats / 2];
+}
+
+// Run a shell command (POSIX sh) and return its wall time, or a negative
+// value when it fails. Its output goes to the log file named.
+double timed_command(const std::string& command, const std::string& log) {
+    const std::string line = command + " >>" + log + " 2>&1";
+    const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+    const int status = std::system(line.c_str());
+    const double ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
+    return status == 0 ? ms : -1.0;
+}
+
+// ---- the engines ---------------------------------------------------------------------------
+
+struct Run final {
+    const std::array<int, 3>* threads{};
+    int size{};
+    std::string work{};
+    std::string log{};
+};
+
+std::string with_threads(int threads, const std::string& command) {
+    return "TRACER_THREADS=" + std::to_string(threads) + " " + command;
+}
+
+using ReadFunction = bool (*)(const Run& run, const std::string& scene, int threads, Cell& cell);
+using CommandFunction = std::string (*)(const Run& run, const std::string& scene, int threads, int pass);
+
+// Run one engine's commands for a scene at every thread count, `passes`
+// commands per bake, and read the result of each thread count.
+Cell run_engine(const Run& run, const std::string& scene, int passes, CommandFunction command, ReadFunction read) {
+    Cell reference{};
+    reference.present = true;
+    for (std::size_t c = 0; c < (*run.threads).size(); ++c) {
+        const int threads = (*run.threads)[c];
+        std::array<double, repeats> times{};
+        for (int r = 0; r < repeats; ++r) {
+            double total = 0.0;
+            for (int pass = 0; pass < passes; ++pass) {
+                const double ms = timed_command(command(run, scene, threads, pass), run.log);
+                if (ms < 0.0) {
+                    Cell failed{};
+                    failed.note = "engine run failed; see build/tracer_bakes/work/engines.log";
+                    return failed;
+                }
+                total += ms;
+            }
+            times[r] = total;
+        }
+        Cell cell{};
+        if (!read(run, scene, threads, cell)) {
+            Cell failed{};
+            failed.note = "engine output missing or short; see build/tracer_bakes/work/engines.log";
+            return failed;
+        }
+        if (c == 0) {
+            reference.width = cell.width;
+            reference.height = cell.height;
+            reference.fixed = std::move(cell.fixed);
+            reference.lamp = std::move(cell.lamp);
+        } else {
+            reference.identical = reference.identical && same_planes(reference, cell);
+        }
+        reference.ms[c] = median_of(times);
+    }
+    return reference;
+}
+
+std::string teapot_output(const Run& run, const std::string& scene, int threads) {
+    return run.work + "/teapot_" + scene + "_" + std::to_string(threads) + ".f32";
+}
+
+std::string teapot_command(const Run& run, const std::string& scene, int threads, int) {
+    return with_threads(threads, "build/bin/teapot_bake " + scene + " " + std::to_string(run.size) + " " +
+                                     teapot_output(run, scene, threads));
+}
+
+bool teapot_read(const Run& run, const std::string& scene, int threads, Cell& cell) {
+    return read_pair(teapot_output(run, scene, threads), cell);
+}
+
+std::string bfft_output(const Run& run, const std::string& scene, int threads, int pass) {
+    return run.work + "/bfft_" + scene + "_" + (pass == 0 ? "fixed" : "lamp") + "_" + std::to_string(threads);
+}
+
+std::string bfft_command(const Run& run, const std::string& scene, int threads, int pass) {
+    const std::string stem = bfft_output(run, scene, threads, pass);
+    const std::string size = std::to_string(run.size);
+    return with_threads(threads, "build/bin/regime_scene_native --scene tracer --tracer-scene " + scene + " --tracer-pass " +
+                                     (pass == 0 ? "fixed" : "lamp") + " --width " + size + " --height " + size +
+                                     " --max-primitives 4000 --out " + stem + ".ppm --out-linear " + stem + ".f32");
+}
+
+bool bfft_read(const Run& run, const std::string& scene, int threads, Cell& cell) {
+    int width = 0;
+    int height = 0;
+    if (!read_linear(bfft_output(run, scene, threads, 0) + ".f32", width, height, cell.fixed)) {
+        return false;
+    }
+    int lamp_width = 0;
+    int lamp_height = 0;
+    if (!read_linear(bfft_output(run, scene, threads, 1) + ".f32", lamp_width, lamp_height, cell.lamp)) {
+        return false;
+    }
+    cell.width = width;
+    cell.height = height;
+    return lamp_width == width && lamp_height == height;
+}
+
+// lamp_keys bakes a whole family per run (each style, up and down); the page
+// shows the first style's unpressed bake.
+struct LampKeysChoice final {
+    const char* scene{};
+    const char* family{};
+    const char* style{};
+    int bakes{};
+};
+
+constexpr std::array<LampKeysChoice, 2> lamp_keys_choices{{
+    {"keycap", "keycap", "clear", 4},
+    {"lamp", "indicator", "backed", 4},
+}};
+
+const LampKeysChoice* lamp_keys_choice(const std::string& scene) {
+    for (const LampKeysChoice& choice : lamp_keys_choices) {
+        if (scene == choice.scene) {
+            return &choice;
+        }
+    }
+    return nullptr;
+}
+
+std::string lamp_keys_folder(const Run& run, int threads) { return run.work + "/lamp_keys_" + std::to_string(threads); }
+
+std::string lamp_keys_command(const Run& run, const std::string& scene, int threads, int) {
+    const LampKeysChoice* choice = lamp_keys_choice(scene);
+    const std::string folder = lamp_keys_folder(run, threads);
+    return "mkdir -p " + folder + " && " +
+           with_threads(threads, "build/bin/lamp_keys " + folder + " " + std::to_string(run.size) + " " + (*choice).family);
+}
+
+bool lamp_keys_read(const Run& run, const std::string& scene, int threads, Cell& cell) {
+    const LampKeysChoice* choice = lamp_keys_choice(scene);
+    return read_lamp_keys(lamp_keys_folder(run, threads) + "/" + (*choice).family + "_" + (*choice).style + "_up.f32", cell);
+}
+
+// ---- the playground's own column -----------------------------------------------------------
+
+Cell playground_cell(const Scene& scene, const std::array<int, 3>& thread_counts) {
+    Cell cell{};
+    cell.present = true;
+    cell.width = scene.size;
+    cell.height = scene.size;
+    Planes reference{};
+    for (std::size_t c = 0; c < thread_counts.size(); ++c) {
+        std::array<double, repeats> times{};
+        Planes planes{};
+        for (int r = 0; r < repeats; ++r) {
+            const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+            planes = bake_scene(scene, thread_counts[c]);
+            times[r] = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
+        }
+        cell.ms[c] = median_of(times);
+        if (c == 0) {
+            reference = std::move(planes);
+        } else {
+            cell.identical = cell.identical && reference.fixed == planes.fixed && reference.lamp == planes.lamp;
+        }
+    }
+    const std::size_t count = scene.height.size();
+    cell.fixed.resize(count * 3);
+    cell.lamp.resize(count * 3);
+    for (std::size_t t = 0; t < count; ++t) {
+        const std::array<float, 3>& rgb = material_albedo[static_cast<int>(scene.material[t])];
+        for (int k = 0; k < 3; ++k) {
+            cell.fixed[t * 3 + k] = rgb[k] * reference.fixed[t];
+            cell.lamp[t * 3 + k] = rgb[k] * reference.lamp[t];
+        }
+    }
+    return cell;
+}
+
+// ---- output ------------------------------------------------------------------------------
 
 std::string base64(const std::vector<float>& values) {
     static const char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -872,119 +859,111 @@ std::string base64(const std::vector<float>& values) {
     return out;
 }
 
-bool same_bytes(const Planes& a, const Planes& b) {
-    return a.fixed.size() == b.fixed.size() && a.lamp.size() == b.lamp.size() &&
-           std::memcmp(a.fixed.data(), b.fixed.data(), a.fixed.size() * sizeof(float)) == 0 &&
-           std::memcmp(a.lamp.data(), b.lamp.data(), a.lamp.size() * sizeof(float)) == 0;
-}
-
-struct Timed final {
-    Planes planes{};
-    double median_ms{};
-};
-
-Timed timed_bake(const Scene& scene, Method method, int threads) {
-    std::array<double, repeats> times{};
-    Timed timed{};
-    for (int r = 0; r < repeats; ++r) {
-        const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-        timed.planes = bake_scene(scene, method, threads);
-        const std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
-        times[r] = std::chrono::duration<double, std::milli>(stop - start).count();
+std::string cell_json(const Cell& cell) {
+    if (!cell.present) {
+        return "{\"present\": false, \"note\": \"" + cell.note + "\"}";
     }
-    std::sort(times.begin(), times.end());
-    timed.median_ms = times[repeats / 2];
-    return timed;
+    std::array<char, 200> numbers{};
+    std::snprintf(numbers.data(), numbers.size(), "[%.3f, %.3f, %.3f]", cell.ms[0], cell.ms[1], cell.ms[2]);
+    return std::string{"{\"present\": true, \"note\": \""} + cell.note + "\", \"width\": " + std::to_string(cell.width) +
+           ", \"height\": " + std::to_string(cell.height) + ", \"ms\": " + numbers.data() +
+           ", \"bakes_per_run\": " + std::to_string(cell.bakes_per_run) +
+           ", \"identical\": " + (cell.identical ? "true" : "false") + ",\n\"fixed\": \"" + base64(cell.fixed) +
+           "\",\n\"lamp\": \"" + base64(cell.lamp) + "\"}";
 }
+
+bool write_text(const std::string& path, const std::string& text) {
+    std::FILE* file = std::fopen(path.c_str(), "wb");
+    if (file == nullptr) {
+        return false;
+    }
+    bool ok = std::fwrite(text.data(), 1, text.size(), file) == text.size();
+    ok = (std::fclose(file) == 0) && ok;
+    return ok;
+}
+
+constexpr std::array<const char*, 4> column_names{"lamp_keys", "teapot", "bfft", "playground"};
 
 } // namespace tracer_bakes
 
 int main(int argc, char** argv) {
     using namespace tracer_bakes;
-    if (argc < 2) {
-        std::fprintf(stderr, "usage: tracer_bakes <output directory> [size]\n");
-        return 2;
-    }
-    const std::string directory = argv[1];
-    const int size = argc > 2 ? std::atoi(argv[2]) : 160;
+    const int size = argc > 1 ? std::atoi(argv[1]) : 160;
     if (size < 32 || size > 512 || size % 2 != 0) {
         std::fprintf(stderr, "size must be even and in 32..512\n");
         return 2;
     }
+    const std::string directory = "build/tracer_bakes";
+    if (std::system(("mkdir -p " + directory + "/work").c_str()) != 0) {
+        std::fprintf(stderr, "cannot create %s/work\n", directory.c_str());
+        return 1;
+    }
     const int hardware = std::max(1, static_cast<int>(std::thread::hardware_concurrency()));
     const std::array<int, 3> thread_counts{1, 4, hardware};
-    std::string js = "window.TRACER_BAKES = {\n";
-    js += "\"size\": " + std::to_string(size) + ",\n\"threads\": [1, 4, " + std::to_string(hardware) + "],\n";
-    js += "\"scenes\": [\n";
-    std::string timings = "{\"size\": " + std::to_string(size) + ", \"threads\": [1, 4, " + std::to_string(hardware) +
-                          "], \"bakes\": [\n";
-    bool all_identical = true;
+    Run run{};
+    run.threads = &thread_counts;
+    run.size = size;
+    run.work = directory + "/work";
+    run.log = run.work + "/engines.log";
+    const std::string threads_json = "[1, 4, " + std::to_string(hardware) + "]";
+    std::string js = "window.TRACER_BAKES = {\n\"size\": " + std::to_string(size) + ",\n\"threads\": " + threads_json +
+                     ",\n\"scenes\": [\n";
+    std::string timings = "{\"size\": " + std::to_string(size) + ", \"threads\": " + threads_json + ", \"cells\": [\n";
     bool written = true;
-    std::printf("size %d, threads 1 / 4 / %d, median of %d, ms\n", size, hardware, repeats);
+    std::printf("size %d; median ms of %d runs at 1 / 4 / %d threads\n", size, repeats, hardware);
     for (std::size_t s = 0; s < scene_specs.size(); ++s) {
         const Scene scene = make_scene(scene_specs[s], size);
-        std::vector<float> albedo(scene.height.size() * 3);
-        for (std::size_t t = 0; t < scene.height.size(); ++t) {
-            const std::array<float, 3>& rgb = material_albedo[static_cast<int>(scene.material[t])];
-            albedo[t * 3] = rgb[0];
-            albedo[t * 3 + 1] = rgb[1];
-            albedo[t * 3 + 2] = rgb[2];
-        }
-        const std::vector<const std::vector<float>*> albedo_planes{&albedo};
-        written = written && write_planes(directory + "/" + scene.name + "_albedo.f32", size, size, albedo_planes, 3);
-        js += "{\"name\": \"" + scene.name + "\", \"title\": \"" + scene.title + "\",\n\"albedo\": \"" +
-              base64(albedo) + "\",\n\"methods\": {\n";
-        for (std::size_t m = 0; m < methods.size(); ++m) {
-            const Method method = methods[m];
-            std::array<double, 3> ms{};
-            Planes reference{};
-            bool identical = true;
-            for (std::size_t c = 0; c < thread_counts.size(); ++c) {
-                Timed timed = timed_bake(scene, method, thread_counts[c]);
-                ms[c] = timed.median_ms;
-                if (c == 0) {
-                    reference = std::move(timed.planes);
-                } else {
-                    identical = identical && same_bytes(reference, timed.planes);
-                }
+        std::array<Cell, 4> cells{};
+        const LampKeysChoice* choice = lamp_keys_choice(scene.name);
+        if (choice != nullptr) {
+            cells[0] = run_engine(run, scene.name, 1, lamp_keys_command, lamp_keys_read);
+            cells[0].bakes_per_run = (*choice).bakes;
+            if (cells[0].present) {
+                cells[0].note = std::string{"its own "} + (*choice).family + " family (" + (*choice).style +
+                                ", unpressed); a run bakes " + std::to_string((*choice).bakes);
             }
-            all_identical = all_identical && identical;
-            std::printf("%-8s %-7s %9.2f %9.2f %9.2f  %s\n", scene.name.c_str(), method_name(method), ms[0], ms[1],
-                        ms[2], identical ? "identical" : "DIFFERENT ACROSS THREAD COUNTS");
-            const std::vector<const std::vector<float>*> planes{&reference.fixed, &reference.lamp};
-            written = written && write_planes(directory + "/" + scene.name + "_" + method_name(method) + ".f32", size,
-                                              size, planes, 2);
-            std::array<char, 160> numbers{};
-            std::snprintf(numbers.data(), numbers.size(), "[%.3f, %.3f, %.3f]", ms[0], ms[1], ms[2]);
-            js += std::string{"\""} + method_name(method) + "\": {\"ms\": " + numbers.data() +
-                  ", \"identical\": " + (identical ? "true" : "false") + ",\n\"fixed\": \"" +
-                  base64(reference.fixed) + "\",\n\"lamp\": \"" + base64(reference.lamp) + "\"}" +
-                  (m + 1 < methods.size() ? ",\n" : "\n");
-            timings += std::string{"{\"scene\": \""} + scene.name + "\", \"method\": \"" + method_name(method) +
-                       "\", \"ms\": " + numbers.data() + ", \"identical\": " + (identical ? "true" : "false") + "}" +
-                       (s + 1 < scene_specs.size() || m + 1 < methods.size() ? ",\n" : "\n");
+        } else {
+            cells[0].note = "lamp_keys has no geometry for this scene: it bakes a lens in a well";
+        }
+        cells[1] = run_engine(run, scene.name, 1, teapot_command, teapot_read);
+        if (cells[1].present) {
+            cells[1].note = "fixed light only: the engine has no local emitter; the lamp plane is the lens's own emission";
+        }
+        cells[2] = run_engine(run, scene.name, 2, bfft_command, bfft_read);
+        if (cells[2].present) {
+            cells[2].note = "two engine runs per bake: the fixed-light pass and the lamp pass";
+        }
+        cells[3] = playground_cell(scene, thread_counts);
+        cells[3].note = "the playground's own height-field version, not an engine";
+        js += "{\"name\": \"" + scene.name + "\", \"title\": \"" + scene.title + "\", \"cells\": {\n";
+        for (std::size_t c = 0; c < cells.size(); ++c) {
+            const Cell& cell = cells[c];
+            if (cell.present) {
+                written = write_pair(directory + "/" + scene.name + "_" + column_names[c] + ".f32", cell) && written;
+                std::printf("%-8s %-10s %10.1f %10.1f %10.1f  %s\n", scene.name.c_str(), column_names[c], cell.ms[0], cell.ms[1],
+                            cell.ms[2], cell.identical ? "identical" : "differs by thread count");
+            } else {
+                std::printf("%-8s %-10s  %s\n", scene.name.c_str(), column_names[c], cell.note.c_str());
+            }
+            js += std::string{"\""} + column_names[c] + "\": " + cell_json(cell) + (c + 1 < cells.size() ? ",\n" : "\n");
+            std::array<char, 200> numbers{};
+            std::snprintf(numbers.data(), numbers.size(), "[%.3f, %.3f, %.3f]", cell.ms[0], cell.ms[1], cell.ms[2]);
+            timings += std::string{"{\"scene\": \""} + scene.name + "\", \"column\": \"" + column_names[c] +
+                       "\", \"present\": " + (cell.present ? "true" : "false") + ", \"ms\": " + numbers.data() +
+                       ", \"bakes_per_run\": " + std::to_string(cell.bakes_per_run) +
+                       ", \"identical\": " + (cell.identical ? "true" : "false") + "}" +
+                       (s + 1 < scene_specs.size() || c + 1 < cells.size() ? ",\n" : "\n");
         }
         js += std::string{"}}"} + (s + 1 < scene_specs.size() ? ",\n" : "\n");
     }
     js += "]};\n";
     timings += "]}\n";
-    const std::string js_path = directory + "/planes.js";
-    const std::string timings_path = directory + "/timings.json";
-    for (int f = 0; f < 2; ++f) {
-        const std::string& path = f == 0 ? js_path : timings_path;
-        const std::string& text = f == 0 ? js : timings;
-        std::FILE* file = std::fopen(path.c_str(), "wb");
-        if (file == nullptr) {
-            written = false;
-            continue;
-        }
-        written = std::fwrite(text.data(), 1, text.size(), file) == text.size() && written;
-        written = (std::fclose(file) == 0) && written;
-    }
+    written = write_text(directory + "/planes.js", js) && written;
+    written = write_text(directory + "/timings.json", timings) && written;
     if (!written) {
-        std::fprintf(stderr, "could not write every file under %s (does the directory exist?)\n", directory.c_str());
+        std::fprintf(stderr, "could not write every file under %s\n", directory.c_str());
         return 1;
     }
     std::printf("wrote %s\n", directory.c_str());
-    return all_identical ? 0 : 3;
+    return 0;
 }

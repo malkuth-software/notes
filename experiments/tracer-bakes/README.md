@@ -1,169 +1,128 @@
 # Tracer bakes playground
 
-Decision 8 of `TRACER_THEME_BAKING_STUDY.md` (coordinator desk): measure and look at tracer-style theme bakes
-before any engine work. Four control-sized scenes are each lit by three methods. The output is linear light
-planes plus the time per bake at 1, 4 and all threads, and a local page shows the results side by side.
-Prototype style follows the theme lab brief ("Prototyping effects"): one C++20 standard-library generator and
-one HTML page, with no framework, no network and nothing outside this folder.
+This is decision 8 of `TRACER_THEME_BAKING_STUDY.md` (coordinator desk): see and measure tracer theme bakes
+before any engine work. It runs the owner's own engines, not lookalikes:
+
+- today's lamp baker, `lamp_keys`;
+- conv-teapot's bake;
+- bfft's photonic transport engine.
+
+Each engine bakes four control-sized scenes. The output is linear light planes, with the time per bake at
+1, 4 and all threads, and a local page shows the results side by side.
 
 ## Build and run (integrator, on the M4)
 
 From this folder:
 
 ```sh
-mkdir -p build/tracer_bakes
-c++ -std=c++20 -O2 -ffp-contract=off -pthread -o build/tracer_bakes_gen tracer_bakes.cpp
-build/tracer_bakes_gen build/tracer_bakes 160
+make            # build/bin/{tracer_bakes, teapot_bake, lamp_keys, regime_scene_native}
+build/bin/tracer_bakes 160
 ```
 
-The second argument is the chart side in texels: even, 32 to 512, default 160. The run prints one line per
-scene and method, with median milliseconds at 1 thread, 4 threads and all threads, and either `identical` or
-`DIFFERENT ACROSS THREAD COUNTS`. The exit status is 0 when every bake is byte-identical across thread
-counts, 3 when one is not, 1 on a write failure, and 2 on bad arguments.
+`make run` does both.
 
-Keep the M4 otherwise idle while it runs: the timings are the point. The planes do not depend on timing.
+`CXX` and `CC` default to `c++` and `cc`. Each engine is built with its own upstream flags (see `Makefile`).
+The bfft build uses `-mcpu=native`, so build and run it on the same machine.
+
+The driver runs every engine as its own process:
+
+- with `TRACER_THREADS` set to 1, 4 and the hardware count;
+- three times at each count;
+- recording the median wall time of the whole process (scene build, bake and file writes);
+- comparing each count's planes byte for byte with the single-thread planes.
+
+It prints one line per scene and column. Engine output goes to `build/tracer_bakes/work/engines.log`. Keep the
+M4 otherwise idle, because the timings are the deliverable.
+
+The run is long. bfft is the slow one: each of its cells is two engine runs (the fixed-light pass and the lamp
+pass) × 3 thread counts × 3 repeats. For a first look, run it at size 96.
 
 Output in `build/tracer_bakes/`:
 
-- `<scene>_albedo.f32`: int32 width, height, 3, then RGB float32, interleaved.
-- `<scene>_<method>.f32`: int32 width, height, 2, then the fixed-light plane and the lamp plane, float32
-  (the same layout family as GUI.Forms light-plane bakes).
-- `planes.js`: every plane as base64, plus the timings, for the page.
+- `<scene>_<column>.f32`: int32 width and height, then the fixed-light radiance and the lamp radiance, each as
+  RGB float32 with row 0 at the top. Values are radiance at unit white light, albedo included.
+- `planes.js`: every cell as base64, with its timings, for the page. About 7 MB at size 160.
 - `timings.json`: the timings alone.
-
-At 160 texels, `planes.js` is about 5 MB.
 
 ## Viewing (owner, locally)
 
-Copy `build/tracer_bakes/` from the M4 into this folder's `build/`. Then open `tracer_bakes.html` directly as
-a local file. It loads `build/tracer_bakes/planes.js` with a script tag, so it works from `file://` without
-a server.
+Copy `build/tracer_bakes/` from the M4 into this folder's `build/`. Then open `tracer_bakes.html` directly as a
+local file; it needs no server.
 
-The page has these controls:
+The page has these controls, all applied at composite time, so nothing re-bakes:
 
 - the fixed light's colour and power;
 - the lamp's colour and power;
 - exposure;
-- a view selector: composite, the fixed-light plane alone, the lamp plane alone, or the difference from the
-  window method.
+- normalise;
+- a view selector: composite, the fixed plane alone, or the lamp plane alone.
 
-All of them act at composite time:
+The composite is
 
-  rgb = albedo × (fixed colour × power × F + lamp colour × power × L), then 1 − e^(−1.3·v)
+  rgb = colour_F × power_F × F + colour_L × power_L × L, then 1 − e^(−1.3·v)
 
-so nothing is re-baked when they change.
+The engines use different units and their own framings. "normalise" scales each plane by its own 99th
+percentile, so that looks can be compared; turn it off to see absolute values.
 
-## Scenes
+## The scenes and what each engine is given
 
-Each scene is a height field over a unit chart, seen from the front. The one fixed light comes from the
-upper left. It is a disc of angular radius 0.06 rad at unit irradiance, with sky ambient 0.22.
+The four scenes: a keycap in a 0.12-deep well with an inset lens, a lamp lens in a bezel, a bar and a low strip
+lying on a plate (contact shadows), and a deep white key well with a lamp in its floor (inter-reflection). They
+are defined once as height fields in `scenes.hpp`.
 
-| Scene | Contents | Lamp |
-|---|---|---|
-| `keycap` | Ivory keycap with a dished top and rounded bevel, in a dark 0.12-deep well | Inset lens on the cap |
-| `lamp` | Domed lens in a seat, ringed by a raised bezel | Sphere filling the dome |
-| `contact` | Bar lying on the plate (contact crease), plus a 0.012-high strip for the 1–2 px contact-shadow case | Slot lamp at the bar's end |
-| `well` | Deep (0.30) white-enamel well | Lamp in the floor. The walls are lit directly; the floor around it only by light returned from the walls. |
+The fixed light comes from the upper left, chart direction (−0.45, 0.55, 0.70). Where the coordinator's rule
+applies ("adapt the scene to the engine, not the engine to the scene"), each engine receives the scenes in the
+geometry it expects.
 
-## Methods
+| Column | Engine | What it is given | What it cannot do here |
+|---|---|---|---|
+| `lamp_keys` | `engines/lamp_keys/lamp_keys.cpp`, the shipped baker's std-only source | Its own families: `keycap` for the keycap row, `indicator` for the lamp row. Its scenes are parameter sets of SDF lenses in a well, and it takes no other geometry. | The strip and open-well rows are empty, with a note. A run bakes the whole family (two styles, up and down: 4 bakes); the page shows the first style unpressed. |
+| `teapot` | conv-teapot's `Renderer::bake_light`, `bake_open` and `gather_bounce` (`engines/conv_teapot/src`, unchanged) | The height field as the engine's own parametric surface: one `LinearSurface` over a lattice with one node per two texels. `teapot_bake.cpp` calls `build_mesh` and `bake_light`, then reads the maps back exactly as `shade_baked` combines them, with the scene's albedo. | No local emitter for diffuse light (it knows one sun and the room's sky), so its lamp plane is only the lens's own emission. Its sun colour, sky colours and bounce albedo (0.9) are the engine's own. |
+| `bfft` | `regime_scene_native` (`engines/bfft/...`), whose area lights are integrated over exact source windows, with the retained diffuse field | The scenes in its own geometry (`tracer_scenes.hpp`): tiled rectangles (the engine lights each transport patch with one value), spheres, and rectangular area lights. The fixed light is a distant rectangle. The lamp is a visible emissive lens plus a hidden box of five area lights. | Rounded bevels and domes become boxes and spheres. Its field is facet-level, so the tiling sets how finely inter-reflection varies. |
+| `playground` | Not an engine | This folder's own height-field adaptation of the source-window idea, plus a 32-direction gather (the first version of this prototype). | Kept only as a labelled extra, for comparison. |
 
-### `relief`: today's approach
+## Changes made to the engine copies
 
-- Lambert shading n·l.
-- A drop shadow offset towards the light by the relief primitive's contact-shadow rule,
-  k = max(1, ⌊min(s, 2) + 0.5⌋) px.
-- Ambient from an open sky, (0.5 + 0.5 n_z).
-- An SDF-style lamp glow, fading over a fixed width beyond the lamp, with no occlusion.
-- No bounce.
+These are the only changes, all to inputs and outputs:
 
-This stands in for the relief primitives and the SDF lamp falloff in `lamp_keys.cpp`. The full lamp baker
-also models lens interiors, which this prototype does not; see "Limits".
+- **bfft `regime_scene_native.cpp`:**
+  - includes `worker_limit.hpp` and `tracer_scenes.hpp`;
+  - adds a `tracer` scene mode, with `--tracer-scene` and `--tracer-pass`;
+  - uses a straight-down camera for that mode;
+  - writes the linear render for that mode, as it already did for `key`;
+  - its five worker-pool sizes call `tracer_worker_count()` (TRACER_THREADS, else the hardware count) in place
+    of `std::thread::hardware_concurrency()`.
+- **`lamp_keys.cpp`:** its one worker-pool size reads TRACER_THREADS the same way.
+- **conv-teapot:** no changes. Its thread count is `RenderOptions::threads`.
 
-### `teapot`: conv-teapot's light
+`PROVENANCE.md` lists every file's origin.
 
-Re-derived from the paper and `render.hpp` (`bake_open`, `gather_bounce`):
+## What to look at
 
-- **Point visibility** of each source's centre: hard shadows.
-- **Open fraction** on texels with 4× the area of the fine ones. Each casts 32 cosine-weighted directions on
-  a Fibonacci spiral, with r = √((k + 0.5)/32), angle = 2.39996·k plus a per-texel hash rotation.
-- **Quarter-first:** every fourth direction is cast first. If those eight agree, they stand for all 32.
-- **Transfer gather:** six Jacobi passes of
-
-    B = B0 + (1/32) Σ_blocked w·ρ_land·B_land
-
-  then a 3×3 smooth and a bilinear upsample. ρ is the luminance of the landing texel's albedo.
-
-The bounce is grey, so tinting it by the receiver's albedo is the approximation discussed in the study (§6).
-
-### `window`: bfft source windows
-
-As `teapot`, except that each source is integrated exactly over its visible part:
-
-1. The source (the fixed light's disc, or the lamp sphere seen as a disc of angular radius asin(r/d)) is cut
-   into columns by lateral angle.
-2. The horizon along each column's azimuth decides exactly how much of that column is visible.
-3. Where the class of a column changes (blocked, partial or full), the boundary is located by bisection.
-4. Fully visible runs are integrated in closed form, and only partial runs by 4-point Gauss–Legendre.
-
-This keeps bfft's rule that quadrature measures inside intervals but never decides where a shadow starts.
-It is a new height-field adaptation of that idea, not bfft's polygon and sphere window code.
-
-## Parameters a theme author would set
-
-- **Geometry:** relief shape, well depth, bezel, lens.
-- **Lamp:** position and size.
-- **Bake strategy:** relief, occlusion, bounce, windows.
-- **Bounce passes:** six here.
-
-Colour and power are composite-time values and never trigger a bake.
-
-## Cost and properties
-
-Per texel:
-
-| Method | Work per texel |
-|---|---|
-| `relief` | One shading evaluation |
-| `teapot` | One march per source, plus 8–32 marches per coarse texel and 6 gathers of at most 32 landings |
-| `window` | As `teapot`, but each source costs 9 horizon marches plus 10 per class change |
-
-The generator measures the whole cost. Scene construction (heights and normals) is not timed.
-
-- **Baked once:** both planes are baked once per geometry and lamp layout, and reused for every colour and
-  power.
-- **No seams:** the bake always covers the whole chart, and painting samples linear planes, so any rectangle
-  redraws without seams.
-- **Determinism:** there is no FMA contraction, and every sum runs in a fixed order. Each thread writes only
-  its own rows, and reads only data finished before its pass starts. The planes are therefore byte-identical
-  for any thread count on one host, and the generator checks this on every run. Identical bytes across hosts
-  are not claimed, because sin, cos, asin and atan come from libm. The engine port would use tables, as the
-  finish kernels do.
+- **Contact shadows and crevices:**
+  - `lamp_keys` has none outside its lens;
+  - conv-teapot darkens by the open fraction;
+  - bfft gets them from its field and exact light windows.
+- **Lamp light on the surroundings:**
+  - `lamp_keys` lights only its own lens, by design;
+  - conv-teapot cannot light anything from a local lamp;
+  - bfft lights the well walls and the bezel from the lamp's area lights, with exact penumbrae.
+- **The well:** the floor round the lamp is lit only by the walls. That is inter-reflection, and bfft's field
+  is what shows it.
+- **Cost:** compare the 1-thread times against the 4-thread and all-thread times, per engine. The page shows
+  whether each engine's output stays byte-identical across thread counts.
 
 ## Limits
 
-- Height fields only. There are no undercuts, no parametric surfaces and no Newton solves; a front-facing
-  chart does not need them.
-- Lenses are emitters with a white diffuser albedo. Refraction, the participating-child law and lens caustics
-  are not modelled. Caustics come later, with the bfft beam compiler, after this and the source windows.
-- The lamp is a sphere of unit radiance. The parts of the lamp sphere that sit inside the height field are
-  occluded by it, as the physics says.
-- At most 1/1024 of a column run is left out at each located class change. Near the zenith, columns
-  degenerate, and the centre ray is used instead.
-
-The generator is about 990 lines: three methods side by side, more than the brief's few hundred for a
-single effect.
+- The four columns do not render identical geometry. Each engine is given the scene in its own terms, so the
+  comparison is of looks and cost, not pixel by pixel.
+- The times cover whole processes. They include scene and acceleration-structure builds, and for bfft its field
+  compile. The engines also print their own internal timings to the log.
+- Nothing here was compiled before it was committed. The integrator's first build is also the first test of
+  the adapters and patches.
 
 ## Provenance
 
-All code here is new. It re-derives methods from two sources, both MIT (owner, 2026-11-13):
-
-- conv-teapot's paper and `src/render.hpp`: the open-fraction bake and the transfer gather;
-- bfft `photonic_transport_field` (falseywinchnet/bfft at 6e64386): source-window partition and the
-  retained-field formulation.
-
-Nothing from the confidential AirSpy DDC method, nor anything derived from studying it, is used. In
-particular, none of conv-teapot's speed-ups from that study are used (such as its correspondence-transport
-acceptance rules).
-
-The scene shapes, materials and the relief contact-shadow rule follow GUI.Forms' own relief primitives and
-the theme lab's industrial-surfaces example.
+conv-teapot and everything in BFFT are MIT (owner, 2026-11-13). Only the teapot's and BFFT's own code is used.
+Nothing comes from the confidential AirSpy DDC method or from studying it. `PROVENANCE.md` has the per-file
+table.
