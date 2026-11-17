@@ -1,275 +1,368 @@
-# Study: MCP built into GUI.Forms
+# Study: MCP built into every GUI.Forms program
 
-Date: 2026-11-17. Status: study for the owner; nothing below is decided
-unless it cites an owner ruling. Code-free: no GUI.Forms code was changed
+Date: 2026-11-17, revision 3. Status: the owner's rulings of 2026-11-17
+are recorded in section 1 and the design follows them. Section 17 lists
+what is still open. Code-free: no GUI.Forms or STXlib code was changed
 and nothing was built. Read against `checkpoint/2026-11-15-cp32` (#483),
-branch `claude/batch-cp33` at 65f7dad03. Revision 2 (same day) adds
-section 7.2-7.4: the MCP programs on this computer and how Anthropic,
-OpenAI and Apple approach it, and revises the transport, adds a `batch`
-tool, commands as tools, consent and per-tool approval.
+branch `claude/batch-cp33` at 65f7dad03.
 
-Owner rulings already given for this study (2026-11-17):
-- every GUI.Forms program should be drivable and inspectable by a model
-  through MCP, "for everything";
-- the Emscripten host is not needed; macOS, Windows and Linux X11 are;
-- MCP built into the program is preferred to a separate server, as long as
-  a model reaches it as easily.
+Revision history:
+- 1 (`d1635cb`): first study: an automation core, nine tools, stdio and
+  loopback HTTP, a pointer lease.
+- 2 (`ceb0891`): the MCP programs on this computer; how Anthropic, OpenAI
+  and Apple do it.
+- 3 (this one): rewritten after the owner's review ("frankly, its
+  terrible"): anonymous pipes only, `stx_mcp` in STXlib, first come first
+  served input, `model.directed`, the border glint, the destructive-act
+  question. The transports, locks and leases of revisions 1 and 2 are
+  withdrawn.
 
-## 1. Summary
+## 1. Owner rulings, 2026-11-17
 
-GUI.Forms already has almost everything a model needs. It is just not
-reachable from outside the process:
-- a semantic tree with stable IDs, roles, names, values, states, bounds and
-  actions (`SurfaceRoot::semantic_snapshot`, with `to_json`);
-- semantic actions, the same path UI Automation and AX use
-  (`perform_semantic_action` by stable ID);
-- text layout and selection for assistive technology
-  (`semantic_text_layout`, `set_semantic_text_selection`);
-- one portable input path that every host goes through (`HostSession::
-  dispatch(HostEvent)`), native adapters and the surface window manager
-  alike;
-- captures (`Window::capture_window`, `capture_control`, PNG encoding);
-- structured counters (`metrics_snapshot`, `dispatcher_snapshot`,
-  `interaction_snapshot`, `visual_inspection_snapshot`), theme provenance
-  (`Theme::provenance`), and replaceable time sources (`InputTimeSource`,
-  `MotionTimeSource`);
-- a retained core where "idle" means something exact: no frames are
-  scheduled while nothing changes.
+**Scope**
+1. Every GUI.Forms program can be inspected and driven by a model through
+   MCP, "for everything". Hosts: macOS, Windows and Linux X11. The
+   Emscripten host is not needed.
+2. It goes in before the 1.0 freeze, right after the product releases, but
+   not this week.
 
-The proposal: a portable **automation core** inside the library that turns
-those seams into a small set of requests and replies, plus an **MCP front**
-built into the same program. No separate server program is needed:
-- **When the model starts the program** (the common case, and the one in
-  the Plan Paint bug), the program speaks MCP over its own standard input
-  and output. The MCP client (Claude Code, for example) launches it like
-  any other MCP server. No port, no file, no password.
-- **When the model attaches to a program already running**, the client
-  starts the same executable in a light attach mode (`--mcp-attach`). It
-  opens no window: it finds the running instance's user-only local socket
-  and relays MCP to it. That is the pattern Xcode, Claude in Chrome and
-  Codex's computer use all follow (section 7.2), except that ours needs no
-  second program. Loopback HTTP stays possible, but off by default.
+**Build and code**
+3. MCP is a capability in each program's build configuration. It
+   **defaults to on**, and a program can turn it off.
+4. Each program has an MCP identity of the form `app.<vendor>.<appname>`
+   by default. Ours look like `app.malkuthsoft.planpaint`.
+5. GUI.Forms is designed for it, but the MCP code lives in **STXlib**, as
+   **`stx_mcp`**.
+6. It is written in C++ but behaves somewhat like Go.
+7. rpclib is ported forward, or used as a guide.
 
-Both are opt-in, and locked three ways (built in, allowed by the program,
-asked for at launch). About 9-13 worker units in six stages; the first two
-stages (about 4-6 U) would have made the Pencil tab bug a five-line script.
+**Transport**
+8. **Anonymous pipes only.** The client starts the program and the two
+   talk over the pipes the program inherits. There is no other transport:
+   no sockets, no HTTP, no attaching to a program already running.
+9. No sign-in.
 
-## 2. The motivating case
+**Input and control**
+10. **First come, first served.** A model is treated like a person. The
+    real mouse and keyboard are never ignored by default: whoever clicks,
+    types or activates first is first.
+11. **Debug and special builds only:** a chain of commands may suspend user
+    input, and input comes back on its own when the chain completes.
+    Release builds cannot normally block user input.
+12. **`model.directed`** (any build): a program launched with this option,
+    on the command line or in its configuration, accepts an instruction in
+    the command sequence that briefly makes the interface ignore user input.
+    A popup then asks whether the user wants to take back control. Only the
+    popup can be clicked. Taking control back interrupts the model's work.
+    When the model's work completes, input comes back and the popup closes
+    by itself.
+
+**Safety, following Anthropic's lead**
+13. Password field focus is never exposed.
+14. While a dialog is open, the model is refused control. A program can
+    instrument a dialog, such as a setup dialog in which a model guides a
+    user through an install. The model may start it and drive it up to the
+    point where a security approval is needed; there the user takes back
+    control briefly.
+15. Consent per program and client is approved, and it is built in: the
+    user can take control back at any time.
+16. Read-only capability is marked as read-only.
+17. **Destructive capability** asks once per launch, in the program: "Allow
+    <model> to edit files and perform potentially destructive acts?" This
+    is independent of the client's own approvals (claude.ai's harness, for
+    example).
+18. Developers decide what is destructive. By default every act is
+    treated as non-destructive, and there is a way to mark acts
+    destructive.
+
+**What the user sees**
+19. While a model is connected, the window uses the application border
+    capability (begun, not finished) with an animated glint that shows the
+    model refreshing its picture of the program or acting on it.
+20. A small tag line tooltip on the top border names the model now
+    controlling the program.
+
+**Other answers**
+21. Inspection beyond accessibility (parts, part states, theme rules,
+    metrics) is exposed.
+22. Batching is approved.
+23. The existing automation flags are retired in favour of this (the
+    Windows `WM_COPYDATA` channel and the X11 `--automation` flag).
+24. Clipboard: as recommended, readable only when the program allows it.
+25. The owner does not know what simulated time means; section 12
+    explains it, and it is open.
+26. On Apple's design: "the most terrible of all." Xcode's is the model to
+    avoid (section 13.2).
+
+## 2. Summary
+
+- A model's client (Claude Code, for example) starts a GUI.Forms program
+  with `--mcp` and talks to it over the program's standard input and
+  output, which are anonymous pipes the client created. The program opens
+  its windows as usual; a reader in the same process answers MCP requests.
+  This is how most MCP servers already work, so any client reaches it
+  with one line of configuration.
+- The protocol code is `stx_mcp` in STXlib: JSON-RPC framing over pipes, a
+  method dispatcher in rpclib's manner, tool schemas, and a small
+  Go-like runtime of tasks, channels and request contexts, with errors as
+  values.
+- GUI.Forms supplies the content: an **automation core** that reads the
+  semantic tree, acts through the same path assistive technology uses,
+  injects input through the one portable input door every host shares,
+  waits for idle, captures pixels and reads metrics.
+- Model and person are equals by default. `model.directed` lets a model
+  hold the interface briefly, with a "take back control" popup always
+  available.
+- The window's border glints while a model works, and a tag line names the
+  model.
+- About 10-14 worker units, in stages that start after the product
+  releases (section 16).
+
+## 3. The motivating case
 
 On 2026-11-17 Plan Paint's selected Pencil ribbon tab drew wrongly when
-hovered. To reproduce it, we needed: select the Pencil tab, hover it, wait
-about 200 ms, capture, and read the Metrics. That was impossible from
+hovered. To reproduce it, we needed to select the Pencil tab, hover it,
+wait about 200 ms, capture, and read the Metrics. That was impossible from
 outside:
-- Plan Paint's `main` takes only file arguments: no script mode and no
-  capture mode;
-- GUI.Forms has no portable automation hook. The only channel is the
-  Windows host's `WM_COPYDATA` commands (section 4.3), and the X11 host
-  accepts `--automation` and ignores it.
+- Plan Paint's `main` takes only file arguments;
+- GUI.Forms had only a Windows-only automation channel, and the X11 host
+  ignores its `--automation` flag.
 
 The workaround was a probe test inside Plan Paint's AppKit test harness,
-using `cliclick` to park the real cursor. It took a coder round trip. Its
-first version could not fail, because it never checked the hover plate.
+with `cliclick` parking the real cursor. Its first version could not fail,
+because it never checked the hover plate.
 
-With the hook, the same reproduction is a script any host can run (section
-8.2). It fails for the right reason, because it asserts the hover state of
-the tab's plate part and compares the presented pixels with the rendered
-ones.
+With this design the reproduction is one `batch` request (section 15.1),
+on any host. It asserts the plate's hover state and compares the presented
+pixels with freshly rendered ones, so it fails for the right reason.
 
-## 3. How a model talks to a program through MCP
+## 4. How the connection works
 
-The owner asked how the communication works. In short:
+### 4.1 Anonymous pipes
 
-- **MCP** (Model Context Protocol) is JSON-RPC: small JSON request and reply
-  messages. A *client* (the program the model runs in: Claude Code, Claude
-  Desktop, an IDE) connects to *servers*. Each server offers **tools**
-  (functions the model calls, with a JSON schema for their arguments),
-  **resources** (readable data at URIs) and **prompts** (canned
-  instructions). The model sees the tool list, decides to call
-  `snapshot` or `act`, and the client sends the request and hands the reply
-  back to the model.
-- **Two standard transports.**
-  - *stdio*: the client starts the server as a child process and writes
-    requests to its standard input, reading replies from its standard
-    output. Configured as a command line, for example
-    `claude mcp add plan-paint -- /path/to/PlanPaint --mcp`.
-  - *Streamable HTTP*: the server listens at a URL; the client posts
-    requests to it. Configured as a URL and headers.
-- **The current revision** is 2026-07-28. It made the core stateless (no
-  initialise handshake or protocol sessions; every request carries its
-  version), and moved long-running work (Tasks) and server-rendered UIs
-  (MCP Apps) into extensions. This suits us: each request is complete in
-  itself. (Read from secondary sources; check the official text at
-  modelcontextprotocol.io before stage M2.)
+An anonymous pipe is a one-way byte channel with no name. A process
+creates it, and only processes that inherit one of its ends can use it.
+When an MCP client starts a server, it creates two pipes and starts the
+program with one end of each as the program's standard input and standard
+output. Requests flow in on one, replies flow out on the other. This is
+MCP's "stdio" transport.
 
-**What "built in" means here.** A "server" in MCP is just whatever answers
-the JSON. Nothing requires a separate program. A GUI.Forms program run with
-`--mcp` *is* the MCP server: its window opens as usual, and a thread in the
-same process reads requests from standard input and answers on standard
-output. To the client it looks exactly like any other stdio server, so a
-model reaches it just as easily. This is how the owner's preference can be
-met fully:
+What follows from it:
+- **Only the process that started the program can talk to it.** Nothing
+  is listening, so there is no port to find, no file to protect and no
+  password to check. That is why no sign-in is needed (ruling 9).
+- **The program's lifetime is the client's.** When the client closes the
+  pipe, the program receives the portable shutdown (`HostShutdownEvent`
+  through every window's session), as on logout.
+- **No attaching to a program already running** (ruling 8). A program
+  opened from Finder, a file association or a shortcut has no MCP. To use
+  a model with it, the client starts it.
+- It works the same on all three hosts:
+  - macOS: the client starts the executable inside the bundle
+    (`PlanPaint.app/Contents/MacOS/PlanPaint --mcp`); `open` would drop the
+    pipes;
+  - Windows: a GUI-subsystem program has no console, but inherited pipe
+    handles work (`GetStdHandle`), and no console window appears;
+  - Linux X11: nothing special.
 
-| Situation | Transport | What the user configures |
+### 4.2 Starting MCP
+
+The build option makes the capability present; a launch argument turns it
+on for that run:
+- `--mcp` (or the environment variable `GUI_FORMS_MCP=1`): standard input
+  and output carry MCP for this run. The library removes the argument
+  before the program sees `argv`.
+- Without it, the program behaves exactly as without MCP: nothing reads
+  standard input, and no thread is started.
+
+A launch argument is still needed because a program started normally also
+has a standard input (a terminal, or nothing), and must not treat it as
+MCP. The name of the argument is open (question 1).
+
+**Standard output belongs to MCP.** Anything else printed there breaks
+the stream. When `--mcp` is on, `stx_mcp` duplicates file descriptor 1 for
+its own use, then points descriptor 1 at standard error, so a program's
+`printf` lands in the error stream. The redirection is counted.
+
+### 4.3 Identity
+
+Each program has an MCP identity, by default `app.<vendor>.<appname>`
+(ruling 4), taken from the application's vendor and name:
+`app.malkuthsoft.planpaint`, `app.malkuthsoft.playsuite`,
+`app.malkuthsoft.swiftedit`. A program may set its own. The identity is
+the server name in MCP replies and the name a client gives the server by
+default. Client configuration is then one line, for example:
+
+```text
+claude mcp add app.malkuthsoft.planpaint -- "/Applications/Plan Paint.app/Contents/MacOS/PlanPaint" --mcp
+```
+
+### 4.4 Which model is connected
+
+MCP clients state their name and version with their requests (the
+2026-07-28 revision carries client information with each request, since it
+dropped sessions). That is what the tag line shows (section 11.2). It is
+the client's own statement, not verified; with anonymous pipes the client
+is whoever started the program, which is enough for a label. When the
+client also names the model in the request's metadata, the tag line shows
+the model: "Claude Opus 5.5 via Claude Code". Otherwise it shows the
+client.
+
+## 5. Where the code lives
+
+```text
+STXlib ── stx_mcp                          (the protocol and its runtime)
+   ▲ pinned and installed by stx
+stx    ── pins STXlib                       (as today)
+   ▲ pinned by gui_forms (stx.lock)
+GUI.Forms ── automation core               (src/core/automation/, portable)
+          ── MCP wiring                     (tools, identity, the build option)
+          ── the window's visible signs     (border glint, tag line, popups)
+programs  ── a build option, defaults on   (GUI_FORMS_MCP)
+```
+
+- **`stx_mcp` in STXlib** (ruling 5): JSON-RPC 2.0 framing over pipes, the
+  MCP methods (tool listing and calls, resources, prompts, notifications),
+  schemas and their validation, the dispatcher, and the Go-like runtime.
+  It knows nothing of GUI.Forms; any STXlib program could serve MCP with it.
+  STXlib's rules apply: no exceptions in release builds, failures as data,
+  no `std::` in public headers. Those rules already match the Go style the
+  owner wants (section 6).
+- **The automation core in GUI.Forms**: portable C++ under
+  `src/core/automation/`. It turns tool calls into actions on windows,
+  only on each window's UI thread. It holds the input policy (section 8),
+  the dialog and security rules (section 9) and the destructive-act rule
+  (section 10).
+- **The MCP wiring in GUI.Forms**: binds the core's operations as
+  `stx_mcp` tools, sets the identity, reads `--mcp` and `model.directed`.
+- **The build option** `GUI_FORMS_MCP`, on by default (ruling 3). Off
+  removes the wiring and the core from the program, and `stx_mcp` is then
+  not linked.
+- Platform code: none in GUI.Forms. The pipes are standard input and
+  output, which STXlib's platform layer already reaches.
+
+Coordination: `stx_mcp` is STXlib work, so it goes through STXlib's
+coordinator and integrator and reaches GUI.Forms through the stx pin, like
+every other STXlib piece.
+
+## 6. `stx_mcp`: C++ that behaves like Go
+
+### 6.1 What rpclib gives
+
+rpclib (github.com/rpclib/rpclib, MIT) is a small C++14 library for
+msgpack-RPC over TCP, built on asio. Its strengths are what make it worth
+following:
+- `server.bind("name", function)`: a function is published under a name,
+  and its argument types are read from its signature, so arguments are
+  unpacked and checked automatically;
+- one dispatcher that looks up the name and calls the function;
+- `run()` on the calling thread or `async_run(n)` on worker threads;
+- a client with blocking calls and results converted on request.
+
+It no longer fits as it is:
+- msgpack, not JSON: MCP is JSON-RPC;
+- TCP through asio, not pipes;
+- errors as C++ exceptions;
+- lambdas and type erasure everywhere, which the house style forbids
+  (sections 7, 9 and 11);
+- unmaintained: the project is "looking for maintainers", and its own page
+  points users who need JSON-RPC elsewhere;
+- it depends on msgpack-c, asio and fmt, while STXlib carries no
+  third-party code.
+
+So `stx_mcp` follows rpclib's shape and replaces its parts:
+
+| rpclib | `stx_mcp` |
+|---|---|
+| `bind(name, callable)` with signature reading | `bind(ToolSpec, handler, context)`: a named handler (a function taking a context pointer, a request record and a reply record), its argument and result schema declared in `ToolSpec`, and the arguments decoded into a named record before the handler runs. No lambdas, no `std::function`. |
+| msgpack | JSON (STXlib's reader and writer, or `stx_mcp`'s own if STXlib has none) |
+| TCP and asio | two pipe ends; newline-delimited JSON-RPC messages, bounded in size |
+| exceptions | results as values (6.3) |
+| worker threads | tasks and channels (6.2) |
+
+### 6.2 Go's shape in C++
+
+What "somewhat like Go" means here, within the house style (which forbids
+coroutines, lambdas and `auto`):
+- **Tasks**: a few long-lived threads with one job each, like goroutines:
+  a reader (decodes requests from the pipe), a writer (encodes replies),
+  and the handlers. Each owns its own state; nothing is shared but
+  channels.
+- **Channels**: bounded queues of records between tasks, with `send`,
+  `receive`, `try_receive`, `close`, and `select` over several channels
+  with a deadline. Closing a channel is how shutdown spreads, as in Go.
+- **Contexts**: every request carries a context, like Go's `context.Context`:
+  a deadline, a cancellation flag the client can set (MCP's cancellation
+  notification), and the request's identity. Handlers check it; waits honour
+  it.
+- **Errors as values**: every call returns its result and a named error,
+  like Go's `value, err`. MCP's own error codes are values of the same
+  kind.
+- **One owner per state**: a GUI.Forms window's state is touched only on its
+  UI thread. A handler that needs it sends a request record to the window
+  (through the window's dispatcher) and waits on a reply channel with the
+  request's deadline.
+
+```text
+pipe in ─► reader task ─► requests channel ─► handler tasks ─┬─► window dispatcher (UI thread)
+                                                             │        └─► reply channel ─┐
+pipe out ◄─ writer task ◄─ replies channel ◄─────────────────┴──────────────────────────┘
+```
+
+Every arrow is a bounded channel. A full channel makes its sender wait or,
+for notifications, drops the oldest and counts it. Shutdown closes the
+requests channel; each task finishes what it holds and closes the next
+channel, and the writer closes the pipe last.
+
+### 6.3 Failures
+
+- A malformed message: a JSON-RPC parse or invalid-request error, and the
+  stream continues.
+- A message over the size bound: refused, and the reader skips to the next
+  line.
+- A handler error: a tool result marked as an error, with the named code
+  and a hint (section 7.5), so the model can recover.
+- The pipe closes: every task stops, pending requests are cancelled with a
+  named result, and the program receives the portable shutdown.
+- Writes to a broken pipe never raise a signal (`SIGPIPE` ignored for that
+  descriptor).
+
+## 7. What a model gets: the tools
+
+### 7.1 What makes tools easy for a model
+
+1. Few verbs, with options as arguments.
+2. Everything named by GUI.Forms' stable IDs, which survive between runs.
+3. Text outlines first; pixels only for pixel questions.
+4. Every action replies with what changed (a diff) and waits for idle.
+5. Errors that say what to do next.
+6. Bounded output that says what it left out.
+7. The same answers on every host.
+
+### 7.2 Tools
+
+Each takes an optional `window` (stable ID or title; default the active
+window).
+
+| Tool | Marked | What it does |
 |---|---|---|
-| The model starts the program | stdio, inside the program | the program's path and `--mcp` |
-| The model attaches to a running program (launched by Finder, a file association, the user) | stdio to the same executable in attach mode, which relays over a user-only local socket to the running instance | the program's path and `--mcp-attach` (optionally a process ID or window title) |
-| A client that only speaks HTTP | HTTP on 127.0.0.1 with a per-run token, inside the program (off by default) | a URL and a token from a per-user file |
+| `windows` | read-only | every window: ID, title, kind, modal, active, bounds |
+| `snapshot` | read-only | the control tree as an outline (7.3), from a root, with a filter and a node limit |
+| `act` | per target (section 10) | a semantic action on a stable ID (`press`, `select`, `expand`, `collapse`, `focus`, `set_value`, `increment`, `decrement`, `show_menu`, `close`), or `invoke_command` on a command's stable ID |
+| `pointer` | per target | move, hover, click, double click, right click, down, up, drag along a path, wheel; at a target (and an offset in it) or a position |
+| `keyboard` | per target | key chords and sequences, committed text, composition |
+| `text` | read-only, or per target to set the selection | read a text control's value, selection and lines; set the selection |
+| `wait` | read-only | until the next frame, idle, a time, or a condition on a node |
+| `capture` | read-only | a window or control as a PNG: `rendered` (drawn fresh from the current state) or `presented` (the pixels last shown) |
+| `inspect` | read-only | metrics, dispatcher, interaction state, a control's parts and part states, its paint operations, the theme rules that set each field, what its schema says it can do |
+| `batch` | the strongest mark of its steps | several of the above in one call, with one combined reply (ruling 22) |
+| `control` | per launch rules (section 8) | `direct_begin` and `direct_end` for `model.directed`; `suspend_input` in debug and special builds |
 
-No separate bridge program is needed: the attach shim is the program's own
-executable, started in a mode that opens no window. Every MCP-enabled
-desktop program found on this computer that lives in a long-running
-process does the same thing with a separate binary (section 7.2).
+Programs' commands (`Command` objects with stable IDs) are also listed as
+tools automatically, each with its enabled state, so a model can call
+"Save" or "Flip horizontal" by name. A program can hide any of them.
 
-Two consequences for programs:
-- **Standard output belongs to MCP in `--mcp` mode.** Anything else printed
-  there corrupts the stream. GUI.Forms' own diagnostics already go to
-  standard error, except the Windows automation channel's replies (which
-  this replaces). A program's own `printf` to standard output must be
-  redirected to standard error by the library in this mode (when MCP is
-  turned on, at application creation, it duplicates file descriptor 1 for
-  MCP and points descriptor 1 at standard error), and the redirection
-  counted in the metrics. Output printed before that point is the
-  program's own problem, so the library's documentation says so.
-- **The program's lifetime belongs to the client in stdio mode.** When the
-  client closes standard input, the program receives a portable close
-  (`HostShutdownEvent` through every window's session), exactly as on
-  logout.
-
-Platform notes:
-- macOS: the client must start the executable inside the bundle
-  (`PlanPaint.app/Contents/MacOS/PlanPaint --mcp`), not through `open`,
-  which drops standard input. AppKit is unaffected.
-- Windows: a GUI-subsystem program has no console, but handles inherited
-  from the parent work (`GetStdHandle`), which is how clients start stdio
-  servers. No console window appears.
-- Linux X11: nothing special.
-
-## 4. What exists today
-
-### 4.1 Seams the automation core reads
-
-| Need | Existing seam | Notes |
-|---|---|---|
-| Windows of the run | `Application::windows()` | at most 64 |
-| Control tree | `SurfaceRoot::semantic_snapshot()`, `semantic_generation()` | stable IDs, runtime IDs, roles (55), states (14), actions (10), bounds, text selection; virtual children get hashed runtime IDs |
-| Actions | `perform_semantic_action(stable_id, action, value)` and the runtime-ID overload | refuses stale identities (GF017) and controls outside the focus scope; deferred while painting |
-| Text | `semantic_text_layout`, `set_semantic_text_selection`, `fill_semantic_text_boundaries` | the A-T1 decisions; same rules on every host |
-| Input | `HostSession::dispatch(HostEvent)` | `PointerEvent`, `KeyEvent`, `TextInputEvent`, `HostHoverEvent`, `HostContextRequestEvent`, `DragEvent` and the lifecycle events; validated (sequence, thread, geometry) |
-| Single-surface window manager input | `SurfaceInputQueue::post` | covers frames, title strips and the capsule, which are outside any window's session |
-| Pixels | `Window::capture_window`, `capture_control`, `encode_window_capture_png` | re-records and replays the window's CPU raster (what the state draws now) |
-| Counters | `metrics_snapshot`, `dispatcher_snapshot`, `interaction_snapshot`, `deferred_input_snapshot`, `paint_lease_snapshot`, `validation_snapshot` | structured, as `AGENTS.md` requires |
-| Inside a control | `visual_inspection_snapshot` (per-control hovered, pressed, focus cue; the display chunk's paint operations) and `Theme::provenance` (which rule set which field) | beyond anything UIA or AX publish |
-| Commands | `Command::stable_id()` | menu and ribbon items bound to commands can be invoked by ID |
-| Time | `set_input_time_source`, `MotionClock::set_time_source` | the base for virtual time |
-| Schema | the control registry, schema export, `manifests/members.json` | what a role or control can do, for the model's reference |
-| Headless runs | `HeadlessHost`: caller-supplied timestamps, no clock, explicit pumping | deterministic CI |
-
-### 4.2 Where every host converges
-
-`HostSession::dispatch` is the one door: the macOS view, the Windows host,
-the X11 host and the surface window manager (`surface_manager.cpp`, lines
-386-548) all build `HostEvent`s and dispatch them there. The normative
-traces (release 1.0 condition 4) check that the hosts agree on what happens
-after that door. Injecting there gives identical behaviour on every host
-by construction, with no per-adapter code, which is the owner's
-requirement.
-
-The one thing past the door that differs is the native window frame: on
-macOS, Windows and X11, moving and resizing a window is the platform's
-job. The automation core asks for it through the existing host services
-(`host_windowing.hpp`), and reports honestly what a host cannot do, as
-capabilities already do.
-
-### 4.3 Prior ad hoc channels in the tree
-
-These show the need, and what to retire:
-- **Windows `WM_COPYDATA` automation** (`windows_host.cpp`, from line
-  3991): `GUI.Forms.Automation/1` text commands (`snapshot`, `capture`,
-  `capture-composite`, `close`, `overlay`, a pointer move, `focus <id>`,
-  text, keys, `activate <id>`), enabled only when the program calls
-  `host::accept_automation_environment()` and `GUI_FORMS_WINDOWS_
-  AUTOMATION=1` is set and the build option allows it (A-gf-host-03-F6).
-  Replies are printed to standard output. Its reentrancy handling is right
-  and should be kept: a command that feeds the model waits while the
-  thread is inside a dispatch or a size or move loop, and a modal loop sets
-  that count aside (`ModalDispatchDepth`). It lives in a platform adapter,
-  so no other host has it.
-- `tools/menu_probe.py` and `tools/popup_margin_probe.py` drive that
-  channel; `tools/windows_automation_probe.cpp` is a UIA client.
-- The X11 Gallery accepts `--automation` and ignores it.
-- Plan Paint's AppKit probe harness and `cliclick`.
-- The normative trace drivers (one per host) replay a scripted scene.
-
-## 5. The tool surface
-
-### 5.1 What makes a tool set easy for a model to use well
-
-From Playwright MCP, Chrome DevTools MCP and the desktop MCP servers, and
-from how models fail with them:
-1. **Few verbs, each obvious.** A model chooses better among ten clear
-   tools than among fifty. Options go in arguments, not in more tools.
-2. **Name things by stable IDs.** Everything the model is shown carries an
-   ID it can pass back. GUI.Forms' stable IDs survive between runs, which
-   Playwright's per-snapshot refs do not: a script a model writes today
-   still works tomorrow.
-3. **Readable snapshots, text first.** An indented outline of role, name,
-   ID and states is far cheaper and more reliable for a model than a
-   screenshot. Pixels are for pixel questions.
-4. **Every action replies with what changed.** The semantic diff (nodes
-   added, removed or changed; focus moved; windows or popups opened), the
-   frames drawn and whether the program is idle. Then the model rarely
-   needs a second snapshot, and never acts on a stale picture.
-5. **Waiting is built in.** Actions wait until the program is idle before
-   replying (Playwright's auto-wait, Espresso's idling resources). A model
-   that has to guess sleeps either flakes or wastes time.
-6. **Errors say what to do.** A named code, the reason, and a hint: "the
-   Save As dialog is modal; act on window `save_as` or press its Cancel
-   button (`save_as.cancel`)".
-7. **Bounded output.** Snapshots cap their node count and say what they
-   left out, with the arguments to see it.
-8. **Same answers everywhere.** One host's snapshot equals another's
-   (stage A already holds this for the semantic tree).
-
-### 5.2 Tools
-
-Ten tools. Each takes an optional `window` (stable ID or title; default:
-the active window).
-
-| Tool | Arguments | Reply |
-|---|---|---|
-| `windows` | none | every window of the run: ID, title, kind (primary, owned, tool, popup, dialog), modal, active, bounds, minimised |
-| `snapshot` | `root` (a stable ID, default the window), `depth`, `filter` (`interactive`, `all`, or a role or name match), `bounds` (yes or no), `format` (`outline` or `json`), `max_nodes` | the outline (5.3), the semantic generation, and what was cut |
-| `act` | `target` (stable ID, or a command's stable ID), `action` (`press`, `select`, `expand`, `collapse`, `focus`, `set_value`, `increment`, `decrement`, `show_menu`, `close`, `invoke_command`), `value` | result, diff (5.4) |
-| `pointer` | `action` (`move`, `hover`, `click`, `double_click`, `right_click`, `down`, `up`, `drag`, `wheel`), `target` and optional `offset` in its bounds, or `position` in window units; `path` for a drag; `button`, `modifiers`, `delta` | result, diff, the control under the pointer |
-| `keyboard` | `keys` (`ctrl+s`, `alt+f4`, `F10`, `tab`, a sequence), or `text` to type committed text, or `composition` | result, diff |
-| `text` | `target`, then `read` (value, selection, lines, with offsets), `select` (anchor, caret, or a unit: word, line, all) | the text state; never for protected content (6.5) |
-| `wait` | `until`: `frame` (the next presented frame), `idle`, `ms` (real or virtual time), or a condition (`exists`, `gone`, `state`, `name`, `value` on a target); `timeout` | what happened, the diff since the call, the time spent |
-| `capture` | `target` (window or control), `kind` (`rendered` or `presented`), `margin`, `scale`, `overlays` | a PNG image plus its logical bounds and scale |
-| `batch` | `steps`: a list of the requests above (the script language of section 8), `stop_on_error` | one combined reply: each step's result and one diff for the whole batch |
-| `inspect` | `target`, `what`: `metrics`, `dispatcher`, `interaction`, `visual` (control state, parts, paint operations), `theme` (the winning rules per part and field), `schema` (what this control can do, from the registry); `since` (a mark, for deltas) | structured records, and a new mark |
-
-Why these and not more:
-- Hover, scroll and drag are `pointer` actions, not tools of their own.
-- `act` covers menus, ribbons, tabs, trees and combo boxes through the
-  roles' own actions. Only gestures that have no semantic action need
-  `pointer`, and the reply says which path was used.
-- Finding is `snapshot` with a filter. A separate `find` tool would
-  duplicate it.
-- `inspect` gathers every read-only diagnostic into one tool with a
-  selector, so the list stays short. Its `visual` and `theme` parts are
-  what no platform accessibility API offers; they answer "is the hover
-  plate drawn, and which rule coloured it?" directly.
-
-Two kinds of capture, both needed:
-- `rendered` uses `capture_window` or `capture_control`: what the current
-  state draws now, freshly recorded.
-- `presented` copies the pixels the host last presented (the window's
-  raster or the surface window manager's composed surface). It catches
-  damage and presentation bugs (stale pixels, a missing repaint after
-  hover) that a fresh render hides. The Pencil tab bug may have been
-  either kind; the comparison of the two tells which.
-
-### 5.3 The snapshot outline
+### 7.3 The outline
 
 ```text
 window "Untitled - Plan Paint" [main] active 1280x800
@@ -278,28 +371,23 @@ window "Untitled - Plan Paint" [main] active 1280x800
       tab "Home" [ribbon.tab.home]
       tab "Pencil" [ribbon.tab.pencil] selected hovered
     tab_panel "Pencil" [ribbon.panel.pencil]
-      group "Width" [pencil.width]
-        slider "Width" [pencil.width.slider] value=3 range=1..64
+      slider "Width" [pencil.width.slider] value=3 range=1..64
       button "Smooth" [pencil.smooth] checkable checked
-  pane "Canvas" [canvas] focusable focused
+  pane "Canvas" [canvas] focusable
   status_bar [status]
     static_text "640 x 480 px" [status.size]
 ```
 
-Rules:
-- One node a line: role, quoted name, `[stable ID]`, then the states that
-  are set, as words (`enabled` and `visible` are left out unless false), then
-  value and range. Bounds only when asked.
-- A node without a stable ID shows `[#r412]`, its runtime ID, valid only for
-  this run; the reply counts such nodes so a program can be told to name
-  them (a coverage figure, 8.4).
-- Values longer than 200 characters are cut, with their length.
-- `hovered` and `pressed` come from the visual inspection, not the
-  semantic tree, and are shown because a model debugging appearance needs
-  them.
-- `format: json` returns the existing `SemanticSnapshot::to_json` shape.
+- One node a line: role, quoted name, `[stable ID]`, the states that are
+  set, value and range; bounds on request.
+- A node without a stable ID shows `[#r412]`, its runtime ID for this run
+  only, and the reply counts such nodes.
+- `hovered` and `pressed` come from the visual inspection, which a model
+  debugging appearance needs.
+- Password fields show as `text_box "Password" [login.password]
+  protected`: no value, and never `focused` (section 9.1).
 
-### 5.4 The reply after an action
+### 7.4 The reply after an action
 
 ```text
 ok: press [ribbon.tab.pencil] (semantic action)
@@ -310,607 +398,391 @@ focus: [canvas] -> [ribbon.tab.pencil]
 frames: 2 presented; idle after 34 ms
 ```
 
-The diff is the difference of two semantic snapshots keyed by runtime ID,
-taken before the action and after it settles. A dialog or popup that opens
-appears as `opened: dialog "Save As" [save_as] modal`.
+### 7.5 Errors
 
-### 5.5 Errors
-
-Named codes, most taken from existing result enums:
-
-| Code | From | Hint given |
+| Code | Meaning | Hint given |
 |---|---|---|
 | `not_found` | no node with that ID | the closest IDs by name |
-| `stale_identity` | GF017 | take a new snapshot |
-| `ambiguous` | a stable ID repeated (virtual children) | name the parent |
-| `disabled`, `not_visible` | node states | what would enable it, when the tree says |
-| `outside_focus_scope` | `SemanticTextResult` and actions | the scope that holds focus |
-| `modal_blocked` | the window is blocked by a modal one | the modal window's ID and its buttons |
-| `unsupported_action` | the node's `actions` | the actions it has |
-| `off_boundary` | text selection | the nearest grapheme boundaries |
-| `host_cannot` | a host capability missing | which capability |
-| `timeout` | `wait` | what was still busy (dispatcher work, motion, timers) |
-| `protected` | protected content | none |
-| `user_active` | the real user typed or moved the pointer in the last second | hold the pointer lease, or wait |
+| `stale_identity` | the control is gone (GF017) | take a new snapshot |
+| `ambiguous` | the ID is repeated | name the parent |
+| `disabled`, `not_visible` | node states | |
+| `unsupported_action` | not among the node's actions | the actions it has |
+| `dialog_open` | a dialog is open and not instrumented (9.2) | the dialog's ID; ask the user |
+| `needs_user` | a security approval is waiting (9.3) | what the user must do |
+| `user_took_control` | the user took control back (8.3) | the steps not run |
+| `declined` | the user refused destructive acts for this launch (10) | |
+| `protected` | a password field | |
+| `timeout` | `wait` ran out | what was still busy |
+| `not_in_this_build` | `suspend_input` in a release build | |
 
-`during_paint` is never returned: the core retries at the next turn.
+### 7.6 Resources and prompts
 
-### 5.6 Resources and prompts
+Tools are the main surface. Resources mirror the read-only parts for
+clients that use them: the windows, each window's outline, metrics and
+capture, and the control schema and member manifest. Three prompts:
+reproduce a visual bug, explore this program, check this window's
+accessibility.
 
-Tools are the main surface, because every client supports them and many
-handle resources poorly. Resources mirror the read-only parts for clients
-that use them:
-- `gui-forms://windows`, `gui-forms://window/{id}/snapshot`,
-  `gui-forms://window/{id}/metrics`, `gui-forms://window/{id}/capture.png`;
-- `gui-forms://schema/controls` and `gui-forms://schema/members` (the
-  registry and the member manifest, so the model can look up what a
-  `property_grid` or a ribbon can do);
-- change notifications for a window's snapshot keyed on its semantic
-  generation, where the client subscribes.
+## 8. Input: a model is treated like a person
 
-Prompts are cheap and modestly useful. Three to start:
-- *reproduce a visual bug* (snapshot, act, wait idle, capture both kinds,
-  inspect `visual` and `theme`);
-- *explore this program* (windows, snapshot interactive, list commands);
-- *check accessibility of this window* (nodes without names or stable IDs,
-  actions without keyboard paths, contrast from `theme`).
+### 8.1 The default: first come, first served
 
-A program may later add its own tools and resources (Plan Paint's layers,
-SwiftEdit's buffers) through a registration table (stage M5).
+The real mouse and keyboard are never ignored (ruling 10). Model input and
+user input go through the same door, in the order they arrive:
+- every host already turns its events into portable `HostEvent`s and
+  dispatches them through the window's `HostSession`; the model's input is
+  built as the same events and dispatched through the same session, on the
+  window's UI thread, at a dispatcher turn;
+- whichever arrives first is handled first, whole. If the user clicks while
+  the model hovers, the click happens and the model's next reply shows it in
+  its diff;
+- a model's synthetic pointer is one more pointer: when the real pointer
+  moves, hover follows it, exactly as when two people share a machine. A
+  model that needs a hover to stay put either asks the user to keep still or
+  uses `model.directed`.
 
-## 6. Architecture
+### 8.2 Suspending user input: debug and special builds
 
-### 6.1 Layers
+In debug builds, and in special builds made for testing (question 2 asks
+what counts as special), `control suspend_input` holds user input for a
+chain of commands, normally as the first step of a `batch`:
+- the session drops the adapter's input for the program's windows and counts
+  what it dropped;
+- input comes back by itself when the chain completes, fails, times out or
+  the pipe closes. There is no way to leave it suspended;
+- a ceiling (default 30 s) restores input even if the chain is still
+  running, and the chain then fails with `timeout`.
 
-```text
-MCP client (Claude Code, ...)
-   │  stdio, or HTTP on 127.0.0.1
-   ▼
-MCP front (optional library gui_forms_mcp; its own thread)
-   │  JSON-RPC <-> automation requests; tool schemas; PNG and text replies
-   ▼
-Automation core (in gui_forms; UI thread only)
-   │  requests and replies as named records; the wait machine; diffs
-   ├──► semantic snapshots and actions   (SurfaceRoot)
-   ├──► synthetic HostEvents              (HostSession, every host)
-   ├──► surface input records             (SurfaceInputQueue, surface hosts)
-   ├──► captures, metrics, inspection     (Window, Theme)
-   └──► time sources                       (virtual time, opt-in)
-```
+In release builds the command answers `not_in_this_build`. This is the
+only part of the design that blocks input without a visible popup, which is
+why it is not in release builds.
 
-- **Automation core**: portable C++ under `src/core/automation/` with a
-  small public header for policy and program registration. Requests and
-  replies are records (`AutomationRequest`, `AutomationReply` with an
-  explicit result enum), not JSON, so the core is testable without MCP
-  and usable by scripts and the C ABI. It touches the model only on the UI
-  thread, at a dispatcher turn (house style 5: one execution context per
-  piece of mutable state).
-- **MCP front**: JSON in and out (the existing `src/core/json` reader;
-  writing is simple), the tool schemas, the transports. Its own thread
-  reads requests and posts each into the target window's dispatcher
-  (`WindowDispatcher`, which any thread may hold), then waits for the
-  reply. It holds nothing taken from model state across the post. A
-  separate library keeps JSON-RPC and sockets out of programs that never
-  enable it.
-- **No platform code** beyond what transports need (a loopback socket and
-  file permissions in `src/surface/posix/` and `src/surface/windows/`, per
-  the host consolidation rule). The core includes no platform header.
+### 8.3 `model.directed`
 
-### 6.2 Input injection without per-host code
+For any build, including releases (ruling 12):
+1. The program is launched with `--model-directed`, or its configuration
+   sets `model.directed`. Without either, `direct_begin` is refused.
+2. The model sends `control direct_begin` (alone or as a `batch` step). The
+   interface stops taking user input, and a small popup appears:
+   "<model> is working. Take back control?"
+3. Only the popup can be clicked or typed into. Every other window ignores
+   user input while the popup shows.
+4. If the user takes back control, the model's chain stops at once with
+   `user_took_control`, naming the steps not run. Input returns to the user
+   and the popup closes.
+5. When the model sends `direct_end`, or its chain completes, input comes
+   back by itself and the popup closes. It also comes back if the chain
+   fails, times out or the pipe closes.
 
-- **Semantic actions first.** `act` uses `perform_semantic_action`, which
-  is what assistive technology calls. It needs no coordinates and does not
-  depend on layout or the pointer.
-- **Synthetic input second.** `pointer` and `keyboard` build `HostEvent`s
-  and dispatch them through the window's `HostSession`, the same door as
-  the native adapters. On a single-surface host they go into the
-  `SurfaceInputQueue` instead, so the window manager's own frames and
-  capsule respond as they do to real input. Sequence numbers and
-  timestamps come from the session's own counters, so the session's
-  validation still applies.
-- **The real cursor.** A real mouse on a native host keeps sending moves
-  and leaves, which would undo a synthetic hover (the reason the Plan Paint
-  probe needed `cliclick`). Proposal: a **pointer lease**. While a session
-  holds it for a window, `HostSession` drops pointer events that come from
-  the adapter for that window (counted, so a test can see them), and only
-  synthetic ones reach the model. This lives in `HostSession`, so no
-  adapter changes. Keyboard input from the real user is not dropped.
-  The lease ends with the session, a `release` argument, or a timeout.
-- **Hover timing.** Hover plates, tooltips and menu delays depend on time.
-  By default `wait ms=200` waits 200 real milliseconds. With **virtual
-  time** (opt-in, decision 4) the core installs its own input and motion
-  time sources and advances them, so a 200 ms hover is exact and instant.
-  Timers and the scheduler must read the same source; whether they do today
-  needs checking at M4 (the window's timers were not traced for this
-  study).
-
-### 6.3 Idle, frames and the wait machine
-
-GUI.Forms' "idle schedules zero frames" makes idle exact. A window is idle
-when all hold:
-- no posted dispatcher work (`dispatcher_snapshot().pending == 0`);
-- no pending layout or paint, and no paint wake pending;
-- the motion clock asks for no frames (no animation running);
-- no present outstanding (a surface host's `presented` record has come back);
-- no timer due within a small window (default 50 ms; a running caret blink
-  does not count);
-- no automation-visible work registered by the program (an idling token a
-  program takes around its own background jobs, like Espresso's idling
-  resources; background workers can take one automatically).
-
-Each request is a small state machine with a named completion:
+House style: a small state machine per run, with one fallback that every
+unexpected state reaches: **the user has control**.
 
 ```text
-queued ─► dispatched ─► settling ─► replied
-                 └────► failed (named code)
+user_control ──direct_begin──► model_directed ──direct_end / completed──► user_control
+       ▲                           │  ├─ take back control ─► user_control (chain stops)
+       └──────── fallback ─────────┘  └─ fail / timeout / pipe closed ─► user_control
 ```
 
-- *queued*: posted to the window's dispatcher;
-- *dispatched*: the action ran (or was refused);
-- *settling*: waiting for idle, at any loop depth, up to the timeout;
-- *replied*: the diff is taken and the reply sent.
+Notifications follow the change: the state changes first, then the popup,
+the border and the model's reply learn of it.
 
-### 6.4 Modal loops and reentrancy (house style 4 and 5)
+## 9. Dialogs, passwords and security approvals
 
-The hard case. Pressing "Save As" runs a handler that enters a nested modal
-loop and does not return until the dialog closes. An automation request
-that waited for the action's call to return would hang.
+### 9.1 Passwords
 
-Rules:
-1. The core never waits for an action's call to return. It waits for
-   *idle*, which a nested loop also reaches once the dialog is shown and
-   settled. The reply then reports `opened: dialog [save_as] modal`, while
-   the handler is still on the stack.
-2. Later requests run inside the nested loop, at its dispatcher turns. A
-   request for the modal window runs; one for a window it blocks gets
-   `modal_blocked`, naming the modal window.
-3. A request never runs inside a dispatch into model code. It waits for the
-   next turn, as the Windows channel already does (`host_dispatch_depth`),
-   and a modal loop sets the depth aside (`ModalDispatchDepth`). The rule
-   moves from the Windows adapter into the core, and every host gets it.
-4. Completing a change before notifying: the reply is built after the
-   action's state change has settled, and the front copies what it sends.
-   Nothing taken from model state is carried across a call into
-   application code.
-5. Revocation: when a window closes, requests for it fail with
-   `stale_identity` (its runtime ID is never reused). When the session ends,
-   leases and virtual time are given back, and queued requests are
-   cancelled with a named result.
-6. Live resize and move loops (Windows' size-move loop, AppKit's live
-   resize) count as busy, as today on Windows.
+Following Anthropic's lead (ruling 13):
+- a password field's value is never read;
+- **whether a password field has focus is never exposed** either: the
+  outline never shows `focused` on it, and focus moves into or out of it are
+  left out of diffs;
+- captures paint its bounds out;
+- the model may still type into a field it was told to fill, and the reply
+  says only `ok`.
 
-**Native dialogs and menus.** NSOpenPanel and IFileDialog are not
-GUI.Forms trees, and no tool can see inside them. While a session holds a
-*dialog lease*, `HostServices` dialog requests (open, save, folder, colour)
-are answered by the session instead: the reply to the action reports
-`dialog_requested: save` and a later `act target=host.dialog
-action=set_value value=<path>` answers it. The surface window manager
-already has this shape (`SurfaceInputKind::dialog` with an outcome).
-Paths answered this way must lie under a folder the session was given at
-launch (6.5). The macOS application menu items that are bound to
-`Command`s are reached by `invoke_command`. Popups, menus and drop-downs
-that GUI.Forms draws itself (warm Popup windows) are ordinary windows in
-`windows` and fully drivable.
+The rule follows the existing `SemanticState::protected_content` bit, so it
+covers every control that sets it.
 
-### 6.5 Safety
+### 9.2 Dialogs
 
-**Three locks** (the Windows channel's model, kept):
-1. *Built in*: build option `GUI_FORMS_AUTOMATION` (decision 1 sets its
-   default for products).
-2. *Allowed by the program*: an application option
-   (`ApplicationOptions::automation`: `refuse`, `allow_when_requested`).
-   Default `refuse`, so a program that never thought about it stays closed.
-3. *Asked for at launch*: `--mcp` (stdio) or `--mcp-listen` (HTTP) on the
-   command line, or `GUI_FORMS_MCP=stdio|listen`. The library removes the
-   argument before the program sees `argv`.
+While a modal dialog is open, the model is refused control (ruling 14):
+`act`, `pointer` and `keyboard` answer `dialog_open` with the dialog's ID,
+and the read-only tools still work, so the model can tell the user what the
+dialog asks.
 
-**Local only.**
-- stdio needs no network and no authentication: only the process that
-  started the program holds its pipes.
-- Attach mode uses a local socket: a Unix-domain socket in a user-only
-  directory on macOS and Linux (`$XDG_RUNTIME_DIR/gui-forms/` or the
-  per-user temporary folder, mode 0700), a named pipe with a current-user
-  ACL and `PIPE_REJECT_REMOTE_CLIENTS` on Windows. The instance checks the
-  peer's user ID (`LOCAL_PEERCRED`, `SO_PEERCRED`,
-  `GetNamedPipeClientProcessId` and its token), as Claude's Chrome host
-  does ("peer uid ... != host euid", section 7.2). The socket exists only
-  while automation is enabled in that instance.
-- HTTP (off by default) binds 127.0.0.1 (and ::1) only, never 0.0.0.0, on a random port.
-  A 256-bit token is generated per run and written with the port to a file
-  readable only by the user (`$XDG_RUNTIME_DIR/gui-forms/<pid>.json`,
-  `~/Library/Caches/...` on macOS, `%LOCALAPPDATA%` with a user-only ACL on
-  Windows). Every request must carry it; compared in constant time.
-  Requests whose `Origin` header names a web page are refused, and the
-  `Host` header must be the loopback address, which defeats DNS rebinding
-  from a browser. No CORS.
+A program can **instrument** a dialog: mark it as one a model may drive
+(`Dialog::set_model_drivable`, and the matching C ABI flag). The setup
+dialog of an installer is the example: a model starts it, fills it in and
+moves through its pages.
 
-**A visible sign.** While a session is connected, every window shows it (a
-title suffix, or a tinted capsule on surface hosts), as Chrome shows
-"controlled by automated test software". Recommended in product builds;
-optional in development builds (decision 9).
+Native dialogs of the operating system (NSOpenPanel, IFileDialog, the GTK
+file chooser) cannot be instrumented: they are not GUI.Forms trees. The
+model gets `dialog_open` and the user handles them.
 
-**Never exposed:**
-- values of nodes with `protected_content` (passwords). Typing into them is
-  allowed; reading answers `protected`, and captures of a window that
-  holds one mask its bounds;
-- controls and windows a program marks `automation_hidden` (a licence key
-  panel);
-- files: no tool reads or writes files; dialog answers are limited to a
-  folder named at launch;
-- other processes' windows or the screen: captures are of GUI.Forms' own
-  rasters only, unlike screen-capture servers;
-- the clipboard, unless the program allows it;
-- arbitrary code: no evaluate, no property setter that bypasses what a user
-  can do; inspection is read-only.
+(This reading of ruling 14, that "refused while a dialog is open" is the
+default and instrumentation is the exception, is question 3.)
 
-Bounded everything: request size, queued requests (64, as the Windows
-channel), snapshot nodes, capture pixels.
+### 9.3 Security approvals
 
-Text read from a program (a document's contents) is data, not instructions
-to the model. The outline puts values in quotes and labels them, and the
-tool descriptions say so; the rest is the client's defence against prompt
-injection.
+Inside an instrumented dialog, a program marks the steps that need a
+person: a security approval, an administrator password, a licence
+acceptance. When the model reaches one:
+1. the model's call answers `needs_user`, saying what the user must do;
+2. the interface shows that the user must act, with the step highlighted;
+3. the user does it (the user takes back control briefly);
+4. the model's next `wait` reports the step done, and it carries on.
 
-### 6.6 The C ABI and the C# sibling
+Approvals that the operating system shows (an administrator prompt, a
+keychain prompt) are outside the program and always need the user.
 
-- The core lives under `Application`, so programs on the C ABI (PlaySuite
-  and SwiftEdit, after their ports) get it without any ABI addition. Only
-  policy and registration need ABI:
-  - one entry in the application table: the policy (`refuse`,
-    `allow_when_requested`), the hidden marking, the idling token;
-  - later (M5), a registration table for a program's own tools: name,
-    JSON schema, and a callback on the UI thread that returns a JSON reply
-    (the house style's named target with explicit context, revoked when the
-    application ends).
-  These are additive: an ABI minor version, with a class-table and
-  manifest entry like any other.
-- The C# sibling exposes the same policy through its `Application`. In
-  mirrored mode (the swap-in launcher, roadmap 5.5) a model could then drive
-  a real WinForms program such as SDR# running on GUI.Forms, and read the
-  unsupported-member log through `inspect`. That is strong dogfooding.
+## 10. Consent and destructive acts
 
-### 6.7 Relation to UIA, MSAA, AX and AT-SPI
+**Consent is built in** (ruling 15). It needs no extra prompt because:
+- a model can only reach a program its own client started with `--mcp`;
+- the window shows that a model is connected (section 11.1);
+- the user can always act first (8.1) and can always take control back
+  (8.3).
 
-Why not use the existing desktop MCP servers over the platform APIs:
-- each platform differs, while the owner requires identical behaviour;
-- the platforms publish no part states, no theme provenance, no metrics, no
-  frame or idle signal, no render capture, no virtual time;
-- macOS AX clients need the user's accessibility permission, and AX reads
-  are slow and need settling (#249, #266, #275);
-- they poll and guess, and coordinate clicks are fragile.
+**Destructive acts** (rulings 17 and 18):
+- by default every act counts as non-destructive;
+- developers mark what is destructive: a `Command`
+  (`Command::set_destructive(true)`), a control's action (a property in the
+  schema, so form documents can carry it too; question 7), or a whole
+  window. The C ABI gets the same flags;
+- the first destructive act of a launch shows, in the program:
+  "Allow <model> to edit files and perform potentially destructive acts?"
+  with Allow and Don't Allow. The answer holds for the rest of the launch;
+- Don't Allow makes every destructive act answer `declined`. Non-destructive
+  acts still work;
+- the question is the program's own and is independent of any approval the
+  client's harness asks for;
+- MCP's tool annotations carry the marks to the client: read-only tools say
+  `readOnlyHint`, and a tool whose target is marked destructive says
+  `destructiveHint`, so clients that show approvals can use them.
 
-The native publication stays the source of truth for assistive
-technology, and the automation core reads the same semantic tree, so the
-two cannot drift in content. A cross-check tool (M6) compares, on each
-host, the platform API's view with the core's snapshot: stage A's client
-tests, made available on demand.
+## 11. What the user sees
 
-## 7. Prior art: what to copy and what to avoid
+### 11.1 The border glint
 
-### 7.1 Protocols and frameworks
+While a model is connected, the window's application border (ruling 19)
+shows it:
+- the border is the active border capability (roadmap row 2.7, phase 2
+  done in cp32 fold E) with the window band of cp33
+  (`claude/cp33-window-band`), which is not finished;
+- an animated glint runs along it whenever the model reads the program's
+  state (`snapshot`, `capture`, `inspect`) or acts on it;
+- at rest, while connected, the border keeps a quiet tint;
+- with reduced motion, the glint becomes a short change of tint;
+- it is drawn by the engine as an effect, so themes can restyle it, and
+  it costs nothing while no model is connected (idle still schedules no
+  frames).
 
-| Source | Copy | Avoid |
-|---|---|---|
-| **Chrome DevTools Protocol** | domains and versioning; events; `Accessibility.getFullAXTree`; `Input.dispatch*` going through the real input path; `Page.captureScreenshot`; `Emulation.setVirtualTimePolicy` (virtual time) | its size: hundreds of methods no model can choose among |
-| **Playwright** | auto-wait and actionability checks (visible, stable, enabled, receives events); locators by role and name; ARIA snapshots; the trace viewer (every step's snapshot and pixels) | CSS and XPath selectors; flaky waits on timeouts |
-| **Playwright MCP** | text snapshots with refs as the main view; a reply that carries the new state | refs that die with each snapshot (ours are stable) |
-| **Chrome DevTools MCP** | performance traces and console as first-class tools (our `inspect`) | depending on a browser |
-| **Appium, WinAppDriver, W3C WebDriver** | sessions, element handles, explicit and implicit waits; a pattern vocabulary | chatty HTTP per element; stale-element exceptions; WinAppDriver is unmaintained, so do not build on a platform's automation stack |
-| **UIA and AX** | the control patterns (Invoke, Toggle, Selection, ExpandCollapse, Value, Text), which `SemanticAction` already mirrors | polling; host differences; AX permission prompts |
-| **Espresso and XCUITest** | synchronisation with the UI thread's idle (idling resources); `waitForExistence` | Android or Apple specifics |
-| **Flutter (semantics tree, `flutter_driver`, the Dart and Flutter MCP server)** | the closest analogue: a toolkit that owns its pixels exposing its own tree, in process | a VM service reachable over the network |
-| **Squish and Qt Test** | object names as stable IDs; scripts that run on every platform; record and replay | commercial and per-toolkit tooling outside the program |
-| **Desktop MCP servers (Windows-MCP and macOS ones)** | they show models can use such tools | screenshots plus coordinate clicks as the main path: slow, fragile, and blind to state |
+### 11.2 The tag line
 
-### 7.2 The MCP programs on this computer
+A small tag line tooltip on the top border names the model in control
+(ruling 20), for example "Claude Opus 5.5 via Claude Code", from what the
+client states (4.4). It shows on hover over the border, and briefly when a
+model connects.
 
-Added 2026-11-17 at the owner's request. Found by reading the MCP
-configuration of Claude Code and Codex on the M4 workstation, the app
-bundles of Claude and ChatGPT, Chrome's native-messaging manifests and the
-installed plugins, then reading each binary's strings and bundled
-documents. Nothing was run. Xcode is not installed here (only the command
-line tools), so Xcode's design comes from published sources (7.3). Account
-identifiers and tokens seen in configuration files are not reproduced.
+### 11.3 The popups
 
-| Program | Who | Language | Client-facing transport | How it reaches the capability | Safety mechanisms seen |
-|---|---|---|---|---|---|
-| **Claude in Chrome**: `Claude.app/Contents/Helpers/chrome-native-host` | Anthropic | Rust | a Unix-domain socket named `claude-mcp-browser-bridge-<user>`; Claude Code connects as the MCP client | the same binary is Chrome's native-messaging host and relays over stdio to the Chrome extension, which drives the page | peer credential check: rejects a connection whose peer user ID differs from its own ("peer uid ... != host euid"); status records (`mcp_connected`, `mcp_disconnected`) |
-| **Claude computer use**: `Claude.app/Contents/Helpers/app-cu-helper` | Anthropic | Rust | JSON-RPC 2.0 to the Claude app (not MCP itself; the app turns it into tools) | CGEvent input, AX reads, window activation | a long list of named refusals before acting: secure input active, a secure text field, the user actively typing, a sheet or modal on the target window, a foreign process under the point, the window gone or hidden, a pop-up menu, the type budget exhausted; a `dryRun` mode |
-| **Built-in browser, terminal, iOS Simulator** (`mcp__Claude_Browser__*`, `mcp__terminal__*`, `mcp__Claude_Code_iOS_Simulator__*`) | Anthropic | the Claude desktop app (Electron) and `Claude iOS Sim.app` | MCP servers inside the desktop app, offered to the Claude Code sessions it runs | the app's own browser pane; the simulator through a helper app | per-site approval in the pane; the simulator asks for device access on first use |
-| **GitHub MCP server**: bundled in `Claude.app/.../resources/github-mcp/github-mcp-server` | GitHub, shipped by Anthropic | Go (the Go MCP SDK) | stdio | the GitHub API | OAuth, with a scopes listing command (`list-scopes`); toolsets switchable |
-| **Codex computer use**: `~/.codex/computer-use/Codex Computer Use.app` | OpenAI | Swift (the Swift MCP SDK) | stdio, from `SkyComputerUseClient mcp` inside the app bundle (disabled in this configuration) | the client talks to `SkyComputerUseService`, a separately signed app holding the macOS Accessibility and Screen Recording permissions, over Mach ports | an app approval store with persistence levels (once, turn, session, always); a lock-screen guardian; analytics per approval |
-| **Codex unified computer use and browser**: `cua_repl`, `node_repl` from `ChatGPT.app` | OpenAI | Node.js | stdio | **one tool, `js`**: the model writes JavaScript in a persistent REPL against a browser and computer API (`tab.ax.click(42)`, `tab.ax.write()`), and the REPL reaches the browser extension and the computer-use service over a pipe | trusted code paths and services named in the environment; a hash-pinned browser client; per-site approvals |
-| **Codex app tools**: `codex-app-tools/server.mjs` | OpenAI | Node.js | stdio | the Codex app's threads and automations | **per-tool approval modes** in the server's manifest: reads approve automatically, while `create_thread`, `delete_thread`, `send_message_to_thread` and the like prompt |
-| **ChatGPT for Chrome**: native host `com.openai.codexextension` | OpenAI | native binary | Chrome native messaging (stdio) | the Chrome extension | extension IDs pinned in the manifest |
+Two popups belong to the program, drawn by GUI.Forms in its own design
+language: the "take back control" popup of `model.directed`, and the
+destructive-act question. Both name the model.
 
-How these programs shape their tools:
-- **Codex computer use (Swift)**: `list_apps`, `get_app_state` (the AX
-  tree with `element_index` numbers, plus a screenshot), `click`,
-  `type_text`, `press_key`, `scroll`, `drag`, `set_value`,
-  `perform_secondary_action`. Each action replies only "Action completed.
-  Call `get_app_state` to fetch the updated UI state", so every step costs
-  a second call and a whole new tree. Its own instructions insist on
-  calling `get_app_state` first.
-- **Codex's browser API (newer)**: the same vocabulary, but the state is
-  "returned as a diff from the previous accessibility tree, listing only the
-  elements that were removed, added, or changed" by default, and the model
-  is told to batch several actions and one state read into a single `js`
-  call. It also prefers **page-defined tools** when a page offers them
-  (WebMCP: `tab.capabilities.get("webmcp")`, then `tools.call(...)`), and
-  can drive **MCP Apps** shown in a side panel.
-- **Claude in Chrome and the built-in browser**: `read_page` (an
-  accessibility tree with `ref_N` handles), `find`, `computer` (click,
-  type, key, scroll, screenshot, zoom), `form_input`, `get_page_text`,
-  `navigate`, and a `browser_batch` tool that runs several actions in one
-  round trip.
+## 12. Simulated time, explained
 
-### 7.3 How Anthropic, OpenAI and Apple approach it
+The owner asked what this means. Some of a program's behaviour depends on
+time passing: a hover plate fades in, a tooltip appears after half a
+second, a menu opens after a delay, an animation plays. Normally a model
+that wants to see the hover after 200 ms must wait 200 real milliseconds,
+and the result can vary with how busy the machine is.
 
-**Anthropic.**
-- Ships MCP servers in three shapes: inside the desktop app (the browser
-  pane, the terminal, the simulator), as a helper binary behind a
-  user-only socket (Claude in Chrome), and bundled third-party servers
-  (GitHub). Claude Code can itself be run as an MCP server.
-- Its engineering post "Code execution with MCP" (2025-11-04) argues that
-  tool definitions and intermediate results filling the model's context are
-  the main cost, and proposes presenting servers as code APIs the model
-  calls from a sandbox; it reports one task falling from about 150,000
-  tokens to about 2,000. The caveat it states: running generated code needs
-  a sandbox, limits and monitoring.
-- In practice its own tools answer that cost with batching
-  (`browser_batch`), deferred tool loading (the tool search this session
-  uses), compact accessibility trees with handles, and named refusals with
-  reasons (the computer-use helper).
+**Simulated time** means the program's clocks stop following the real
+clock while a model is testing, and move only when the model says "wait
+200 ms". Then the program jumps exactly 200 ms ahead at once: the hover
+plate is exactly where it is at 200 ms, every time, on every machine, with
+no waiting. GUI.Forms already has replaceable clocks for input and motion
+(`InputTimeSource`, `MotionTimeSource`), so this is mostly wiring. The
+cost: while time is simulated, animations stand still unless the model
+waits, so it suits tests and bug reproductions, not a model helping a user
+live.
 
-**OpenAI (Codex).**
-- Everything is stdio, configured in `~/.codex/config.toml` or a plugin's
-  `.mcp.json`, with per-tool approval modes and startup timeouts in the
-  configuration.
-- Computer use is split into an unprivileged MCP client and a privileged,
-  separately signed service that holds the operating system's permissions,
-  joined by Mach ports.
-- The newest pieces have moved to "code mode": one `js` tool and a
-  persistent REPL, with diffs, batching and page-defined tools preferred to
-  generic clicks.
+Question 4 asks whether to offer it (recommendation: debug and special
+builds only, like `suspend_input`).
 
-**Apple.**
-- Xcode 26.3 (2026-02-26) exposes its own capabilities to agents over MCP:
-  building, testing, searching documentation, reading the project, and
-  capturing SwiftUI Previews so an agent can see the interface it builds.
-  The user turns it on in Xcode's Intelligence settings and registers
-  `xcrun mcpbridge` as a stdio server; `mcpbridge` relays to the running
-  Xcode over XPC.
-- Reported problems: Xcode asks "Allow 'agent' to access Xcode?" for each
-  new agent process, which users find tiresome enough to script a click on
-  it; and the 26.3 bridge returned results in `content` but not in
-  `structuredContent` although its tools declared an output schema, which
-  broke stricter clients.
-- Secondary reports (not checked against Apple's documentation) say iOS 27
-  and macOS 27 extend MCP beyond Xcode, with App Intents as the way apps
-  declare actions agents can call, and servers registered explicitly by the
-  user or by device management. App Intents is Apple's equivalent of a
-  program declaring its own commands; it is not UI automation.
+## 13. Prior art: what to take, what to avoid
 
-### 7.4 What this changes for GUI.Forms
+### 13.1 On this computer
 
-1. **Stdio is what clients expect.** Every server on this computer faces
-   its client over stdio, or over a local socket for one special case. None
-   of the GUI programs serves loopback HTTP. So the attach case should be a
-   local socket reached through a stdio shim, not HTTP. Our shim can be the
-   program's own executable in attach mode, which gives the owner "built
-   in, no separate server" while matching how Xcode, Claude in Chrome and
-   Codex do it. (Section 3 and decision 2 are revised accordingly.)
-2. **In-process is our advantage.** Codex and Claude computer use need a
-   separately signed service holding Accessibility and Screen Recording
-   permissions, and still see only what AX shows. Xcode needs an XPC bridge.
-   A GUI.Forms program needs no operating-system permission at all to
-   describe and drive itself, and sees its own parts, states, theme rules
-   and frames.
-3. **Reply with diffs.** Codex's first computer-use tools made the model
-   re-read the whole tree after every action; its newer API diffs by
-   default. This confirms section 5.4.
-4. **Offer a batch.** Both companies added a way to run several actions in
-   one call (`browser_batch`, the `js` tool). GUI.Forms should add a
-   `batch` tool that takes a list of requests in the script language of
-   section 8 and returns one combined reply. That gives most of code
-   mode's saving without executing model-written code inside a user's
-   program. A client that has its own code mode can still wrap our tools.
-5. **Program-declared tools matter.** WebMCP pages, App Intents and Xcode's
-   own tools all let the application declare what it can do, which is more
-   reliable than clicking. GUI.Forms already has `Command`s with stable IDs;
-   publishing them as tools automatically (each command a callable action,
-   with its enabled state) costs little and should come early (M3), with
-   the richer program tools of M5 later.
-6. **Consent once, at the right grain.** Xcode's prompt for every agent
-   process is the reported annoyance; Codex keeps approvals per app with
-   persistence (once, turn, session, always). GUI.Forms: development builds
-   need none beyond the launch flag; product builds ask once per program
-   and client, remembered for the session or always, and stdio launches
-   (where the user's client started the program) need no prompt.
-7. **Refuse with reasons.** Claude's computer-use helper refuses before
-   acting when the user is typing, a secure field is focused, or a modal
-   sheet covers the target. GUI.Forms should refuse synthetic input
-   likewise when the real user has typed in the last second (unless the
-   session holds the pointer lease and the user is idle), with a named
-   code, `user_active`.
-8. **Approval per tool.** Codex's manifests mark reads as automatic and
-   destructive tools as prompting. MCP's tool annotations
-   (`readOnlyHint`, `destructiveHint`) say the same to any client:
-   `snapshot`, `capture`, `inspect` and `wait` are read-only; `act`,
-   `pointer`, `keyboard` and `batch` are not.
-9. **Test the protocol, not only the behaviour.** Xcode's
-   `structuredContent` mismatch broke clients. The MCP front's tests must
-   validate every reply against its declared output schema, and run an MCP
-   conformance client in CI.
+Read from the app bundles, the Codex configuration and Chrome's
+native-messaging manifests, without running anything:
 
-## 8. Testing and use
+| Program | Shape | Take | Avoid |
+|---|---|---|---|
+| **Claude in Chrome** (Anthropic; Rust helper in `Claude.app`) | a user-only Unix socket in front of a native-messaging relay; rejects peers of another user | a thin, careful relay | a socket at all: our pipes need none |
+| **Claude computer use** (Anthropic; Rust helper) | named refusals before every act: secure input, a password field, a sheet over the window, the user typing | refusing with reasons; never touching password fields | needing operating-system permissions to see the screen |
+| **Codex computer use** (OpenAI; Swift MCP client plus a privileged service) | per-app approvals remembered once, per turn, per session or always | approvals with a remembered scope | "Action completed, call `get_app_state`": the model must re-read everything after each act |
+| **Codex browser tools** (OpenAI; one `js` tool) | accessibility state as diffs by default; several actions per call; page-declared tools preferred to clicks | diffs, batching, program-declared actions | running model-written code inside the program |
+| **Codex app tools** (OpenAI; Node) | per-tool approval modes: reads automatic, deletes prompt | marking tools read-only or destructive | |
 
-### 8.1 One command set, three users
+### 13.2 Apple: what to avoid
 
-- **A model through MCP**, interactively.
-- **A script**: the same requests as JSON lines, run by the program itself
-  (`--automation-script file.jsonl`, writing replies and captures next to
-  it) or in process by a ctest harness on the headless host. No model, no
-  client, deterministic with virtual time.
-- **Recorded sessions**: every request and reply of an MCP session can be
-  saved as a script, so a model's exploration that found a bug becomes the
-  regression test, after a person adds the assertion.
+Xcode 26.3 (February 2026) offers its capabilities over MCP through `xcrun
+mcpbridge`, a separate program that relays to the running Xcode over XPC.
+The owner judged it the worst of all (ruling 26), and the reports agree on
+why:
+- a separate bridge program, and a running Xcode with a project open,
+  before anything works;
+- an "Allow 'agent' to access Xcode?" prompt for every new agent process,
+  tiresome enough that users script a click on it;
+- replies that did not match their own declared schemas
+  (`structuredContent` missing), which broke stricter clients;
+- MCP behind a settings switch the user must find.
 
-Assertions are one more request kind in scripts (`expect`: a node's state,
-name or value; a part's state; a capture against a golden or against the
-other capture kind with a tolerance; a metric within bounds). Models
-assert by reading replies.
+Our design avoids each: no bridge (the program is the server), consent
+built into the launch and the take-back popup instead of prompts per
+process, every reply validated against its schema in tests, and the
+capability on by default in the build.
 
-### 8.2 The Pencil tab, as a script
+### 13.3 Protocols and frameworks
+
+- Chrome DevTools Protocol: input dispatched through the real input path;
+  virtual time; avoid its hundreds of methods.
+- Playwright and Playwright MCP: waits built into actions; locators by role
+  and name; accessibility snapshots with handles.
+- Espresso: wait for the UI thread to be idle rather than sleeping.
+- Flutter: the closest relative, a toolkit that draws itself and publishes
+  its own semantics tree.
+- Anthropic's "Code execution with MCP" (2025-11-04): tool lists and large
+  intermediate results are the main cost for a model; our answers are few
+  tools, diffs and `batch`.
+
+## 14. GUI.Forms seams the core uses
+
+| Need | Seam |
+|---|---|
+| Windows | `Application::windows()` |
+| Control tree | `SurfaceRoot::semantic_snapshot()`, `semantic_generation()` |
+| Actions | `perform_semantic_action` (by stable ID, or runtime ID and virtual child), which refuses stale identities |
+| Text | `semantic_text_layout`, `set_semantic_text_selection` |
+| Input | `HostSession::dispatch(HostEvent)`, which every host already uses |
+| Pixels | `Window::capture_window`, `capture_control`, `encode_window_capture_png`; the host's presented raster |
+| Counters | `metrics_snapshot`, `dispatcher_snapshot`, `interaction_snapshot` |
+| Inside controls | `visual_inspection_snapshot`, `Theme::provenance` |
+| Commands | `Command::stable_id()` |
+| Clocks | `set_input_time_source`, `MotionClock::set_time_source` |
+| Reentrancy | the Windows channel's rule, moved into the core: a request waits while the thread is inside a dispatch, and a modal loop sets that aside |
+
+**Idle**, which every action waits for, means: no posted dispatcher work,
+no pending layout or paint, no animation asking for frames, no present
+outstanding, and no timer due within 50 ms.
+
+**Modal loops**: the core never waits for an action's call to return,
+only for idle, which a nested loop also reaches. Pressing "Save As" replies
+`opened: dialog [save_as] modal` while the handler is still on the stack,
+and the dialog rules of 9.2 then apply.
+
+## 15. Testing
+
+The same requests run without a model:
+- as a script file of `batch` steps, run by the program
+  (`--mcp-script file.jsonl`) or in process by ctest on the headless host;
+- a model's session can be saved as a script, so a bug a model finds
+  becomes a regression test once a person adds the assertion.
+
+### 15.1 The Pencil tab
 
 ```text
-{"tool":"act","target":"ribbon.tab.pencil","action":"select"}
-{"tool":"pointer","action":"hover","target":"ribbon.tab.pencil"}
-{"tool":"wait","until":"ms","ms":200,"clock":"virtual"}
-{"tool":"wait","until":"idle"}
-{"expect":"visual","target":"ribbon.tab.pencil","part":"plate","state":"hover","drawn":true}
-{"expect":"capture","target":"ribbon.tab.pencil","compare":"presented=rendered","tolerance":0}
-{"tool":"inspect","target":"ribbon.tab.pencil","what":["theme","metrics"]}
+{"tool":"batch","steps":[
+  {"tool":"act","target":"ribbon.tab.pencil","action":"select"},
+  {"tool":"pointer","action":"hover","target":"ribbon.tab.pencil"},
+  {"tool":"wait","until":"ms","ms":200},
+  {"tool":"wait","until":"idle"},
+  {"expect":"visual","target":"ribbon.tab.pencil","part":"plate","state":"hover","drawn":true},
+  {"expect":"capture","target":"ribbon.tab.pencil","compare":"presented=rendered"},
+  {"tool":"inspect","target":"ribbon.tab.pencil","what":["theme","metrics"]}]}
 ```
 
-It runs unchanged on macOS, Windows, X11 and the headless host. It can
-fail: the plate's hover state is asserted, and a damage bug shows as a
-difference between presented and rendered pixels. `inspect theme` names
-the rule that painted the plate.
+In a debug build, `control suspend_input` as the first step keeps the real
+mouse from disturbing the hover. In a release build launched
+`--model-directed`, `direct_begin` does the same with the popup.
 
-### 8.3 What it replaces
+### 15.2 What it replaces
 
-- the Windows `WM_COPYDATA` channel, `menu_probe.py` and
-  `popup_margin_probe.py` (retired after M3, decision 8);
-- Plan Paint's AppKit probe harness and `cliclick`;
-- most of the per-host normative trace drivers, whose scenes become
-  scripts (the trace comparison itself stays);
-- part of the products' own UI tests, which today reach into internals.
+The Windows `WM_COPYDATA` channel, `tools/menu_probe.py`,
+`tools/popup_margin_probe.py`, the X11 `--automation` flag (ruling 23),
+Plan Paint's AppKit probe harness with `cliclick`, and most per-host
+normative trace drivers' scripted scenes.
 
-### 8.4 Checks it makes possible
+### 15.3 `stx_mcp`'s own tests
 
-- **Stable ID coverage** per program: nodes without stable IDs, as a
-  number in the conformance suite (useful to the products before 1.0);
-- **Keyboard reachability**: every action reachable by keys alone;
-- **Snapshot equality across hosts**: the same scene's outline on every
-  host, a cheaper companion to the normative traces.
+Framing and size bounds, malformed input, cancellation, shutdown order,
+channel bounds, and every reply checked against its declared schema (the
+mistake in Xcode's bridge).
 
-## 9. Plan
+## 16. Plan
 
-Sizes in worker units (U), as in the roadmap. The web host is excluded
-(owner, 2026-11-17).
+After the product releases, before the 1.0 freeze, not this week (ruling
+2).
 
-| Stage | Contents | Depends on | Kind | U |
+| Stage | Where | Contents | Depends on | U |
 |---|---|---|---|---|
-| M0 | This study; owner decisions | none | S+O | done when accepted |
-| M1 | Automation core on the headless host: requests and replies as records, outline and JSON snapshots, diffs, `act`, synthetic input through `HostSession`, the wait machine and idle, `rendered` capture, `inspect` metrics, dispatcher and interaction; the script runner and `expect`; tests | M0 | C+B | 2-3 |
-| M2 | MCP front built in: stdio, attach mode over a local socket with the peer check, loopback HTTP (off by default), the three locks, the token file, consent in product builds, tool annotations, schema validation of every reply, the sign while connected, standard output redirection, tool schemas, resources; `presented` capture; the pointer lease; on macOS, Windows and X11 | M1 | C+B+M+W | 2-3 |
-| M3 | Modal loops and reentrancy rules moved into the core; popups, menus, the ribbon, owned windows; the dialog lease; `invoke_command` and commands published as tools; `batch`; the `user_active` refusal; the surface window manager path; retire the Windows channel and its probes | M2 | C+B | 1.5-2 |
-| M4 | Inside controls: `visual` (parts and part states), `theme` provenance, metric marks and deltas; virtual time (and the timer and scheduler check) | M1 | C+B | 1.5-2 |
-| M5 | C ABI table (policy, hidden marking, idling token, program tools), C# binding, the products' own tools (Plan Paint first) | M2, the ABI audit | C+B+W | 1.5-2 |
-| M6 | Native cross-check against UIA, AX and AT-SPI; stable ID coverage in conformance; prompts | M2 | C+B | 1 |
+| X1 | STXlib | `stx_mcp`: channels, contexts, tasks, JSON-RPC over pipes, the dispatcher with declared tool specs, schemas and validation, MCP tools, resources, prompts and notifications; its tests | STXlib's coordinator | 2-3 |
+| G1 | GUI.Forms | the automation core on the headless host: outline, diffs, `act`, input through `HostSession`, idle and `wait`, captures, `inspect`, `batch`, scripts | none (can start beside X1) | 2-3 |
+| G2 | GUI.Forms | the wiring: `GUI_FORMS_MCP` on by default, `--mcp`, identity, standard output redirection, commands as tools; on macOS, Windows and X11 | X1 on the stx pin, G1 | 1.5-2 |
+| G3 | GUI.Forms | control and safety: first come first served, `suspend_input` (debug and special builds), `model.directed` with its popup and state machine, dialog refusal and instrumentation, security steps, password rules, destructive marks and the per-launch question | G2 | 2 |
+| G4 | GUI.Forms | the visible signs: the border glint on the active border and window band, the tag line | G2, the window band | 1 |
+| G5 | GUI.Forms | the C ABI (destructive marks, model-drivable dialogs, hidden commands, the identity) and the C# binding; retire the Windows channel and the X11 flag; convert the probes | G3 | 1.5-2 |
 
-Total about 9-13 U. Verification needs each host (M, W and the X11 VM), as
-usual.
+About 10-14 U. The ABI additions in G5 must land before the 1.0 freeze.
 
-**Fit with the programme.** The current priority is landing #483 and
-releasing the products, so nothing here starts before that. Afterwards:
-- M1 and M2 are worth doing early, before the conformance rebases of the
-  products (roadmap sequence step 6). They give every product a way to
-  reproduce bugs like the Pencil tab, and the coordinator and owner a way
-  to check builds without hand-written probes.
-- M5 adds to the ABI, so it is additive and needs a minor version. If
-  automation should be part of 1.0 (backend), the table must land before
-  the ABI is sealed for 1.0; otherwise it is a 1.x minor.
-- It fits "accessible by construction" in the programme's first page: a
-  model is one more kind of assistive user, and the same tree serves both.
+## 17. Open questions
 
-## 10. Open decisions for the owner
-
-1. **Product release builds.** (a) Compiled out of products, development
-   builds only; (b) compiled in but locked, so a user can start a product
-   with `--mcp` to have a model operate it for them (an accessibility use);
-   (c) compiled in and allowed by every program by default.
-   *Recommendation: (b)*, with the program lock defaulting to refuse and
-   each product choosing; it serves "for everything" without opening
-   anything by default.
-2. **Transport.** (a) Built in: stdio when the client starts the program;
-   to attach, the same executable in `--mcp-attach` mode relays over a
-   user-only local socket; loopback HTTP available but off; (b) as (a), but
-   HTTP to attach (the first version's recommendation); (c) stdio only, no
-   attach. *Recommendation: (a)*. It keeps everything in the program, as
-   the owner prefers, and matches what every MCP desktop program on this
-   computer and Xcode do (section 7.4, point 1).
-3. **The real pointer.** (a) A pointer lease that drops the adapter's
-   pointer events for the window while a session holds it; (b) mix real and
-   synthetic input. *Recommendation: (a)*.
-4. **Virtual time.** (a) Headless and scripts only; (b) also on demand in
-   live sessions (`clock: virtual`), animations then advance only when the
-   model waits. *Recommendation: (b)*, off by default.
-5. **Inspection beyond accessibility** (`visual`, `theme`, paint
-   operations) in product builds, or only in development builds.
-   *Recommendation: in both*, behind the same locks; it is read-only.
-6. **Program tools through the C ABI** (M5): now, or after 1.0.
-   *Recommendation: the policy entry before the 1.0 ABI seal, program tools
-   in the same table if M5 is reached in time.*
-7. **Where the MCP front lives:** a separate optional library
-   (`gui_forms_mcp`) beside the core in `gui_forms`, or all in one.
-   *Recommendation: separate*, so programs that never enable it carry no
-   JSON-RPC or socket code.
-8. **Retire the Windows `WM_COPYDATA` channel** and the X11 `--automation`
-   flag once M3 lands. *Recommendation: yes.*
-9. **A visible sign while connected:** in product builds, development
-   builds, or both. *Recommendation: both*, with an option to turn it off in
-   development builds.
-10. **Clipboard access:** never, or when the program allows it.
-    *Recommendation: when the program allows it.*
-11. **Placement:** M1 and M2 right after the product releases, ahead of the
-    conformance rebases, or after 1.0 (backend). *Recommendation: right
-    after the releases.*
-12. **Code mode.** (a) A `batch` tool of declared requests only; (b) also
-    run model-written scripts in an embedded interpreter, as Codex's `js`
-    tool does. *Recommendation: (a)*; model-written code never runs inside
-    a user's program, and a client with its own code mode can wrap our
-    tools.
-13. **Commands as tools.** Publish every `Command` with a stable ID as an
-    MCP tool automatically (each program can hide some), or only on
-    request. *Recommendation: automatically*, as App Intents and WebMCP
-    let applications declare their actions.
-14. **Consent in product builds.** Ask once per program and client
-    (remembered for the session or always), with no prompt for stdio
-    launches the user's own client made; or never ask beyond the launch
-    flag. *Recommendation: ask once for attach and HTTP, never for stdio.*
+1. **The launch argument.** `--mcp` (recommended), or another name. A
+   program started normally must not treat its standard input as MCP, so
+   some switch is needed.
+2. **"Special builds".** Which builds may suspend user input besides debug
+   builds? Recommendation: a build option `GUI_FORMS_MCP_TEST_CONTROLS`, off
+   in release presets, on in debug and test presets.
+3. **Dialogs.** Is this reading right: the model is refused while any
+   modal dialog is open, unless the program instruments that dialog, and
+   inside an instrumented dialog security steps always stop for the user?
+4. **Simulated time** (section 12): offer it in debug and special builds
+   only (recommended), everywhere, or not at all.
+5. **The tag line's name.** It shows the model when the client states it,
+   otherwise the client. Is a self-stated name acceptable, given there is no
+   sign-in? Recommendation: yes; with anonymous pipes the client is
+   whoever started the program.
+6. **rpclib's code.** Port it forward (bring its MIT code into STXlib and
+   rewrite it), or only follow its shape and write `stx_mcp` fresh.
+   Recommendation: follow its shape and write fresh; little of its code
+   survives the changes in 6.1, and STXlib carries no third-party code.
+7. **Destructive marks in documents.** Should form documents (FD) carry the
+   destructive mark on commands and actions, or code only?
 
 ## Sources
 
-Read in the repository: `AGENTS.md`; `src/host/surface/README.md`;
-`src/host/surface/input/surface_input.hpp`; `src/host/web/README.md` (for
-the window manager's input path); `include/gui_forms/semantics/types/
+Repository (read): `AGENTS.md`; `src/host/surface/README.md` and
+`input/surface_input.hpp`; `include/gui_forms/semantics/types/
 semantic_types.hpp`; `include/gui_forms/surface_root/surface_root.hpp`;
 `include/gui_forms/host/types/host_types.hpp`; `src/host/headless/session/
 headless_host.hpp`; `src/host/surface/manager/surface_manager.cpp`;
-`src/surface/windows/application/windows_host.cpp` (the automation channel);
+`src/surface/windows/application/windows_host.cpp`;
 `include/gui_forms/visual_inspection/types/visual_inspection_types.hpp`;
-`tools/normative_trace.py`, `tools/menu_probe.py`; `CMakeLists.txt`
-(`GUI_FORMS_WINDOWS_AUTOMATION_ENVIRONMENT`). On this branch:
-`planning/FORWARD_PROGRAMME.md`, `planning/ROADMAP_TO_1.0.md`,
-`planning/stages/README.md`, `planning/stages/release-1.0/README.md`.
+`tools/normative_trace.py`, `tools/menu_probe.py`; `CMakeLists.txt`.
+Notes (this branch): `planning/FORWARD_PROGRAMME.md`,
+`planning/ROADMAP_TO_1.0.md`, `planning/stages/README.md`,
+`planning/stages/release-1.0/README.md`.
 
-Outside: the MCP 2026-07-28 revision as summarised by
-blog.modelcontextprotocol.io and secondary write-ups (to confirm against
-modelcontextprotocol.io/specification/2026-07-28 before M2); Playwright
-MCP's documentation on accessibility snapshots (playwright.dev/mcp); the
-Chrome DevTools MCP comparisons. The other prior art in section 7 is from
-general knowledge of those projects and was not re-read for this study.
-
-Revision 2, on this computer: `~/.codex/config.toml` and the Codex plugin
-manifests (`~/.codex/plugins/cache/openai-bundled/*/.mcp.json`), Codex's
-browser documents (`docs/accessibility.md`, `api-use-behavior.md`,
-`webmcp.md`, `mcp-apps.md`), the strings of `SkyComputerUseClient`,
+This computer: `~/.codex/config.toml`, the Codex plugin manifests and
+browser documents, the strings of `SkyComputerUseClient`,
 `chrome-native-host`, `app-cu-helper` and `github-mcp-server`, Chrome's
-`NativeMessagingHosts` manifests, `~/.claude.json` and the Claude desktop
-configuration (no MCP servers configured there). Outside: Anthropic,
-"Code execution with MCP" (anthropic.com/engineering/code-execution-with-mcp,
-2025-11-04); Xcode 26.3 reports (InfoQ, 2026-02; danielsaidi.com,
-2026-04-30; Cursor's Xcode integration page); secondary reports on MCP in
-iOS 27 and macOS 27 (unverified).
+native-messaging manifests, the Claude configuration files. Account
+identifiers and tokens seen there are not reproduced.
+
+Outside: rpclib's repository page (github.com/rpclib/rpclib); the MCP
+2026-07-28 revision as summarised by blog.modelcontextprotocol.io and
+secondary write-ups (to confirm against the official text before X1);
+Anthropic, "Code execution with MCP" (2025-11-04); Xcode 26.3 reports
+(InfoQ, 2026-02; danielsaidi.com, 2026-04-30); Playwright MCP's
+documentation.
