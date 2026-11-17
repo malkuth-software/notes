@@ -3,7 +3,10 @@
 Date: 2026-11-17. Status: study for the owner; nothing below is decided
 unless it cites an owner ruling. Code-free: no GUI.Forms code was changed
 and nothing was built. Read against `checkpoint/2026-11-15-cp32` (#483),
-branch `claude/batch-cp33` at 65f7dad03.
+branch `claude/batch-cp33` at 65f7dad03. Revision 2 (same day) adds
+section 7.2-7.4: the MCP programs on this computer and how Anthropic,
+OpenAI and Apple approach it, and revises the transport, adds a `batch`
+tool, commands as tools, consent and per-tool approval.
 
 Owner rulings already given for this study (2026-11-17):
 - every GUI.Forms program should be drivable and inspectable by a model
@@ -40,8 +43,12 @@ built into the same program. No separate server program is needed:
   the Plan Paint bug), the program speaks MCP over its own standard input
   and output. The MCP client (Claude Code, for example) launches it like
   any other MCP server. No port, no file, no password.
-- **When the model attaches to a program already running**, the program
-  serves MCP over HTTP on 127.0.0.1 only, with a per-run token.
+- **When the model attaches to a program already running**, the client
+  starts the same executable in a light attach mode (`--mcp-attach`). It
+  opens no window: it finds the running instance's user-only local socket
+  and relays MCP to it. That is the pattern Xcode, Claude in Chrome and
+  Codex's computer use all follow (section 7.2), except that ours needs no
+  second program. Loopback HTTP stays possible, but off by default.
 
 Both are opt-in, and locked three ways (built in, allowed by the program,
 asked for at launch). About 9-13 worker units in six stages; the first two
@@ -105,11 +112,13 @@ met fully:
 | Situation | Transport | What the user configures |
 |---|---|---|
 | The model starts the program | stdio, inside the program | the program's path and `--mcp` |
-| The model attaches to a running program | HTTP on 127.0.0.1, inside the program | a URL and a token, printed by the program or written to a per-user file |
-| A program that cannot have its own standard input (launched by Finder, a shell association) | the same HTTP endpoint | as above |
+| The model attaches to a running program (launched by Finder, a file association, the user) | stdio to the same executable in attach mode, which relays over a user-only local socket to the running instance | the program's path and `--mcp-attach` (optionally a process ID or window title) |
+| A client that only speaks HTTP | HTTP on 127.0.0.1 with a per-run token, inside the program (off by default) | a URL and a token from a per-user file |
 
-A separate bridge program is then optional. It is only worth writing if
-clients turn out to handle local HTTP servers badly (section 6.4).
+No separate bridge program is needed: the attach shim is the program's own
+executable, started in a mode that opens no window. Every MCP-enabled
+desktop program found on this computer that lives in a long-running
+process does the same thing with a separate binary (section 7.2).
 
 Two consequences for programs:
 - **Standard output belongs to MCP in `--mcp` mode.** Anything else printed
@@ -223,7 +232,7 @@ from how models fail with them:
 
 ### 5.2 Tools
 
-Nine tools. Each takes an optional `window` (stable ID or title; default:
+Ten tools. Each takes an optional `window` (stable ID or title; default:
 the active window).
 
 | Tool | Arguments | Reply |
@@ -236,6 +245,7 @@ the active window).
 | `text` | `target`, then `read` (value, selection, lines, with offsets), `select` (anchor, caret, or a unit: word, line, all) | the text state; never for protected content (6.5) |
 | `wait` | `until`: `frame` (the next presented frame), `idle`, `ms` (real or virtual time), or a condition (`exists`, `gone`, `state`, `name`, `value` on a target); `timeout` | what happened, the diff since the call, the time spent |
 | `capture` | `target` (window or control), `kind` (`rendered` or `presented`), `margin`, `scale`, `overlays` | a PNG image plus its logical bounds and scale |
+| `batch` | `steps`: a list of the requests above (the script language of section 8), `stop_on_error` | one combined reply: each step's result and one diff for the whole batch |
 | `inspect` | `target`, `what`: `metrics`, `dispatcher`, `interaction`, `visual` (control state, parts, paint operations), `theme` (the winning rules per part and field), `schema` (what this control can do, from the registry); `since` (a mark, for deltas) | structured records, and a new mark |
 
 Why these and not more:
@@ -321,6 +331,7 @@ Named codes, most taken from existing result enums:
 | `host_cannot` | a host capability missing | which capability |
 | `timeout` | `wait` | what was still busy (dispatcher work, motion, timers) |
 | `protected` | protected content | none |
+| `user_active` | the real user typed or moved the pointer in the last second | hold the pointer lease, or wait |
 
 `during_paint` is never returned: the core retries at the next turn.
 
@@ -496,7 +507,15 @@ that GUI.Forms draws itself (warm Popup windows) are ordinary windows in
 **Local only.**
 - stdio needs no network and no authentication: only the process that
   started the program holds its pipes.
-- HTTP binds 127.0.0.1 (and ::1) only, never 0.0.0.0, on a random port.
+- Attach mode uses a local socket: a Unix-domain socket in a user-only
+  directory on macOS and Linux (`$XDG_RUNTIME_DIR/gui-forms/` or the
+  per-user temporary folder, mode 0700), a named pipe with a current-user
+  ACL and `PIPE_REJECT_REMOTE_CLIENTS` on Windows. The instance checks the
+  peer's user ID (`LOCAL_PEERCRED`, `SO_PEERCRED`,
+  `GetNamedPipeClientProcessId` and its token), as Claude's Chrome host
+  does ("peer uid ... != host euid", section 7.2). The socket exists only
+  while automation is enabled in that instance.
+- HTTP (off by default) binds 127.0.0.1 (and ::1) only, never 0.0.0.0, on a random port.
   A 256-bit token is generated per run and written with the port to a file
   readable only by the user (`$XDG_RUNTIME_DIR/gui-forms/<pid>.json`,
   `~/Library/Caches/...` on macOS, `%LOCALAPPDATA%` with a user-only ACL on
@@ -568,6 +587,8 @@ tests, made available on demand.
 
 ## 7. Prior art: what to copy and what to avoid
 
+### 7.1 Protocols and frameworks
+
 | Source | Copy | Avoid |
 |---|---|---|
 | **Chrome DevTools Protocol** | domains and versioning; events; `Accessibility.getFullAXTree`; `Input.dispatch*` going through the real input path; `Page.captureScreenshot`; `Emulation.setVirtualTimePolicy` (virtual time) | its size: hundreds of methods no model can choose among |
@@ -580,6 +601,147 @@ tests, made available on demand.
 | **Flutter (semantics tree, `flutter_driver`, the Dart and Flutter MCP server)** | the closest analogue: a toolkit that owns its pixels exposing its own tree, in process | a VM service reachable over the network |
 | **Squish and Qt Test** | object names as stable IDs; scripts that run on every platform; record and replay | commercial and per-toolkit tooling outside the program |
 | **Desktop MCP servers (Windows-MCP and macOS ones)** | they show models can use such tools | screenshots plus coordinate clicks as the main path: slow, fragile, and blind to state |
+
+### 7.2 The MCP programs on this computer
+
+Added 2026-11-17 at the owner's request. Found by reading the MCP
+configuration of Claude Code and Codex on the M4 workstation, the app
+bundles of Claude and ChatGPT, Chrome's native-messaging manifests and the
+installed plugins, then reading each binary's strings and bundled
+documents. Nothing was run. Xcode is not installed here (only the command
+line tools), so Xcode's design comes from published sources (7.3). Account
+identifiers and tokens seen in configuration files are not reproduced.
+
+| Program | Who | Language | Client-facing transport | How it reaches the capability | Safety mechanisms seen |
+|---|---|---|---|---|---|
+| **Claude in Chrome**: `Claude.app/Contents/Helpers/chrome-native-host` | Anthropic | Rust | a Unix-domain socket named `claude-mcp-browser-bridge-<user>`; Claude Code connects as the MCP client | the same binary is Chrome's native-messaging host and relays over stdio to the Chrome extension, which drives the page | peer credential check: rejects a connection whose peer user ID differs from its own ("peer uid ... != host euid"); status records (`mcp_connected`, `mcp_disconnected`) |
+| **Claude computer use**: `Claude.app/Contents/Helpers/app-cu-helper` | Anthropic | Rust | JSON-RPC 2.0 to the Claude app (not MCP itself; the app turns it into tools) | CGEvent input, AX reads, window activation | a long list of named refusals before acting: secure input active, a secure text field, the user actively typing, a sheet or modal on the target window, a foreign process under the point, the window gone or hidden, a pop-up menu, the type budget exhausted; a `dryRun` mode |
+| **Built-in browser, terminal, iOS Simulator** (`mcp__Claude_Browser__*`, `mcp__terminal__*`, `mcp__Claude_Code_iOS_Simulator__*`) | Anthropic | the Claude desktop app (Electron) and `Claude iOS Sim.app` | MCP servers inside the desktop app, offered to the Claude Code sessions it runs | the app's own browser pane; the simulator through a helper app | per-site approval in the pane; the simulator asks for device access on first use |
+| **GitHub MCP server**: bundled in `Claude.app/.../resources/github-mcp/github-mcp-server` | GitHub, shipped by Anthropic | Go (the Go MCP SDK) | stdio | the GitHub API | OAuth, with a scopes listing command (`list-scopes`); toolsets switchable |
+| **Codex computer use**: `~/.codex/computer-use/Codex Computer Use.app` | OpenAI | Swift (the Swift MCP SDK) | stdio, from `SkyComputerUseClient mcp` inside the app bundle (disabled in this configuration) | the client talks to `SkyComputerUseService`, a separately signed app holding the macOS Accessibility and Screen Recording permissions, over Mach ports | an app approval store with persistence levels (once, turn, session, always); a lock-screen guardian; analytics per approval |
+| **Codex unified computer use and browser**: `cua_repl`, `node_repl` from `ChatGPT.app` | OpenAI | Node.js | stdio | **one tool, `js`**: the model writes JavaScript in a persistent REPL against a browser and computer API (`tab.ax.click(42)`, `tab.ax.write()`), and the REPL reaches the browser extension and the computer-use service over a pipe | trusted code paths and services named in the environment; a hash-pinned browser client; per-site approvals |
+| **Codex app tools**: `codex-app-tools/server.mjs` | OpenAI | Node.js | stdio | the Codex app's threads and automations | **per-tool approval modes** in the server's manifest: reads approve automatically, while `create_thread`, `delete_thread`, `send_message_to_thread` and the like prompt |
+| **ChatGPT for Chrome**: native host `com.openai.codexextension` | OpenAI | native binary | Chrome native messaging (stdio) | the Chrome extension | extension IDs pinned in the manifest |
+
+How these programs shape their tools:
+- **Codex computer use (Swift)**: `list_apps`, `get_app_state` (the AX
+  tree with `element_index` numbers, plus a screenshot), `click`,
+  `type_text`, `press_key`, `scroll`, `drag`, `set_value`,
+  `perform_secondary_action`. Each action replies only "Action completed.
+  Call `get_app_state` to fetch the updated UI state", so every step costs
+  a second call and a whole new tree. Its own instructions insist on
+  calling `get_app_state` first.
+- **Codex's browser API (newer)**: the same vocabulary, but the state is
+  "returned as a diff from the previous accessibility tree, listing only the
+  elements that were removed, added, or changed" by default, and the model
+  is told to batch several actions and one state read into a single `js`
+  call. It also prefers **page-defined tools** when a page offers them
+  (WebMCP: `tab.capabilities.get("webmcp")`, then `tools.call(...)`), and
+  can drive **MCP Apps** shown in a side panel.
+- **Claude in Chrome and the built-in browser**: `read_page` (an
+  accessibility tree with `ref_N` handles), `find`, `computer` (click,
+  type, key, scroll, screenshot, zoom), `form_input`, `get_page_text`,
+  `navigate`, and a `browser_batch` tool that runs several actions in one
+  round trip.
+
+### 7.3 How Anthropic, OpenAI and Apple approach it
+
+**Anthropic.**
+- Ships MCP servers in three shapes: inside the desktop app (the browser
+  pane, the terminal, the simulator), as a helper binary behind a
+  user-only socket (Claude in Chrome), and bundled third-party servers
+  (GitHub). Claude Code can itself be run as an MCP server.
+- Its engineering post "Code execution with MCP" (2025-11-04) argues that
+  tool definitions and intermediate results filling the model's context are
+  the main cost, and proposes presenting servers as code APIs the model
+  calls from a sandbox; it reports one task falling from about 150,000
+  tokens to about 2,000. The caveat it states: running generated code needs
+  a sandbox, limits and monitoring.
+- In practice its own tools answer that cost with batching
+  (`browser_batch`), deferred tool loading (the tool search this session
+  uses), compact accessibility trees with handles, and named refusals with
+  reasons (the computer-use helper).
+
+**OpenAI (Codex).**
+- Everything is stdio, configured in `~/.codex/config.toml` or a plugin's
+  `.mcp.json`, with per-tool approval modes and startup timeouts in the
+  configuration.
+- Computer use is split into an unprivileged MCP client and a privileged,
+  separately signed service that holds the operating system's permissions,
+  joined by Mach ports.
+- The newest pieces have moved to "code mode": one `js` tool and a
+  persistent REPL, with diffs, batching and page-defined tools preferred to
+  generic clicks.
+
+**Apple.**
+- Xcode 26.3 (2026-02-26) exposes its own capabilities to agents over MCP:
+  building, testing, searching documentation, reading the project, and
+  capturing SwiftUI Previews so an agent can see the interface it builds.
+  The user turns it on in Xcode's Intelligence settings and registers
+  `xcrun mcpbridge` as a stdio server; `mcpbridge` relays to the running
+  Xcode over XPC.
+- Reported problems: Xcode asks "Allow 'agent' to access Xcode?" for each
+  new agent process, which users find tiresome enough to script a click on
+  it; and the 26.3 bridge returned results in `content` but not in
+  `structuredContent` although its tools declared an output schema, which
+  broke stricter clients.
+- Secondary reports (not checked against Apple's documentation) say iOS 27
+  and macOS 27 extend MCP beyond Xcode, with App Intents as the way apps
+  declare actions agents can call, and servers registered explicitly by the
+  user or by device management. App Intents is Apple's equivalent of a
+  program declaring its own commands; it is not UI automation.
+
+### 7.4 What this changes for GUI.Forms
+
+1. **Stdio is what clients expect.** Every server on this computer faces
+   its client over stdio, or over a local socket for one special case. None
+   of the GUI programs serves loopback HTTP. So the attach case should be a
+   local socket reached through a stdio shim, not HTTP. Our shim can be the
+   program's own executable in attach mode, which gives the owner "built
+   in, no separate server" while matching how Xcode, Claude in Chrome and
+   Codex do it. (Section 3 and decision 2 are revised accordingly.)
+2. **In-process is our advantage.** Codex and Claude computer use need a
+   separately signed service holding Accessibility and Screen Recording
+   permissions, and still see only what AX shows. Xcode needs an XPC bridge.
+   A GUI.Forms program needs no operating-system permission at all to
+   describe and drive itself, and sees its own parts, states, theme rules
+   and frames.
+3. **Reply with diffs.** Codex's first computer-use tools made the model
+   re-read the whole tree after every action; its newer API diffs by
+   default. This confirms section 5.4.
+4. **Offer a batch.** Both companies added a way to run several actions in
+   one call (`browser_batch`, the `js` tool). GUI.Forms should add a
+   `batch` tool that takes a list of requests in the script language of
+   section 8 and returns one combined reply. That gives most of code
+   mode's saving without executing model-written code inside a user's
+   program. A client that has its own code mode can still wrap our tools.
+5. **Program-declared tools matter.** WebMCP pages, App Intents and Xcode's
+   own tools all let the application declare what it can do, which is more
+   reliable than clicking. GUI.Forms already has `Command`s with stable IDs;
+   publishing them as tools automatically (each command a callable action,
+   with its enabled state) costs little and should come early (M3), with
+   the richer program tools of M5 later.
+6. **Consent once, at the right grain.** Xcode's prompt for every agent
+   process is the reported annoyance; Codex keeps approvals per app with
+   persistence (once, turn, session, always). GUI.Forms: development builds
+   need none beyond the launch flag; product builds ask once per program
+   and client, remembered for the session or always, and stdio launches
+   (where the user's client started the program) need no prompt.
+7. **Refuse with reasons.** Claude's computer-use helper refuses before
+   acting when the user is typing, a secure field is focused, or a modal
+   sheet covers the target. GUI.Forms should refuse synthetic input
+   likewise when the real user has typed in the last second (unless the
+   session holds the pointer lease and the user is idle), with a named
+   code, `user_active`.
+8. **Approval per tool.** Codex's manifests mark reads as automatic and
+   destructive tools as prompting. MCP's tool annotations
+   (`readOnlyHint`, `destructiveHint`) say the same to any client:
+   `snapshot`, `capture`, `inspect` and `wait` are read-only; `act`,
+   `pointer`, `keyboard` and `batch` are not.
+9. **Test the protocol, not only the behaviour.** Xcode's
+   `structuredContent` mismatch broke clients. The MCP front's tests must
+   validate every reply against its declared output schema, and run an MCP
+   conformance client in CI.
 
 ## 8. Testing and use
 
@@ -642,8 +804,8 @@ Sizes in worker units (U), as in the roadmap. The web host is excluded
 |---|---|---|---|---|
 | M0 | This study; owner decisions | none | S+O | done when accepted |
 | M1 | Automation core on the headless host: requests and replies as records, outline and JSON snapshots, diffs, `act`, synthetic input through `HostSession`, the wait machine and idle, `rendered` capture, `inspect` metrics, dispatcher and interaction; the script runner and `expect`; tests | M0 | C+B | 2-3 |
-| M2 | MCP front built in: stdio and loopback HTTP, the three locks, the token file, the sign while connected, standard output redirection, tool schemas, resources; `presented` capture; the pointer lease; on macOS, Windows and X11 | M1 | C+B+M+W | 2-3 |
-| M3 | Modal loops and reentrancy rules moved into the core; popups, menus, the ribbon, owned windows; the dialog lease; `invoke_command`; the surface window manager path; retire the Windows channel and its probes | M2 | C+B | 1.5-2 |
+| M2 | MCP front built in: stdio, attach mode over a local socket with the peer check, loopback HTTP (off by default), the three locks, the token file, consent in product builds, tool annotations, schema validation of every reply, the sign while connected, standard output redirection, tool schemas, resources; `presented` capture; the pointer lease; on macOS, Windows and X11 | M1 | C+B+M+W | 2-3 |
+| M3 | Modal loops and reentrancy rules moved into the core; popups, menus, the ribbon, owned windows; the dialog lease; `invoke_command` and commands published as tools; `batch`; the `user_active` refusal; the surface window manager path; retire the Windows channel and its probes | M2 | C+B | 1.5-2 |
 | M4 | Inside controls: `visual` (parts and part states), `theme` provenance, metric marks and deltas; virtual time (and the timer and scheduler check) | M1 | C+B | 1.5-2 |
 | M5 | C ABI table (policy, hidden marking, idling token, program tools), C# binding, the products' own tools (Plan Paint first) | M2, the ABI audit | C+B+W | 1.5-2 |
 | M6 | Native cross-check against UIA, AX and AT-SPI; stable ID coverage in conformance; prompts | M2 | C+B | 1 |
@@ -672,10 +834,13 @@ releasing the products, so nothing here starts before that. Afterwards:
    *Recommendation: (b)*, with the program lock defaulting to refuse and
    each product choosing; it serves "for everything" without opening
    anything by default.
-2. **Transport.** (a) Built in: stdio when the client starts the program,
-   loopback HTTP with a token to attach; (b) also a separate stdio bridge
-   program; (c) stdio only. *Recommendation: (a)*, matching the owner's
-   preference; add (b) only if clients handle local HTTP badly.
+2. **Transport.** (a) Built in: stdio when the client starts the program;
+   to attach, the same executable in `--mcp-attach` mode relays over a
+   user-only local socket; loopback HTTP available but off; (b) as (a), but
+   HTTP to attach (the first version's recommendation); (c) stdio only, no
+   attach. *Recommendation: (a)*. It keeps everything in the program, as
+   the owner prefers, and matches what every MCP desktop program on this
+   computer and Xcode do (section 7.4, point 1).
 3. **The real pointer.** (a) A pointer lease that drops the adapter's
    pointer events for the window while a session holds it; (b) mix real and
    synthetic input. *Recommendation: (a)*.
@@ -702,6 +867,19 @@ releasing the products, so nothing here starts before that. Afterwards:
 11. **Placement:** M1 and M2 right after the product releases, ahead of the
     conformance rebases, or after 1.0 (backend). *Recommendation: right
     after the releases.*
+12. **Code mode.** (a) A `batch` tool of declared requests only; (b) also
+    run model-written scripts in an embedded interpreter, as Codex's `js`
+    tool does. *Recommendation: (a)*; model-written code never runs inside
+    a user's program, and a client with its own code mode can wrap our
+    tools.
+13. **Commands as tools.** Publish every `Command` with a stable ID as an
+    MCP tool automatically (each program can hide some), or only on
+    request. *Recommendation: automatically*, as App Intents and WebMCP
+    let applications declare their actions.
+14. **Consent in product builds.** Ask once per program and client
+    (remembered for the session or always), with no prompt for stdio
+    launches the user's own client made; or never ask beyond the launch
+    flag. *Recommendation: ask once for attach and HTTP, never for stdio.*
 
 ## Sources
 
@@ -724,3 +902,15 @@ modelcontextprotocol.io/specification/2026-07-28 before M2); Playwright
 MCP's documentation on accessibility snapshots (playwright.dev/mcp); the
 Chrome DevTools MCP comparisons. The other prior art in section 7 is from
 general knowledge of those projects and was not re-read for this study.
+
+Revision 2, on this computer: `~/.codex/config.toml` and the Codex plugin
+manifests (`~/.codex/plugins/cache/openai-bundled/*/.mcp.json`), Codex's
+browser documents (`docs/accessibility.md`, `api-use-behavior.md`,
+`webmcp.md`, `mcp-apps.md`), the strings of `SkyComputerUseClient`,
+`chrome-native-host`, `app-cu-helper` and `github-mcp-server`, Chrome's
+`NativeMessagingHosts` manifests, `~/.claude.json` and the Claude desktop
+configuration (no MCP servers configured there). Outside: Anthropic,
+"Code execution with MCP" (anthropic.com/engineering/code-execution-with-mcp,
+2025-11-04); Xcode 26.3 reports (InfoQ, 2026-02; danielsaidi.com,
+2026-04-30; Cursor's Xcode integration page); secondary reports on MCP in
+iOS 27 and macOS 27 (unverified).
