@@ -1,8 +1,8 @@
 # Study: MCP built into every GUI.Forms program
 
-Date: 2026-11-17, revision 3. Status: the owner's rulings of 2026-11-17
-are recorded in section 1 and the design follows them. Section 17 lists
-what is still open. Code-free: no GUI.Forms or STXlib code was changed
+Date: 2026-11-17, revision 3 (answers and extensions added 2026-11-18). Status: the owner's rulings of 2026-11-17
+are recorded in section 1 and the design follows them. Section 17 records
+the answers of 2026-11-18 and section 18 the owner's extensions. Code-free: no GUI.Forms or STXlib code was changed
 and nothing was built. Read against `checkpoint/2026-11-15-cp32` (#483),
 branch `claude/batch-cp33` at 65f7dad03.
 
@@ -733,32 +733,99 @@ After the product releases, before the 1.0 freeze, not this week (ruling
 | G3 | GUI.Forms | control and safety: first come first served, `suspend_input` (debug and special builds), `model.directed` with its popup and state machine, dialog refusal and instrumentation, security steps, password rules, destructive marks and the per-launch question | G2 | 2 |
 | G4 | GUI.Forms | the visible signs: the border glint on the active border and window band, the tag line | G2, the window band | 1 |
 | G5 | GUI.Forms | the C ABI (destructive marks, model-drivable dialogs, hidden commands, the identity) and the C# binding; retire the Windows channel and the X11 flag; convert the probes | G3 | 1.5-2 |
+| G6 | GUI.Forms | section 18: event propagation, layout reasons, resources and state summaries in `inspect`; `forms export`, `validate`, `apply`, `revert` and the build toggle to write out form documents | G2, FD | 2-3 |
 
-About 10-14 U. The ABI additions in G5 must land before the 1.0 freeze.
+About 12-17 U with G6. The ABI additions in G5 must land before the 1.0 freeze.
 
-## 17. Open questions
+## 17. Answers of 2026-11-18, and what is still open
 
-1. **The launch argument.** `--mcp` (recommended), or another name. A
-   program started normally must not treat its standard input as MCP, so
-   some switch is needed.
-2. **"Special builds".** Which builds may suspend user input besides debug
-   builds? Recommendation: a build option `GUI_FORMS_MCP_TEST_CONTROLS`, off
-   in release presets, on in debug and test presets.
-3. **Dialogs.** Is this reading right: the model is refused while any
-   modal dialog is open, unless the program instruments that dialog, and
-   inside an instrumented dialog security steps always stop for the user?
-4. **Simulated time** (section 12): offer it in debug and special builds
-   only (recommended), everywhere, or not at all.
-5. **The tag line's name.** It shows the model when the client states it,
-   otherwise the client. Is a self-stated name acceptable, given there is no
-   sign-in? Recommendation: yes; with anonymous pipes the client is
-   whoever started the program.
-6. **rpclib's code.** Port it forward (bring its MIT code into STXlib and
-   rewrite it), or only follow its shape and write `stx_mcp` fresh.
-   Recommendation: follow its shape and write fresh; little of its code
-   survives the changes in 6.1, and STXlib carries no third-party code.
-7. **Destructive marks in documents.** Should form documents (FD) carry the
-   destructive mark on commands and actions, or code only?
+1. **The launch argument: `--mcp`** (owner). Why one is needed at all, as
+   the owner asked: the build option only makes the capability *present*.
+   Every program, however it is started, has a standard input: a terminal,
+   a file, another program's pipe, or nothing. If a GUI.Forms program
+   always read its standard input as MCP, a program started from a terminal
+   would sit waiting for JSON that never comes, and one started by a script
+   that pipes text into it would read that text as broken requests. `--mcp`
+   is the client saying "these pipes are an MCP conversation". Without it
+   the capability stays dormant: no thread, nothing read.
+2. **Special builds.** The owner answered "--mcp" here. Read as: a special
+   build is one configured with an MCP test switch beside the ordinary one
+   (proposed spelling: the build option `GUI_FORMS_MCP_TEST_CONTROLS`, set
+   by `tools/ci_build.py --mcp-test`), which admits `suspend_input`. To be
+   confirmed with the owner; nothing depends on it until stage G3.
+3. **Dialogs: agreed** as written in 9.2 and 9.3.
+4. **Simulated time: dropped from scope.** The owner does not see where it
+   is needed, and on reflection it is needed nowhere essential: the tests
+   (now in `gui_forms_tests`) already drive the headless host with
+   caller-supplied timestamps, which is deterministic. Its only use would be
+   reproducing a timing bug exactly in a live program. Revisit only if such
+   a bug comes up.
+5. **The tag line's name: agreed** (the client's own statement).
+6. **rpclib: follow its shape, write `stx_mcp` fresh** (owner).
+7. **Destructive marks in form documents: decided by the existing model,
+   no owner call needed.** Form documents (`.form` files, stage FD) describe
+   a window's controls, properties and commands as data and are compiled
+   into C++. The forward programme makes the C++ API, form documents and
+   themes projections of one registry. The destructive mark is a registry
+   property of commands and actions, so it is settable in code and in
+   `.form` alike, with code as the default place.
+
+## 18. Extensions from the owner's roadmap notes (2026-11-18)
+
+### 18.1 Automatic semantic instrumentation
+
+The owner wants the MCP surface to tell a model that cannot see the screen
+as much as is useful, concisely, because GUI.Forms owns the whole stack.
+Beyond the outline and `inspect` of section 7, `inspect` gains:
+- **event propagation**: for the last input, or the next one, the route it
+  took: hit test, capture, the controls offered it, who handled it, the
+  commands it fired. The core already decides each step; it records them in
+  a bounded trace while a model is connected;
+- **layout reasons**: why a control has its size and place: the panel, its
+  rules (flex, grid, anchors), the constraints that bound it, and which ones
+  were tight;
+- **resources**: images, fonts, theme bakes and allocations attributable to
+  a window or control (the existing allocation statistics and image
+  registry snapshots);
+- **state summaries**: a one-paragraph plain description of a window,
+  generated from the tree (what it is, what is selected, what is enabled,
+  what is waiting on the user), so a model can start from words rather than
+  a tree.
+
+Each is opt-in per call, bounded, and text first, so the concise default
+does not grow.
+
+### 18.2 Dynamic interfaces and structural patching
+
+GUI.Forms compiles interfaces from form documents, but already changes and
+invalidates them at run time (data, tables, ribbon panels). The owner's
+note: a compiled program exposes a typed vocabulary (controls, properties,
+layouts, commands), and a model could compose new interface from it at run
+time **without introducing executable code**, validated before it is
+instantiated, because every primitive is compiled in.
+
+In practice (owner): an MCP capability plus a build toggle that lets a
+program write out the form documents it was built from (when they are not
+shipped with it) and accept replacements, as is already planned for themes
+(user themes, `--theme`, theme export). Proposed tools, in a stage G6:
+- `forms export`: the form document of a window, as the program has it;
+- `forms validate`: a candidate document checked against the registry and
+  the program's commands and bindings, with the theme language's diagnostic
+  rules (unknown properties warn, bad values fail);
+- `forms apply`: a validated document replaces a window's structure, or a
+  named part of it (structural patching), keeping bindings to the program's
+  data and commands; bad documents leave the window as it was;
+- `forms revert`: back to the compiled form.
+
+Rules: only registry vocabulary, no code; bindings only to what the program
+already exposes; a replaced form is marked in the window (the border tag
+line says so); applying counts as destructive unless the program says
+otherwise. Use: prototyping looks and layouts by sending documents to a
+demo program; a model composing a workflow-specific panel over a program's
+existing commands.
+
+The owner also listed better animation of ribbon transforms for
+discussion; it belongs with the ribbon (RB), not here.
 
 ## Sources
 
