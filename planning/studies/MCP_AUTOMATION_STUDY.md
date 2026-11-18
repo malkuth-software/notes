@@ -748,11 +748,12 @@ About 12-17 U with G6. The ABI additions in G5 must land before the 1.0 freeze.
    that pipes text into it would read that text as broken requests. `--mcp`
    is the client saying "these pipes are an MCP conversation". Without it
    the capability stays dormant: no thread, nothing read.
-2. **Special builds.** The owner answered "--mcp" here. Read as: a special
-   build is one configured with an MCP test switch beside the ordinary one
-   (proposed spelling: the build option `GUI_FORMS_MCP_TEST_CONTROLS`, set
-   by `tools/ci_build.py --mcp-test`), which admits `suspend_input`. To be
-   confirmed with the owner; nothing depends on it until stage G3.
+2. **Special builds** (owner, 2026-11-18): `--mcp` on launch serves both
+   ordinary and special builds; the build switches are a different place
+   and are CMake cache options of the `-D<name>=TRUE` kind: `-DGUI_FORMS_MCP=TRUE`
+   (the capability, on by default) and `-DGUI_FORMS_MCP_TEST_CONTROLS=TRUE`
+   (a special build: admits `suspend_input`; off in release presets, on in
+   debug and test presets).
 3. **Dialogs: agreed** as written in 9.2 and 9.3.
 4. **Simulated time: dropped from scope.** The owner does not see where it
    is needed, and on reflection it is needed nowhere essential: the tests

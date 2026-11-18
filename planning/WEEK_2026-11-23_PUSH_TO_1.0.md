@@ -43,15 +43,20 @@ made with the existing capture tools (`Window::capture_window`).
 
 ### 1.3 Engine imports from Codex
 
-| # | Item | Notes |
-|---|---|---|
-| E1 | The squircle convolution algorithm for buttons | for the button shape; measured against the current rounded rectangle for cost and look |
-| E2 | Control outline rounding | the same family, for outlines |
-| E3 | Normalised sinc, cos and the like | only if fast (the math policy: fast first, under 1 ulp where it costs nothing) |
-| — | Gaussian | skipped (owner: not worth it) |
+Both come from the owner's Codex sessions on this machine (found
+2026-11-18).
 
-The source of these imports is not in the repositories this session can
-see (question 1).
+| # | Item | Where it is | Notes |
+|---|---|---|---|
+| E1 | The CONV squircle for buttons | `~/Documents/Codex/2026-11-17/i/outputs/`: the tester (`conv-squircle.html`), the source and tests (`conv-squircle-source.zip`), and three derivations (`CONV-math.md`, `CONV-circle-square-math.md`, `CONV-flat-smoothstep-math.md`) | CONV here is Compact Ordered Nodal Variation (stx_conv's mathematics), not convolution. The owner's last direction is the **flat smoothstep family**: exact straight sections whose anchors slide along the sides (0 % is a circle with four marked points, 100 % a square), all turning in the corners, convex, with C4 joins. Port it to C++ as an engine shape primitive and measure it against the current rounded rectangle for cost and look |
+| E2 | Control outline rounding | the same family | outlines and focus rings follow the button shape |
+| E3 | Normalised sinc, half-turn sine and cosine | STXlib, local branch `codex/pi-trig-and-interval-study` at `f341b2c` (in `~/Developer/stxlib_workers/integration/stxlib`): `sinpi`, `cospi`, `sincospi`, `sincpi`, `sinc`, `sinc_radians`, `cosm1`, `cosm1pi`, for `float` and `double` | measured on the M4: the double `sincospi` pair 3.87 ns against Apple's 2.04 ns, largest observed error 0.501493 ULP over 172,288 inputs (MPFR); it goes through STXlib's integrator, then GUI.Forms takes it with the stx pin |
+| — | Gaussian | the same branch adds `gaussian_interval` | skipped (owner: not worth it): left out of the fold |
+
+The same Codex work also left an opt-in `pow` candidate (10.96 to 8.57 ns
+a call on the M4, 0.5017 ULP largest measured error); it was not asked for
+here and stays an STXlib decision. The owner's hash function research runs
+in the same Codex instance and is STXlib's, not this week's GUI.Forms work.
 
 ### 1.4 The tools
 
@@ -59,7 +64,7 @@ see (question 1).
 |---|---|---|
 | T1 | Theme editor | started (malkuth-tools `claude/theme-editor`, on SwiftEdit's CodeEditor) |
 | T2 | WYSIWYG editor (stage D) | open |
-| T3 | WinForms reflector | question 2: the reflection stage R, the mirrored-mode launcher (roadmap 5.5, proof of concept on SDR#), or both |
+| T3 | WinForms reflector | stage R, the SDR# reflection (owner, 2026-11-18) |
 
 These are Block 5 tools (closed source, `malkuth-tools`). The roadmap
 places them after 1.0 (backend); the owner's list brings them into the
@@ -178,7 +183,48 @@ an outbound e-mail to the EFF and a possible workaround. The study should:
 - wait for the EFF's answer before any code. No legal conclusion is drawn
   here.
 
-### 3.4 Dynamic interfaces
+### 3.4 CONV resizing: memory, and a true 2D field
+
+The owner asked ChatGPT about Plan Paint's CONV resize and found two
+gaps worth research. Both are confirmed in the code:
+
+- **Memory.** `plan-paint/src/conv.cpp` (`resize_image`) turns the 8-bit
+  image into premultiplied `double`s (32 bytes a pixel against 4), resizes
+  one axis into a whole intermediate image of doubles, resizes the other
+  axis into a whole output image of doubles, then converts back. For a
+  4000 x 3000 image enlarged to 8000 x 6000, the peak is about 2.9 GB
+  (input 384 MB, intermediate 768 MB, output 1.5 GB, result 192 MB) for a
+  48 MB picture, about 60 times its size. GUI.Forms' own interpolation
+  (`src/core/interpolation/interpolation.cpp`, used by the Skia map scale)
+  works on `double` lines too, and builds a profile and workspace for every
+  line it evaluates instead of reusing them (house style section 1).
+- **One dimension at a time.** Both resize separably: a pass of 1D CONV
+  lines down the columns, then along the rows (the order depends on whether
+  the height shrinks). The variation limiting that makes CONV what it is
+  then acts along each axis alone, so an edge at 45 degrees is treated
+  differently from a vertical one, and the result depends on the pass order.
+  A true 2D field would hold the nodes on the lattice with currents and
+  their admission in two dimensions.
+
+The study should:
+1. measure today's peak memory and time on a fixed set of images and sizes
+   (the perf-lab rule: measure before claiming);
+2. design a streaming resize: CONV's support is compact, so the second pass
+   needs only a few rows of the first; work in strips, from 8-bit to 8-bit
+   with premultiplication in registers, with `float` or fixed point where the
+   error budget allows, and reuse plans and workspaces; the target is a peak
+   of source plus destination plus a few strips;
+3. work out the mathematics of a 2D CONV field (nodes, currents and
+   admission on the lattice, from the CONV paper's line construction), and
+   what it costs against the separable form;
+4. compare the two on diagonal-edge and rotated test charts (orientation
+   dependence, ringing and overshoot, pass-order dependence), keeping the
+   current separable resize as the reference;
+5. say what moves into stx_conv, GUI.Forms' interpolation and Plan Paint.
+
+It suits the same kind of research thread that produced the squircle.
+
+### 3.5 Dynamic interfaces
 
 Folded into the MCP study (section 18.2). Its discussion item, better
 animation of ribbon transforms, goes to the ribbon stage.
@@ -195,8 +241,5 @@ animation of ribbon transforms, goes to the ribbon stage.
 
 ## 5. Questions for the owner
 
-1. **The Codex imports** (squircle convolution, outline rounding,
-   normalised sinc and cos): where are they? Neither the Codex workspace on
-   this machine nor the repositories show them.
-2. **The WinForms reflector:** stage R (SDR# reflection), the mirrored-mode
-   launcher, or both?
+None open on this plan as of 2026-11-18 (the Codex imports were found and
+the reflector is stage R).
