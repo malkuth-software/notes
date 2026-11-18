@@ -51,12 +51,18 @@ Both come from the owner's Codex sessions on this machine (found
 | E1 | The CONV squircle for buttons | `~/Documents/Codex/2026-11-17/i/outputs/`: the tester (`conv-squircle.html`), the source and tests (`conv-squircle-source.zip`), and three derivations (`CONV-math.md`, `CONV-circle-square-math.md`, `CONV-flat-smoothstep-math.md`) | CONV here is Compact Ordered Nodal Variation (stx_conv's mathematics), not convolution. The owner's last direction is the **flat smoothstep family**: exact straight sections whose anchors slide along the sides (0 % is a circle with four marked points, 100 % a square), all turning in the corners, convex, with C4 joins. Port it to C++ as an engine shape primitive and measure it against the current rounded rectangle for cost and look |
 | E2 | Control outline rounding | the same family | outlines and focus rings follow the button shape |
 | E3 | Normalised sinc, half-turn sine and cosine | STXlib, local branch `codex/pi-trig-and-interval-study` at `f341b2c` (in `~/Developer/stxlib_workers/integration/stxlib`): `sinpi`, `cospi`, `sincospi`, `sincpi`, `sinc`, `sinc_radians`, `cosm1`, `cosm1pi`, for `float` and `double` | measured on the M4: the double `sincospi` pair 3.87 ns against Apple's 2.04 ns, largest observed error 0.501493 ULP over 172,288 inputs (MPFR); it goes through STXlib's integrator, then GUI.Forms takes it with the stx pin |
-| — | Gaussian | the same branch adds `gaussian_interval` | skipped (owner: not worth it): left out of the fold |
+| E4 | The faster `pow` | `~/Documents/Codex/2026-11-18/e/outputs/stxlib-pow-grid.patch`, with `pow-investigation.md` and `stxlib-pow-study.zip` beside it (not yet on a branch) | approved for use (owner, 2026-11-18): keep x^y = 2^(y log2 x) and compute the small remainder of log2 x more carefully; 10.96 to 8.57 ns a call on the M4, analytical budget 0.509425 ULP, largest measured 0.501712 ULP over 2.45 million pairs, no fast-math. Through STXlib's integrator onto a branch, then the stx pin |
+| — | Gaussian | `f341b2c` adds `gaussian_interval` in the same commit as E3 | rejected (owner, 2026-11-18): it needs a 140 KiB table and produces tiny numbers, and STXlib blocks subnormals. The fold of E3 must strip it: `gaussian.cpp`, `gaussian_table.inc`, `gaussian_tail_terms.inc`, `tools/math/gen_gaussian_table.py`, and its entries in `dispatch.cpp`, the headers and the tests |
 
-The same Codex work also left an opt-in `pow` candidate (10.96 to 8.57 ns
-a call on the M4, 0.5017 ULP largest measured error); it was not asked for
-here and stays an STXlib decision. The owner's hash function research runs
-in the same Codex instance and is STXlib's, not this week's GUI.Forms work.
+The owner's hash research runs in the same Codex instance and is not this
+week's GUI.Forms work. Its latest output is
+`~/Documents/Codex/2026-11-18/e/outputs/chunked-exact-certificates.zip`
+(with `chunked-exact-certificates.md`): a Python reference that appends one
+reversible certificate to a file of any length, chunked in 1 MiB pieces with
+repeated chunks stored once; the certificate determines the payload exactly,
+so two different payloads cannot share one, at the price of a variable-length
+certificate. Earlier stages are `exact-self-certification.md` and
+`self-hashing-research.md` in the same folder.
 
 ### 1.4 The tools
 
