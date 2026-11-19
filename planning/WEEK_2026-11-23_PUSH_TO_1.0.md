@@ -271,6 +271,6 @@ animation of ribbon transforms, goes to the ribbon stage.
 
 ## 5. Questions for the owner
 
-On this plan, none. On `stx_filesign` (FS-filesign.md, section 10): whether
-to keep the specification's wire magic (`STXSEAL1` and the record markers)
-or rename it and regenerate the vectors, and the program names.
+On this plan, none. On `stx_filesign` (FS-filesign.md, section 10): one
+HSS level or two (recommended: two, so the key that signs each file is
+generated fresh from noise and erased).
