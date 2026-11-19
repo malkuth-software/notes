@@ -250,4 +250,8 @@ animation of ribbon transforms, goes to the ribbon stage.
 
 ## 5. Questions for the owner
 
-None open as of 2026-11-19.
+On touch (TC brief, section 8): which OS the Pi 4 runs for the 1.0 touch
+dogfooding (proposed: Linux with the existing X11 host now, the FreeBSD
+appliance host when STXlib's display and input land), and whether the iPad
+and iPhone are only for observation or GUI.Forms should gain an iOS surface
+host.
