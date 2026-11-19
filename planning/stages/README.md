@@ -61,6 +61,7 @@ and 1.0 Stable; the release names 0.6 Bindings and 0.7 Designers are retired
 | D | [Interface builder](D-interface-builder/README.md) | Tools (after 1.0 backend) | T3, L, FD | not started; a closed-source tool (owner, 2026-10-27) |
 | H | [HTML import and layout designer](H-html-import/README.md) | after 1.0 | L, T3 | earlier attempt discarded; placed after 1.0 (owner, 2026-10-27) |
 | V | [Theme designer](V-theme-designer/README.md) | Tools (after 1.0 backend) | T4, D core | not started; whether it is one of the closed-source tools is open |
+| TC | [Touch for embedded and industrial interfaces](TC-touch/README.md) | towards 1.0 (owner, 2026-11-19) | none to start | brief written 2026-11-19; TC0 (study and panel traces) next |
 | 1.0 | [Release gate](release-1.0/README.md) | 1.0 Stable | all of the above | conditions defined |
 
 A, F, T1 and DP could start at once. A and F run beside everything else. T1

@@ -521,6 +521,7 @@ Block 1 total: about 6-7 U, all coder or study work, plus owner review.
 | 2.19 | Help H7: F1 through records, default handler for HelpProvider and RibbonToolTip, ribbon "?" and window card, What's This and the paper popup | 2.17; closes 2.11's card | C, then B | 1 | all | **done** (cp27, #480) |
 | 2.20 | Help H8: printing a page and a book | 2.17, print path | C, then B | 0.5 | all | **done** as a print layout (cp27, #480); device printing deferred (no print path) |
 | 2.21 | Tracer theme baking: the owner's light-field tracer (bfft) and the teapot bake as a build-time baker for lamp and lit-key light planes, contact shadows and relief; caustics through the bfft beam compiler later *(study: `TRACER_THEME_BAKING_STUDY.md`)* | the study's playground | S+C+O | open | 2.8 | planned (owner, 2026-11-13: all eight recommendations accepted; the bfft pieces are MIT; a playground before any engine work) |
+| 2.22 | **Touch** (owner, 2026-11-19): the OS and panel study, touch in the portable events, the press-on-lift rule with hysteresis, touch areas larger than controls, a touch theme variant, false-touch suppression and resistive calibration for hosts without them, industrial extras; dogfooded on the Pi 4 with a capacitive and a resistive 10.1-inch panel (`planning/stages/TC-touch/README.md`) | none to start | S, then C, B, O | 6-9 | all | added 2026-11-19 |
 
 Coder work is most of Block 2 and can run four or five rows at a time; the
 verification lands in two or three integrator checkpoints. Host shaping

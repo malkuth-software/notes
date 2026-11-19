@@ -155,40 +155,16 @@ or never, with the owner's call.
 
 ### 3.1 Touch, for industrial interfaces
 
-The owner's aim: natively touch-friendly behaviour, reliable beyond
-consumer devices: multitouch, time touched, probabilistic analysis of
-where a touch was meant, possibly dwell time and capacitance from the
-drivers. The owner has no touch device.
-
-The study should cover:
-- **What each OS delivers.** Windows: pointer input messages with contact
-  area, pressure and the digitiser's confidence bit; Linux: evdev's
-  multitouch protocol (slots, contact width and height, pressure), through
-  XInput 2.2 touch events on X11; macOS: no touch screens, only trackpad
-  touches. What HID digitisers report (contact size, pressure, confidence)
-  and what needs a vendor SDK (raw capacitance).
-- **Industrial practice.** Gloved and wet operation, palm and accidental
-  touch rejection, confirm on release, dwell-to-activate for critical
-  actions, large targets, two-handed or hold-to-confirm for dangerous ones,
-  and the usability engineering standard for such equipment (IEC 62366).
-- **Probabilistic targeting.** Treating a touch as a probability over
-  nearby controls (contact shape, history, the control's importance) instead
-  of a point, with a refusal when two targets are too close to call.
-- **Testing without a touch device.** Synthetic touch through GUI.Forms'
-  portable input records (and the MCP `pointer` tool once touch is a pointer
-  kind); Windows' touch injection; a virtual multitouch device on Linux
-  (uinput); recorded touch traces replayed in `gui_forms_tests`. This
-  removes the hardware problem for most of the work; a cheap USB touch
-  monitor would cover the rest.
-- **What GUI.Forms changes.** A touch pointer kind in `PointerEvent`,
-  gestures (pan, pinch, long press) as portable events, touch target sizing
-  in the theme, and per-control touch behaviour.
-
-Embedded devices and touch-screen controls (the owner's last item) belong
-to this study: the controls an industrial panel needs (large steppers,
-hold-to-confirm buttons, jog wheels) and the surface for a device with no
-window manager (GUI.Forms' own window manager, `src/host/surface/`, already
-targets STXlib's framebuffer appliance).
+Now a stage of its own (owner, 2026-11-19): `planning/stages/TC-touch/README.md`,
+and roadmap row 2.22. GUI.Forms is meant for embedded and industrial use
+(from a yacht to a plant), often on hardware with no OS touch layer. The
+week starts TC0, the study: how each OS exposes touch and suppresses false
+touches, capacitive against resistive, and what GUI.Forms must do itself on
+the appliance. The owner has bought a 10.1-inch capacitive and a 10.1-inch
+resistive Waveshare panel for the Pi 4, which also gives the appliance a
+screen; when they arrive, record traces from both. The control changes
+(larger controls, touch areas larger than the visible control, a press on
+lifting the finger unless it is deliberately dragged off) follow in TC1-TC3.
 
 ### 3.2 DevExpress and Telerik: the great roundup
 
