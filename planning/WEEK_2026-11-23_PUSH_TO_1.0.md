@@ -238,20 +238,35 @@ It suits the same kind of research thread that produced the squircle.
 Folded into the MCP study (section 18.2). Its discussion item, better
 animation of ribbon transforms, goes to the ribbon stage.
 
-## 4. Suggested order
+## 4. Order
 
-- **Monday and Tuesday:** coders start R1, D1-D4, E1-E3, the MCP X1 and
-  G1, and the tool work; the studies (touch, roundup, Apple) start; the gap
-  discussion is prepared from 2.1 and 2.2.
-- **Wednesday:** the integrator's first batch; the owner's gap discussion.
-- **Thursday:** Thanksgiving.
-- **Friday:** the second batch, the records rewrite (R3), then the final
-  sanitizer runs (S1).
+The owner's order of operations to 1.0 (2026-11-19) governs; it is set out
+in `planning/ROADMAP_TO_1.0.md`, "Order of operations to 1.0". This week
+follows it from step 1:
+
+1. **Plan the path to 1.0:** this page and the roadmap section (done when the
+   owner accepts them).
+2. **Clean up** old branches, local and remote, and free space from unneeded
+   virtual environments; remote deletions listed for the owner's approval.
+3. **The forgotten items** from the Shadow harvest (section 2.1).
+4. **Documentation review** (section 1.2) and the site's in-progress items.
+5. **Organise and delegate** the next builds and work to STXlib and GUI.Forms
+   (sections 1.1, 1.3, 1.4, 1.6, and FS0 under the owner).
+6. **Implement and integrate** everything outstanding (section 2.2's gaps
+   included), with the framework reviews (section 3.2) running alongside.
+7. **MCP** (section 1.5).
+8. **Everything else:** touch (3.1), the CONV resize research (3.4), building
+   for Apple without a Mac (3.3), the rest of `stx_filesign`.
+9. **Declare 1.0.**
+10. **Documentation to match**, its review and clean-up, integrity, embedded
+    documentation, and pages showing GUI.Forms in many contexts.
+
+How far the week gets is set by the work, not by the calendar; Thursday is
+Thanksgiving. The final sanitizer runs (section 1.7) belong to step 6's
+close, before 1.0 is declared.
 
 ## 5. Questions for the owner
 
-On touch (TC brief, section 8): which OS the Pi 4 runs for the 1.0 touch
-dogfooding (proposed: Linux with the existing X11 host now, the FreeBSD
-appliance host when STXlib's display and input land), and whether the iPad
-and iPhone are only for observation or GUI.Forms should gain an iOS surface
-host.
+None. Open questions inside a step go to that step's dedicated workers
+(owner, 2026-11-19), for example touch's OS on the Pi 4 (TC brief, section
+8).
