@@ -106,7 +106,10 @@ This week:
   SHA3-512, HMAC, Ed25519, LMS, a strict DER reader, CMS, X.509 path
   validation;
 - **FS1**, the carrier reader and raw hash, once SHA-256 and SHA3-512 exist,
-  to the first acceptance test on the published vectors.
+  to the first acceptance test on the published vectors;
+- **FS-R**, the research into signing without a capacity limit (three
+  levels, rotation under a persistent fundamental key, a public rotation
+  log), as a research thread (`planning/stages/FS-R-unbounded-signing.md`).
 
 It runs in STXlib beside the GUI.Forms work and does not gate GUI.Forms 1.0.
 The malkuthsoft.com pages for the open specification (owner) come with FS6.
@@ -271,6 +274,4 @@ animation of ribbon transforms, goes to the ribbon stage.
 
 ## 5. Questions for the owner
 
-On this plan, none. On `stx_filesign` (FS-filesign.md, section 10): one
-HSS level or two (recommended: two, so the key that signs each file is
-generated fresh from noise and erased).
+None open as of 2026-11-19.
