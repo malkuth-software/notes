@@ -97,18 +97,19 @@ out), as stage G6.
 Astra's specification "STX Release Seal v1" (STXlib `main` at `ff91916`,
 `docs/release-seal/`) gives files whose last 64 bytes are the file's own
 hash, signature included, signed by the publisher with Ed25519 or with
-quantum-resistant LMS. The owner's rulings of 2026-11-19 and the plan are
-in `planning/studies/STX_FILESIGN_BRIEF.md`: the library `stx_filesign` in
-STXlib, ported to the house style and linted; a security document with
-nothing up our sleeves; small shim programs over a persistent facility;
-our own release files signed with it; mock-up dialogs beside the Windows
-and macOS equivalents; a wiki page; a metadata stub (name, version, public
-key, self-hash) and a catalogue from which files are fetched by self-hash.
+quantum-resistant LMS. The plan is in STXlib's notes (`stxlib` branch,
+`planning/stages/FS-filesign.md`), with the owner's rulings of 2026-11-19.
 
-This week: F0 (SHA-256, SHA-512, SHA3-512, HMAC, then Ed25519 and LMS
-verification) and F1 (the carrier reader and raw hash, to the first
-acceptance test on the published vectors) can start, in STXlib, beside the
-GUI.Forms work. It does not gate GUI.Forms 1.0.
+This week:
+- **FS0, the primitives**, owner-guided with a Fable instance, each on its
+  own (`planning/stages/FS0-crypto-primitives.md`): SHA-256, SHA-512,
+  SHA3-512, HMAC, Ed25519, LMS, a strict DER reader, CMS, X.509 path
+  validation;
+- **FS1**, the carrier reader and raw hash, once SHA-256 and SHA3-512 exist,
+  to the first acceptance test on the published vectors.
+
+It runs in STXlib beside the GUI.Forms work and does not gate GUI.Forms 1.0.
+The malkuthsoft.com pages for the open specification (owner) come with FS6.
 
 ### 1.7 Last
 
@@ -270,6 +271,6 @@ animation of ribbon transforms, goes to the ribbon stage.
 
 ## 5. Questions for the owner
 
-On this plan, none. On `stx_filesign` (brief, section 10): which hardware
-the protected LMS signer is qualified on, the catalogue's format and
-hosting, and the shim names.
+On this plan, none. On `stx_filesign` (FS-filesign.md, section 10): whether
+to keep the specification's wire magic (`STXSEAL1` and the record markers)
+or rename it and regenerate the vectors, and the program names.
