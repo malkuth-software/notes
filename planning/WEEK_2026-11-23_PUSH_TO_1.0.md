@@ -44,15 +44,20 @@ made with the existing capture tools (`Window::capture_window`).
 ### 1.3 Engine imports from Codex
 
 Both come from the owner's Codex sessions on this machine (found
-2026-11-18).
+2026-11-18). Codex wrote them as mathematics, not in the house style.
+**They are not folded as written** (owner, 2026-11-19): E3 and E4 become a
+native-style implementation in STXlib, and everything else imported from
+the `sinc` and `pow` studies gets a house-style check-over first. Codex's
+branch and patch are the reference the native code is measured against
+(same results, then speed).
 
 | # | Item | Where it is | Notes |
 |---|---|---|---|
 | E1 | The CONV squircle for buttons | `~/Documents/Codex/2026-11-17/i/outputs/`: the tester (`conv-squircle.html`), the source and tests (`conv-squircle-source.zip`), and three derivations (`CONV-math.md`, `CONV-circle-square-math.md`, `CONV-flat-smoothstep-math.md`) | CONV here is Compact Ordered Nodal Variation (stx_conv's mathematics), not convolution. The owner's last direction is the **flat smoothstep family**: exact straight sections whose anchors slide along the sides (0 % is a circle with four marked points, 100 % a square), all turning in the corners, convex, with C4 joins. Port it to C++ as an engine shape primitive and measure it against the current rounded rectangle for cost and look |
 | E2 | Control outline rounding | the same family | outlines and focus rings follow the button shape |
-| E3 | Normalised sinc, half-turn sine and cosine | STXlib, local branch `codex/pi-trig-and-interval-study` at `f341b2c` (in `~/Developer/stxlib_workers/integration/stxlib`): `sinpi`, `cospi`, `sincospi`, `sincpi`, `sinc`, `sinc_radians`, `cosm1`, `cosm1pi`, for `float` and `double` | measured on the M4: the double `sincospi` pair 3.87 ns against Apple's 2.04 ns, largest observed error 0.501493 ULP over 172,288 inputs (MPFR); it goes through STXlib's integrator, then GUI.Forms takes it with the stx pin |
-| E4 | The faster `pow` | `~/Documents/Codex/2026-11-18/e/outputs/stxlib-pow-grid.patch`, with `pow-investigation.md` and `stxlib-pow-study.zip` beside it (not yet on a branch) | approved for use (owner, 2026-11-18): keep x^y = 2^(y log2 x) and compute the small remainder of log2 x more carefully; 10.96 to 8.57 ns a call on the M4, analytical budget 0.509425 ULP, largest measured 0.501712 ULP over 2.45 million pairs, no fast-math. Through STXlib's integrator onto a branch, then the stx pin |
-| — | Gaussian | `f341b2c` adds `gaussian_interval` in the same commit as E3 | rejected (owner, 2026-11-18): it needs a 140 KiB table and produces tiny numbers, and STXlib blocks subnormals. The fold of E3 must strip it: `gaussian.cpp`, `gaussian_table.inc`, `gaussian_tail_terms.inc`, `tools/math/gen_gaussian_table.py`, and its entries in `dispatch.cpp`, the headers and the tests |
+| E3 | Normalised sinc, half-turn sine and cosine | STXlib, local branch `codex/pi-trig-and-interval-study` at `f341b2c` (in `~/Developer/stxlib_workers/integration/stxlib`): `sinpi`, `cospi`, `sincospi`, `sincpi`, `sinc`, `sinc_radians`, `cosm1`, `cosm1pi`, for `float` and `double` | measured on the M4: the double `sincospi` pair 3.87 ns against Apple's 2.04 ns, largest observed error 0.501493 ULP over 172,288 inputs (MPFR); reimplemented in STXlib's native style with `f341b2c` as the reference, then GUI.Forms takes it with the stx pin |
+| E4 | The faster `pow` | `~/Documents/Codex/2026-11-18/e/outputs/stxlib-pow-grid.patch`, with `pow-investigation.md` and `stxlib-pow-study.zip` beside it (not yet on a branch) | approved for use (owner, 2026-11-18): keep x^y = 2^(y log2 x) and compute the small remainder of log2 x more carefully; 10.96 to 8.57 ns a call on the M4, analytical budget 0.509425 ULP, largest measured 0.501712 ULP over 2.45 million pairs, no fast-math. Reimplemented in STXlib's native style against the patch as reference, then the stx pin |
+| — | Gaussian | `f341b2c` adds `gaussian_interval` in the same commit as E3 | rejected (owner, 2026-11-18): it needs a 140 KiB table and produces tiny numbers, and STXlib blocks subnormals. The native implementation leaves it out, and with it `gaussian.cpp`, `gaussian_table.inc`, `gaussian_tail_terms.inc`, `tools/math/gen_gaussian_table.py`, and its entries in `dispatch.cpp`, the headers and the tests |
 
 The owner's hash research runs in the same Codex instance and is not this
 week's GUI.Forms work. Its latest output is
@@ -87,7 +92,25 @@ summaries) and dynamic interfaces through structural patching (export,
 validate, apply and revert form documents; a build toggle to write them
 out), as stage G6.
 
-### 1.6 Last
+### 1.6 `stx_filesign`: self-addressed signed files (STXlib)
+
+Astra's specification "STX Release Seal v1" (STXlib `main` at `ff91916`,
+`docs/release-seal/`) gives files whose last 64 bytes are the file's own
+hash, signature included, signed by the publisher with Ed25519 or with
+quantum-resistant LMS. The owner's rulings of 2026-11-19 and the plan are
+in `planning/studies/STX_FILESIGN_BRIEF.md`: the library `stx_filesign` in
+STXlib, ported to the house style and linted; a security document with
+nothing up our sleeves; small shim programs over a persistent facility;
+our own release files signed with it; mock-up dialogs beside the Windows
+and macOS equivalents; a wiki page; a metadata stub (name, version, public
+key, self-hash) and a catalogue from which files are fetched by self-hash.
+
+This week: F0 (SHA-256, SHA-512, SHA3-512, HMAC, then Ed25519 and LMS
+verification) and F1 (the carrier reader and raw hash, to the first
+acceptance test on the published vectors) can start, in STXlib, beside the
+GUI.Forms work. It does not gate GUI.Forms 1.0.
+
+### 1.7 Last
 
 | # | Item |
 |---|---|
@@ -247,5 +270,6 @@ animation of ribbon transforms, goes to the ribbon stage.
 
 ## 5. Questions for the owner
 
-None open on this plan as of 2026-11-18 (the Codex imports were found and
-the reflector is stage R).
+On this plan, none. On `stx_filesign` (brief, section 10): which hardware
+the protected LMS signer is qualified on, the catalogue's format and
+hosting, and the shim names.
