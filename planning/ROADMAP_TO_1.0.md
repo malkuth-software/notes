@@ -34,11 +34,11 @@ it below.
 | Step | What | Already planned items it takes |
 |---|---|---|
 | 1 | **Plan the path to 1.0** | this section; the week plan; the stage briefs written 2026-11-17 to 2026-11-19 (MCP, TC touch, STXlib's FS file signing) |
-| 2 | **Clean up old branches, here and on the remotes, and free space from unneeded virtual environments** | merged and abandoned branches in gui_forms, stx, STXlib, notes, projects and the product repositories; worktrees under `gui_forms_workers` and `stxlib_workers`; virtual machines and environments on the Mac and the M4. Deleting remote branches is listed for the owner's approval first, repository by repository |
+| 2 | **Clean up old branches, here and on the remotes, and free space from unneeded virtual environments**; consolidate storage before anything new (owner, 2026-11-21) | `planning/stages/TIDY-storage-and-checkouts/README.md`: one checkout per repository (the best, newest) under `/repository/`, worker storage under `/work/`, standard environments, uncommitted work rescued, notes sprawl consolidated, then remote branches; first inventory 2026-11-21: 324 checkouts of 71 repositories on this Mac, 13 GiB free. Deletions are listed for the owner's approval first |
 | 3 | **Review the outstanding items that were forgotten**, transplanted from the Shadow desktop | the Shadow harvest's open items (week plan 2.1: MDI, KeyTips, repeated-item anatomy, the control ID question, lamps as a radio choice, textures, frameless border effects, the tooltip defect, menus, the memory re-sync) |
 | 4 | **Review the documentation items and the "in progress" items on the documentation site** | week plan 1.2 (D1 the read-through, D2 previews, D3 source links, D4 the README) and every page marked in progress |
-| 5 | **Organise and delegate the next set of builds and added work** to STXlib and GUI.Forms | the queued checkpoints and folds; the Codex imports as native STXlib code (E1 to E4); FS0 (owner-guided); the test-programs move (R1); BFFT in house (R2) |
-| 6 | **Implement and integrate all outstanding work and resolve all outstanding subjects**; alongside, dedicated workers carry out the owner's reviews of controls and tools from competing frameworks | Blocks 2 to 4 on this page; the gap catalogue (week plan 2.2); alongside: the DevExpress and Telerik roundup (week plan 3.2) and the other framework reviews the owner names |
+| 5 | **Organise and delegate the next set of builds and added work** to STXlib and GUI.Forms | the queued checkpoints and folds; the Codex imports as native STXlib code (E1 to E4); FS0 (owner-guided); the test-programs move (R1); BFFT in house (R2); **a dedicated stx_conv worker under the STXlib coordinator** for one canonical CONV (STXlib notes, `planning/stages/CV-conv-canon.md`); **sanitizers in the background on Namespace runners, never merged** (`planning/stages/CI-background-sanitizers/README.md`), STXlib first |
+| 6 | **Implement and integrate all outstanding work and resolve all outstanding subjects**; alongside, dedicated workers carry out the owner's reviews of controls and tools from competing frameworks | Blocks 2 to 4 on this page; the gap catalogue (week plan 2.2); the canonical CONV implemented (CV); **the visible-area guarantee** (`planning/stages/VA-visible-area/README.md`, API before the ABI freeze); **unified behavioural constraints and the block fuzzer** (`planning/stages/IC-integrity-constraints/README.md`); alongside: the DevExpress and Telerik roundup (week plan 3.2) and the other framework reviews the owner names |
 | 7 | **Implement MCP** | `planning/studies/MCP_AUTOMATION_STUDY.md`: `stx_mcp` (X1) and G1 to G6 |
 | 8 | **Everything else** | touch (TC, row 2.22), the CONV resize research, building for Apple without a Mac, `stx_filesign` beyond FS0 (FS1 to FS6 and the FS-R research), the tools of Block 5 the owner brings forward |
 | 9 | **Declare 1.0** | the release-1.0 gate (`planning/stages/release-1.0/README.md`) and Formal 1.0 below |
@@ -46,6 +46,12 @@ it below.
 
 Dedicated workers decide the open questions inside their own steps (owner,
 2026-11-19), for example touch's choice of OS on the Pi 4.
+
+Standing instructions for every worker (owner, 2026-11-21): track workers
+compact at 400k tokens; one-off cleanup and documentation jobs at 1M (agent
+types `gui-forms-oneoff` and `stxlib-oneoff`); and calls that must run in
+order are bundled into one call where they can be foreseen (written into
+every worker definition).
 
 ## Status 2026-11-13
 
