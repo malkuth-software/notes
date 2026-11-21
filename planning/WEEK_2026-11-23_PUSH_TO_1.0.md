@@ -194,6 +194,13 @@ an outbound e-mail to the EFF and a possible workaround. The study should:
 
 ### 3.4 CONV resizing: memory, and a true 2D field
 
+**Superseded 2026-11-21** by the owner's canonical-CONV direction: a
+dedicated stx_conv worker under the STXlib coordinator (STXlib notes,
+`planning/stages/CV-conv-canon.md`), which takes Astra's 2026-11-20
+reformulation (streaming, source and destination as the only whole rasters;
+63 to 68 MB peaks at four megapixels against 220 to 540 MB) and the questions
+below.
+
 The owner asked ChatGPT about Plan Paint's CONV resize and found two
 gaps worth research. Both are confirmed in the code:
 
