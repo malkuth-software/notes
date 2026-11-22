@@ -1,120 +1,105 @@
 # Open gaps
 
-Date: 2026-11-10. One list of every open gap found in the last two days, so
-none lives only in a chat, a scratch file or a worker report. Each row names
-its owner (the worker or role that closes it), its source and its status.
-`planning/ROADMAP_TO_1.0.md` places the larger items in blocks; this page is
-the checklist. When a gap closes, mark it here with the commit or PR and
-leave the row until the next checkpoint's record refresh removes it.
+Date: 2026-11-22. This page lists every open gap, so that none lives only in
+a chat, a scratch file or a worker report. Each row names its owner (the
+worker or role that closes it), its status and its place: do now, before
+1.0, or after 1.0. `planning/ROADMAP_TO_1.0.md` places the larger items in
+blocks; this page is the checklist. When a gap closes, mark it here with the
+commit or PR, and leave the row until the next record refresh removes it.
 
-"cp27" is PR #480 (checkpoint/2026-11-10-cp27 @ 757db03a7, open on
-2026-11-10). "Combined tree" is the integrator's fold/bleeding-edge.
+This revision comes from the gap refresh of 2026-11-22, which checked each
+row of the 2026-11-10 list against gui_forms `main` c7c9f4f0c (PR #488).
+It also applies the owner's rulings of the same day. 37 of the 54 rows are
+gone: they are closed, abandoned or not planned (see "Closed since
+2026-11-10" below).
+
+PR key: #480 cp27, #481 cp28, #482 cp29-31, #483 cp32, #484 cp33, #487 and
+#488 cp34 and cp35.
 
 ## Text and fonts
 
-| # | Gap | Owner | Source | Status |
-|---|---|---|---|---|
-| F1 | Font family does not cross the C ABI or reach C#: the C ABI font record has no family, so a round trip drops a theme's `font-family: Selawik` | C ABI (next ABI additions, row 3.0) | queue, `claude/professional-theme` 114bddcda risks | open |
-| F2 | Prepared text ignores the family: the prepared-text font bank and the Skia executor's engines use the role face only | engine (T2/F) | same | open |
-| F3 | Products and template_harness stage their own fixed font lists without Selawik, so windows-professional falls back to Carlito silently | product workers, template_harness | same | open; fix when the products repin |
-| F4 | Font face identity: `FontSpec` has a role and no face (audit D8); Stage F and the Windows Forms `Font` need one before 1.0 | owner decision, then T2 | `planning/audits/AUDIT_TRIAGE_2026-11-10.md` D8 | open, needs a decision |
-| F5 | The control face renders "a" closed into "o" at 12.5 units at 1x ("macOS" reads "mocOS"): small-size rendering or hinting of the Portsmouth control face | engine (F) | exhibits worker, STATE 2026-11-10 | open |
+| # | Gap | Owner | Status |
+|---|---|---|---|
+| F5 | The control face rendered "a" closed into "o" at 12.5 units at 1x ("macOS" read "mocOS"). The rasterizer has been replaced since then: STXlib's glyph engine replaced FreeType and HarfBuzz in #483. | engine | check with a capture of "macOS" at 12.5 units at 1x; drop the row if it does not reproduce |
 
 ## Painting and hosts
 
-| # | Gap | Owner | Source | Status |
-|---|---|---|---|---|
-| P1 | Scroll copies existed only on macOS; Windows (default raster profile) and the Linux X11 host now apply them | canvas-pan worker | PlaySuite gap; `claude/canvas-pan-perf` 699055b6a | coded, in cp27; Linux never compiled locally; check on Linux and macOS (the bar-ink change touches macOS) |
-| P2 | ThreadSanitizer run of the ABI sub-surface tests (audit N9: the event stack is thread_local now) | Mac / Linux | Mac handoff item 5 | open |
-| P3 | DIB fixture: on a private desktop the fixture's later step fails with "initial Window receipt not accepted" (transaction-frame-not-presented) | integrator | `claude/automation-off-by-default` risks; w6 | open: check against main at build time |
-| P4 | Menu repaint scope: `ribbon_tests` menus_repaint_only_their_command failed on cp27 (with `link_router_tests`) | integrator | STATE 2026-11-10 | being fixed on top of cp27 |
-| P5 | PlaySuite tile hover blink: unresolved after the card cache was reverted; "on the old version we had that fixed" | owner, later | tracks/playsuite.md; STATE 2026-11-10 | parked by the owner |
-| P6 | Invalidation overlay compositing on macOS and Linux never compiled | w4 | `claude/invalidation-overlay` 4fa3dfaa | in cp27; Mac/Linux build checks it |
-| P7 | Splash baking: tooltip prebake records outside the window's recording; a theme change between prebake and show can blit the old theme once; macOS/Linux edits uncompiled | w1 | `claude/splash-baking` 703d7ac87 | in cp27 |
+| # | Gap | Owner | Status |
+|---|---|---|---|
+| P1 | Scroll copies on Windows and the X11 host are coded (#480, #483) and compile on every host in CI, but they have never been run on Linux or macOS. CI is compile-only. | Mac / Linux | housekeeping: one run of `linux_host_tests` and `host_scroll_damage_tests` |
+| P2 | ThreadSanitizer run of the ABI sub-surface tests (audit N9). The cp29 block passed on 2026-11-11. Since the tests split, `tools/abi_tsan.py` packs a tsan cache that gui_forms_tests runs (e92f02256, #488), but no run is recorded. | Mac / Linux | housekeeping: one run after the split |
+| P3 | DIB fixture: on a private desktop, the fixture's later step fails with "initial Window receipt not accepted" (`windows_dib_lifecycle_fixture.inc:100`, unchanged). | Windows | fold into the one Windows session |
+| P5 | PlaySuite tile hover blink. The owner does not recall whether it still happens. | owner, PlaySuite | verify with a capture; drop the row if it does not reproduce |
+| P7 | A tooltip prebake can show the previous theme once: `ToolTipBakeKey` (`src/core/window/tool_tips/tool_tip_bubble.hpp:56-68`) has no theme identity. The compile half of the old row is closed (#483). | engine | being fixed; before 1.0 |
 
 ## Themes and look
 
-| # | Gap | Owner | Source | Status |
-|---|---|---|---|---|
-| T1 | Forced high contrast: a gauge's value arc and its track share the edge colour (the needle carries the reading) | final-controls / theme | `claude/final-controls` e5e4e2d6b risks | open: needs a design call |
-| T2 | windows-professional redesign (owner direction 2026-11-10) not in cp27; captures for review owed | w1 | `claude/professional-theme` 114bddcda, follow-up `claude/be-professional-theme` 96401f3cd | coded, unbuilt; the site is recaptured after it |
-| T3 | Look ledger leftovers: T1 default base partial (overtaken by cp24), T13 partial, T12 not audited; R17 minimized-ribbon popup and R24 QAT on the tab row (ruled a follow-up RB item, N3) | w1 / RB | `planning/stages/T4-default-theme/LOOK_INTEGRATION_LEDGER.md` | open |
-| T4 | The Ribbon's help "?" part is reserved, not drawn or wired (decision N4: with the help system) | RB + help | ledger R23 | open |
+| # | Gap | Owner | Status |
+|---|---|---|---|
+| T2 | The windows-professional redesign is in #481 and the owner's captures are made. The site recapture is still owed, and the dark variant's light plates await owner review. | site | housekeeping |
+| T3 | Look ledger: only T12 is left, the audit that only progress bars animate ambiently. T1, T13, R17 and R24 are done (#483). | theme | before 1.0 |
+| E8 | The industrial look as a stock theme. The engine side is in: finish kernel (#482), light planes, carbon fibre and lamps (#488). The theme itself is a Gallery demo theme (`demo/themes/industrial`), with no `FamiliarTheme` entry. | theme | before 1.0, after the industrial work lands |
 
-## Help system (rows 2.13-2.20)
-
-| # | Gap | Owner | Source | Status |
-|---|---|---|---|---|
-| H1 | No language-file system exists, so `HelpCatalog` stores only the help fields | help worker / translation design | `claude/help-system` ecf4167f4 | open |
-| H2 | Search folds ASCII only | help worker | same | open |
-| H3 | No help cursor for Shift+F1; no document or heading semantic role | help worker, A | same | open |
-| H4 | Device printing deferred (no print path); the navigation pane is not drag-resizable (`set_navigation_width` only) | help worker | same | open |
-| H5 | Help-book page captures owed (`--page help-book --capture`) | help worker | same | open |
-
-## Final controls (row 2.5)
-
-| # | Gap | Owner | Source | Status |
-|---|---|---|---|---|
-| W1 | Deferred: W-1 public bases (see audit F1), W-2 DataGridView breadth, W-3 MDI (with DK), W-7 menu first-letter, W-8 FileDialog settings; W-6 Diagram/DataLayout have their own stages | final-controls worker | `claude/final-controls` | open |
-
-## Exhibits (row 4.9; built against the cp25 install)
+## Host services (new, 2026-11-22)
 
 | # | Gap | Owner | Status |
 |---|---|---|---|
-| E1 | Ancestor snapshots drop GroupBox and DateTimePicker | core | open |
-| E2 | Snapshots draw theme part rasters only at the window's own scale | core | open |
-| E3 | ErrorProvider icons absent from subtree snapshots | core | open |
-| E4 | No public query for the theme's window backplane colour | core | open |
-| E5 | MaskedTextBox `text` is a method pair, not a property capability | controls | open |
-| E6 | Docking runs in child order, unlike WinForms' reverse z-order (document the divergence) | docs / layout | open |
-| E7 | Painter has no polygon or path fill | drawing | open (check the drawing primitives in cp27) |
-| E8 | No industrial/skeuomorphic style in the SDK | theme | open |
-| E9 | Menu command and check items require a `Command` object | controls | open |
-| E10 | No stock icon set | resources | open |
-| E11 | DateTimePicker long/short date follow US format; no culture setting visible to consumers | controls | open |
-| E12 | Label wrapping not usable as the exhibits need it | controls | open |
-
-Source: `planning/EXHIBITS_SELECTION.md` "Gaps found in GUI.Forms". Some may
-be closed on main; re-check when the exhibits rebuild against the lockstep
-SDK. The site images (windows-professional) are recaptured then too.
-
-## SDR# swap-in (row 5.5)
-
-| # | Gap | Owner | Status |
-|---|---|---|---|
-| S1 | Server browser (AIRSPY "browse") fails: `HtmlLinkLabel` via `MapControl` throws in the bridge constructor | swap-in worker (facade) | open |
-| S2 | Submenus do not open | facade (menu system in cp27 may cover the library side) | re-check after cp27 |
-| S3 | Hosted/overlay attach (`AttachOverlay`) unported | facade + library overlays table | open |
-| S4 | Custom-painted combo, numeric and button controls keep the stock look; by decision, no WndProc/WM_PAINT emulation: the sdrsharp theme supplies the look | facade + theme | partly done (theme field rules) |
-| S5 | Combo editing carries no caret, selection or undo | library (`claude/swapin-gaps-combo-editing`, unfolded) | open |
-| S6 | Splash made on a thread-pool thread is parked | facade; decision pending | open |
-| S7 | Field height fixed at 23, not font-measured; cursor kinds unmapped; Focus refused on containers; check box `ContentAlignment` | facade / library | open |
-| S8 | Open from the second coding pass: volume "0" label, SDR# picker forms, GroupBox "Smoothing" frame, AutoScale, combo ForeColor, caption text #d0d0d0, live-signal check of re-fit and "spazzing" on the owner's desktop | swap-in worker | verify in the combined build |
-| S9 | The swap-in stubs tool crashes (null reference) on non-framework interfaces, so dock stubs are generated without the shim | swap-in worker | open |
-| S10 | Release zip for Youssef Touil: packaging script ready; built after the combined build; the owner tests it first | swap-in worker | pending the build |
-
-Sources: `planning/stages/S-csharp-swap-in/SDRSHARP_SESSION_2026-11-09.md`
-and `SWAPIN_WORKER_STATE_2026-11-10.md` (the swap-in repository is local
-only, so these are its copies).
-
-## Docking for the swap-in (DockPanel worker)
-
-| # | Gap | Status |
-|---|---|---|
-| K1 | Open bug: the auto-hide flyout shows its frame and caption but not the content's children (AGC in SDR#) | first after the shared build |
-| K2 | Floating tool windows are hidden whenever the application is not foreground (never shown on a private desktop); DockPanel Suite keeps them visible; their requested frame is not applied while hidden | open |
-| K3 | Three hooks in the facade's `Surface.g.cs` are applied in a working tree, uncommitted (`dev/dock/tools/facade_hooks.py`) | to land with the swap-in worker |
-| K4 | Library: sanitizer and state-machine gate for 94befba1b..f1b5360e1; docs regeneration | integrator build |
-| K5 | Lost behaviours, allowed and logged: DockPane and FloatWindow are managed shells; contents with CloseButton=false stay placed when DockPanel is set to null; DockPanel.Theme's palette is replaced by the GUI.Forms theme; DocumentStyle DockingWindow and SystemMdi dock as DockingMdi | accepted as lost |
-
-Source: `planning/coordination/tracks/docking_swapin.md`.
+| HS1 | Drag and drop with the host. **Outbound:** drag sources on macOS, Windows and Linux (an XDND source; Linux had none). **Inbound:** drag and drop on Windows ("we do use this or need it"). A drag that starts while another is running is refused with `modal_limit`. If HostServices itself is destroyed mid-drag, the drag ends without a report. | host worker | in progress, `claude/host-drag-and-drop`; next checkpoint |
+| HS2 | Host autocomplete and platform suggestion services. IME already works on all three hosts. | host | after 1.0 |
 
 ## Build, CI and records
 
 | # | Gap | Owner | Status |
 |---|---|---|---|
-| B1 | CI area selection (#479) does not yet classify a tools-only change as its own area (named by the coordinator 2026-11-10; no written record found beyond that) | CI worker | open |
-| B2 | Release notes: `docs/release/unreleased.md` does not list cp27's work; see the cp27 docs follow-up list in projects STATE.md | docs | open |
-| B3 | Plan Paint: 22 language packs carry machine translations of 2 new strings; a native-speaker check is owed | Plan Paint / owner | open |
-| B4 | Product pins move to the post-cp27 main (Plan Paint -look and combined-build, PlaySuite, SwiftEdit, theme editor) | product workers | after cp27 merges |
-| B5 | Audit batches not yet ruled (see `planning/audits/README.md`) | owner | open |
+| B1 | CI area selection does not give a tools-only change an area of its own: `tools/test_areas.json:36` maps `tools/` to `docs`. The tests have left gui_forms and CI is compile-only, so the map has little effect now. | CI | after 1.0 |
+| B2 | The release notes stop at #486 (cp34 and cp35 are not described). `docs/dev/roadmap.md` still calls MDI and the DataGridView members deferred. | docs | being fixed on `claude/docs-housekeeping` |
+| B3 | Plan Paint: 22 language packs carry machine translations of 2 new strings, and no native-speaker check is recorded. | Plan Paint / owner | after 1.0 |
+
+## Not planned
+
+| # | Gap | Ruling |
+|---|---|---|
+| H4 | Device printing for the help system. `print_requested` is raised and `help_print.hpp` paginates, but there is no print path. The drag-resizable navigation pane is done (9ac2a621b, #483). | Not planned (owner, 2026-11-22). A CHM-style help product with its own menu may come later, possibly outside GUI.Forms. |
+
+## Closed since 2026-11-10
+
+Each closure below was checked in the code at main c7c9f4f0c.
+
+- **Fonts.**
+  - F1, F2, F4: the font family registry (6ae847879, aca87c4df; #483).
+  - F3: font pack stage 4 (b7d53b109, #483). The products are pinned after it.
+- **Painting.**
+  - P4: local menu repaint (5cb16aca2, #480).
+  - P6: the invalidation overlay (4fa3dfaa, #480), compiled on every host since #483.
+- **Themes.**
+  - T1: the high-contrast gauge track (a916d80e0, #483).
+  - T4: the ribbon help button (aab777599, #483).
+- **Help.**
+  - H1: language files (58f763efd, #482).
+  - H2: Unicode search folding (d693147d9, #483).
+  - H3: the Shift+F1 cursor, and the document and heading roles (14b79d8d7, #483).
+  - H5: help-book captures (4f5a21702, #483).
+- **Final controls.** W1:
+  - W-1: the public bases (1da03e3f4, #482).
+  - W-2: DataGridView breadth (7e5862d32, 157135bf5, b534e3aae; #483).
+  - W-3: MDI (9ce667dae, d74b59ebc; #488).
+  - W-7: menu first-letter jumps (61706b1e3, #483).
+  - W-8: file dialog checks (6e30c7b21, #483).
+- **Exhibits.**
+  - E1 to E4, E6 and E12: 426c1a32a (#483).
+  - E5 and E9: eed139627 (#481).
+  - E7: curved paths (dfd62912a, #483).
+  - E10: stock icons (739236a2e, #483).
+  - E11: the host locale (dfd62912a and 426c1a32a, with the Windows locale in 8c86ef5b5; #483).
+- **Library rows of the swap-in.**
+  - S5: editable combo box editing (12dc37867, #480).
+  - K2: floats shown while inactive (94befba1b, #480).
+  - K4: the docking library was merged in #480 and has been gated and regenerated since.
+- **Records.**
+  - B4: the products are pinned at 0ebb04d65 (#484).
+  - B5: the audit rulings are recorded in `planning/audits/README.md` (2026-11-22).
+
+**Abandoned (owner, 2026-11-22: "lets stop on sdrsharp. we wont touch it
+anymore"):** the SDR# swap-in rows S1 to S10, and K1, K3 and K5. The library
+halves that had landed stay. S2's submenus landed in 4292ee6d0 (#488), and
+MDI, which K5 could have used, landed in #488.
