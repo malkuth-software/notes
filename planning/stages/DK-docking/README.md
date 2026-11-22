@@ -271,6 +271,12 @@ From the control superset study (owner, 2026-11-02; matrix row 46):
 62. **Menu merging is a general ToolStrip feature** (`MergeAction`,
     `MergeIndex`), built independently of MDI. The active document's (or
     MDI child's) menus merge into the main window's.
+63. **MDI before 1.0, calls and structure only** (owner, 2026-11-21).
+    Decisions 60-62 stand for the shape; what 1.0 carries is the API
+    surface and the structure behind it (child frames as a presentation
+    of the document area, activation, cycling, `LayoutMdi` arrangements,
+    the window-list menu, menu merging through the existing ToolStrip
+    feature). It is no longer tied to an exhibit: exhibit 13 is dropped.
 
 26. **Invalid drops float or snap back (D4-1);** threshold 4 units
     (D5-1); Ctrl suppresses docking (D6-1); caption drags move the stack,

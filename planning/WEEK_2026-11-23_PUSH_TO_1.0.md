@@ -143,8 +143,8 @@ planning:
 ### 2.1.1 Step 3 outcome (coordinator, 2026-11-21)
 
 Each item checked against the notes, the code on `main` (c0e1a31a8) and the
-harvest. Settled items need no owner time; the two marked **owner** are
-asked in plain text with options.
+harvest. Settled items need no owner time; MDI and lamps were answered by the
+owner the same day.
 
 | Item | Outcome |
 |---|---|
@@ -156,8 +156,8 @@ asked in plain text with options.
 | Frameless borders as effects | Direction only ("effects after the seal"); done with the MCP border glint (study 11.1) in step 7. |
 | The tooltip defect | The 2026-11-10 owner bugs fixed tooltip windows' dead margins and oversized shadows (1f0693fe7: hit-test-transparent margins, shadow reach 3.5 deviations). Whether the SDR# port still shows the "tooltip canvas" problem is unverified: a worker reproduces it on current `main` (Windows, SDR# swap-in) and fixes what remains (step 5). |
 | Menus | Audit for a worker (step 5), against the harvest and RB. One finding already: an open menu closes when its owner window moves only on Windows; macOS (`windowDidMove`, live resize start) and Linux (`ConfigureNotify`) do not report frame moves yet (queue items M1, M2, L1 of 2026-11-10). The panel width fix (120-unit default) landed. |
-| **MDI** (owner) | Admitted on 2026-11-02 (DK decisions 60-62: a presentation of the document area, WinForms' observable behaviour in full, menu merging as a ToolStrip feature) and not built; the API reference lists the MDI members as deferred. The open point is when: before 1.0 or after. |
-| **Lamps as a radio choice** (owner) | The lamp itself follows the decision (never clickable, no focus). The radio form (empty slots, click picks one) does not exist; its shape needs a choice, since the click cannot land on a lamp. |
+| **MDI** | **Owner, 2026-11-21: before 1.0, as the necessary calls and structure only; no exhibit.** The WinForms MDI surface (`IsMdiContainer`, `MdiParent`, `MdiChildren`, `ActiveMdiChild`, `MdiChildActivate`, `LayoutMdi`, the window-list menu) maps onto DK's document area as decisions 60-62 describe; exhibit 13 is dropped. Given to a coder who codes long and does not build (track `tracks/gui_forms/mdi.md` in `projects`). |
+| **Lamps** | **Owner, 2026-11-21: (a) a radio group drawn with lamps**: the whole option row (slot and legend) takes the click and the lamp only shows which option is chosen; a theme look for RadioButton, not a new control. **And a lamp can also be a simple accent light for status**, drawn as a tiny pinpoint rather than a lens in a bezel. Both go to step 5's work list. |
 
 ### 2.2 Known gaps, for one discussion
 

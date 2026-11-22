@@ -19,7 +19,7 @@ dark at 1x and 2x (`exhibit_<name>_<variant>_<scale>x.png`).
 | E1 | Orders · Central: inventory and orders, master-detail grid, filters, edit dialog | mockup | data grid, list views, the site hero | recommended |
 | E8 | Registry-editor-style tree browser: tree plus value list in a split container | mockup | tree/list views, splitters | recommended |
 | E15 | PropertyGrid-driven settings screen | mockup | object view / property editing | recommended |
-| E13 | MDI parent with child windows | mockup | docking / child windows | optional (depends on MDI support; see gaps) |
+| E13 | MDI parent with child windows | dropped (owner, 2026-11-21: MDI before 1.0 as calls and structure, no exhibit) | docking / child windows | - |
 | T1 | Reference `collection_gallery` (GUI.Forms' complete reference application) | working | the recommended form-document workflow | optional, cheap |
 | T2 | template_harness `example_app` greeter | working | the minimal SDK consumer | optional, cheap |
 
