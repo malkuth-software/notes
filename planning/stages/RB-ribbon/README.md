@@ -198,8 +198,11 @@ note):
 38. **A tooltip visual family (Q2)**, used by plain and enhanced tooltips.
 39. **F1 opens a showing tooltip's help topic first (Q3),** ahead of the
     focused control's help.
-40. **Tooltip defaults (Q4):** 10 s auto-pop, maximum width 318, the line
-    "Press F1 for more help.".
+40. **Tooltip defaults (Q4):** 10 s auto-pop, the line "Press F1 for more
+    help.". The fixed maximum width 318 is superseded (owner, 2026-11-22): a
+    tooltip's width follows its text, one line when short, wrapping toward a
+    golden-ratio box when long. Submenus open and close after 300 ms on every
+    host (owner, 2026-11-22).
 41. **An always-present help question mark.** In addition to focused
     help, GUI.Forms programs always offer a question mark in the upper
     right corner which, when clicked, opens a tooltip. A whole-screen help
