@@ -147,7 +147,7 @@ its hash is verified before use. Each is unpacked into its own new, empty
 directory outside the repository, and its paths are passed as arguments.
 Nothing else is downloaded.
 
-## Decisions in force
+## Current decisions
 
 **Container names** (owner, 2026-10-26):
 - The Windows Forms-exact containers become `FlowLayoutPanelCompat` and

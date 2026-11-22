@@ -12,8 +12,6 @@ repeat them. This file adds only:
 1. one verdict in that triage I think is wrong (A8);
 2. findings in code that did not exist in the old checkout.
 
-The owner decides which of these are acted on.
-
 ## Coverage, stated plainly
 
 About 87,000 lines are new since the old checkout (theme language and

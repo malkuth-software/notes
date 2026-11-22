@@ -17,7 +17,7 @@ own workspaces and starts its own workers.
 | File | What it is |
 |---|---|
 | `README.md` | This page: resume point, standing rules, how work runs |
-| `BRIEF.md` | The brief every worker reads first (house style summary, the atom-vocabulary ruling, the new-control checklist, verification, git and merging) |
+| `BRIEF.md` | The brief every worker reads first (house style summary, the atom-vocabulary rule, the new-control checklist, verification, git and merging) |
 | `tracks/*.md` | One file per work track, written by that track's worker; the newest section of each is its current state |
 
 ## Resume point (2026-10-24)

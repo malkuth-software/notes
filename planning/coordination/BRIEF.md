@@ -8,11 +8,10 @@ reviews it and integrates the pull requests. The owner is GitHub
 you hit a decision that is the owner's, take the conservative option, keep
 going, and list it in your final report under "Owner decisions".
 
-## Agents (owner policy, 2026-10-19; lasting)
+## Agents (owner policy, 2026-10-19)
 
 - Do not start agents of any kind: no subagents, helper agents, background
-  agents or workflows. Only the coordinator (the agent holding the owner's
-  admin hat) starts agents.
+  agents or workflows. Only the coordinator starts agents.
 - If you need a standalone task outside your domain, promote it to the
   coordinator instead: stop, and report the request (what, why, the inputs,
   what you need back). The coordinator routes it to the one standby agent
@@ -48,9 +47,9 @@ going, and list it in your final report under "Owner decisions".
 3. `planning/stages/README.md` (the owner, how to work with them, lessons
    already paid for) and `planning/stages/W-winforms-controls/README.md`.
 4. `planning/DESIGN_LANGUAGE_SPECIFICATION.md` §8 (parts, roles, states) and
-   §12.7 (the ruling below).
+   §12.7 (the rule below).
 
-## The ruling you build under (owner, 2026-10-14)
+## Atom vocabulary rule (owner decision, 2026-10-14)
 
 The atom vocabulary is the canonical source of what can be addressed and
 manipulated: part roles (`PartRole`), states (`AnatomyState`), value types
@@ -93,7 +92,7 @@ reasoning. Where the plan and a decision disagree, the decision governs.
   control, painter or host dependency, and are tested headless.
 - Host work (phase W0) keeps AppKit, Win32 and X11 types inside
   `src/host/<host>/`, and every new request is a capability that reports
-  `unsupported` where a host cannot do it (AGENTS.md GIVEN rule).
+  `unsupported` where a host cannot do it (AGENTS.md: the platform-neutral core rule).
 
 ## Patterns to copy
 
@@ -160,7 +159,7 @@ outside `src/host/`.
     ASan or UBSan report (owner, 2026-10-19: sanitizers are a standard part of
     every build tree). A report is a defect to fix, never to suppress.
 
-## Verification and CI (owner, 2026-10-21; lasting)
+## Verification and CI (owner, 2026-10-21)
 
 The owner cut the repeated verification and the waiting, which made work slow
 and expensive. One stack, each layer once:
@@ -242,7 +241,7 @@ Five lines at most unless asked for more. The PR description holds the detail.
 
 - **ci_build `--tests` "Not Run"** (2026-10-22): fixed on main by #251 (fb32cad9). If you see it, merge main into your branch first.
 
-## Merging (owner, 2026-10-24; lasting)
+## Merging (owner, 2026-10-24)
 main is protected (8 required checks, up to date before merge), and the repo allows auto-merge.
 - When a PR is ready to land, mark it ready and enable auto-merge: `gh pr ready N` then `gh pr merge N --auto --merge`. GitHub merges it when every required check passes, even if this machine is off.
 - Only push work that is safe to land alone: green means merged.

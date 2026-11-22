@@ -6,7 +6,7 @@ the owner's authorization and a sandbox). Study:
 `SDRSHARP_SWAPIN_READINESS.md`; P0: `D:/malkuth/probes/mirrored_p0/RESULT.md`
 (the bundle row b1 is there).
 
-Owner rulings in force: real native window for top-level `Form.Handle`
+Current owner decisions: real native window for top-level `Form.Handle`
 only, children on leases; non-PNG images through launcher-private WIC;
 .NET 10; DockPanel Suite option a first (its own code on our facade, drag,
 float and focus hook lost and **logged by name**), a shim over our docking
@@ -275,9 +275,9 @@ host fonts).
 
 ## RESUME POINTER (2026-11-09, SDR# night)
 
-- PACKAGE (2026-11-09, 9e7cfff): dev/tools/package_zip.sh [--smoke] makes out/package/sdrsharp-guiforms-<date>.zip from the combined tree's Release build (SWAPIN_NATIVE). SDRSharp.GUIForms.exe = the launcher's start mode, running SDR# in place (owner ruling: settings, layouts and plugins persist; SWAPIN_PRIVATE_COPY=1 is the test-only private copy). Owner rulings: no licence for the launcher and facade, only the third-party notices; no contact line. Pending: build the zip once the integrator's combined build passes, then --smoke on a private desktop (never the owner's desktop).
+- PACKAGE (2026-11-09, 9e7cfff): dev/tools/package_zip.sh [--smoke] makes out/package/sdrsharp-guiforms-<date>.zip from the combined tree's Release build (SWAPIN_NATIVE). SDRSharp.GUIForms.exe = the launcher's start mode, running SDR# in place (owner decision: settings, layouts and plugins persist; SWAPIN_PRIVATE_COPY=1 is the test-only private copy). Owner decisions: no licence for the launcher and facade, only the third-party notices; no contact line. Pending: build the zip once the integrator's combined build passes, then --smoke on a private desktop (never the owner's desktop).
 
-- RULING (owner, 2026-11-09): do not emulate SDR#'s WndProc/WM_PAINT self-repainting of its combo box, text box and numeric up-down classes; their look comes from our theme, which is the solution (themes/sdrsharp/sdrsharp.theme.css field rules, matched to colours sampled from screenshots/sdrsharp_owner_compare_*). "WndProc border painting" is off the open list for good.
+- Decision (owner, 2026-11-09): do not emulate SDR#'s WndProc/WM_PAINT self-repainting of its combo box, text box and numeric up-down classes; their look comes from our theme, which is the solution (themes/sdrsharp/sdrsharp.theme.css field rules, matched to colours sampled from screenshots/sdrsharp_owner_compare_*). "WndProc border painting" is off the open list for good.
 
 - RESUME POINTER (2026-11-09 night, second coding pass): facade 65694fe; library claude/swapin-sdr-present-path 400decc4f (registered). Added: NumericUpDown thousands_separator/text_alignment and TextBox text_alignment (library, codemod) with facade mapping; TrackBar.thumb_extent (library) set to 13 by the facade; custom-painted Buttons (mute button volume figure) on the raster path; field text colour in the theme; GroupBox caption inset and padding 3 plus light frame; ColorDialog through the host colour dialog; selectable panels and group boxes focusable. Not done: WM_PAINT emulation for SDR#'s DoubleBufferedComboBox/TextBox/NumericUpDown WndProc (they paint the whole control through BeginPaint + Graphics.FromHdc; the theme approximates them); AutoScale (no-op at matching fonts; the host scales DPI); combo text editing needs a run to find the gap; GradientDialog relied on ColorDialog (now present) and owner-drawn ListBox (supported). All unverified until the combined build.
 

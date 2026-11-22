@@ -7,7 +7,7 @@ batch, one PR per control with auto-merge, BRIEF's new-control checklist in full
 Carry on between controls; stop and report only for an owner decision that cannot be taken
 conservatively. No agents.
 
-## Decisions in force
+## Current decisions
 
 - Survey states: done = counterpart covers core use + tests + Gallery; partial = counterpart lacks
   a named core part; missing = none. The catalogue `status` column is stale (not remapped since
@@ -353,7 +353,7 @@ the build D:/gui_forms_w5/.build/main-trace can be removed; local merged branche
 
 Clone D:/gui_forms_w5/template_harness, local branch `example-app` (not pushed; the coordinator folds it in).
 Commits on d3925fa: dfeea67 example_app (+ projects/example_app.toml), 23e0a07 .github/workflows/harness-{native,house-style,state-machines}.yml + example.yml, e62c224 README rows.
-Decisions in force: owner option 1 (GUI.Forms releases publish the SDK; the standby makes release.yml change). Reusable workflows live in .github/workflows/ (GitHub requirement), not workflows/. harness.lock format assumed `[harness] repository, commit`. windows_toolchain.py restore gets GITHUB_REPOSITORY overridden to the project's toolchain repository in-workflow.
+Current decisions: owner option 1 (GUI.Forms releases publish the SDK; the standby makes release.yml change). Reusable workflows live in .github/workflows/ (GitHub requirement), not workflows/. harness.lock format assumed `[harness] repository, commit`. windows_toolchain.py restore gets GITHUB_REPOSITORY overridden to the project's toolchain repository in-workflow.
 Verified: harness tests (237 OK), example_app tests (9 OK), house style + lifetime rules over example_app/src,tests clean. actionlint absent; no YAML parser locally.
 Next: when the coordinator forwards the first SDK release tag and asset names, adapt sdk_asset/fetch if the layout differs, run `python example_app/fetch_sdk.py pin TAG`, ASK before downloading the windows-x64 SDK (file, source, size), then build/test example_app on Windows with the pinned toolchain (ci_build.py from D:/gui_forms_w5, cache outside the tree).
 2026-10-27 update: D3 folded as template_harness PR #1 (branch example-app, held until the SDK is pinned). Clone reset to origin/example-app 7309064; local commits on top: cd9cd57 (pin from SHA256SUMS.txt, SDK layout per GUI.Forms PR #406, URLError handling), 6a6e622 (windows_toolchain restore reads project toolchain_repository, GITHUB_REPOSITORY fallback; workflow override dropped). Coordinator answers: harness.lock shape right, .github/workflows/harness-*.yml accepted, keep python-tests. PR #1 run 40459602133: YAML valid; python-tests, house-style pass; all four native jobs pass every setup step (Windows toolchain restored, macOS runtimes built) and fail only at "gui_forms.lock pins no SDK archive" (expected). Next: coordinator pushes; on the SDK tag, `fetch_sdk.py pin TAG`, ask before the ~33.8 MB windows-x64 download, then build on Windows.
@@ -1488,7 +1488,7 @@ RESUME POINTER (2026-11-03): w2 on claude/fd5-form-generator e5652ca5, clean. Wa
 decision-free FD6.1 work to start meanwhile: qualified application types in FormSchemaType/generator, and the CMake
 gui_forms_add_form() helper. Then strip merging after FD.
 
-## 2026-11-03: FD6.1 part 1 committed; owner rulings on FD6
+## 2026-11-03: FD6.1 part 1 committed; owner decisions on FD6
 - claude/fd6-application-types 34a1e22e (on fd5 e5652ca5), VERIFIED (form_*|theme_* plain + ASan/UBSan, all checks,
   gate): qualified cpp_type; compiler --type "<name>,<C++ class>,<base>,<header>" (add_application_type);
   cmake/GUIFormsForms.cmake gui_forms_add_form(target doc CLASS NAMESPACE OUTPUT TYPES) using GUIForms::form_compiler;
@@ -1566,7 +1566,7 @@ gui_forms_add_form() helper. Then strip merging after FD.
   PROPERTY_CAPABILITIES_STUDY.md. Next: FD6.2 (gallery.dml -> demo/gallery.form, retire GalleryControl +
   gallery_dml.hpp) on claude/fd6-application-types 1febc847.
 
-## 2026-11-03: owner rulings; FD6.2 under way (branch claude/fd6-gallery-form on 1febc847)
+## 2026-11-03: owner decisions; FD6.2 under way (branch claude/fd6-gallery-form on 1febc847)
 - Owner rulings (coordinator, 2026-11-03): (1) PROPERTY_CAPABILITIES_STUDY.md ACCEPTED, all 11 decisions as
   recommended. (2) instrument: BOTH -- keep gallery::Instrument : user_control as the Gallery's custom-control
   exhibit, AND later ingest a real instrument control into the instruments package (gauges, knob, seven-segment,
@@ -1997,7 +1997,7 @@ Workspace D:/gui_forms_w2, branch claude/m0-settle (local only, clean):
 - Stack in D:/gui_forms_w2/gui_forms on origin/main ebb9fbf4: 4c107777 M2a, f39ad211 M2b, b47cf3b6 M2c (no
   forwarders: set_x/x() deleted, every caller rewritten to cell writes/reads; -Werror=self-assign and
   self-assign-field beside dangling-gsl; DockSite cursor self-assign fixed). Verified at b47cf3b6: 115 headless tests.
-- Decisions in force (study section 15): read() returns the declared type; type() returns PropertyType;
+- Current decisions (study section 15): read() returns the declared type; type() returns PropertyType;
   as_type(PropertyType) -> optional<BindingValue> through convert_to_property_type (= convert_property_value);
   as_type(types::x) total pairs only (requires-constrained, so a partial pair does not compile); tags in
   `namespace types` (stock ones in binding/property_type, enum tags beside their enums); no == or conversion on cells.
@@ -2195,7 +2195,7 @@ Workspace D:/gui_forms_w2, branch claude/m0-settle (local only, clean):
 - Verified: touched tests plain (29) + sanitized (25), programs tree (gallery, demoboard + its tests),
   creation gate check all six cases ok (allocations equal; bare_window_joined 64 < 66), docs check,
   style/lifetime, state-machine gate --changed-from origin/main clean.
-- Decisions in force: run(Window&) lands with Part B (coordinator); C ABI table is w5's (stacked on e5a99786,
+- Current decisions: run(Window&) lands with Part B (coordinator); C ABI table is w5's (stacked on e5a99786,
   now ece835b3 after rebase - tell w5 via coordinator).
 - M4 helper scripts (untracked, excluded): .creation_record.sh, .creation_check.sh, .programs_build.sh, .step2_final.sh.
 - Next: whatever the coordinator assigns (rest of Part A / Part B).
@@ -2260,14 +2260,14 @@ H/VScrollBar: nothing of their own). No claude/p4-remaining branch was made.
 
 ## RESUME POINTER (2026-11-08, Gallery init rewrite; supersedes the ones above)
 - Branch claude/gallery-init @ c64cdee2 (on e629ad91) in w2: the Gallery initialization rewrite, queued unverified. Written against w7 c2b46eb4 (A/B/K, FD-6 a3756eaa), w8 389ff85e (rules), w6 67ad80bb (migration); does not compile on its own base.
-- Decisions in force: no load_window (coordinator: stays internal until stage D); generated Window subclass + generated page document classes only; model owned through the root Tag (PageContext -> GalleryContext); page plug-in point pages::page_builders.
+- Current decisions: no load_window (coordinator: stays internal until stage D); generated Window subclass + generated page document classes only; model owned through the root Tag (PageContext -> GalleryContext); page plug-in point pages::page_builders.
 - Next: when the integrator announces the cp22 candidate, rebase claude/gallery-init onto it (rebase notes in the queue entry). Do not merge other heads.
 - Earlier heads still queued: claude/interaction-state 1f007c58, claude/p5-content-regions c8737231, claude/r8-resize-damage e629ad91.
 
 ## Gallery stack (2026-11-08)
 
 - Branch claude/gallery-stack @ 5b6f0235 on 37451ea6 (batch9 base), workspace ~/Developer/work/w2/gui_forms. It holds my rewrite, w8's panes and w7's spinner/ring plus fixes. Registered in INTEGRATION_QUEUE; I own the Gallery stack and the integrator drops 96562665..13ee18cb.
-- Decision in force: the Gallery uses generated Window subclasses and generated page classes only (no load_window until stage D). The form pages are a separate document (demo/gallery_form_pages.form) initialized from the model in make_gallery, and each control is attached once.
+- Current decision: the Gallery uses generated Window subclasses and generated page classes only (no load_window until stage D). The form pages are a separate document (demo/gallery_form_pages.form) initialized from the model in make_gallery, and each control is attached once.
 - Open: the value-editors rack projection failure (base) and the display-trace digests to re-pin at the checkpoint; schema.md to regenerate at the fold.
 - Next: rebase when the coordinator lands the checkpoint; then sanitizer and checkers on the stack's touched tests if asked.
 - 2026-11-08 owner bugs fixed on claude/gallery-stack @ 532be98d (registered):

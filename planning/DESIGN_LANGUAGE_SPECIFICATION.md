@@ -1660,9 +1660,9 @@ is in the stage A brief. Atoms admitted (§12.7):
 Text selection and layout reach the hosts through on-demand window queries,
 not the snapshot.
 
-## 13. Owner rulings, 2026-11-09 and 2026-11-10
+## 13. Owner decisions, 2026-11-09 and 2026-11-10
 
-These rulings close questions that §11 and §12 left open or that the look
+These decisions close questions that §11 and §12 left open or that the look
 integration raised. The look integration ledger
 (`planning/stages/T4-default-theme/LOOK_INTEGRATION_LEDGER.md`) records how
 each was applied.
@@ -1679,7 +1679,7 @@ each was applied.
 - N5: overtaken: the default theme is gui-forms since cp24 (#474).
 - N6: each material field cascades on its own (per-field cascade).
 - N7: screenshots in the owner's Downloads folder are references, not
-  rulings.
+  decisions.
 - Tab shape (owner correction): no lip where the selected tab meets the
   plane; a smooth faded shadow runs from each tab into the next (tabs tuck
   underneath); every tab is clipped and tapered on its right edge. These

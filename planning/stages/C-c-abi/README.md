@@ -106,7 +106,7 @@ conformance runs under `results/`.
 - `planning/MASTER_IMPLEMENTATION_PLAN.md` §4.10 and M11
 - `docs/user/consume-the-sdk.md`, `docs/dev/roadmap.md` "1.0 Stable"
 
-## Owner rulings, 2026-11-10
+## Owner decisions, 2026-11-10
 
 - **Automation is off by default.** A C ABI window on Windows enables the
   WM_COPYDATA automation channel only for the `GF_WINDOW_RUN_AUTOMATION` run

@@ -295,7 +295,7 @@ pointer, size, shared pointer (two words), generation, site: 48 bytes on
 
 - CMake option `GUI_FORMS_CHECKED_BORROWS` (OFF by default), set ON by
   `tools/ci_build.py --sanitize`, so the persistent sanitizer tree on the M4
-  (owner ruling 2026-11-11, CP29 plan) and CI's sanitizer job run checked.
+  (owner decision 2026-11-11, CP29 plan) and CI's sanitizer job run checked.
   The definition is PUBLIC on the targets and recorded in the installed
   `GUIFormsConfig.cmake`, so a consumer built against a checked SDK is
   checked too.

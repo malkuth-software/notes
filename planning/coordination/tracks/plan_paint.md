@@ -247,7 +247,7 @@ CONSERVATION, EVIDENCE, SPECIFICATIONS). Then a product PR removes
 `docs/icon-editor-study/` and repoints `docs/ICON_EDITING.md:964`.
 Open: whether astra/icon-capability-study (20 MB receipts) goes too.
 
-## Decisions in force
+## Current decisions
 - Push only branches based on 895abb2; PRs with auto-merge; never main.
 - Downloads: ask the coordinator first.
 

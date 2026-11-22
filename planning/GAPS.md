@@ -17,7 +17,7 @@ leave the row until the next checkpoint's record refresh removes it.
 | F1 | Font family does not cross the C ABI or reach C#: the C ABI font record has no family, so a round trip drops a theme's `font-family: Selawik` | C ABI (next ABI additions, row 3.0) | queue, `claude/professional-theme` 114bddcda risks | open |
 | F2 | Prepared text ignores the family: the prepared-text font bank and the Skia executor's engines use the role face only | engine (T2/F) | same | open |
 | F3 | Products and template_harness stage their own fixed font lists without Selawik, so windows-professional falls back to Carlito silently | product workers, template_harness | same | open; fix when the products repin |
-| F4 | Font face identity: `FontSpec` has a role and no face (audit D8); Stage F and the Windows Forms `Font` need one before 1.0 | owner decision, then T2 | `planning/audits/AUDIT_TRIAGE_2026-11-10.md` D8 | open, needs a ruling |
+| F4 | Font face identity: `FontSpec` has a role and no face (audit D8); Stage F and the Windows Forms `Font` need one before 1.0 | owner decision, then T2 | `planning/audits/AUDIT_TRIAGE_2026-11-10.md` D8 | open, needs a decision |
 | F5 | The control face renders "a" closed into "o" at 12.5 units at 1x ("macOS" reads "mocOS"): small-size rendering or hinting of the Portsmouth control face | engine (F) | exhibits worker, STATE 2026-11-10 | open |
 
 ## Painting and hosts
@@ -39,7 +39,7 @@ leave the row until the next checkpoint's record refresh removes it.
 | T1 | Forced high contrast: a gauge's value arc and its track share the edge colour (the needle carries the reading) | final-controls / theme | `claude/final-controls` e5e4e2d6b risks | open: needs a design call |
 | T2 | windows-professional redesign (owner direction 2026-11-10) not in cp27; captures for review owed | w1 | `claude/professional-theme` 114bddcda, follow-up `claude/be-professional-theme` 96401f3cd | coded, unbuilt; the site is recaptured after it |
 | T3 | Look ledger leftovers: T1 default base partial (overtaken by cp24), T13 partial, T12 not audited; R17 minimized-ribbon popup and R24 QAT on the tab row (ruled a follow-up RB item, N3) | w1 / RB | `planning/stages/T4-default-theme/LOOK_INTEGRATION_LEDGER.md` | open |
-| T4 | The Ribbon's help "?" part is reserved, not drawn or wired (ruling N4: with the help system) | RB + help | ledger R23 | open |
+| T4 | The Ribbon's help "?" part is reserved, not drawn or wired (decision N4: with the help system) | RB + help | ledger R23 | open |
 
 ## Help system (rows 2.13-2.20)
 
@@ -85,7 +85,7 @@ SDK. The site images (windows-professional) are recaptured then too.
 | S1 | Server browser (AIRSPY "browse") fails: `HtmlLinkLabel` via `MapControl` throws in the bridge constructor | swap-in worker (facade) | open |
 | S2 | Submenus do not open | facade (menu system in cp27 may cover the library side) | re-check after cp27 |
 | S3 | Hosted/overlay attach (`AttachOverlay`) unported | facade + library overlays table | open |
-| S4 | Custom-painted combo, numeric and button controls keep the stock look; by ruling, no WndProc/WM_PAINT emulation: the sdrsharp theme supplies the look | facade + theme | partly done (theme field rules) |
+| S4 | Custom-painted combo, numeric and button controls keep the stock look; by decision, no WndProc/WM_PAINT emulation: the sdrsharp theme supplies the look | facade + theme | partly done (theme field rules) |
 | S5 | Combo editing carries no caret, selection or undo | library (`claude/swapin-gaps-combo-editing`, unfolded) | open |
 | S6 | Splash made on a thread-pool thread is parked | facade; decision pending | open |
 | S7 | Field height fixed at 23, not font-measured; cursor kinds unmapped; Focus refused on containers; check box `ContentAlignment` | facade / library | open |

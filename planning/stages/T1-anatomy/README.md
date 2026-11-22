@@ -3,7 +3,7 @@
 Release: 0.2 Verified. Depends on: nothing. Unblocks T2, T3, L, C and,
 through them, almost everything else. Status: **complete 2026-10-13**. The
 gate is recorded in `results/2026-10-13-t1-anatomy-gate`; the close-out the
-owner chose (decision 6) and the naming rulings (decisions 7 and 8) merged
+owner chose (decision 6) and the naming decisions (decisions 7 and 8) merged
 through PRs #62 to #67 and #70, and the owner signed off and declared T1
 sealed. Items not required to close T1 are proposed for T2 (decision 6); see
 [Hand-off](#hand-off) for where the next stages pick up.
@@ -239,7 +239,7 @@ For the stages that build on T1 (T2, T3, L, FD, C), as of 2026-10-13:
   live frame sequence on every host; see its brief) and
   `ApplicationWindowHandle::request_client_size` (#81), the portable way to
   ask the native window for a size. `Window::resize` is host-only.
-- **Ruling, 2026-10-14.** The atom vocabulary T1 defined (part roles,
+- **Owner decision, 2026-10-14.** The atom vocabulary T1 defined (part roles,
   states, value types, engine inputs) is the canonical source of what can be
   addressed; controls and the engine both declare against it (design language
   §12.7). New controls paint every part through `paint_part`.

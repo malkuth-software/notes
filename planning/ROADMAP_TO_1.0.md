@@ -4,10 +4,10 @@ Date: 2026-11-08, written after the owner declared 0.5 done; updated
 2026-11-09, 2026-11-10 and 2026-11-13 with the decisions and the work since
 (sections "Status 2026-11-13", "Status 2026-11-10" and "Status 2026-11-09",
 and the **Status** columns, now dated 2026-11-13). Open gaps are listed in
-`planning/GAPS.md`; the owner rulings of 2026-11-08 to 2026-11-10 are indexed
+`planning/GAPS.md`; the owner decisions of 2026-11-08 to 2026-11-10 are indexed
 in `planning/DECISIONS_2026-11.md`, those of 2026-11-13 in the coordinator's
 `DECISIONS_2026-11-13.md`. The owner answered the first version's questions
-on 2026-11-08; nothing else below is decided unless it cites an owner ruling.
+on 2026-11-08; nothing else below is decided unless it cites an owner decision.
 `planning/FORWARD_PROGRAMME.md` stays authoritative for stage scopes and
 gates, and each stage brief under `planning/stages/` for its own decisions.
 `planning/ROADMAP_TO_0.5.md` records what 0.5 sealed.
@@ -445,7 +445,7 @@ public form of Blender's value bars, so 1.2 and 1.5 share a reading.
 | 1.5 | Blender's value bars *(required)* | Blender, BUI | 2.2 | S+O | 0.5 | **done** (with 1.2) |
 | 1.6 | Mirrored-mode feasibility *(required)* | .NET hosting, facades, startup hooks | 5.5 | S+W+O | 1-1.5 | **done** (`MIRRORED_MODE_STUDY.md`); P0 GO on .NET 10 (hostfxr TPA swap); R2R composite needs a preflight |
 | 1.7 | Drawing ABI inventory (`gd_*` before its seal) | the drawing headers, the above studies | 3.2 | S | 0.5 | partly: the additions are in gd 0.3 on main, gd 0.4-0.6 written (cp32: demonstrator gaps, curves); the full inventory waits for D1-D5 (owner, 2026-11-13: all demonstrators before the seal) |
-| 1.8 | Help system: CHM-shaped viewer on Plan Paint paper; help as translatable text records | CHM public documentation and behaviour (clean-room), Plan Paint's help | 2.13-2.20, 3.7, 4.12 | S+O | 0.5 | **done** (`HELP_SYSTEM_STUDY.md`, revision 1); owner rulings 1-7, A(a), B(a) recorded; its questions 1-3 open (question 14 below) |
+| 1.8 | Help system: CHM-shaped viewer on Plan Paint paper; help as translatable text records | CHM public documentation and behaviour (clean-room), Plan Paint's help | 2.13-2.20, 3.7, 4.12 | S+O | 0.5 | **done** (`HELP_SYSTEM_STUDY.md`, revision 1); owner decisions 1-7, A(a), B(a) recorded; its questions 1-3 open (question 14 below) |
 
 **Declarative dragging.** The paper's model: an author lists the model
 states a dragged element may reach; the engine speculatively lays out each

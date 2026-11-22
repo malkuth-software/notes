@@ -1,7 +1,7 @@
 # Track: DockPanel Suite on GUI.Forms (SDR# swap-in docking)
 
-Owner ruling (option a): our own clean-room code maps the DockPanel Suite API
-onto GUI.Forms docking; never copy DockPanel Suite source. Coordinator ruling
+Owner decision (option a): our own clean-room code maps the DockPanel Suite API
+onto GUI.Forms docking; never copy DockPanel Suite source. Coordinator decision
 (b), 2026-11-09: float windows stay shown while the app is inactive
 (per-workspace option plus per-window override); implement the lost
 behaviours in GUI.Forms docking. Only DockPane/FloatWindow as managed shells
@@ -144,7 +144,7 @@ and CloseButton=false placement on DockPanel=null may stay logged.
 4. Remove the script's diagnostics that are no longer needed
    (SWAPIN_DOCK_STACKS, scroll-layout trace) once the owner signs off.
 
-## Decisions in force
+## Current decisions
 
 - Panel ids are stable ids (StableIdOf(PersistString), "-N" for uniqueness).
 - A refused program CLOSE (reason 18) falls back to HIDE, and the content is

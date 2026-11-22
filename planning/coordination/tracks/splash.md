@@ -23,7 +23,7 @@ Worker: w5 (`~/Developer/work/w5`). The w5 tree has `claude/abi-application` che
   surfaces + headless surface, handover at first window attach, K.2 warm_tooltip/warm_popup/
   cold_splashscreen (baselines to record), warm tooltip show asserted zero allocations. §S as-built
   paragraphs in APP_WINDOW_RULES_DESIGN.md (S.3 splashscreen, S.4 menus).
-- Then (owner rulings 2026-11-08) 3ffb7584, unverified: Q-S1 (a) splashscreen = artwork PNG (window
+- Then (owner decisions 2026-11-08) 3ffb7584, unverified: Q-S1 (a) splashscreen = artwork PNG (window
   size = pixel size) + fixed status/progress styling, no title/colours/sheet; Q-S2 (b) X11 without a
   compositing manager keeps real Splash/Popup windows, opaque (default visual), no shadow:
   HostWindowing::transient_windows_translucent(), Window::popup_windows_translucent(), shadow flags on
@@ -51,7 +51,7 @@ Worker: w5 (`~/Developer/work/w5`). The w5 tree has `claude/abi-application` che
 - cp22 Linux warm-show fix 00475c31 on batch11 819f8114 (claude/splash-linux-alloc): libstdc++ SSO strings in the
   tooltip presenter recycled; VM splash_window_tests passes. Tool: w5/dev/tools/vm_splash.sh.
 
-## Decisions in force
+## Current decisions
 - Owner 2026-11-08: Splash and Popup share one transient window; Splash = no input (splashscreen,
   tooltip), Popup = same plus input through the owner. Reuse each host's present path.
 - Ruled: D1(a) small Window model per transient window, warm; D2(a) fade painted into frames; D3(a) gate

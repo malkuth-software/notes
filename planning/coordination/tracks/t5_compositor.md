@@ -125,7 +125,7 @@ full-fidelity glass (2); C7 reflection (2); C8 stage gate, lab program,
 docs (1). C0, C1 first; C2-C4 any order; C5 beside them; C6 after C5; C7
 after C6 (own-raster source may land after C5).
 
-## Decisions in force
+## Current decisions
 
 - Owner round 001 (2026-10-25): T5-Q1..Q16 all option 1 (see T5 README).
   Open owner concern: Wayland (coordinator owns that conversation).
@@ -489,7 +489,7 @@ Coordinator task: move gui_forms' generic build tools into D:/malkuth/template_h
 
 The work is in the clone D:/gui_forms_w1/template_harness, on the local branch `checkpoint-tool`, which sits on top of d3925fa. It has two commits: 0d89385 (the tool, its tests and the gui_forms [checkpoint] table) and c5b8ff5 (README). Nothing is pushed; the coordinator folds the branch in.
 - Tests: `python -B -m unittest discover -s checkpoint -p "test_*.py"`. All 15 pass in about 44 s, almost all of it spent starting git processes on Windows. The harness suite still passes.
-- Decisions in force:
+- Current decisions:
   - The [checkpoint] table is parsed by checkpoint.py, not project.Project, so W's work does not overlap.
   - The integration tree needs the git config mark `harness.checkpoint-tree=true`, set by `init`.
   - `--title` takes N=TEXT; a bare TEXT works only with a single topic.
@@ -503,7 +503,7 @@ The work is on the branch `bootstrap` in D:/gui_forms_w1/template_harness, off o
 - 4006a2a: the bootstrap;
 - 3faf996: the CHANGELOG and contract.
 
-Results and decisions in force:
+Results and current decisions:
 - `checkpoint init` adopted D:/gui_forms_int/gui_forms. The tree stays on its `integration` branch with the mark set.
 - The suites pass with Python314: harness (1 skipped) and checkpoint.
 - lsan.supp stays in gui_forms.
@@ -573,7 +573,7 @@ Earlier on 2026-10-27 (template_harness): docs/adopting.md, the prefix-collision
   - each job timed;
   - a CHANGELOG line.
 
-### Decisions in force
+### Current decisions
 
 1. **Install steps run in the workflow, not through a flag.** gui_forms' harness.lock pins bb28740, and the bootstrap runs the pinned harness's restore_local, so a new flag on this branch would not reach a gui_forms bootstrap.
 2. **example_app is not bootstrapped.** projects/example_app.toml has no [bootstrap] table, and notes has no example_app branch. Say so in the report.
@@ -757,7 +757,7 @@ Earlier on 2026-10-27 (template_harness): docs/adopting.md, the prefix-collision
 
 ## RESUME POINTER (2026-11-04, before the restart: overlays, native popups phase (a))
 - Supersedes the pointer above. Workspace D:/gui_forms_w4/gui_forms. Nothing pushed.
-- claude/t5-backdrop 398b130c (on f5e7abb1, on t5-c8): owner ruling that in-surface "popups" are OVERLAYS (our own pixels): they paint with the theme's materials, take no backdrop chain. Removed PopupOptions::backdrop, popup_backdrop.cpp, BackdropStatistics, the popup tint pass; window chain + no-sampling rule (nothing outside our surface) stay. Verified: plain + sanitized 7/7 (compositor_lab|display_chunk|compositor_backdrop|engine_backdrop|popup|tooltip|menu), docs, style, lifetime, gate (base origin/checkpoint/2026-11-04-2) clean. Report this head to the coordinator if not yet done.
+- claude/t5-backdrop 398b130c (on f5e7abb1, on t5-c8): owner decision that in-surface "popups" are OVERLAYS (our own pixels): they paint with the theme's materials, take no backdrop chain. Removed PopupOptions::backdrop, popup_backdrop.cpp, BackdropStatistics, the popup tint pass; window chain + no-sampling rule (nothing outside our surface) stay. Verified: plain + sanitized 7/7 (compositor_lab|display_chunk|compositor_backdrop|engine_backdrop|popup|tooltip|menu), docs, style, lifetime, gate (base origin/checkpoint/2026-11-04-2) clean. Report this head to the coordinator if not yet done.
 - claude/t5-native-popups b2148095 (on 398b130c): WIP, UNBUILT. Phase (a) seam per the approved plan: HostWindowKind::popup + traits.popup, HostPopupFocus {passive, takes_focus}, host_window_kind(...,bool popup) (native adapters pass false), virtual HostWindowing::supports_popup_windows (false; headless true; admit refuses popup unsupported), ApplicationPopup {focus, origin} on ApplicationWindow (validate refuses popups in the initial set; runtime refuses when unsupported), detail::attach_application_window at ready (runtime WindowBridge::notify, headless open), SurfaceRoot::open_native_popup(owner, content, bounds, NativePopupOptions) -> NativePopupToken (include/gui_forms/window/native_popup/native_popup.hpp; record in src/core/application/native_popup{_record.hpp,.cpp}; src/core/window/native_popup/native_popup_window.cpp), overlay fallback or refuse; headless places at origin, undecorated frame, traces "kind=popup focus=...". Tests: tests/native_popup_tests.cpp (target gui_forms_native_popup_tests). Patch script dev/tools/native_popup_seam.py, drafts dev/staging/.
 - Next: build (build_slot / verify_win.sh 'native_popup|floating_windows|runtime_windows|application' with GATE_BASE=origin/checkpoint/2026-11-04-2), fix compile errors, run, amend into a clean commit, report the head. macOS file edited blind (macos_application_run.inc, 4th arg false): M4 must build it. Then passive key routing and dismissal; phase (b) Windows; (c) TaskDialog/FontDialog/gallery toggle; (d) macOS/X11 handoffs.
 - NAMING RULE (coordinator, 2026-11-04): the semantic-tests worker renames the in-surface mechanism to OVERLAY on main for cp18 (open_popup->open_overlay, PopupOptions->OverlayOptions, PopupAttachment->OverlayAttachment, PopupToken->OverlayToken...). "Popup" now means only the native owned-window kind. Keep native names separate (HostWindowKind::popup, NativePopupOptions, NativePopupToken); never touch the in-surface names; the native surface choice and focus live on NativePopupOptions. The only in-surface references in my branch: NativePopupToken::overlay_ (PopupToken) and the fallback call open_popup(...PopupOptions) in native_popup_window.cpp; the coordinator restacks me onto the rename.

@@ -5,9 +5,7 @@ read against `D:\gui_forms_audit` at `ae189ff4b` (origin/main, #477).
 Nothing was built or run. The 82 findings of the first audit are in the
 coordinator's `AUDIT_TRIAGE_2026-11-10.md` and are not repeated here.
 
-**The owner decides which findings are acted on.** Every verdict is a
-recommendation; the batches at the end are options, not assignments.
-Nothing has been routed to a worker.
+Status: not routed.
 
 Columns, as in the coordinator's triage:
 

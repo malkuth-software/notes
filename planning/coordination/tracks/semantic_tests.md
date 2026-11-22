@@ -23,7 +23,7 @@ DONE 2026-11-07 (cp20 FD-4, base origin/checkpoint/2026-11-05-4 835c3599):
   form, C ABI create now makes it (conformance refused list updated, schema sample from stable id). Round
   (dev/tools/flags_round.sh): plain 45/45, sanitized 43/43, schema/libdocs/compat/style/lifetime/gate clean.
   Lesson: ci_build --tests narrows the build too; build with the full regex before a plain ctest.
-- NOW (primary): desks/coordinator/APP_WINDOW_RULES_DESIGN.md finalised to the owner's rulings (2026-11-07)
+- NOW (primary): desks/coordinator/APP_WINDOW_RULES_DESIGN.md finalised to the owner's decisions (2026-11-07)
   as the build plan (uncommitted; the coordinator commits). Q-A1 hybrid (owned Application, current while
   alive, config down the ownership chain); creation-cost contract + benchmark gate (Part K); window kinds
   Window/Popup/Splash; Splash before 0.5 (Part S, from SPLASH_NOTES.md: present-only window, one subtree two
@@ -52,7 +52,7 @@ DONE 2026-11-07 (cp20 FD-4, base origin/checkpoint/2026-11-05-4 835c3599):
   UIA fragment root stay client. tests/window_root_slot_tests.cpp. dev/tools/slot_round.sh: plain 46/46,
   sanitized 40/40; libdocs/compat/style/lifetime clean; gate's one F1 is app-create's abi_windows.cpp:131.
 - DONE 2026-11-08 sub-surface follow-ups queued UNVERIFIED: claude/subsurface-followups e692512c on origin/main
-- DONE 2026-11-08 four follow-ups queued UNVERIFIED on claude/subsurface-followups a6de2562 (base e692512c): 177ca2a3 stopped/pairing_missed by posted work (coordinator ruling: never inside the present path); a6473ad6 grid region publishes no semantics (set_publishes_semantics); 7024a1d9 DataGridViewCellsTextProvider on the region's thread (decision 3(a) second half; touches W's cell_layout/resolve_cell, noted for M-R in the queue); a6de2562 benchmark M2 input path. Checkers, control_schema check, abi catalog check pass locally; no M4 runs (owner: nothing waits on builds). Next: whatever the coordinator assigns; fix-ups only if the integrator's build reports breakage.
+- DONE 2026-11-08 four follow-ups queued UNVERIFIED on claude/subsurface-followups a6de2562 (base e692512c): 177ca2a3 stopped/pairing_missed by posted work (coordinator decision: never inside the present path); a6473ad6 grid region publishes no semantics (set_publishes_semantics); 7024a1d9 DataGridViewCellsTextProvider on the region's thread (decision 3(a) second half; touches W's cell_layout/resolve_cell, noted for M-R in the queue); a6de2562 benchmark M2 input path. Checkers, control_schema check, abi catalog check pass locally; no M4 runs (owner: nothing waits on builds). Next: whatever the coordinator assigns; fix-ups only if the integrator's build reports breakage.
   d722217c (S3-S7 already on main in cp20): waterfall lab on LiveSurfacePacer; macOS AX Gallery fixture waits for
   sub-surfaces to publish before freezing (S5 intermittent). OPEN, needs a coordinator decision: subsurface_host
   interactions stopped/pairing_missed (pairing is decided in Window's present path, window_presentation.cpp ~915;
@@ -259,7 +259,7 @@ placement) and the per-type effects moved to semantic_gallery_tests (the recomme
 - The input_desktop tests: tests/windows_accessibility_{uia_provider,uia_text,uia_gallery,msaa_gallery}_tests.cpp,
   tests/windows_compositor_probe.cpp.
 
-## Decisions in force
+## Current decisions
 - Build rules (owner, 2026-11-04): build only what you touch and run those tests plain; no full or
   sanitized suite of your own (the batch fold verify covers it); wrap heavy runs in
   `python -B D:/malkuth/projects/tools/build_slot.py -- <command>` (at most 2 at once). dev/tools/verify_win.sh
@@ -326,4 +326,4 @@ Done: claude/spinner-progress-ring @ deff18ce on 4a4b1179, queued unverified. Ne
 
 ## 2026-11-08: toast live region and FD-6 Q2/Q3
 
-Done: claude/toast-live-region-on-namespace @ 6bfcc3bc on batch10 06a78004, queued unverified. Decisions in force: semantic_announcement_due is the single host announcement rule; announces_on_appearance marks live regions spoken when new (toast only). Next: fix whatever the checkpoint verify reports.
+Done: claude/toast-live-region-on-namespace @ 6bfcc3bc on batch10 06a78004, queued unverified. Current decisions: semantic_announcement_due is the single host announcement rule; announces_on_appearance marks live regions spoken when new (toast only). Next: fix whatever the checkpoint verify reports.

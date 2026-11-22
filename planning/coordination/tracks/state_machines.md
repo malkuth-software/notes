@@ -759,7 +759,7 @@ Auto-merge set (merge queue); CI pending. Not waiting.
 - Assets: gui-forms-sdk-<v>-{macos-arm64,linux-x64,linux-arm64}.tar.gz and gui-forms-sdk-<v>-windows-x64.zip.
 - Top directory gui-forms-sdk-<v>-<platform>/. It adds cmake/llvm22.cmake, and on macOS llvm-runtime/.
 - Windows size: 33.8 MB zip (88.5 MB unpacked), measured from the int tree 57eb3bd4. I deleted the install_manifest.txt the measurement left there.
-- Decision in force: the SDK comes from release.yml's programs job, not the native jobs, because promoted main runs skip the build.
+- Current decision: the SDK comes from release.yml's programs job, not the native jobs, because promoted main runs skip the build.
 - Note: /d/gui_forms_w3's own build tree is out of sync with its checkout (configured from a later main; the checkout is sk1). Reconfigure before using it.
 Next: idle. Still owed: the first RTD build id when woken. Phase D and E queues as above.
 
@@ -812,7 +812,7 @@ Next: idle.
 - #415 claude/sdk-text-stack fb52fe02, auto-merge set, CI pending. Worktree: D:\gui_forms_w3\dev\ws_feat (switched from the merged claude/sdk-features).
 - GUI_FORMS_INSTALL_TEXT_STACK (default OFF; in build_sdk FEATURE_SETS["all"]) -> cmake/TextStackExport.cmake installs libfreetype.a/libharfbuzz.a,
   include/freetype2 + include/harfbuzz, export GUIFormsTextStackTargets (GUIForms::FreeType, GUIForms::HarfBuzz -> FreeType).
-- Decision in force: SKIP_INSTALL_ALL set around both add_subdirectory calls (else harfbuzzConfig export errors: freetype in two export sets);
+- Current decision: SKIP_INSTALL_ALL set around both add_subdirectory calls (else harfbuzzConfig export errors: freetype in two export sets);
   so upstream hb-features.h is not generated or installed (nothing includes it).
 - Config components gain FreeType, HarfBuzz; verify_install FEATURE_COMPONENTS too; consumer test text_stack.cpp shapes "GUI.Forms" with Arimo.
 - Local proof: text_prefix + feat_build under D:\gui_forms_w3\dev (disposable); logs text_build.log, text_verify.log.
@@ -862,7 +862,7 @@ Next: idle.
 - Next: E2 loop-branch classifier in template_harness (projects/<product>.toml config; clang -ast-dump=json over compile_commands.json);
   report first-run counts on gui_forms before opening a PR; stop after E2.
 
-## Decisions in force (2026-10-27, later)
+## Current decisions (2026-10-27, later)
 - Trap class dropped (Skia's automatic traps were not real violations). E1 has no trap guard and no trap? marks; each candidate is
   triaged on its merits; a non-violation is false_shape with a one-line reason. No work on Skia at all (vendored Skia, headers,
   preserved pre-fix headers): Skia paths are excluded from the integrity checker's scope and from the triage.
@@ -1104,7 +1104,7 @@ Order: 1 CodeQL alerts, 2 macOS dialog-key flake, 3 Windows compositor flake che
 
 ## 2026-10-28: restrict applied uniformly (owner correction)
 
-- Rule in force: restrict wherever the no-overlap promise can be shown (written
+- Current rule: restrict wherever the no-overlap promise can be shown (written
   rule + assertion active without NDEBUG and under ASan + touched tests under
   --sanitize); timing is information only. Public headers out until reviewed.
 - gui_forms claude/restrict-kernels (local, on origin/main 39b5b77f), head 0c054037:
@@ -1498,7 +1498,7 @@ Order: 1 CodeQL alerts, 2 macOS dialog-key flake, 3 Windows compositor flake che
   (parse_number_format: F N P C E G, precision 0..99; append_formatted_number for double/int64/uint64;
   plain_number_text = the reverse for typed text). Binding format_string and DataGridView cell format use it
   (both replaced their F0..F12 code); Binding source update and DGV commit parse formatted text back.
-- Decisions in force (documented in the header): invariant culture; doubles via std::to_chars (exact binary
+- Current decisions (documented in the header): invariant culture; doubles via std::to_chars (exact binary
   value, ties to even = .NET Core 3.0+); P rounds at p+2 then moves the point (exact); sign follows the sign
   bit ("-0.00"); integers exact, ties away from zero when a precision drops digits; G default threshold 15
   for doubles, every digit for integers; NaN/Infinity/-Infinity for every format; C invariant "(¤n)".
@@ -1619,7 +1619,7 @@ Order: 1 CodeQL alerts, 2 macOS dialog-key flake, 3 Windows compositor flake che
 - Fold on 855b0f0e, 7 topics: stx-conv-dispatch (w4, contains stx-auxlib-pin), hot-paths-gradient-axis,
   hot-paths-mingw-stage-abi, c-abi-c6 fcb37541 (w5), stx-skia-sk3 2331780a (w4, added by the coordinator),
   T4 pinned at 4635aef3 via w3 claude/t4-themes-cp13 (w1 moved on), w3 claude/sm-sanitizers-manual b21a560a
-  (owner ruling: the Sanitizers job is workflow_dispatch-only, input run_sanitizers). Fold head 5932f017;
+  (owner decision: the Sanitizers job is workflow_dispatch-only, input run_sanitizers). Fold head 5932f017;
   regen w3 claude/sm-cp13-regen 278a290e (inventory.json). Scripts: D:/gui_forms_w3/dev/tools/cp13c.sh
   (fold+regen+verify), cp13v.sh (verify only); logs D:/gui_forms_int/dev/cp13c/.
 - DROPPED: w2 claude/w-message-box-gaps 715fb281 — docs_sphinx fails on docs/library/docstrings/Window.rst:198
@@ -1732,7 +1732,7 @@ Scope (to confirm against the landed code before executing):
 
 ## RESUME POINTER (2026-11-03, step 2 P2 done locally; stx coverage done)
 
-- Owner rulings for step 2: (1a) installed SDK + GalleryModel component; (2a) git filter-repo; (3) launching
+- Owner decisions for step 2: (1a) installed SDK + GalleryModel component; (2a) git filter-repo; (3) launching
   tests move; (4) name gui_forms_programs. git-filter-repo 2.47.0 installed with `pip install git-filter-repo`
   (Windows Python 3.14, PyPI); wheel sha256 2cd04929b9024e83e65db571cbe36aec65ead0cb5f9ec5abe42158654af5ad83
   (taken by a separate `pip download` of the same wheel, then deleted).
@@ -1757,13 +1757,13 @@ Scope (to confirm against the landed code before executing):
 
 ## RESUME POINTER (2026-11-03, cp14 fold plan sent; programs split parked)
 
-- Programs split (owner rulings 1a/2a/3 in force): programs repo D:/gui_forms_w3/programs_split/gui_forms_programs
+- Programs split (owner decisions 1a/2a/3): programs repo D:/gui_forms_w3/programs_split/gui_forms_programs
   main 974bcfb4 (workflows; bundle sha256 054fa328...); gui_forms held removal branch claude/split-remove-programs
   7f2d3b58 (fold only after the programs repo's first green run); M4 handoff tracks/gui_forms/
   m4_handoff_programs_split.md; owner asks tracks/gui_forms/programs_repo_owner_asks.md; step 1 prep
   tracks/gui_forms/stx_split_prep.md (filter-repo needs --prune-degenerate never, then
   dev/tools/check_filtered_history.sh).
-- stx_conv oracle RETIRED (owner ruling 3, 2026-11-03): claude/stx-conv-retire-oracle 6ba25983 (on 2909df8b)
+- stx_conv oracle RETIRED (owner decision 3, 2026-11-03): claude/stx-conv-retire-oracle 6ba25983 (on 2909df8b)
   removes STX_CONV_ORACLE, the Plan Paint differential and float-oracle tests, fetch/prepare scripts; projects
   tools/stx_sanitize.sh adjusted (8bdea51). Verify selection does not depend on them.
 - cp14: candidates fetched into w3 as refs/cp14/<w>/<branch>. All worker branches sit on 855b0f0e (main's first
@@ -1810,7 +1810,7 @@ Scope (to confirm against the landed code before executing):
   6 Sphinx: docs/api/library.geometry-and-appearance.rst:6270 `|x|` read as a substitution, from the
     effect_fraction docstring (w5): escape in the docstring, regenerate docs.
 - Next on resume: regen items 1-3 (+docs) in a second regen commit on claude/cp14-regen; items 4-6 from w5 (or the
-  coordinator's ruling), fold them as a regen/fix topic; re-verify with SKIP_FOLD=1 dev/tools/cp14v.sh; report.
+  coordinator's decision), fold them as a regen/fix topic; re-verify with SKIP_FOLD=1 dev/tools/cp14v.sh; report.
 - After cp14 merges: remind the coordinator to dispatch cold_build. cp15: T4 (w1 rebased), FD6.2 09034d31, Wine fix
   ee3660ae. Programs split: re-extract the programs history after FD6.2 lands (filter-repo --prune-degenerate never +
   dev/tools/check_filtered_history.sh), re-apply the SDK commits, then pin gui_forms_programs' gui_forms.lock to
@@ -1923,7 +1923,7 @@ Scope (to confirm against the landed code before executing):
 - stx main 24a6a8ee PUSHED; first CI green (12 jobs; names confirmed in stx_repo_owner_asks.md).
 - Held gui_forms `claude/split-remove-stx` 84a26dd6 (worktree D:/gui_forms_w3/stx_rm_wt): verified on Windows (see above).
 - gui_forms `claude/stx-conv-oracle-registration` 3ecf8fbc (gate_wt): for cp15 and to carry into stx.
-- NOT STARTED (owner ruling): stx PR branch off stx main 24a6a8ee in D:/gui_forms_w3/programs_split/stx moving
+- NOT STARTED (owner decision): stx PR branch off stx main 24a6a8ee in D:/gui_forms_w3/programs_split/stx moving
   tools/benchmark_deflate|inflate|png|match_index.py, validate_inflate|png.py, review_deflate_memory.py, the codec
   oracle manifests (tests/compression/oracle_sha256.json etc.) and codec-differential.yml into stx, plus 3ecf8fbc's
   stx_conv part (dev/tools/bubble_oracle_patch.py applies it); then the matching removal amended onto
@@ -1955,7 +1955,7 @@ Scope (to confirm against the landed code before executing):
   cp15/fd6 (wine + W fd6-pages f33059cb incl. FD6.3; W's clone has since moved to fc7d3b6e, not taken), cp15/hlock
   (3ecf8fbc + harness fb752e7), cp15/w7 (19730f2e headless semantic tests). T4 -> cp16 (coordinator ok).
 - Regen claude/cp15-regen cd8c1c98 (worktree D:/gui_forms_w3/cp15_regen_wt): paint census; typography_specimen 6->7 by
-  coordinator ruling (line boxes = diagnostic inspection content), gallery_controls 45->0.
+  coordinator decision (line boxes = diagnostic inspection content), gallery_controls 45->0.
 - int template_harness moved to fb752e7. projects tools/sanitize.sh has SKIP_LABELS (5a4d89b); cp15v.sh sets
   SKIP_LABELS=input_desktop (coordinator: input_desktop plain only, by label).
 - Verify: sh dev/tools/cp15v.sh (SKIP_REGEN=1 to only verify); output D:/gui_forms_int/dev/cp15/cp15v.out, verify.log.
@@ -2023,7 +2023,7 @@ Fold state:
   - 87f72562 (live-surfaces M2 spelling);
   - e4e53032 (the lab keeps its overlay);
   - 417e9a77 (575b580e, the semantic node, adapted to .read());
-  - 27a0c7db (owner rulings: OverlayAttachment owns the overlay root; ~Control -> SurfaceRoot::forget_destroyed_subtree
+  - 27a0c7db (owner decisions: OverlayAttachment owns the overlay root; ~Control -> SurfaceRoot::forget_destroyed_subtree
     backstop; ~SurfaceRoot forgets what is still attached; core_tests cases test_window_owns_a_shown_overlay and
     test_destroyed_attached_control_is_forgotten);
   - b431adc7 (regeneration).
@@ -2174,7 +2174,7 @@ cp19 candidates: none folded beyond cp18; ask the coordinator.
 - #465 = checkpoint/2026-11-04-1 at 882ef1c2 (my profiles fix). CI at shutdown: 24 pass, 7 skipping, 1 pending (native macos-15 build).
 - #466 = checkpoint/2026-11-04-2, force-folded by the coordinator (order and hand resolutions in the #466 body and in STATE.md
   "FORCE FOLD"). Its working branch is cp16/fx in D:/gui_forms_w3/cp16_trial; the coordinator pushed head **8b7b470a**:
-  3c573fb0 (paint census `update`; text_box stays at 1 by coordinator ruling, T4's next item in t4_themes.md; effect_registry
+  3c573fb0 (paint census `update`; text_box stays at 1 by coordinator decision, T4's next item in t4_themes.md; effect_registry
   I05 bound), then 8b7b470a (95 stale pending Window contracts -> docs/reference/contracts/surface_root.json; inventory.json and
   docs/api regenerated; display-trace digests already matched). CI on 8b7b470a at shutdown: 2 pass, 6 pending, 1 skipping.
 - My local checks on 8b7b470a: the int tree is detached at cp16-fx = 8b7b470a (built, build rc 0). build.sh 'effect|display_trace|paint_census'
@@ -2297,7 +2297,7 @@ cp21 (#472) is to be closed in favour of cp22; cp21's CI failures are folded int
   part hung on; controls.focus keyboard only when a host presents the window), ffbdc2a77 (digests, regen, census,
   UTC termination log, state-gate defaults, integrity guards). Mac list: Gallery digests states-and-diagnostics
   and values-and-spinners (158/40565 lines). Paint census: text_box_decorations.cpp is a named content-paint
-  exemption (owner ruling 2026-11-09).
+  exemption (owner decision 2026-11-09).
   cp26 order, in progress on fold/cp25 (same worktree): data-grid d79df4b29 (+attached_window fix in
   abi_create_with.cpp), swapin-gaps-base 9c1f6d4d0 + swapin-gaps-compat-abi1 a8bde9221
   (D:/malkuth/probes/swapin_lib/gui_forms), ribbon-gaps 94a8934e9, look-integration (w1's rebased head),

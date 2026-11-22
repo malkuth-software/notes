@@ -8,7 +8,7 @@ Started 2026-10-22 in workspace `D:\gui_forms_w5` (checkout `/d/gui_forms_w5/gui
 - The Plan Paint oracle (`falseywinchnet/plan-paint` 3edc4520, public) stays test-only and pinned (`stx_conv/tests/oracle.json`, `cmake/verify_oracle.cmake`). Nothing from Plan Paint enters the runtime library or GUI.Forms.
 - Do not change #255 (T2 E8c, `material_image.hpp`); the T2 worker owns it.
 
-## Owner decisions in force (2026-10-22, via the coordinator; all recommendations accepted)
+## Current owner decisions (2026-10-22, via the coordinator; all recommendations accepted)
 1. (1c) E8c keeps Mitchell-Netravali now. After hardening, a measured CONV speed pass with target 256->128 under 4 ms on the reference machine; then revisit the filter choice.
 2. (2a) binary64 at the GUI.Forms seam.
 3. (3a) CI fetches the pinned Plan Paint files, verifies their hashes, and runs the differential on every host; test-only.

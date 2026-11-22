@@ -47,7 +47,7 @@ collector and a language to version forever. "Declarative now, scripts later"
 is a trap: every interesting theme would use the hatch and lose the
 guarantees. The hatch is new first-party C++ primitives, versioned.
 
-## The atom vocabulary (owner ruling, 2026-10-14)
+## The atom vocabulary (owner decision, 2026-10-14)
 
 The engine does not define what can be addressed, and neither do controls:
 both declare against the vocabulary of part roles, states, value types and

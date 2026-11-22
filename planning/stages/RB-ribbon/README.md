@@ -59,7 +59,7 @@ into Windows Forms-style pieces.
 3. **Decisions.** The answers become numbered owner decisions in this brief,
    including any vocabulary additions (part roles, states, marks, semantic
    roles) the ribbon needs; vocabulary changes also go to the design
-   language (§8, §12) and `anatomy_types.hpp` as the ruling of 2026-10-14
+   language (§8, §12) and `anatomy_types.hpp` as the decision of 2026-10-14
    requires.
 4. **Plan** (`PLAN.md`, accepted 2026-10-14). The controls, structure and behaviour of the framework, each with
    its scope, dependencies and the tests that prove it; where it sits among

@@ -17,7 +17,7 @@ read by path from `C:\Windows\Fonts`, never committed; record version and SHA-25
 
 - F0 (plan): accepted 2026-10-23. The owner took every recommendation (1a to 11a below). The
   stage brief records them as its decisions 4 to 14 (plan decision N is brief decision N+3).
-- F1 (measurement tool): PR #301, `claude/f-metrics-harness` @ 06ceaf45, on main. Owner ruling
+- F1 (measurement tool): PR #301, `claude/f-metrics-harness` @ 06ceaf45, on main. Owner decision
   2026-10-23: F's reference is OUR ENGINE on both sides (reference file and substitute through the
   same pinned FreeType/HarfBuzz); never a host renderer; never propose changing the engine's metric
   table to match a host. GDI kept in reports as information for R/S only. Line-height criterion =
@@ -91,7 +91,7 @@ SHA-256 in ATTRIBUTION.md. For the zip, record its SHA-256 and each extracted fi
 
 Our engine against our engine; GDI is information for R and S. See State above.
 
-## Decisions in force (owner, 2026-10-13)
+## Current decisions (owner, 2026-10-13)
 
 1. Licences: OFL, MIT or Apache only. Wine's LGPL replacements are out.
 2. The substitution table comes first; host bytes only for unmapped families.

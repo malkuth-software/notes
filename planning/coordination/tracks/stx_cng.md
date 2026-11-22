@@ -18,7 +18,7 @@ Owner's words: "new library to digest, clean up, inspect, integrate. a
 replacement for png. faster, smaller, fully MIT, and with convenience utilities
 for us. I present CNG, on a repo of stx_cng now."
 
-## Constraints in force
+## Current constraints
 
 - Not without the owner: do not admit Zstandard as a dependency; do not touch
   AGENTS.md's "PNG is the only image decoder admitted" rule.
