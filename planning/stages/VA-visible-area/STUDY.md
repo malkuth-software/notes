@@ -2,9 +2,9 @@
 
 Written by the VA/IC study worker, 2026-11-22, from the brief beside it
 (`README.md`) and a reading of GUI.Forms at `main` c7c9f4f0c (the cp35
-merge). Code-free: nothing in GUI.Forms was changed. Status: proposals and
-questions for the owner; nothing below is decided beyond the owner's
-direction of 2026-11-21 that the brief records.
+merge). Code-free: nothing in GUI.Forms was changed. Status: decided 2026-11-22 (section 13): the owner
+accepted every recommendation except question 4, where Windows Forms
+panels contain by default.
 
 ## 1. The problem
 
@@ -241,7 +241,7 @@ in-tree case is tractable at all.
 |---|---|
 | Media and fixed-design content: `PictureBox` in zoom mode, video, `RasterCanvas` whole-image view, plot export views, a game or sub-surface with a design size | `contain`, `minimum_scale` 0 (always fits), `maximum_scale` unbounded |
 | CSS panels (`FlexPanel`, `GridPanel`, `BlockPanel`) | reflow, then `scroll` |
-| Windows Forms panels (absolute, Dock and Anchor) | `scroll` when `auto_scroll` is on; otherwise `clip`, **recorded** (question 4) |
+| Windows Forms panels (absolute, Dock and Anchor) | `scroll` when `auto_scroll` is on; otherwise **`contain`** (owner, question 4: a deliberate difference from Windows Forms, which clips) |
 | Strips, ribbon, navigation | their own overflow answers (3.4), reported through the same record |
 | Top-level window root | reflow, then `scroll` (question 7) |
 | Overlays and menus | `scroll` within the work area |
@@ -360,19 +360,35 @@ The names are proposals (question 9).
 | VA3 | defaults per kind (section 8); `PictureBox` zoom and the canvases onto the shared computation; safe insets on the hosts that have them; the web host's visual viewport | before 1.0 |
 | VA4 | diagnostic overlay colours; MCP layout reasons; gate: the owner's game case reproduced (a too-tall root in a too-small browser canvas) failing before and passing after, plus nested-contain, floor and input-mapping tests in gui_forms_tests | gate |
 
-## 13. Questions for the owner
+## 13. Decisions (owner, 2026-11-22)
 
-Put to the owner in conversation, numbered with lettered options; the
-answers are recorded here when given.
+The owner answered: "contain by default on 4. otherwise accepted."
 
-1. The architecture (A transform, B constraint, or both as one model).
-2. Where `contain` may apply (roots only, any control, or roots plus media
-   leaves).
-3. What a viewport excludes (safe insets, band).
-4. What Windows Forms panels do with content outside them.
-5. The scale range and the floor.
-6. How contained content renders (re-record or scale chunks).
-7. Oversized windows.
-8. How far reporting reaches (C++, ABI, MCP).
-9. Names.
-10. `ScaledPanel`.
+1. **Both as one model**: layout propagates the bound and records overflow;
+   each viewport owner's policy (scroll, contain, cover, clip) answers what
+   reflow cannot fit.
+2. **Contain on any control**, phased: roots first (VA1), the in-tree scale
+   frame second (VA2), both before 1.0.
+3. **The viewport excludes the window band and host-reported safe insets**
+   (zero where a host has none).
+4. **Windows Forms panels contain by default** (absolute, Dock and Anchor
+   panels without `auto_scroll`): content outside them is scaled to fit,
+   not clipped. A deliberate difference from Windows Forms; `clip` remains
+   available by explicit choice and is recorded. The Windows Forms
+   compatibility notes say so.
+5. **Scale range with a floor on the effective scale**: `minimum_scale`,
+   `maximum_scale`, and `below_minimum` (normally scroll). Media defaults to
+   minimum 0; control content to a floor from the presentation settings,
+   bounded below by TC's minimum target.
+6. **Re-record at the effective scale**; scaling retained chunks only for
+   transient animation of the scale.
+7. **Hosts clamp an oversized window's size** to the work area; the root's
+   policy answers inside; a minimum size that cannot fit yields and is
+   recorded.
+8. **Diagnostic 203 `content_overflow`, the counters (unanswered included)
+   and the C ABI entries for records and safe insets before the freeze**;
+   MCP layout reasons later.
+9. **Names as section 11**: `viewport_fit` (`ViewportFit`), `OverflowAnswer`,
+   `design_size`, `OverflowRecord`, `OverflowCause`, `SafeInsets`.
+10. **`ScaledPanel` stays as an explicit, recorded stretch** and gains an
+    aspect setting with a uniform mode.
