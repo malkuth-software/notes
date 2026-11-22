@@ -6,7 +6,8 @@ Written by the VA/IC study worker, 2026-11-22, from the brief beside it
 `stxlib` branch of the notes repository, 1496fd4), the allocator's proof
 tools recovered from the M4 (section 2.2), the session records of the
 sessions that wrote them, and the STITCH paper. Code-free: nothing was
-changed in any repository. Status: proposals and questions for the owner.
+changed in any repository. Status: decided 2026-11-22 (section 9): the owner accepted every
+recommendation.
 
 ## 1. The problem
 
@@ -52,69 +53,38 @@ extend it to the whole codebase, with a STITCH-style block fuzzer.
 2. **The sxv path is stale and the tool is in no repository.** The brief's
    `stx_minmallocpp/dev/concurrency_audit/` exists nowhere. The tool was
    never committed: the 2026-11-21 tidy rescued it from the gone
-   `stxlib-minmallocpp` checkout into a thin git bundle on the M4
-   (`tidy-bundles-2026-11-21/…stx_minmallocpp_stxlib.bundle`, branch
-   `rescue/2026-11-21-stxlib-minmallocpp` 715cd66, path
-   `tools/concurrency_audit/`, 21 files, about 7,000 lines; it needs
-   STXlib's history to unpack). **That bundle is the only copy.** Given the
-   owner's rule that the Mythos solver is not copied into a repository,
-   this may be deliberate; either way it should be kept somewhere safer
-   than a temporary bundle (question 8).
-3. **The STXlib notes.** The brief points at "the STXlib notes"; since
-   2026-11-21 they are in the private `stxlib_notes` repository, of which
-   this machine has no clone. I read the copies still on the public notes
-   repository's `stxlib` branch (`VERIFICATION_PROGRAMME.md`,
-   `stx_minmallocpp/DESIGN.md`, `review-logic.md`,
-   `review-compile-style.md`); they may be older than the private ones.
+   `stxlib-minmallocpp` checkout into a thin git bundle on the M4 (21
+   files, about 7,000 lines), then the only copy. By decision 8 a second
+   copy, with a plain archive beside it, is kept on the Mac
+   (`~/Developer/work/kept/rescue-bundles/`); it stays out of every
+   repository, as the owner ruled.
+3. **The STXlib notes** are in the private `stxlib_notes` repository since
+   2026-11-21. Its `main` is at the same commit (1496fd4) as the copies
+   read here (`VERIFICATION_PROGRAMME.md`, `stx_minmallocpp/DESIGN.md`,
+   `review-logic.md`, `review-compile-style.md`), so the reading is
+   current.
 4. Everything else the brief names exists.
 
 ## 3. The allocator evaluations, and how far each is from formal verification
 
 ### 3.1 Mythos: sxv (deductive, relative to named premises)
 
-What it is: a front end for the house dialect (tokenizer, parser,
-control-flow graph, `sxv_front.py`) that reads ten step routines of the
-page protocol **from the source**, cuts them at every
-`STX_MINMALLOCPP_STEP` mark, call and unmarked loop, executes each path
-symbolically (64-bit symbolic words, unbounded integer counters, a relaxed
-load as an arbitrary value) and sends 2,444 conditions to z3: each path is
-an enabled transition of a counter system whose invariant J (7 clauses) is
-inductive (285 obligations); each thread's role assertion survives every
-other thread's step (417); 21 call-site conditions; and soundness checks
-(no condition proved from contradictory premises). All proved, 35 s on the
-M4. The key move is mathematical: counters as finite sums with three
-elementary laws, and popcount by its algebra, not as a 64-bit circuit
-(which never finished).
+sxv reads ten step routines of the page protocol from the source in the
+house dialect, cuts them at the step marks, executes each path symbolically
+and has z3 prove every path an enabled transition of a counter system with
+an inductive invariant, plus each thread's assumptions surviving the other
+threads' steps: a machine-checked safety proof for any number of threads,
+in about half a minute on the M4. Its reusable idea is mathematical:
+counters as finite sums with three elementary laws, popcount by its algebra
+rather than as a circuit.
 
-What it establishes: for any number of threads, pages and blocks and any
-interleaving, the page protocol as written never reaches an integrity stop,
-never refuses a held block's release, and keeps J. That is a genuine
-machine-checked safety proof.
-
-How far from formal verification of the code:
-- **Trusted extraction.** The source is read by a hand-written parser of a
-  dialect subset, not by the compiler; which helper calls write no page
-  word (`OPAQUE_CALLS`) was decided by hand. A misreading would prove the
-  wrong program.
-- **Assumed premises.** The C++ memory model's coherence, each segment
-  between marks being atomic, sequentially consistent operations being
-  linearizable; the loop invariant of `collect` stated, not derived; the
-  16-bit count treated as an integer (safe below about 61,000 threads mid
-  release of one page; the source's static assertion covers 4,096); the
-  queue and abandoned-list contracts assumed.
-- **Scope.** The page protocol only: not the orphan heap, huge mappings, the
-  free-run index, commit units, queues, the release path before the page,
-  the hosts, or progress (safety only).
-
-Verdict: formal verification of the **page protocol as extracted**, with an
-unverified extractor and named premises; "optimistic" is fair where the
-premises cover what is not proved (the queues). It is the strongest
-evidence the project has, and its method (dialect front end, path cutting
-at marks, algebraic encodings) is reusable.
-
-The closed model beside it (`closed.py`, `explore.cpp`: every state of 2
-threads by 1 to 2 slots to a fixed point, the largest 10 million states) is
-a test by the owner's definition and the README says so.
+It is formal verification of the page protocol **as extracted**: the
+extractor is a hand-written parser, some facts were read by hand, the
+memory model and several contracts are named premises, and the scope is
+the page protocol only. The detailed evaluation (what is proved, every
+premise, the scope) is in the private STXlib notes,
+`planning/stx_minmallocpp/SXV_EVALUATION.md` (decision 8). The closed-state
+explorer beside it is a test by the owner's definition.
 
 ### 3.2 Fable: the graph, the checks, the interleaving checker
 
@@ -347,16 +317,26 @@ ABI addition and so belongs before the freeze (question 7).
 | IC4 | proofs from the vocabulary where they pay; the existing checkers reading it; clean-up where two places state one constraint differently | both |
 | Gate | per component: clauses declared, blocks generated, states and edges reached, defects found and fixed (through `integrity_counts`), and zero legal-mode false positives over a stated run | notes `results/` |
 
-## 9. Questions for the owner
+## 9. Decisions (owner, 2026-11-22: "accepted on all")
 
-Put in conversation, numbered with lettered options; answers are recorded
-here when given.
-
-1. Where constraints are written.
-2. The fuzz surface of GUI.Forms (C++ API, C ABI, or both).
-3. Misuse mode.
-4. The engine's base.
-5. Who writes blocks.
-6. sxv's status and the deduction layer.
-7. Order, against the ABI freeze.
-8. Where the STXlib half and the rescued sxv live.
+1. **Declaration files beside the headers**, one per component, keyed to
+   registry, manifest and ABI names; generators write the header contract
+   comments, the entry checks, a member-manifest column, the fuzz blocks and
+   proof obligations.
+2. **The C ABI first, then the C++ API** as the GUI.Forms fuzz surface.
+3. **Legal and misuse modes**: legal-mode failures are defects; misuse
+   mode checks the declared refusal and that the object is unchanged.
+4. **Our own C++ engine on STXlib**, libFuzzer as the coverage and corpus
+   driver through a custom mutator.
+5. **Blocks generated from the declarations**, compound blocks by hand, no
+   LLM in the loop; minimised failures become ordinary tests.
+6. **sxv stays study-only**; the deduction layer is new code reading the
+   declarations, reusing sxv's mathematics (finite sums, popcount algebra)
+   with credit.
+7. **Order**: pilot on the STXlib allocator and containers; then the
+   GUI.Forms C ABI before the freeze, including a public state query per
+   stateful type and handle kind; then the rest.
+8. **The sxv detail lives in `stxlib_notes`**
+   (`planning/stx_minmallocpp/SXV_EVALUATION.md`, branch `claude/ic-sxv`);
+   the rescue bundle and a plain archive are kept on the Mac in
+   `~/Developer/work/kept/rescue-bundles/`, out of every repository.
