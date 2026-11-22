@@ -55,7 +55,8 @@ Stated as one invariant (section 4 refines it):
   1:1 into the host region ("a copy, never a scale"). Its input is
   forwarded by the host and its semantics published as virtual nodes
   (`sub_surface_host.hpp`, sections 4 and 5 of its design note).
-- Consequence: **a contain at a root costs almost nothing new.** Give the
+- Consequence: **a contain at a sub-surface root costs almost nothing new**
+  (corrected 2026-11-22, decision 11: not at a top-level window's root). Give the
   root `logical_size = content design size` and
   `scale = device_scale × s`; it records crisply at the smaller scale (text
   shaped and hinted at the real pixel size, not a shrunk bitmap), and input
@@ -203,7 +204,8 @@ What A costs depends on where the owner is:
 
 | Owner | Mechanism | New engine work |
 |---|---|---|
-| A root (window, sub-surface, popup) | root scale `device × s`, logical size = design size | almost none (3.1) |
+| A sub-surface root | root scale `device × s`, logical size = design size, frame copied at the centring offset | almost none (3.1) |
+| A top-level window's root | its logical units are the host's; client coordinates leave for the host through popups, the input method, the band, accessibility and the relative pointer on three platforms | large; done instead as the in-tree frame's outermost owner (decision 11) |
 | A control inside a root | a **scale frame** in the window's walks: `parent_origin` (a point) becomes a frame `{origin, scale}`, uniform scale and translation only, no rotation, so rectangles stay rectangles | hit testing, cover, replay, damage, semantic bounds, captures, IME and caret rectangles, tooltip and popup anchors; the subtree records at the effective scale |
 
 Restricting the frame to uniform scale plus translation keeps every
@@ -355,8 +357,8 @@ The names are proposals (question 9).
 
 | Phase | Content | Lands |
 |---|---|---|
-| VA1 | the API and ABI of section 11; detection and records (diagnostic 203, counters, unanswered = 0 check) for every owner; `clip` and `scroll` reported; contain and cover at **roots** through the root scale; window size clamp | before the ABI freeze |
-| VA2 | the in-tree scale frame: hit testing, cover, replay, damage, semantics, captures, IME, anchors; re-record at the effective scale; contain on any control | before 1.0 |
+| VA1 | the API and ABI of section 11; detection and records (diagnostic 203, counters, unanswered = 0 check) for every owner; `clip` and `scroll` reported; contain and cover at **sub-surface roots** through the root scale (`SubSurfaceHost` with a design size); a top-level window's root detected and recorded unanswered; window size clamp | before the ABI freeze |
+| VA2 | the in-tree scale frame: hit testing, cover, replay, damage, semantics, captures, IME, anchors; re-record at the effective scale; contain on any control, a top-level window's root control included (decision 11) | before 1.0 |
 | VA3 | defaults per kind (section 8); `PictureBox` zoom and the canvases onto the shared computation; safe insets on the hosts that have them; the web host's visual viewport | before 1.0 |
 | VA4 | diagnostic overlay colours; MCP layout reasons; gate: the owner's game case reproduced (a too-tall root in a too-small browser canvas) failing before and passing after, plus nested-contain, floor and input-mapping tests in gui_forms_tests | gate |
 
@@ -392,3 +394,13 @@ The owner answered: "contain by default on 4. otherwise accepted."
    `design_size`, `OverflowRecord`, `OverflowCause`, `SafeInsets`.
 10. **`ScaledPanel` stays as an explicit, recorded stretch** and gains an
     aspect setting with a uniform mode.
+11. **Root contain in VA1 is on sub-surface roots only** (owner, 2026-11-22:
+    "Yes, option a", asked while VA1 was written). The study's claim that a
+    contain at any root costs almost nothing held only for sub-surface
+    roots, whose host sets their logical size and scale and copies their
+    frames. A top-level window's logical units are the host's, and its
+    client coordinates reach the host through many paths on three
+    platforms, so its root control gets contain in VA2 through the in-tree
+    scale frame, as any other control; until then its overflow is detected
+    and recorded unanswered. VA1: gui_forms claude/va1 f0404787c,
+    gui_forms_tests claude/va1 83ce9caf (unbuilt).
