@@ -68,22 +68,23 @@ owner's eye" list (repositories
 gone from GitHub, unpushed branches on one disk, orphaned worktrees, media
 too large to rescue, large folders outside the repositories).
 
-## 3. The layout (owner, 2026-11-21: in the home folder)
+## 3. The layout (owner, 2026-11-21: stays in `~/Developer`)
 
-`repository` and `work` live in the home folder, not at the volume root
-(owner: "i do not mean root roots. I mean in /users/<localuser>/"), so no
-system change is needed on either Mac:
+The owner first proposed `repository` and `work` folders in the home folder,
+then chose to keep `~/Developer` ("it can remain in ~/Developer"), which
+spares the reference churn of a rename:
 
 | Path | Holds |
 |---|---|
-| `~/repository/<name>` | the one checkout of each repository: `gui_forms`, `stxlib`, `stx`, `notes`, `projects`, `gui_forms_tests`, `plan-paint`, `games`, `swiftedit`, `template_harness`, `bfft`, ... |
-| `~/work/<seat>` | each worker's storage: its worktree of a repository (a branch per seat), logs, scratch |
-| `~/work/venvs/<purpose>` | one standard virtual environment per purpose, each with a pinned requirements file kept in a repository |
+| `~/Developer/<name>` | the one checkout of each repository, at its newest remote state: `gui_forms`, `stxlib`, `stx`, `notes`, `projects`, `gui_forms_tests`, `plan-paint`, `games`, `swiftedit`, `template_harness`, `bfft`, ... |
+| `~/Developer/work/<seat>` | each worker's storage: its worktree of a repository (a branch per seat), logs, scratch |
+| `~/Developer/work/venvs/<purpose>` | one standard virtual environment per purpose, with pinned requirements kept in a repository |
 
-Notes are not kept in either: they go to the notes repository's branches or
-`projects`, as `AGENTS.md` says. On the M4 the same two folders sit in its
-home folder; its `/Volumes/Storage` worker areas move under `~/work` or stay
-as its build volume, as the move plan decides.
+Each keeper must be the newest state, so no tool lands on a stale copy: a few
+days earlier Codex could not find the latest Plan Paint while studying CONV
+(`~/Developer/plan-paint` was at `1f56e91`, the newest work at `e3b2a09` in a
+Codex worktree). Notes are not kept here: they go to the notes repository's
+branches or `projects`.
 
 ## 4. The steps
 
@@ -100,8 +101,9 @@ as its build volume, as the move plan decides.
 4. **The owner approves the lists**; then the extra checkouts, worktrees,
    stale build trees and environments are removed. The integrator is warned
    before `gui_forms` or their branch moves.
-5. **Move** the survivors to `~/repository` and `~/work`, and standardise the
-   environments under `~/work/venvs`.
+5. **Move** the seats under `~/Developer/work`, bring every keeper to its
+   newest remote state, and standardise the environments under
+   `~/Developer/work/venvs`.
 6. **Update every reference** to the old paths: the agent definitions
    (`~/.claude/agents`, the STXlib workspace's `.claude/agents`), the
    workspace `CLAUDE.md` files, the briefs and track files in `projects`,
