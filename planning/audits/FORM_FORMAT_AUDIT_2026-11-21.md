@@ -100,3 +100,10 @@ relationship between a property and the model), so it gets an XML form of its ow
 Literal attributes are always literal; `bind(...)` and its `\\bind(` escape go.
 Given to a coder with the stale-record fixes of section 4 (track
 `tracks/gui_forms/form_bindings.md` in `projects`).
+
+**Written, 2026-11-21:** `claude/form-bind-elements` @ 875590404 (tests:
+gui_forms_tests `claude/form-bind-elements` @ 8e7057bf), not built. The owner
+approved the further names the same day: `field` (the record field of a
+`BindingSource` binding), `update="on-change|on-validate"`, `converter`
+(reserved), `mode="two-way"` as the explicit default; existing codes reused
+(E804, E806). A binding is now made after the object's attributes.
