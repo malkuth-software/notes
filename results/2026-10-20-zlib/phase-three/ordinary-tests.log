@@ -2,8 +2,8 @@ Start testing: Oct 20 18:01 EDT
 ----------------------------------------------------------
 1/3 Testing: stx_zlib_core_tests
 1/3 Test: stx_zlib_core_tests
-Command: "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22/stx_zlib_core_tests"
-Directory: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22
+Command: "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22/stx_zlib_core_tests"
+Directory: ~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22
 "stx_zlib_core_tests" start time: Oct 20 18:01 EDT
 Output:
 ----------------------------------------------------------
@@ -17,8 +17,8 @@ Test Passed.
 
 2/3 Testing: stx_zlib_deflate_tests
 2/3 Test: stx_zlib_deflate_tests
-Command: "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22/stx_zlib_deflate_tests"
-Directory: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22
+Command: "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22/stx_zlib_deflate_tests"
+Directory: ~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22
 "stx_zlib_deflate_tests" start time: Oct 20 18:01 EDT
 Output:
 ----------------------------------------------------------
@@ -33,8 +33,8 @@ Test Passed.
 
 3/3 Testing: stx_zlib_deflate_oracle
 3/3 Test: stx_zlib_deflate_oracle
-Command: "/opt/homebrew/Frameworks/Python.framework/Versions/3.14/bin/python3.14" "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/tests/oracle.py" "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22/stx_zlib_deflate_tests"
-Directory: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22
+Command: "/opt/homebrew/Frameworks/Python.framework/Versions/3.14/bin/python3.14" "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/tests/oracle.py" "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22/stx_zlib_deflate_tests"
+Directory: ~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/stx-zlib-standalone-llvm22
 "stx_zlib_deflate_oracle" start time: Oct 20 18:01 EDT
 Output:
 ----------------------------------------------------------

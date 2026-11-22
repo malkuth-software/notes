@@ -1,5 +1,5 @@
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:119:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__algorithm/lexicographical_compare.h:30:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/cwchar:118:
@@ -7,8 +7,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__mbstate_t.h:51:4: error: "We don't know how to get the definition of mbstate_t on your platform."
    51 | #  error "We don't know how to get the definition of mbstate_t on your platform."
       |    ^
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:119:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__algorithm/lexicographical_compare.h:30:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/cwchar:118:
@@ -45,8 +45,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/wchar.h:184:20: error: use of undeclared identifier 'wmemchr'
   184 |   return (wchar_t*)wmemchr(__s, __c, __n);
       |                    ^~~~~~~
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:285:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/cstdlib:90:
@@ -65,8 +65,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdlib.h:128:93: error: no member named 'lldiv' in the global namespace
   128 | inline _LIBCPP_HIDE_FROM_ABI lldiv_t div(long long __x, long long __y) _NOEXCEPT { return ::lldiv(__x, __y); }
       |                                                                                             ^~~~~
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:287:
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/iosfwd:136:14: error: reference to unresolved using declaration
@@ -75,8 +75,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__std_mbstate_t.h:25:1: note: using declaration annotated with 'using_if_exists' here
    25 | using ::mbstate_t _LIBCPP_USING_IF_EXISTS;
       | ^
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:287:
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/iosfwd:136:14: error: reference to unresolved using declaration
@@ -85,8 +85,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__std_mbstate_t.h:25:1: note: using declaration annotated with 'using_if_exists' here
    25 | using ::mbstate_t _LIBCPP_USING_IF_EXISTS;
       | ^
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:287:
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/iosfwd:138:14: error: reference to unresolved using declaration
@@ -95,8 +95,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__std_mbstate_t.h:25:1: note: using declaration annotated with 'using_if_exists' here
    25 | using ::mbstate_t _LIBCPP_USING_IF_EXISTS;
       | ^
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:287:
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/iosfwd:138:14: error: reference to unresolved using declaration
@@ -105,8 +105,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__std_mbstate_t.h:25:1: note: using declaration annotated with 'using_if_exists' here
    25 | using ::mbstate_t _LIBCPP_USING_IF_EXISTS;
       | ^
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:287:
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/iosfwd:141:14: error: reference to unresolved using declaration
@@ -115,8 +115,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__std_mbstate_t.h:25:1: note: using declaration annotated with 'using_if_exists' here
    25 | using ::mbstate_t _LIBCPP_USING_IF_EXISTS;
       | ^
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:287:
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/iosfwd:141:14: error: reference to unresolved using declaration
@@ -125,8 +125,8 @@ In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/__std_mbstate_t.h:25:1: note: using declaration annotated with 'using_if_exists' here
    25 | using ::mbstate_t _LIBCPP_USING_IF_EXISTS;
       | ^
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
-In file included from /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:4:
+In file included from ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include/gui_forms/compression/inflate.hpp:3:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/array:145:
 In file included from /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/stdexcept:287:
 /opt/homebrew/Cellar/llvm@22/22.1.8/bin/../include/c++/v1/iosfwd:143:14: error: reference to unresolved using declaration

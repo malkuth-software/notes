@@ -80,8 +80,8 @@ The executable tests cover:
 ### Pre-edit baseline
 
 ```sh
-cmake --build /Users/quentinkuttenkuler/file_manager/gui_forms/build --parallel
-ctest --test-dir /Users/quentinkuttenkuler/file_manager/gui_forms/build --output-on-failure
+cmake --build ~/file_manager/gui_forms/build --parallel
+ctest --test-dir ~/file_manager/gui_forms/build --output-on-failure
 ```
 
 **MEASURED:** build passed; 4/4 tests passed, 0 failed, CTest reported 0.19
@@ -90,7 +90,7 @@ seconds total.
 ### Renderer-free core-only lane
 
 ```sh
-cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
+cmake -S ~/file_manager/gui_forms \
   -B /tmp/gui-forms-core-m1a \
   -DGUI_FORMS_BUILD_GALLERY=OFF \
   -DGUI_FORMS_BUILD_TESTS=ON \
@@ -113,11 +113,11 @@ reference in public headers, core sources, or core tests.
 ### Full existing macOS/gallery lane
 
 ```sh
-cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
-  -B /Users/quentinkuttenkuler/file_manager/gui_forms/build \
+cmake -S ~/file_manager/gui_forms \
+  -B ~/file_manager/gui_forms/build \
   -DCMAKE_BUILD_TYPE=Release
-cmake --build /Users/quentinkuttenkuler/file_manager/gui_forms/build --parallel
-ctest --test-dir /Users/quentinkuttenkuler/file_manager/gui_forms/build \
+cmake --build ~/file_manager/gui_forms/build --parallel
+ctest --test-dir ~/file_manager/gui_forms/build \
   --output-on-failure
 ```
 
@@ -129,7 +129,7 @@ gates remained green.
 ### AddressSanitizer and UndefinedBehaviorSanitizer
 
 ```sh
-cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
+cmake -S ~/file_manager/gui_forms \
   -B /tmp/gui-forms-core-m1a-sanitize \
   -DGUI_FORMS_BUILD_GALLERY=OFF \
   -DGUI_FORMS_BUILD_TESTS=ON \
@@ -148,7 +148,7 @@ reported 1.83 seconds total on the final rerun.
 ### ThreadSanitizer
 
 ```sh
-cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
+cmake -S ~/file_manager/gui_forms \
   -B /tmp/gui-forms-core-m1a-tsan \
   -DGUI_FORMS_BUILD_GALLERY=OFF \
   -DGUI_FORMS_BUILD_TESTS=ON \
@@ -167,7 +167,7 @@ no TSan report. CTest reported 2.42 seconds total on the final rerun.
 ### Strict warning lane
 
 ```sh
-cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
+cmake -S ~/file_manager/gui_forms \
   -B /tmp/gui-forms-core-m1a-werror \
   -DGUI_FORMS_BUILD_GALLERY=OFF \
   -DGUI_FORMS_BUILD_TESTS=ON \

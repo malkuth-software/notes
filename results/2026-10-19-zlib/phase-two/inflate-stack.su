@@ -10,7 +10,7 @@ src/core/compression/inflate.cpp:229:_ZN9gui_forms11compression13InflateStream4e
 src/core/compression/inflate.cpp:244:_ZN9gui_forms11compression13InflateStream9end_blockEv	16	static
 src/core/compression/inflate.cpp:255:_ZN9gui_forms11compression13InflateStream4stepERNS1_4CallE	192	dynamic
 src/core/compression/inflate.cpp:498:_ZN9gui_forms11compression13InflateStream7processENSt3__14spanIKSt4byteLm18446744073709551615EEENS3_IS4_Lm18446744073709551615EEEb	224	dynamic
-/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:asan.module_ctor	16	static
-/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:asan.module_dtor	16	static
-/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:call_dtors.1	16	static
-/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:register_call_dtors.1	16	static
+~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:asan.module_ctor	16	static
+~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:asan.module_dtor	16	static
+~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:call_dtors.1	16	static
+~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp:register_call_dtors.1	16	static

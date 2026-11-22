@@ -3,7 +3,7 @@ INFO: Running with entropic power schedule (0xFF, 100).
 INFO: Seed: 20261019
 INFO: Loaded 1 modules   (1870 inline 8-bit counters): 1870 [0x1005e9558, 0x1005e9ca6),
 INFO: Loaded 1 PC tables (1870 PCs): 1870 [0x1005e9ca8,0x1005f1188),
-INFO:      150 files found in /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-sub-final-check/corpus
+INFO:      150 files found in ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-sub-final-check/corpus
 INFO: seed corpus: files: 150 min: 142b max: 1719b total: 94370b rss: 35Mb
 #151	INITED cov: 423 ft: 784 corp: 68/36Kb exec/s: 0 rss: 48Mb
 #152	NEW    cov: 428 ft: 838 corp: 69/36Kb lim: 65536 exec/s: 0 rss: 48Mb L: 350/1719 MS: 2 CrossOver-Custom-

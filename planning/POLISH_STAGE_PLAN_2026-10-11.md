@@ -56,7 +56,7 @@ right and FreeType ignores the unadjusted head checksum.
 
 - **README.md** (177 lines, last touched 2026-08-10 by an automated backup):
   no badges, screenshots, feature list, license section or consume guide.
-  Hard-codes `/Users/quentinkuttenkuler/...`, says the Showcase has twelve
+  Hard-codes `~/...`, says the Showcase has twelve
   pages (there are 16), calls the demoboard "not an implemented frontend"
   while its own README says D0–D6 are measured partial, still describes
   Lucida Grande and an unpackaged Windows Skia DLL, and its final bullet is
@@ -308,7 +308,7 @@ re-litigated. Work:
    holder) so the font has a licence file like every other bundled face.
 2. Rewrite the Portsmouth entry in `assets/fonts/ATTRIBUTION.md`: remove the
    "evaluation build" and "redistribution-rights gate" language and the
-   `/Users/quentinkuttenkuler/...` source path; record the licence file.
+   `~/...` source path; record the licence file.
 3. Amend AGENTS.md: the sentence "Production Portsmouth rights and exact
    body/coverage assets remain gates" becomes a statement that Portsmouth is
    bundled under MIT and only body-face coverage remains open.

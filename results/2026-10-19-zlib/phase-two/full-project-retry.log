@@ -1,34 +1,34 @@
-Syncing /Users/ultimussecundai/.codex/worktrees/zlib-phase-one-study/gui_forms -> m4mini:/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/experimental/tskit: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/experimental: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/infra/bots/recipe_modules: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/infra/bots: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/infra: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals/libpng: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals/freetype: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals/zlib: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/bazel/exporter/build_proto: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/bazel/exporter: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/bazel: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/freetype: not empty, cannot delete
-rsync(65540): warning: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/harfbuzz: not empty, cannot delete
+Syncing /Users/ultimussecundai/.codex/worktrees/zlib-phase-one-study/gui_forms -> m4mini:~/Developer/CodexBuilds/gui_forms-429f4a1939ab
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/experimental/tskit: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/experimental: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/infra/bots/recipe_modules: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/infra/bots: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/infra: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals/libpng: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals/freetype: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals/zlib: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party/externals: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/third_party: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/bazel/exporter/build_proto: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/bazel/exporter: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia/bazel: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/skia: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/freetype: not empty, cannot delete
+rsync(65540): warning: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab//third_party/harfbuzz: not empty, cannot delete
 Running on m4mini: sh build-zlib-study-sources/full-phase-two.sh
-sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_skia_cpu.sh
+sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_skia_cpu.sh
 HEAD is now at 2a9b593 [M152] Address incorrect handling of a map pointer in SkRP
 Version "version:2@1.12.1.chromium.4" requested by DEPS differs from current version ""
 Fetching ninja at version:2@1.12.1.chromium.4 for platform mac-arm64
 HEAD is now at d5515b5 Release libpng version 1.6.56
 HEAD is now at 646b7f5 [zlib][build] Remove fdopen #defines in zutil.h.
 HEAD is now at 264b5fb Update all copyright notices.
-sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_text_stack.sh
+sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_text_stack.sh
 HEAD is now at c7a7457 14.6.0
 HEAD is now at f4205da * Version 2.14.2 released. ==========================
-sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/build_skia_cpu.sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia
+sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/build_skia_cpu.sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia
 Done. Made 98 targets from 43 files in 121ms
-ninja: Entering directory `/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia'
+ninja: Entering directory `~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia'
 [1/585] compile ../../../../../third_party/skia/third_party/externals/zlib/adler32_simd.c
 [2/585] compile ../../../../../third_party/skia/third_party/externals/zlib/crc32_simd.c
 [3/585] compile ../../../../../third_party/skia/third_party/externals/zlib/contrib/optimizations/inffast_chunk.c
@@ -614,7 +614,7 @@ ninja: Entering directory `/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_f
 [583/585] compile ../../../../../third_party/skia/src/ports/SkOSFile_posix.cpp
 [584/585] compile ../../../../../third_party/skia/src/ports/SkImageGeneratorCG.cpp
 [585/585] link libskia.a
-cmake -S /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms -B /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_TOOLCHAIN_FILE=/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/cmake/llvm22.cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DGUI_FORMS_BUILD_GALLERY=OFF -DGUI_FORMS_BUILD_TESTS=ON -DGUI_FORMS_BUILD_AUDIO=ON -DGUI_FORMS_AUDIO_VORBIS_BACKEND=stx -DCMAKE_INSTALL_PREFIX=/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sdk -DGUI_FORMS_ENABLE_WINDOWS_HOST=OFF -DGUI_FORMS_ENABLE_MACOS_HOST=ON -DGUI_FORMS_ENABLE_LINUX_HOST=OFF -DGUI_FORMS_ENABLE_SKIA=ON -DGUI_FORMS_ENABLE_HARFBUZZ_TEXT=ON -DGUI_FORMS_SKIA_PREBUILT=ON -DGUI_FORMS_SKIA_OUT=/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake -S ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms -B ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_TOOLCHAIN_FILE=~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/cmake/llvm22.cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DGUI_FORMS_BUILD_GALLERY=OFF -DGUI_FORMS_BUILD_TESTS=ON -DGUI_FORMS_BUILD_AUDIO=ON -DGUI_FORMS_AUDIO_VORBIS_BACKEND=stx -DCMAKE_INSTALL_PREFIX=~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sdk -DGUI_FORMS_ENABLE_WINDOWS_HOST=OFF -DGUI_FORMS_ENABLE_MACOS_HOST=ON -DGUI_FORMS_ENABLE_LINUX_HOST=OFF -DGUI_FORMS_ENABLE_SKIA=ON -DGUI_FORMS_ENABLE_HARFBUZZ_TEXT=ON -DGUI_FORMS_SKIA_PREBUILT=ON -DGUI_FORMS_SKIA_OUT=~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia -DCMAKE_BUILD_TYPE=RelWithDebInfo
 -- The C compiler identification is Clang 22.1.8
 -- The CXX compiler identification is Clang 22.1.8
 -- Detecting C compiler ABI info
@@ -665,8 +665,8 @@ CMake Warning at third_party/harfbuzz/CMakeLists.txt:4 (message):
 -- Check for working OBJCXX compiler: /opt/homebrew/opt/llvm@22/bin/clang++ - skipped
 -- Configuring done (316.7s)
 -- Generating done (0.2s)
--- Build files have been written to: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
-cmake --build /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --parallel 4
+-- Build files have been written to: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
+cmake --build ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --parallel 4
 [1/874] Building C object CMakeFiles/gui_forms_threading.dir/src/core/threading/atomic_pool/atomic_pool.c.o
 [2/874] Building C object third_party/freetype/CMakeFiles/freetype.dir/src/base/ftbbox.c.o
 [3/874] Building C object third_party/freetype/CMakeFiles/freetype.dir/src/base/ftbdf.c.o
@@ -1153,7 +1153,7 @@ cmake --build /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a19
 [484/874] Copying OS X Content gui_forms_macos_idle_visibility_tests.app/Contents/Resources/fonts/NotoSansBengali-Regular.ttf
 [485/874] Copying OS X Content gui_forms_macos_idle_visibility_tests.app/Contents/Resources/fonts/NotoSansGurmukhi-Regular.ttf
 [486/874] Linking CXX shared library libgui_forms_application.0.1.0.dylib
-ld: warning: ignoring duplicate libraries: '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libpng.a', '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskcms.a', '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskia.a', '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libzlib.a', 'libgui_drawing_core.a', 'libgui_forms_core.a', 'libgui_forms_skia.a', 'libgui_forms_text_engine.a', 'third_party/freetype/libfreetype.a', 'third_party/harfbuzz/libharfbuzz.a'
+ld: warning: ignoring duplicate libraries: '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libpng.a', '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskcms.a', '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskia.a', '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libzlib.a', 'libgui_drawing_core.a', 'libgui_forms_core.a', 'libgui_forms_skia.a', 'libgui_forms_text_engine.a', 'third_party/freetype/libfreetype.a', 'third_party/harfbuzz/libharfbuzz.a'
 [487/874] Copying OS X Content gui_forms_macos_idle_visibility_tests.app/Contents/Resources/fonts/ATTRIBUTION.md
 [488/874] Copying OS X Content gui_forms_macos_idle_visibility_tests.app/Contents/Resources/fonts/LICENSE-PortsmouthRapids.txt
 [489/874] Copying OS X Content gui_forms_macos_idle_visibility_tests.app/Contents/Resources/fonts/OFL-Carlito.txt
@@ -1542,8 +1542,8 @@ ld: warning: ignoring duplicate libraries: '/Users/joshuahkuttenkuler/Developer/
 [872/874] Linking CXX executable gui_forms_coregraphics_smoke
 [873/874] Linking CXX executable gui_forms_audio_tests
 [874/874] Linking CXX executable gui_drawing_skia_tests
-ctest --test-dir /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --output-on-failure --timeout 900 -R gui_forms_inflate.*
-Test project /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
+ctest --test-dir ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --output-on-failure --timeout 900 -R gui_forms_inflate.*
+Test project ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
     Start 15: gui_forms_inflate_tests
 1/1 Test #15: gui_forms_inflate_tests ..........   Passed    0.74 sec
 

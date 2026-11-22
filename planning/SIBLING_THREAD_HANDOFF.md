@@ -9,7 +9,7 @@ the entire framework or accept architecture decisions.
 Open a new sibling Codex task rooted at:
 
 ```text
-/Users/quentinkuttenkuler/file_manager
+~/file_manager
 ```
 
 Paste the complete prompt below without shortening it. The sibling should work
@@ -22,7 +22,7 @@ parallel work depends.
 ```text
 You are implementing the next bounded GUI.Forms proving slice in:
 
-  /Users/quentinkuttenkuler/file_manager
+  ~/file_manager
 
 Objective
 ---------
@@ -42,27 +42,27 @@ Required reading before any edit
 
 Read these files completely and follow the nearest AGENTS.md:
 
-1. /Users/quentinkuttenkuler/file_manager/AGENTS.md
-2. /Users/quentinkuttenkuler/file_manager/planning/README.md
-3. /Users/quentinkuttenkuler/file_manager/planning/PREPLAN_CHARTER.md
-4. /Users/quentinkuttenkuler/file_manager/planning/EVIDENCE_REGISTER.md
-5. /Users/quentinkuttenkuler/file_manager/planning/DECISION_PROTOCOL.md
-6. /Users/quentinkuttenkuler/file_manager/planning/SURFACE_PIPELINE.md
+1. ~/file_manager/AGENTS.md
+2. ~/file_manager/planning/README.md
+3. ~/file_manager/planning/PREPLAN_CHARTER.md
+4. ~/file_manager/planning/EVIDENCE_REGISTER.md
+5. ~/file_manager/planning/DECISION_PROTOCOL.md
+6. ~/file_manager/planning/SURFACE_PIPELINE.md
 7. planning/interview/GUI_FORMS_INTERVIEW_LEDGER.md
-8. /Users/quentinkuttenkuler/file_manager/gui_forms/AGENTS.md
-9. /Users/quentinkuttenkuler/file_manager/gui_forms/README.md
-10. /Users/quentinkuttenkuler/file_manager/gui_forms/PROVING_SLICE.md
-11. /Users/quentinkuttenkuler/file_manager/gui_forms/planning/MASTER_IMPLEMENTATION_PLAN.md
-12. /Users/quentinkuttenkuler/file_manager/gui_forms/planning/CONTROL_COMPLETENESS_MATRIX.md
+8. ~/file_manager/gui_forms/AGENTS.md
+9. ~/file_manager/gui_forms/README.md
+10. ~/file_manager/gui_forms/PROVING_SLICE.md
+11. ~/file_manager/gui_forms/planning/MASTER_IMPLEMENTATION_PLAN.md
+12. ~/file_manager/gui_forms/planning/CONTROL_COMPLETENESS_MATRIX.md
 13. all current public headers, core sources, tests, demo control sources, and
-    CMake under /Users/quentinkuttenkuler/file_manager/gui_forms, excluding the
+    CMake under ~/file_manager/gui_forms, excluding the
     fetched third_party/skia source tree.
 
 Before editing, run and record:
 
   git status --short
-  cmake --build /Users/quentinkuttenkuler/file_manager/gui_forms/build --parallel
-  ctest --test-dir /Users/quentinkuttenkuler/file_manager/gui_forms/build --output-on-failure
+  cmake --build ~/file_manager/gui_forms/build --parallel
+  ctest --test-dir ~/file_manager/gui_forms/build --output-on-failure
 
 The worktree already contains user work and untracked project files. Preserve
 all unrelated changes. Do not stage, commit, reset, clean, delete, or rewrite
@@ -167,7 +167,7 @@ Scope: implement these deliverables
    and tests the core/lifecycle/trace lane without Objective-C++, AppKit, Skia,
    third-party fetches, or the gallery:
 
-     cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
+     cmake -S ~/file_manager/gui_forms \
        -B /tmp/gui-forms-core-m1a \
        -DGUI_FORMS_BUILD_GALLERY=OFF \
        -DGUI_FORMS_BUILD_TESTS=ON \
@@ -194,7 +194,7 @@ Scope: implement these deliverables
 
    Add:
 
-     /Users/quentinkuttenkuler/file_manager/gui_forms/experiments/M1A_RETAINED_KERNEL.md
+     ~/file_manager/gui_forms/experiments/M1A_RETAINED_KERNEL.md
 
    It must state claim, GIVEN/OBSERVED/CANDIDATE boundaries, exact revision and
    dirty-worktree note, environment, commands, correctness oracles, raw test
@@ -232,7 +232,7 @@ redesign the gallery.
 Files and areas you must not touch
 ----------------------------------
 
-- anything outside /Users/quentinkuttenkuler/file_manager/gui_forms
+- anything outside ~/file_manager/gui_forms
 - gui_forms/src/render/skia/**
 - gui_forms/src/host/macos/**
 - gui_forms/third_party/**
@@ -272,7 +272,7 @@ Run and report both lanes:
 
 Core-only lane:
 
-  cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
+  cmake -S ~/file_manager/gui_forms \
     -B /tmp/gui-forms-core-m1a \
     -DGUI_FORMS_BUILD_GALLERY=OFF \
     -DGUI_FORMS_BUILD_TESTS=ON \
@@ -283,11 +283,11 @@ Core-only lane:
 
 Full existing macOS lane:
 
-  cmake -S /Users/quentinkuttenkuler/file_manager/gui_forms \
-    -B /Users/quentinkuttenkuler/file_manager/gui_forms/build \
+  cmake -S ~/file_manager/gui_forms \
+    -B ~/file_manager/gui_forms/build \
     -DCMAKE_BUILD_TYPE=Release
-  cmake --build /Users/quentinkuttenkuler/file_manager/gui_forms/build --parallel
-  ctest --test-dir /Users/quentinkuttenkuler/file_manager/gui_forms/build --output-on-failure
+  cmake --build ~/file_manager/gui_forms/build --parallel
+  ctest --test-dir ~/file_manager/gui_forms/build --output-on-failure
 
 Also compile/run the new core tests with AddressSanitizer and UndefinedBehavior
 Sanitizer when supported by the local compiler. If ThreadSanitizer cannot run

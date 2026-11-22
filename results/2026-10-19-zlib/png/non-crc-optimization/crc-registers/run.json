@@ -24,12 +24,12 @@
       "-fsanitize=address,undefined",
       "-fno-sanitize-recover=undefined",
       "-fno-omit-frame-pointer",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-sanitize.o"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-sanitize.o"
     ],
     [
       "clang",
@@ -38,8 +38,8 @@
       "-fsanitize=address,undefined",
       "-fno-sanitize-recover=undefined",
       "-fno-omit-frame-pointer",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-U__ARM_FEATURE_CRC32",
       "-Dcrc32_z=portable_crc32_z",
       "-Dcrc32=portable_crc32",
@@ -50,9 +50,9 @@
       "-Dcrc32_combine_gen=portable_crc32_combine_gen",
       "-Dcrc32_combine_op=portable_crc32_combine_op",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-sanitize.o"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-sanitize.o"
     ],
     [
       "clang++",
@@ -62,15 +62,15 @@
       "-fsanitize=address,undefined",
       "-fno-sanitize-recover=undefined",
       "-fno-omit-frame-pointer",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-Dpng_crc32=experimental_crc",
       "-Ddecode_png_samples=crc_decode_png_samples",
       "-Dinspect_png_samples=crc_inspect_png_samples",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-sanitize.o"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-sanitize.o"
     ],
     [
       "clang++",
@@ -80,40 +80,40 @@
       "-fsanitize=address,undefined",
       "-fno-sanitize-recover=undefined",
       "-fno-omit-frame-pointer",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-fconstexpr-steps=4000000",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/crc_kernels.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/study.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_writer.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-sanitize.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-sanitize.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-sanitize.o",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/crc_kernels.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/study.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_writer.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-sanitize.o",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-sanitize.o",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-sanitize.o",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-sanitize"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-sanitize"
     ],
     [
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-sanitize",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-sanitize",
       "verify"
     ],
     [
       "clang",
       "-O3",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-optimized.o"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-optimized.o"
     ],
     [
       "clang",
       "-O3",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-U__ARM_FEATURE_CRC32",
       "-Dcrc32_z=portable_crc32_z",
       "-Dcrc32=portable_crc32",
@@ -124,77 +124,77 @@
       "-Dcrc32_combine_gen=portable_crc32_combine_gen",
       "-Dcrc32_combine_op=portable_crc32_combine_op",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib/crc32.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-optimized.o"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-optimized.o"
     ],
     [
       "clang++",
       "-std=c++20",
       "-O3",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-Dpng_crc32=experimental_crc",
       "-Ddecode_png_samples=crc_decode_png_samples",
       "-Dinspect_png_samples=crc_inspect_png_samples",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-optimized.o"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-optimized.o"
     ],
     [
       "clang++",
       "-std=c++20",
       "-O3",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-fconstexpr-steps=4000000",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/crc_kernels.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/study.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_writer.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-optimized.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-optimized.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-optimized.o",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/crc_kernels.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/study.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_decoder.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/image/png_writer.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/src/core/compression/inflate.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/decoder-optimized.o",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-optimized.o",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/oracle-generic-optimized.o",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized"
     ],
     [
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized",
       "verify"
     ],
     [
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized",
       "crc",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/workloads"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/workloads"
     ],
     [
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/study-optimized",
       "png",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/workloads"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/workloads"
     ],
     [
       "clang++",
       "-std=c++20",
       "-O3",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-S",
       "-Rpass=loop-vectorize",
       "-Rpass=slp-vectorizer",
       "-fstack-usage",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/arm64.s"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/arm64.s"
     ],
     [
       "clang++",
       "-std=c++20",
       "-O3",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/include",
+      "-I~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build-zlib-study-sources/upstream-zlib",
       "-target",
       "x86_64-apple-macos14",
       "-isysroot",
@@ -207,9 +207,9 @@
       "-Rpass=loop-vectorize",
       "-Rpass=slp-vectorizer",
       "-fstack-usage",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/experiments/png-crc-suitability/compact.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/x64-inspection.s"
+      "~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/png-crc-suitability-registers/x64-inspection.s"
     ]
   ],
   "status": "passed",

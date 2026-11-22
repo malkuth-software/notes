@@ -9,7 +9,7 @@
   },
   "workloads": [
     {
-      "path": "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/docs/library/captures/text_input_screen.png",
+      "path": "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/docs/library/captures/text_input_screen.png",
       "png_sha256": "e65cbfb14e25c9d1ad728a8aa8b1f97d0f087ca781d88f1d5f77e691ef2f66e8",
       "ihdr_hex": "000004eb000002f80802000000",
       "filtered_bytes": 2871280,
@@ -20,7 +20,7 @@
       "measured_sha256": "bbd482f6f742cf03c8ca53a6cf52865c9c26828ec3dfd475a3e20e0822b7a7e7"
     },
     {
-      "path": "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/docs/library/captures/picture_box_screen.png",
+      "path": "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/docs/library/captures/picture_box_screen.png",
       "png_sha256": "753c5913339bfbf2de2318151fcf332d69fa5e14c4455bebbbe7792a647ab83b",
       "ihdr_hex": "000004eb000002f80802000000",
       "filtered_bytes": 2871280,
@@ -46,19 +46,19 @@
       "-stdlib=libc++",
       "-nostdinc++",
       "-isystem",
-      "/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
-      "-L/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
-      "-Wl,-rpath,/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
+      "-L~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "-Wl,-rpath,~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
       "-lunwind",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/match_index.cpp",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/match_index.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/match-index"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/match-index"
     ],
     [
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/match-index",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/match-index",
       "--files-only",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/png-0.sample",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/png-1.sample"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/png-0.sample",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-interior-no-sharing/png-1.sample"
     ]
   ],
   "samples": 9,

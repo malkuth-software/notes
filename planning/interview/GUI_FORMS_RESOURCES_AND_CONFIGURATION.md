@@ -322,13 +322,13 @@ The original questions follow.
 ## Evidence locators
 
 - Current distribution:
-  `/Users/quentinkuttenkuler/Downloads/retired compatibility specimen-x64-next (6)/retired compatibility specimen.config`
+  `~/Downloads/retired compatibility specimen-x64-next (6)/retired compatibility specimen.config`
 - Current extracted implementation:
   `/tmp/codex-retired compatibility specimen-current-decompiled-20260803-v2/retired compatibility specimen.Radio/retired compatibility specimen/Radio/ConfigFile.cs`
 - Current typed facade:
   `/tmp/codex-retired compatibility specimen-current-decompiled-20260803-v2/retired compatibility specimen.Radio/retired compatibility specimen/Radio/Utils.cs`
 - Current separate layout:
-  `/Users/quentinkuttenkuler/Downloads/retired compatibility specimen-x64-next (6)/retired compatibility specimen.Layout.xml`
+  `~/Downloads/retired compatibility specimen-x64-next (6)/retired compatibility specimen.Layout.xml`
 
 Personal setting values were not copied or interpreted. Only the schema and
 code behavior were used.

@@ -1,5 +1,5 @@
 m4ws: waiting for w4 before syncing
-== isa-workload.raw /Users/joshuahkuttenkuler/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/candidate/isa-workload.raw /Users/joshuahkuttenkuler/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/baseline/isa-workload.raw
+== isa-workload.raw ~/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/candidate/isa-workload.raw ~/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/baseline/isa-workload.raw
 clear identical
 opaque_fills identical
 translucent_fills identical
@@ -12,7 +12,7 @@ scaled_nearest identical
 glyph_masks identical
 clipped identical
 paths differs px 443 max 38 rows [12, 13, 14, 15, 16, 17, 18, 19, 20, 21] ... [175, 176, 177, 178, 179]
-== isa-workload-highp.raw /Users/joshuahkuttenkuler/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/candidate/isa-workload-highp.raw /Users/joshuahkuttenkuler/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/baseline/isa-workload-highp.raw
+== isa-workload-highp.raw ~/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/candidate/isa-workload-highp.raw ~/Developer/Projects/gui_forms_workers/w4/gui_forms/../.build/stx-skia-full/baseline/isa-workload-highp.raw
 clear identical
 opaque_fills identical
 translucent_fills identical

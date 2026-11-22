@@ -2,7 +2,7 @@ INFO: Running with entropic power schedule (0xFF, 100).
 INFO: Seed: 20261019
 INFO: Loaded 1 modules   (443 inline 8-bit counters): 443 [0x1001e42c8, 0x1001e4483),
 INFO: Loaded 1 PC tables (443 PCs): 443 [0x1001e4488,0x1001e6038),
-INFO:        8 files found in /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/inflate-lookup-strict/corpus
+INFO:        8 files found in ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/inflate-lookup-strict/corpus
 INFO: seed corpus: files: 8 min: 2b max: 106b total: 185b rss: 34Mb
 #9	INITED cov: 217 ft: 411 corp: 8/185b exec/s: 0 rss: 36Mb
 #10	NEW    cov: 218 ft: 458 corp: 9/220b lim: 106 exec/s: 0 rss: 37Mb L: 35/106 MS: 1 ChangeASCIIInt-

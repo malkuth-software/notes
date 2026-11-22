@@ -77,7 +77,7 @@ the lower `gui_forms/` build working without reading File Manager sources.
   explicit exclusion and migration path. ActiveX, browser hosting, printing,
   MDI, obsolete control families, and undocumented HWND/WndProc accidents are
   not admitted by that rule.
-- Only `/Users/quentinkuttenkuler/Downloads/retired compatibility specimen-x64-next (6)` and its
+- Only `~/Downloads/retired compatibility specimen-x64-next (6)` and its
   bundled plugins admit retired compatibility specimen compatibility surface. The older debug distribution
   admits nothing. Compatibility stops at calls into the Forms-shaped facade;
   third-party docking/map APIs and internals are not GUI.Forms obligations.

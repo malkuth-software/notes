@@ -1,16 +1,16 @@
-sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_skia_cpu.sh
+sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_skia_cpu.sh
 HEAD is now at 2a9b593 [M152] Address incorrect handling of a map pointer in SkRP
 Version "version:2@1.12.1.chromium.4" requested by DEPS differs from current version ""
 Fetching ninja at version:2@1.12.1.chromium.4 for platform mac-arm64
 HEAD is now at d5515b5 Release libpng version 1.6.56
 HEAD is now at 646b7f5 [zlib][build] Remove fdopen #defines in zutil.h.
 HEAD is now at 264b5fb Update all copyright notices.
-sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_text_stack.sh
+sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/fetch_text_stack.sh
 HEAD is now at c7a7457 14.6.0
 HEAD is now at f4205da * Version 2.14.2 released. ==========================
-sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/build_skia_cpu.sh /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia
+sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/third_party/build_skia_cpu.sh ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia
 Done. Made 98 targets from 43 files in 134ms
-ninja: Entering directory `/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia'
+ninja: Entering directory `~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia'
 [1/546] compile ../../../../../third_party/skia/third_party/externals/zlib/adler32_simd.c
 [2/546] compile ../../../../../third_party/skia/third_party/externals/zlib/crc32_simd.c
 [3/546] compile ../../../../../third_party/skia/third_party/externals/zlib/compress.c
@@ -557,7 +557,7 @@ ninja: Entering directory `/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_f
 [544/546] compile ../../../../../third_party/skia/src/ports/SkOSFile_posix.cpp
 [545/546] compile ../../../../../third_party/skia/src/ports/SkImageGeneratorCG.cpp
 [546/546] link libskia.a
-cmake -S /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms -B /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_TOOLCHAIN_FILE=/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/cmake/llvm22.cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DGUI_FORMS_BUILD_GALLERY=OFF -DGUI_FORMS_BUILD_TESTS=ON -DGUI_FORMS_BUILD_AUDIO=ON -DGUI_FORMS_AUDIO_VORBIS_BACKEND=stx -DCMAKE_INSTALL_PREFIX=/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sdk -DFETCHCONTENT_SOURCE_DIR_GUI_FORMS_MINIAUDIO=/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize/_deps/gui_forms_miniaudio-src -DGUI_FORMS_ENABLE_WINDOWS_HOST=OFF -DGUI_FORMS_ENABLE_MACOS_HOST=ON -DGUI_FORMS_ENABLE_LINUX_HOST=OFF -DGUI_FORMS_ENABLE_SKIA=ON -DGUI_FORMS_ENABLE_HARFBUZZ_TEXT=ON -DGUI_FORMS_SKIA_PREBUILT=ON -DGUI_FORMS_SKIA_OUT=/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake -S ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms -B ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_TOOLCHAIN_FILE=~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/gui_forms/cmake/llvm22.cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DGUI_FORMS_BUILD_GALLERY=OFF -DGUI_FORMS_BUILD_TESTS=ON -DGUI_FORMS_BUILD_AUDIO=ON -DGUI_FORMS_AUDIO_VORBIS_BACKEND=stx -DCMAKE_INSTALL_PREFIX=~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sdk -DFETCHCONTENT_SOURCE_DIR_GUI_FORMS_MINIAUDIO=~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize/_deps/gui_forms_miniaudio-src -DGUI_FORMS_ENABLE_WINDOWS_HOST=OFF -DGUI_FORMS_ENABLE_MACOS_HOST=ON -DGUI_FORMS_ENABLE_LINUX_HOST=OFF -DGUI_FORMS_ENABLE_SKIA=ON -DGUI_FORMS_ENABLE_HARFBUZZ_TEXT=ON -DGUI_FORMS_SKIA_PREBUILT=ON -DGUI_FORMS_SKIA_OUT=~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia -DCMAKE_BUILD_TYPE=RelWithDebInfo
 CMake Warning at third_party/harfbuzz/CMakeLists.txt:4 (message):
   The main build system for HarfBuzz is Meson.  CMake build support is
   community-maintained and is not actively supported by HarfBuzz developers.
@@ -565,8 +565,8 @@ CMake Warning at third_party/harfbuzz/CMakeLists.txt:4 (message):
 
 -- Configuring done (0.5s)
 -- Generating done (0.1s)
--- Build files have been written to: /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
-cmake --build /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --parallel 4
+-- Build files have been written to: ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
+cmake --build ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --parallel 4
 [1/282] Building C object third_party/freetype/CMakeFiles/freetype.dir/src/base/ftbdf.c.o
 [2/282] Building C object third_party/freetype/CMakeFiles/freetype.dir/src/base/ftbbox.c.o
 [3/282] Building C object third_party/freetype/CMakeFiles/freetype.dir/src/base/ftcid.c.o
@@ -695,7 +695,7 @@ cmake --build /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a19
 [126/282] Linking CXX executable gui_forms_cursor_interaction_tests
 [127/282] Linking CXX executable gui_forms_cursor_image_tests
 [128/282] Linking CXX shared library libgui_forms_application.0.1.0.dylib
-ld: warning: ignoring duplicate libraries: '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libpng.a', '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskcms.a', '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskia.a', '/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libzlib.a', 'libgui_drawing_core.a', 'libgui_forms_core.a', 'libgui_forms_skia.a', 'libgui_forms_text_engine.a', 'third_party/freetype/libfreetype.a', 'third_party/harfbuzz/libharfbuzz.a'
+ld: warning: ignoring duplicate libraries: '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libpng.a', '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskcms.a', '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libskia.a', '~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/skia/libzlib.a', 'libgui_drawing_core.a', 'libgui_forms_core.a', 'libgui_forms_skia.a', 'libgui_forms_text_engine.a', 'third_party/freetype/libfreetype.a', 'third_party/harfbuzz/libharfbuzz.a'
 [129/282] Creating library symlink libgui_forms_application.0.dylib libgui_forms_application.dylib
 [130/282] Building CXX object CMakeFiles/gui_drawing_skia.dir/src/render/skia/executor/skia_executor.cpp.o
 [131/282] Linking CXX executable gui_forms_application_contract_tests
@@ -850,8 +850,8 @@ ld: warning: ignoring duplicate libraries: '/Users/joshuahkuttenkuler/Developer/
 [280/282] Linking CXX executable gui_forms_canvas_raster_tests
 [281/282] Linking CXX executable gui_drawing_skia_tests
 [282/282] Linking CXX executable gui_forms_coregraphics_smoke
-ctest --test-dir /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --output-on-failure --timeout 900
-Test project /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
+ctest --test-dir ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize --output-on-failure --timeout 900
+Test project ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/full-ci/.build/native-macos-arm64/gui-forms-sanitize
         Start   1: cursor_interaction
   1/159 Test   #1: cursor_interaction ...............................   Passed    0.54 sec
         Start   2: gui_forms_audio_loop_scheduler_tests

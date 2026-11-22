@@ -2,7 +2,7 @@ INFO: Running with entropic power schedule (0xFF, 100).
 INFO: Seed: 20262120
 INFO: Loaded 1 modules   (468 inline 8-bit counters): 468 [0x10033a1a9, 0x10033a37d),
 INFO: Loaded 1 PC tables (468 PCs): 468 [0x10033a380,0x10033c0c0),
-INFO:       74 files found in /Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/inflate-campaign-smoke-strict/evidence/corpus
+INFO:       74 files found in ~/Developer/CodexBuilds/gui_forms-429f4a1939ab/build/inflate-campaign-smoke-strict/evidence/corpus
 INFO: seed corpus: files: 74 min: 2b max: 32787b total: 219531b rss: 35Mb
 #75	INITED cov: 239 ft: 972 corp: 73/182Kb exec/s: 0 rss: 48Mb
 #76	NEW    cov: 240 ft: 974 corp: 74/182Kb lim: 32787 exec/s: 0 rss: 49Mb L: 2/32787 MS: 1 ChangeByte-

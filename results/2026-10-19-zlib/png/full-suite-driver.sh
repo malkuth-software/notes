@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 export PATH="/opt/homebrew/opt/llvm@22/bin:/opt/homebrew/bin:/usr/bin:/bin:$PATH"
-export GUI_FORMS_LLVM_RUNTIME=/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14
+export GUI_FORMS_LLVM_RUNTIME=~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14
 root="$PWD"
 # Restore only dependency checkouts created by this experiment: a mirror sync
 # removed their working files while leaving their .git databases. Fetch scripts

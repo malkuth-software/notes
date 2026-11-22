@@ -2,7 +2,7 @@ stx_zlib/src/deflate.cpp:87:_ZN8stx_zlib13DeflateStream4failENS_12DeflateErrorE	
 stx_zlib/src/deflate.cpp:92:_ZN8stx_zlib13DeflateStream6chargeEy	0	static
 stx_zlib/src/deflate.cpp:100:_ZN8stx_zlib13DeflateStream5resetERKNS_14DeflateOptionsE	0	static
 stx_zlib/src/deflate.cpp:152:_ZN8stx_zlib13DeflateStream5adlerENSt3__14spanIKSt4byteLm18446744073709551615EEE	64	static
-/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/src/deflate.cpp:__clang_call_terminate	16	static
+~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/src/deflate.cpp:__clang_call_terminate	16	static
 stx_zlib/src/deflate.cpp:173:_ZNK8stx_zlib13DeflateStream9prefix_atEm	0	static
 stx_zlib/src/deflate.cpp:182:_ZN8stx_zlib13DeflateStream6insertEm	0	static
 stx_zlib/src/deflate.cpp:187:_ZN8stx_zlib13DeflateStream12rebase_linksENSt3__14spanIKjLm18446744073709551615EEENS2_IjLm18446744073709551615EEEjj	0	static

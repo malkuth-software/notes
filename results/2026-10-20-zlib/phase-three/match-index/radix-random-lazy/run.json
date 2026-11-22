@@ -29,16 +29,16 @@
       "-stdlib=libc++",
       "-nostdinc++",
       "-isystem",
-      "/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
-      "-L/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
-      "-Wl,-rpath,/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
+      "-L~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "-Wl,-rpath,~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
       "-lunwind",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/match_index.cpp",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/match_index.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-radix-random-lazy/match-index"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-radix-random-lazy/match-index"
     ],
     [
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-radix-random-lazy/match-index",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-radix-random-lazy/match-index",
       "--greedy-only",
       "--random-only"
     ],
@@ -61,14 +61,14 @@
       "-stdlib=libc++",
       "-nostdinc++",
       "-isystem",
-      "/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
-      "-L/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
-      "-Wl,-rpath,/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
+      "-L~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "-Wl,-rpath,~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
       "-lunwind",
       "-S",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/match_index.cpp",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/match_index.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-radix-random-lazy/match-index.s"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/match-index-radix-random-lazy/match-index.s"
     ]
   ],
   "samples": 9,

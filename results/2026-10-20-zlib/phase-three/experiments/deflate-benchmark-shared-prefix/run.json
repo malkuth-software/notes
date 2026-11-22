@@ -19,11 +19,11 @@
     "-stdlib=libc++",
     "-nostdinc++",
     "-isystem",
-    "/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1"
+    "~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1"
   ],
   "link_flags": [
-    "-L/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
-    "-Wl,-rpath,/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+    "-L~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+    "-Wl,-rpath,~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
     "-lunwind"
   ],
   "no_vector": false,
@@ -34,81 +34,81 @@
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/adler32.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/adler32.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/adler32.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/adler32.o"
     ],
     [
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/crc32.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/crc32.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/crc32.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/crc32.o"
     ],
     [
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/deflate.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/deflate.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/deflate.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/deflate.o"
     ],
     [
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/inflate.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/inflate.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inflate.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inflate.o"
     ],
     [
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/inffast.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/inffast.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inffast.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inffast.o"
     ],
     [
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/inftrees.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/inftrees.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inftrees.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inftrees.o"
     ],
     [
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/trees.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/trees.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/trees.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/trees.o"
     ],
     [
       "clang",
       "-O3",
       "-DNDEBUG",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-c",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/zutil.c",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib/zutil.c",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/zutil.o"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/zutil.o"
     ],
     [
       "clang++",
@@ -116,31 +116,31 @@
       "-stdlib=libc++",
       "-nostdinc++",
       "-isystem",
-      "/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
+      "~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
       "-O3",
       "-DNDEBUG",
       "-Wall",
       "-Wextra",
       "-Wpedantic",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/include",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-Rpass=loop-vectorize",
       "-Rpass-missed=loop-vectorize",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/src/deflate.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/deflate.cpp",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/adler32.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/crc32.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/deflate.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inflate.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inffast.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inftrees.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/trees.o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/zutil.o",
-      "-L/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
-      "-Wl,-rpath,/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/src/deflate.cpp",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/bench/deflate.cpp",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/adler32.o",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/crc32.o",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/deflate.o",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inflate.o",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inffast.o",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/inftrees.o",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/trees.o",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/zutil.o",
+      "-L~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
+      "-Wl,-rpath,~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/lib",
       "-lunwind",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/benchmark"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/benchmark"
     ],
     [
       "clang++",
@@ -148,21 +148,21 @@
       "-stdlib=libc++",
       "-nostdinc++",
       "-isystem",
-      "/Users/joshuahkuttenkuler/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
+      "~/Developer/PlaysuiteDependencies/toolkit-4e126d6/toolchain/llvm-22.1.8-macos14/include/c++/v1",
       "-O3",
       "-DNDEBUG",
       "-Wall",
       "-Wextra",
       "-Wpedantic",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/include",
-      "-I/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/include",
+      "-I~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build-zlib-study-sources/upstream-zlib",
       "-S",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/src/deflate.cpp",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/stx_zlib/src/deflate.cpp",
       "-o",
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/candidate.s"
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/candidate.s"
     ],
     [
-      "/Users/joshuahkuttenkuler/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/benchmark",
+      "~/Developer/CodexBuilds/gui_forms-9709c6a35d08/build/deflate-benchmark-shared-prefix/benchmark",
       "2",
       "6"
     ]
