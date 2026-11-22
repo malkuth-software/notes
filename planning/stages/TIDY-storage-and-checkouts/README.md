@@ -46,6 +46,24 @@ unpushed commits) and `inventory/sizes.txt`.
   `paymenottowork`); the counts need a per-checkout reading, since worktrees
   of one repository share their branches.
 
+## 2.1 Steps 1-4 done (2026-11-21)
+
+The one-off worker's report is `inventory/REPORT.md` in the coordinator's
+notes folder: 390 checkouts on the Mac and 114 on the M4, 91 repositories;
+44 rescue branches and 42 verified bundles; one keeper per repository. The
+owner approved the 147.5 GB list that leaves the integrator's trees alone
+and ran the scripts (`delete_mac.sh`, `delete_m4.sh`):
+- Mac: 266 items removed, 46.5 GB; free space 9.5 GiB to 49 GiB;
+- M4: 65 items removed, 79.9 GB (21.1 GB internal, 58.8 GB Storage); Storage
+  30 to 84 GiB free; the internal disk stays at 23 GiB until its Time Machine
+  local snapshots age out (they hold the deleted blocks);
+- skipped by the guards: Codex's own folders, the PlaySuite and gui_forms
+  checkouts that still hold unrescued media, and anything modified in the
+  last 12 hours; the integrator's 106 GB class is untouched.
+Left for the owner: the report's "needs the owner's eye" list (repositories
+gone from GitHub, unpushed branches on one disk, orphaned worktrees, media
+too large to rescue, large folders outside the repositories).
+
 ## 3. The layout
 
 | Path | Holds |
