@@ -84,5 +84,19 @@ exist, their identities, nesting and relationships are structure.
 Bindings were called "a bit sketchy": `bind(...)` shares the property's
 attribute with literal values, so a literal text that begins with `bind(`
 needs an escape (`\bind(`). Under the principle a binding is structure (a
-relationship between a property and the model), so it is a candidate for an
-XML form of its own; the shape is open with the owner.
+relationship between a property and the model), so it gets an XML form of its own.
+
+**Bindings, owner 2026-11-21: (a) binding elements.**
+
+```xml
+<check-box id="settings.auto" text="Save automatically">
+  <bind property="checked" to="autosave"/>
+</check-box>
+<progress-bar id="job.progress">
+  <bind property="value" to="progress" mode="one-way"/>
+</progress-bar>
+```
+
+Literal attributes are always literal; `bind(...)` and its `\\bind(` escape go.
+Given to a coder with the stale-record fixes of section 4 (track
+`tracks/gui_forms/form_bindings.md` in `projects`).

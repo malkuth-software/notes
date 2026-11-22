@@ -89,7 +89,7 @@ gate then adds the builder.
 
 ## Owner decisions, 2026-10-13
 
-1. **Syntax: the CSS family, shared with themes.** One parser and one
+1. *(Superseded 2026-11-15: forms are XML; structure is XML, description is CSS, 2026-11-21; see `planning/audits/FORM_FORMAT_AUDIT_2026-11-21.md`.)* **Syntax: the CSS family, shared with themes.** One parser and one
    round-trip machinery serve form and theme documents. The provisional
    Gallery DML's block style already looks like this and evolves into it.
 2. **The Gallery DML migrates** in this stage; the Gallery becomes the first
