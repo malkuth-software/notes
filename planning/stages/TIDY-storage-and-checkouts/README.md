@@ -3,8 +3,8 @@
 Written by the coordinator, 2026-11-21, from the owner's direction of the
 same day. Order of operations **step 2**, which must finish "before we touch
 anything new" (owner). Status: steps 1 to 6 and 8 done on 2026-11-21; the state,
-what was lost and what is open are in `STEP5_6_STATUS_2026-11-21.md` beside
-this file. The `inventory/` folder named below no longer exists (it was in a
+what was lost and what is open are in the private `projects` repository,
+`desks/coordinator/TIDY_STATUS_2026-11-21.md` (kept out of this public repository). The `inventory/` folder named below no longer exists (it was in a
 session's side notes and went when the session was archived).
 
 ## 1. The owner's direction (2026-11-21)
@@ -76,8 +76,7 @@ too large to rescue, large folders outside the repositories).
 The move, the reference update, the path fixes in tracked files and the
 branch cleanup (merged and patch-merged, local and GitHub, and the M4
 mirrors) are done. `projects` is reconciled on a local branch. Step 7's
-leftovers are copied to `~/Developer/work/kept`; the attic folder waits for
-the owner's `rm`. Everything is in `STEP5_6_STATUS_2026-11-21.md`.
+leftovers are kept aside; the old folders wait for the owner's removal. Everything is in `projects`, `desks/coordinator/TIDY_STATUS_2026-11-21.md`.
 
 ## 3. The layout (owner, 2026-11-21: stays in `~/Developer`)
 
