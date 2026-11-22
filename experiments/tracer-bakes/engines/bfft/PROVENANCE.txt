@@ -1,0 +1,1 @@
+Extracted from ~/bfft at 6e64386 (git archive of HEAD): experiments/photonic_transport_field, standalone_conv_resize_demo/native, src/detail. Layout kept so relative includes resolve. Upstream: falseywinchnet/bfft.
