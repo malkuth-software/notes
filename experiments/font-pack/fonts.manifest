@@ -1,0 +1,33 @@
+# Font pack groups for assets/fonts (fontpack pack --manifest fonts.manifest).
+# A font joins the first group, in this order, with a pattern matching its
+# file name. Exactly the eager groups decode when the library starts; a lazy
+# group decodes the first time one of its fonts is needed. The split below
+# is a proposal for measurement, not a decision.
+
+# The control faces (Portsmouth Rapids, the earlier Portsmouth faces and
+# Portsmouth Mono) and the content body face (Carlito, font-substitution.json
+# "content_family").
+group interface eager
+Portsmouth*.ttf
+Carlito-*.ttf
+
+# Substitution families named by font-substitution.json.
+group families lazy
+Arimo-*.ttf
+Cousine-*.ttf
+Tinos-*.ttf
+Selawik-*.ttf
+
+# Script fallbacks other than CJK.
+group scripts lazy
+NotoSansArabic-*.ttf
+NotoSansHebrew-*.ttf
+NotoSansDevanagari-*.ttf
+NotoSansBengali-*.ttf
+NotoSansGurmukhi-*.ttf
+
+group emoji lazy
+NotoEmoji-*.ttf
+
+group cjk lazy
+NotoSansCJK*
