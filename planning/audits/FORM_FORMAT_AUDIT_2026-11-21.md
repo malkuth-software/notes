@@ -72,3 +72,17 @@ How layout is written in a form (item 3.1):
 - **c) Move layout to the theme sheet:** forms carry structure only and
   layout lives with presentation in CSS. This splits a form's meaning across
   two files.
+
+## 6. Owner, 2026-11-21
+
+"its the structure that needs to be xml, not the description." Layout:
+keep the CSS declaration strings (option b), the owner leaning that way for
+designers' fluidity. The principle: **structure is XML, description is
+CSS.** Layout declarations are description and stay CSS; which objects
+exist, their identities, nesting and relationships are structure.
+
+Bindings were called "a bit sketchy": `bind(...)` shares the property's
+attribute with literal values, so a literal text that begins with `bind(`
+needs an escape (`\bind(`). Under the principle a binding is structure (a
+relationship between a property and the model), so it is a candidate for an
+XML form of its own; the shape is open with the owner.
