@@ -1,15 +1,26 @@
 # DevExpress roundup (week plan item 3.2, DevExpress half)
 
-Date: 2026-11-22. Owner's words (2026-11-22): "for devexpress, they have more
-controls and some nice demos and tools i would like to have an equivalent
-of." Telerik's missing piece, a converter integrated into MCP, is now MCP study
-stage G7 and is not repeated here.
+Date: 2026-11-22; revision 2 the same day, after the owner's read. Owner's words
+(2026-11-22): "for devexpress, they have more controls and some nice demos and
+tools i would like to have an equivalent of." Telerik's missing piece, a
+converter integrated into MCP, is now MCP study stage G7 and is not repeated
+here.
+
+Revision 2 follows the owner's pass on the first draft: "takes, but - not
+all. print preview- no. we use the native dialogue. a scheduler? in what
+sense? is this a demo app, is this controllers? we need to break down these
+takes. some of them are just saying, hey, let's see what we'd need to
+implement this in a demo gallery, so that people *could* have this. some
+genuinely matter." Every take now says what kind of thing it is, which tier it
+belongs to, and what it is from the user's side. Print preview, reporting and
+the PDF/XLSX export that goes with them are now leave: GUI.Forms uses the
+native print dialog.
 
 **Clean-room rule.** Everything below comes from DevExpress's public
 documentation (docs.devexpress.com), product pages (devexpress.com) and demo
 listings. No DevExpress code or binaries were read, downloaded, decompiled or
-installed. Building any item marked take must follow the same rule: copy
-behaviour and appearance from the public demos and documentation only.
+installed. Building any take must follow the same rule: copy behaviour and
+appearance from the public demos and documentation only.
 
 **What it was mapped against:** the GUI.Forms public headers at cp36
 (`include/gui_forms/controls`, `components`, `plots`, `docking`,
@@ -17,428 +28,393 @@ behaviour and appearance from the public demos and documentation only.
 pages), the demonstrators (`chat_stress`, `node_graph`, the ribbon
 demonstrator), the file manager demoboard, Plan Paint,
 `planning/CONTROL_COMPLETENESS_MATRIX.md`, `planning/WINFORMS_API_CATALOGUE.md`
-and `docs/controls/generated/`. Our tools: the form compiler
-(`tools/form_compiler`), `theme_check`, the theme editor (T1, malkuth-tools),
-the WYSIWYG editor (T2), the WinForms reflector (T3), `tools/winforms_catalogue`,
-`tools/compat_capture`, the help book, the visual inspector and the stock icon
-generator.
+and `docs/controls/generated/`. Our tools: the form compiler, `theme_check`,
+the theme editor and the WYSIWYG editor (malkuth-tools), the WinForms
+reflector, `tools/winforms_catalogue`, `tools/compat_capture`, the help book,
+the visual inspector and the stock icon generator.
 
-**Marks.** **take**: worth an equivalent of our own. **have**: we already have
-it (our name given). **leave**: not worth an equivalent (reason given).
-**Size** applies to takes: S is days, M is a week or two, L is a month, XL is
-a product. "Partial" in the Ours column means we have the base control but not
-the DevExpress feature named in that row; such a row is marked take.
+## How to read the tables
+
+**Mark** (the tier, for a take):
+
+- **1**: genuinely matters for 1.0. Application authors will expect it in the
+  library.
+- **2**: a Gallery demo, or a demo application built from parts we have. It
+  shows people *could* build it with GUI.Forms; building it notes any small
+  library gaps it reveals.
+- **3**: after 1.0, a programme of its own.
+- **have**: we already have it (our name in the Ours column).
+- **leave**: not worth an equivalent (reason in the What column).
+
+**Kind** (for a take):
+
+- **control**: a new library control or component in GUI.Forms' public API;
+- **feature**: a feature added to a control we already have;
+- **Gallery demo**: a composition of existing parts on a Gallery page, with
+  no new library API;
+- **demo app**: a demo application, like the file manager demoboard;
+- **tool**: a design-time or productivity tool (malkuth-tools or `tools/`).
+
+**What** is one plain sentence saying what the take is from the user's side.
+"Partial" in the Ours column means we have the base control but not the
+feature named in that row.
 
 Links point to the public page that shows the item best: a product page
-(screenshots and videos), the docs topic, or the sample-apps page. The
-installed Demo Center demos (`dxdemo://` links) need DevExpress installed,
-which the clean-room rule forbids, so their public listing pages are linked
-instead.
-
-Base URLs: `DX` = `https://docs.devexpress.com/WindowsForms`,
-`P` = `https://www.devexpress.com/products/net/controls/winforms`.
+(screenshots and videos), the docs topic, or the sample-apps page. The Demo
+Center demos (`dxdemo://` links) need DevExpress installed, which the
+clean-room rule forbids, so their public listing pages are linked instead.
 
 ## 1. WinForms controls and components
 
 ### 1.1 Data Grid (GridControl) and its views
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Data Grid, Grid View (table) | DataGridView, VirtualRowsView | have | | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Banded Grid View (column bands) | none | take | M | [DX/3455](https://docs.devexpress.com/WindowsForms/3455/controls-and-libraries/data-grid) |
-| Advanced Banded Grid View (multi-row bands) | none | take | M | [DX/3455](https://docs.devexpress.com/WindowsForms/3455/controls-and-libraries/data-grid) |
-| Card View | Card, but no card view over records | take | M | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Layout View (record cards with a layout per card) | none | take | M | [Sample apps: Contacts](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
-| Tile View (records as tiles, HTML templates) | none | take | M | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| WinExplorer View (Explorer-style icons and captions) | ListView (large/small icons, tiles) | have | | [Sample apps: File Explorer-like UI](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
-| Office Compact View (Outlook task list) | none | take | S | [Sample apps: Tasks](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
-| Group-by panel, grouping and group rows | partial: ListView groups only | take | M | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Total and group summaries (footer, group footers) | none | take | M | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Find panel (search across all columns, highlight) | SearchField, not wired to grids | take | S | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Auto-filter row and Excel-style column filter drop-downs | partial: DataGridView filtering through ObjectView | take | M | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Conditional formatting (data bars, colour scales, icon sets, rules) | none | take | M | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Master-detail (nested detail grids) | MasterDetailView | have | | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| In-place editors from a repository (any editor in any cell) | partial: DataGridView cell types | take | M | [DX editors](https://docs.devexpress.com/WindowsForms/114580/controls-and-libraries/editors-and-simple-controls) |
-| Column chooser, column customisation form | none | take | S | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Frozen (fixed) columns and rows | DataGridView frozen rows and columns | have | | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Cell merging (equal adjacent values) | none | take | S | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| Server mode and Instant Feedback (async large sources) | VirtualRowsView, DataGridView virtual mode | have | | [DX/8398](https://docs.devexpress.com/WindowsForms/8398/controls-and-libraries/data-grid/data-binding/large-data-sources-server-and-instant-feedback-modes) |
-| HTML and CSS row templates | form documents (XML + CSS) for controls, not for grid rows | take | M | [HTML & CSS](https://www.devexpress.com/winforms/html-css/) |
-| Layout save and restore (columns, sort, filter) | partial: workspace transactions | take | S | [DX/17674](https://docs.devexpress.com/WindowsForms/17674/controls-and-libraries/form-layout-managers/workspace-manager) |
-| Data export to XLSX/CSV/PDF from grids | none | take | M | [P/printing](https://www.devexpress.com/products/net/controls/winforms/printing/) |
-| Drag-and-drop behaviour between grids and lists | drag (library-wide) | have | | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Data Grid, Grid View (table) | have | | | DataGridView, VirtualRowsView | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Group-by panel, grouping and group rows | 1 | feature | Drag a column header to a strip above the grid and the rows fold into collapsible groups by that column's values. | partial: ListView groups only | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Total and group summaries | 1 | feature | A footer under the grid, and under each group, shows the sum, count, average, minimum or maximum of a column. | none | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Find panel | 1 | feature | A search box over the grid that filters rows to those containing the text in any column, with matches highlighted. | SearchField, not wired to grids | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Auto-filter row and Excel-style column filters | 1 | feature | Each column gets a filter cell under its header and a drop-down listing its distinct values to tick, as in Excel. | partial: filtering through ObjectView | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Column chooser | 1 | feature | A small window listing hidden columns, which the user drags back into the grid or hides again. | none | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Any editor in any cell (repository items) | 1 | feature | A grid cell can edit with any of our editors (date picker, lookup, colour, toggle, spin), not only text, check and combo. | partial: DataGridView cell types | [Editors](https://docs.devexpress.com/WindowsForms/114580/controls-and-libraries/editors-and-simple-controls) |
+| Grid layout save and restore | 1 | feature | The grid's column order, widths, sort, grouping and filters save to a file and come back on the next start. | partial: workspace transactions | [Workspace Manager](https://docs.devexpress.com/WindowsForms/17674/controls-and-libraries/form-layout-managers/workspace-manager) |
+| Conditional formatting | 3 | feature | Cells colour themselves by rule: data bars, colour scales, icon sets, or "value above 100 in red". | none | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Banded and advanced banded views | 3 | feature | Column headers grouped under shared band headers, optionally with each record spread over several rows. | none | [Data Grid](https://docs.devexpress.com/WindowsForms/3455/controls-and-libraries/data-grid) |
+| Card View, Layout View, Tile View | 2 | Gallery demo | Records shown as a scrolling wall of cards or tiles, each laid out like a small form, instead of table rows. | Card, VirtualRowsView, FlexPanel | [Sample apps: Contacts](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
+| Office Compact View | 2 | Gallery demo | An Outlook-style task list where each record is a two-line row with a flag, subject and due date. | VirtualRowsView, Card | [Sample apps: Tasks](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
+| WinExplorer View | have | | | ListView (large and small icons, tiles) | [Sample apps](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
+| Cell merging | 3 | feature | Adjacent cells with equal values in a column merge into one tall cell. | none | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| HTML and CSS row templates | 3 | feature | Each grid row is drawn from a markup template with shadows, rounded corners and buttons, instead of cells. | form documents (controls, not grid rows) | [HTML & CSS](https://www.devexpress.com/winforms/html-css/) |
+| Master-detail (nested detail grids) | have | | | MasterDetailView | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Frozen columns and rows | have | | | DataGridView | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Server mode and Instant Feedback | have | | | VirtualRowsView, virtual mode | [Large sources](https://docs.devexpress.com/WindowsForms/8398/controls-and-libraries/data-grid/data-binding/large-data-sources-server-and-instant-feedback-modes) |
+| Drag-and-drop between grids and lists | have | | | drag | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| Export of grids to XLSX, CSV and PDF | leave | | Leave: goes with print preview and reporting; GUI.Forms prints through the native print dialog. | | [Printing](https://www.devexpress.com/products/net/controls/winforms/printing/) |
 
-### 1.2 Other grids
+### 1.2 Other grids and data tools
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Tree List (hierarchical grid, unbound and bound) | TreeListView | have | | [P/tree_list](https://www.devexpress.com/products/net/controls/winforms/tree_list/) |
-| Tree List summaries, filtering and checkboxes per level | partial | take | S | [P/tree_list](https://www.devexpress.com/products/net/controls/winforms/tree_list/) |
-| Vertical Grid (records as columns, rows as fields) | none | take | M | [P/vertical_grid](https://www.devexpress.com/products/net/controls/winforms/vertical_grid/) |
-| Property Grid (categories, editors, tabs, search) | PropertyGrid, PropertyList, ObjectView | have | | [DX/119885](https://docs.devexpress.com/WindowsForms/119885/controls-and-libraries/property-grid) |
-| Gantt Control (tasks, dependencies, critical path, split tasks) | none | take | L | [P gantt](https://www.devexpress.com/winforms/gantt/) |
-| Pivot Grid (OLAP-style pivot, drill-down, chart link) | none | take | XL | [P/pivot_grid](https://www.devexpress.com/products/net/controls/winforms/pivot_grid/) |
-| Filter Control and Filter Editor (visual and text criteria builder) | none | take | M | [Filter Editor](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.FilterEditorControl) |
-| Expression Editor (calculated fields) | none | take | M | [DX editors](https://docs.devexpress.com/WindowsForms/114580/controls-and-libraries/editors-and-simple-controls) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Tree List | have | | | TreeListView | [Tree List](https://www.devexpress.com/products/net/controls/winforms/tree_list/) |
+| Tree List filtering, summaries and per-node checkboxes | 1 | feature | The tree grid gets the same find, filter and summary features as the flat grid, and tick boxes on nodes that check their children. | partial | [Tree List](https://www.devexpress.com/products/net/controls/winforms/tree_list/) |
+| Property Grid | have | | | PropertyGrid, PropertyList, ObjectView | [Property Grid](https://docs.devexpress.com/WindowsForms/119885/controls-and-libraries/property-grid) |
+| Vertical Grid | 2 | Gallery demo | One record shown as a two-column table of field names and values, or several records side by side as columns. | PropertyGrid, DataGridView | [Vertical Grid](https://www.devexpress.com/products/net/controls/winforms/vertical_grid/) |
+| Gantt Control | 3 | control | A project plan: a task list on the left and a timeline on the right with bars you drag, dependency arrows and a critical path. | none | [Gantt](https://www.devexpress.com/winforms/gantt/) |
+| Pivot Grid | 3 | control | An Excel pivot table: drag fields into rows, columns and values to summarise a data set, then drill into any cell. | none | [Pivot Grid](https://www.devexpress.com/products/net/controls/winforms/pivot_grid/) |
+| Filter Editor | 3 | control | A dialog where the user builds a filter as a tree of conditions ("Country is Germany and Amount above 100"). | none | [FilterEditorControl](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.FilterEditorControl) |
+| Expression Editor | 3 | control | A dialog for writing a calculated column's formula, with field and function lists. | none | [Editors](https://docs.devexpress.com/WindowsForms/114580/controls-and-libraries/editors-and-simple-controls) |
 
-### 1.3 Data editors (XtraEditors)
+### 1.3 Data editors
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| TextEdit (with masks, null text, buttons) | TextBox, MaskedTextBox | have | | [TextEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.TextEdit) |
-| ButtonEdit (text box with custom buttons) | partial: SearchField, TextBox decorations | take | S | [ButtonEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.ButtonEdit) |
-| MemoEdit | TextBox (multiline), ContentTextEditor | have | | [P text inputs](https://www.devexpress.com/products/net/controls/winforms/editors/text-inputs.xml) |
-| MemoExEdit (drop-down multi-line panel) | none | take | S | [P text inputs](https://www.devexpress.com/products/net/controls/winforms/editors/text-inputs.xml) |
-| SpinEdit | NumericUpDown | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| CalcEdit (calculator drop-down) | none | take | S | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| TrackBarControl | TrackBar | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| ZoomTrackBarControl (track bar with minus and plus) | none | take | S | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| RangeTrackBarControl (two thumbs) | RangeControl | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| SparklineEdit | Sparkline | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| ProgressBarControl, MarqueeProgressBarControl | ProgressBar (marquee style), ProgressRing, Spinner | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| CheckEdit (three states, custom glyphs) | CheckBox | have | | [CheckEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.CheckEdit) |
-| ToggleSwitch | ToggleSwitch | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| DateEdit (calendar drop-down, Vista-style picker) | DateTimePicker | have | | [P date editors](https://www.devexpress.com/products/net/controls/winforms/editors/date-time-picker-and-calendar.xml) |
-| TimeEdit (spin or drop-down time selector) | DateTimePicker (time format) | have | | [P date editors](https://www.devexpress.com/products/net/controls/winforms/editors/date-time-picker-and-calendar.xml) |
-| TimeSpanEdit (durations) | none | take | S | [P date editors](https://www.devexpress.com/products/net/controls/winforms/editors/date-time-picker-and-calendar.xml) |
-| CalendarControl (dates and date ranges, several months) | MonthCalendar | have | | [P date editors](https://www.devexpress.com/products/net/controls/winforms/editors/date-time-picker-and-calendar.xml) |
-| Date range picker (two calendars, presets) | partial: MonthCalendar selection range | take | S | [Blazor Date Range Picker](https://docs.devexpress.com/Blazor/405111/components/data-editors/daterangepicker) |
-| PictureEdit (image with zoom, crop, context menu) | PictureBox | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| ImageEdit (image in a drop-down) | none | leave | | covered by PictureBox in a popup; no demand |
-| ImageComboBoxEdit (images in a combo list) | ComboBox (owner-drawn items) | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| ColorEdit, ColorPickEdit (palettes, custom colours) | ColorPicker, ColorValueEditor, RibbonColorPicker | have | | [ColorEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.ColorEdit) |
-| ComboBoxEdit | ComboBox | have | | [ComboBoxEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.ComboBoxEdit) |
-| CheckedComboBoxEdit (multi-select drop-down) | none | take | S | [CheckedComboBoxEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.CheckedComboBoxEdit) |
-| FontEdit (font list drop-down) | RibbonFontControl, FontDialog | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| MRUEdit (remembers entered values) | AutoComplete on ComboBox | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| PopupGalleryEdit (gallery in a drop-down) | RibbonGallery (drop-down) | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| RadioGroup | ChoiceGroup | have | | [RadioGroup](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.RadioGroup) |
-| TokenEdit | TokenBox | have | | [DX/17088](https://docs.devexpress.com/WindowsForms/17088/controls-and-libraries/editors-and-simple-controls/token-edit-control) |
-| LookUpEdit (tabular drop-down) | LookupComboBox | have | | [P data lookups](https://www.devexpress.com/products/net/controls/winforms/editors/data-lookups.xml) |
-| GridLookUpEdit (a full grid in the drop-down) | none | take | M | [P data lookups](https://www.devexpress.com/products/net/controls/winforms/editors/data-lookups.xml) |
-| SearchLookUpEdit (grid drop-down with find panel) | none | take | M | [P data lookups](https://www.devexpress.com/products/net/controls/winforms/editors/data-lookups.xml) |
-| TreeListLookUpEdit (tree in the drop-down) | none | take | S | [P data lookups](https://www.devexpress.com/products/net/controls/winforms/editors/data-lookups.xml) |
-| PopupContainerEdit (any content in a drop-down) | partial: DropDownButton, AnchoredOverlayLayer | take | S | [DX/612](https://docs.devexpress.com/WindowsForms/612/controls-and-libraries/editors-and-simple-controls/popup-container-editor) |
-| RatingControl (stars or icons) | none | take | S | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| HyperLinkEdit | LinkLabel | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| BreadCrumbEdit | BreadcrumbTrail | have | | [DX/16973](https://docs.devexpress.com/WindowsForms/16973/controls-and-libraries/editors-and-simple-controls/breadcrumb-edit-control) |
-| RepositoryItemRichTextEdit (RTF in a cell) | RichTextBox, not as a cell editor | take | S | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| Masked input (numeric, date, regular-expression masks) | MaskedTextBox, masked text provider | have | | [Blazor Masked Input](https://docs.devexpress.com/Blazor/405118/components/data-editors/maskedinput) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| TextEdit (masks, null text) | have | | | TextBox, MaskedTextBox | [TextEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.TextEdit) |
+| ButtonEdit | 1 | control | A text box with buttons of your choice inside its right edge ("...", clear, open). | partial: SearchField | [ButtonEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.ButtonEdit) |
+| CheckedComboBoxEdit | 1 | control | A drop-down list with a tick box per item; the closed box shows the ticked items separated by commas. | none | [CheckedComboBoxEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.CheckedComboBoxEdit) |
+| PopupContainerEdit | 1 | control | A combo-style box whose drop-down holds any panel you give it. | partial: DropDownButton, AnchoredOverlayLayer | [Popup Container](https://docs.devexpress.com/WindowsForms/612/controls-and-libraries/editors-and-simple-controls/popup-container-editor) |
+| MemoEdit | have | | | TextBox (multiline), ContentTextEditor | [Text inputs](https://www.devexpress.com/products/net/controls/winforms/editors/text-inputs.xml) |
+| MemoExEdit | 2 | Gallery demo | A one-line box that drops down a larger multi-line editor. | TextBox, AnchoredOverlayLayer | [Text inputs](https://www.devexpress.com/products/net/controls/winforms/editors/text-inputs.xml) |
+| SpinEdit | have | | | NumericUpDown | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| CalcEdit | 2 | Gallery demo | A number box that drops down a pocket calculator. | NumericUpDown, GridPanel, Button | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| TrackBarControl | have | | | TrackBar | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| ZoomTrackBarControl | 2 | Gallery demo | A slider with minus and plus buttons at the ends, as on a status-bar zoom. | TrackBar, Button | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| RangeTrackBarControl | have | | | RangeControl | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| SparklineEdit | have | | | Sparkline | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| ProgressBarControl, MarqueeProgressBarControl | have | | | ProgressBar, ProgressRing, Spinner | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| CheckEdit | have | | | CheckBox | [CheckEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.CheckEdit) |
+| ToggleSwitch | have | | | ToggleSwitch | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| DateEdit, TimeEdit | have | | | DateTimePicker | [Date editors](https://www.devexpress.com/products/net/controls/winforms/editors/date-time-picker-and-calendar.xml) |
+| TimeSpanEdit | 2 | Gallery demo | A box for durations ("2 d 03:15") with spin buttons per part. | MaskedTextBox, NumericUpDown | [Date editors](https://www.devexpress.com/products/net/controls/winforms/editors/date-time-picker-and-calendar.xml) |
+| CalendarControl | have | | | MonthCalendar | [Date editors](https://www.devexpress.com/products/net/controls/winforms/editors/date-time-picker-and-calendar.xml) |
+| Date range picker | 2 | Gallery demo | Two dates picked on side-by-side calendars, with presets such as "last 7 days". | MonthCalendar, DateTimePicker | [Blazor Date Range Picker](https://docs.devexpress.com/Blazor/405111/components/data-editors/daterangepicker) |
+| PictureEdit | have | | | PictureBox | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| ImageEdit | leave | | Leave: a picture in a drop-down; PictureBox in a popup covers it. | | |
+| ImageComboBoxEdit | have | | | ComboBox (owner-drawn items) | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| ColorEdit, ColorPickEdit | have | | | ColorPicker, ColorValueEditor, RibbonColorPicker | [ColorEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.ColorEdit) |
+| ComboBoxEdit | have | | | ComboBox | [ComboBoxEdit](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.ComboBoxEdit) |
+| FontEdit | have | | | RibbonFontControl, FontDialog | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| MRUEdit | have | | | ComboBox with AutoComplete | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| PopupGalleryEdit | have | | | RibbonGallery (drop-down) | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| RadioGroup | have | | | ChoiceGroup | [RadioGroup](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.RadioGroup) |
+| TokenEdit | have | | | TokenBox | [Token Edit](https://docs.devexpress.com/WindowsForms/17088/controls-and-libraries/editors-and-simple-controls/token-edit-control) |
+| LookUpEdit | have | | | LookupComboBox | [Data lookups](https://www.devexpress.com/products/net/controls/winforms/editors/data-lookups.xml) |
+| GridLookUpEdit, SearchLookUpEdit | 2 | Gallery demo | A lookup box whose drop-down is a full grid with sorting and a search box. | LookupComboBox, DataGridView, PopupContainerEdit once taken | [Data lookups](https://www.devexpress.com/products/net/controls/winforms/editors/data-lookups.xml) |
+| TreeListLookUpEdit | 2 | Gallery demo | A lookup box whose drop-down is a tree. | TreeListView in a drop-down | [Data lookups](https://www.devexpress.com/products/net/controls/winforms/editors/data-lookups.xml) |
+| RatingControl | 2 | Gallery demo | A row of stars (or other icons) the user clicks to give a rating. | ChoiceGroup, stock icons | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| HyperLinkEdit | have | | | LinkLabel | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| BreadCrumbEdit | have | | | BreadcrumbTrail | [Breadcrumb](https://docs.devexpress.com/WindowsForms/16973/controls-and-libraries/editors-and-simple-controls/breadcrumb-edit-control) |
+| Rich text in a grid cell | 3 | feature | A grid cell that shows and edits formatted text. | RichTextBox, not as a cell editor | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| Masked input | have | | | MaskedTextBox | [Blazor Masked Input](https://docs.devexpress.com/Blazor/405118/components/data-editors/maskedinput) |
 
 ### 1.4 Simple controls
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| SimpleButton, CheckButton | Button, CheckBox (button appearance) | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| DropDownButton | DropDownButton | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| LabelControl (formatted text, images, HTML tags) | Label, TextBlock | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| HyperlinkLabelControl | LinkLabel | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| ListBoxControl, ImageListBoxControl, CheckedListBoxControl | ListBox, CheckedListBox | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| Templated list box items (HTML item templates) | none | take | S | [DX/119680](https://docs.devexpress.com/WindowsForms/119680/controls-and-libraries/editors-and-simple-controls/templated-listbox-items) |
-| ControlNavigator, DataNavigator | BindingNavigator | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| BarCodeControl (1D and 2D codes, QR) | none | take | M | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| ImageSlider (images with navigation and animation) | none | take | S | [DX/12364](https://docs.devexpress.com/WindowsForms/12364/controls-and-libraries/editors-and-simple-controls/image-slider) |
-| ProgressPanel (wait message) | Spinner, EmptyState | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| RangeControl (range over a chart or numbers) | RangeControl | have | | [DX/11739](https://docs.devexpress.com/WindowsForms/11739/controls-and-libraries/editors-and-simple-controls/range-control) |
-| GalleryControl (grouped image gallery) | partial: RibbonGallery, ListView tiles | take | S | [P navigation](https://www.devexpress.com/products/net/controls/winforms/navigation/) |
-| CameraControl (live capture device) | none | take | M | [DX/114582](https://docs.devexpress.com/WindowsForms/114582/controls-and-libraries/editors-and-simple-controls/camera-control) |
-| StepProgressBar | StepIndicator | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| SearchControl (filters an attached control) | SearchField | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| GroupControl, PanelControl | GroupBox, Panel, MaterialPanel | have | | [P/layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
-| HScrollBar, VScrollBar, XtraScrollableControl | HScrollBar, VScrollBar, ScrollableControl | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| SplitterControl, SplitContainerControl | Splitter, SplitContainer | have | | [P/layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
-| XtraTabControl (tab headers on any side, close buttons) | TabControl, PageView, PageStrip | have | | [DX/114576](https://docs.devexpress.com/WindowsForms/114576/controls-and-libraries/form-layout-managers/tab-control) |
-| RoundedSkinPanel | MaterialPanel, Card | have | | [P editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
-| SidePanel (one-pixel borders, snapping) | SplitContainer with a collapsed side, DockSite | have | | [DX/118337](https://docs.devexpress.com/WindowsForms/118337/controls-and-libraries/form-layout-managers/side-panel) |
-| HTML Content Control and HTML Content Popup | form documents rendered as controls | have | | [HtmlContentControl](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.HtmlContentControl) |
-| Code editor (Monaco hosted in WebView2, an example) | ContentTextEditor; SwiftEdit's CodeEditor | take | M | [GitHub example page](https://github.com/DevExpress-Examples/winforms-monaco-code-editor) (read the README only) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| SimpleButton, CheckButton, DropDownButton | have | | | Button, CheckBox (button look), DropDownButton | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| LabelControl, HyperlinkLabelControl | have | | | Label, TextBlock, LinkLabel | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| ListBoxControl, ImageListBoxControl, CheckedListBoxControl | have | | | ListBox, CheckedListBox | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| Templated list box items | 3 | feature | List items drawn from a small layout template (picture, title, subtitle, badge) instead of one line of text. | none | [Templated items](https://docs.devexpress.com/WindowsForms/119680/controls-and-libraries/editors-and-simple-controls/templated-listbox-items) |
+| ControlNavigator, DataNavigator | have | | | BindingNavigator | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| BarCodeControl | 3 | control | Shows a value as a barcode or QR code that scanners and phones can read. | none | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| ImageSlider | 2 | Gallery demo | One picture at a time with previous and next arrows and a slide animation. | PictureBox, animation | [Image Slider](https://docs.devexpress.com/WindowsForms/12364/controls-and-libraries/editors-and-simple-controls/image-slider) |
+| ProgressPanel | have | | | Spinner, EmptyState | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| RangeControl | have | | | RangeControl | [Range Control](https://docs.devexpress.com/WindowsForms/11739/controls-and-libraries/editors-and-simple-controls/range-control) |
+| GalleryControl | 2 | Gallery demo | A scrolling grid of thumbnails in named groups, as in a photo browser. | ListView tiles, RibbonGallery | [Navigation](https://www.devexpress.com/products/net/controls/winforms/navigation/) |
+| CameraControl | 3 | control | Shows live video from a webcam and takes snapshots. | none | [Camera](https://docs.devexpress.com/WindowsForms/114582/controls-and-libraries/editors-and-simple-controls/camera-control) |
+| StepProgressBar | have | | | StepIndicator | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| SearchControl | have | | | SearchField | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| GroupControl, PanelControl, RoundedSkinPanel | have | | | GroupBox, Panel, MaterialPanel, Card | [Layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
+| Scroll bars, XtraScrollableControl | have | | | HScrollBar, VScrollBar, ScrollableControl | [Editors](https://www.devexpress.com/products/net/controls/winforms/editors/) |
+| SplitterControl, SplitContainerControl, SidePanel | have | | | Splitter, SplitContainer, DockSite | [Layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
+| XtraTabControl | have | | | TabControl, PageView, PageStrip | [Tab Control](https://docs.devexpress.com/WindowsForms/114576/controls-and-libraries/form-layout-managers/tab-control) |
+| HTML Content Control and Popup | have | | | form documents rendered as controls | [HtmlContentControl](https://docs.devexpress.com/WindowsForms/DevExpress.XtraEditors.HtmlContentControl) |
+| Code editor (Monaco in a web view, an example) | 3 | control | A source-code editor with syntax colouring, line numbers, folding and completion. | ContentTextEditor; SwiftEdit's CodeEditor (malkuth-tools) | [Example README](https://github.com/DevExpress-Examples/winforms-monaco-code-editor) |
 
 ### 1.5 Components
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| ImageCollection, SharedImageCollection | ImageList | have | | [DX included controls](https://docs.devexpress.com/WindowsForms/401381/controls-and-libraries/editors-and-simple-controls/included-controls-and-components) |
-| SvgImageCollection, DPIAwareImageCollection | ImageList with vector icons, stock icons | have | | same |
-| ToolTipController (super tips, HTML tips) | ToolTip, RibbonToolTip | have | | same |
-| AlertControl (desktop alert windows) | Toast, NotifyIcon | have | | [DX/5487](https://docs.devexpress.com/WindowsForms/5487/controls-and-libraries/messages-notifications-and-dialogs/alert-windows) |
-| ToastNotificationsManager (OS toasts) | Toast (in-window); NotifyIcon balloons | take | S | [DX/17020](https://docs.devexpress.com/WindowsForms/17020/controls-and-libraries/messages-notifications-and-dialogs/toast-notification-manager) |
-| DXErrorProvider, DXValidationProvider (rules per editor) | ErrorProvider, validation | have | | same |
-| SplashScreenManager (splash, wait form, overlay form) | application splashscreen, ModalLayer | have | | [P splash](https://www.devexpress.com/winforms/splash-screen/) |
-| StyleController | themes and CSS | leave | deprecated by DevExpress; our CSS covers it |
-| TransitionManager (animated transitions between states) | animation (library-wide), not a ready transition component | take | S | [DX included controls](https://docs.devexpress.com/WindowsForms/401381/controls-and-libraries/editors-and-simple-controls/included-controls-and-components) |
-| WorkspaceManager (save and restore whole-app layouts) | partial: workspace transactions, dock layout | take | S | [DX/17674](https://docs.devexpress.com/WindowsForms/17674/controls-and-libraries/form-layout-managers/workspace-manager) |
-| PersistentRepository | none | leave | a designer artefact of the repository-item model |
-| TaskbarAssistant (taskbar progress, jump list, thumbnail buttons) | partial: host taskbar progress | take | S | [DX/114579](https://docs.devexpress.com/WindowsForms/114579/controls-and-libraries/forms-and-user-controls/taskbar-assistant) |
-| Adorner UI Manager (badges, guides over any control) | Badge, Callout | have | | [DX/114584](https://docs.devexpress.com/WindowsForms/114584/controls-and-libraries/forms-and-user-controls/adorner-ui-manager) |
-| Adorner guides (step-by-step tour highlighting) | none | take | S | [DX/114584](https://docs.devexpress.com/WindowsForms/114584/controls-and-libraries/forms-and-user-controls/adorner-ui-manager) |
-| Behavior Manager and drag-and-drop behaviours | drag | have | | [P grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Image collections (raster, SVG, DPI-aware) | have | | | ImageList, stock icons | [Included](https://docs.devexpress.com/WindowsForms/401381/controls-and-libraries/editors-and-simple-controls/included-controls-and-components) |
+| ToolTipController | have | | | ToolTip, RibbonToolTip | same |
+| AlertControl | have | | | Toast, NotifyIcon | [Alert Windows](https://docs.devexpress.com/WindowsForms/5487/controls-and-libraries/messages-notifications-and-dialogs/alert-windows) |
+| ToastNotificationsManager | 1 | control | Sends a notification to the operating system's notification centre, which stays there after the app is hidden. | Toast (in-window), NotifyIcon balloons | [Toast Manager](https://docs.devexpress.com/WindowsForms/17020/controls-and-libraries/messages-notifications-and-dialogs/toast-notification-manager) |
+| DXErrorProvider, DXValidationProvider | have | | | ErrorProvider, validation | same |
+| SplashScreenManager (splash, wait and overlay forms) | have | | | application splashscreen, ModalLayer | [Splash](https://www.devexpress.com/winforms/splash-screen/) |
+| StyleController | leave | | Leave: deprecated by DevExpress; our CSS covers it. | | |
+| TransitionManager | 2 | Gallery demo | A control changes content with an animated slide, fade or zoom instead of an instant swap. | animation | [Included](https://docs.devexpress.com/WindowsForms/401381/controls-and-libraries/editors-and-simple-controls/included-controls-and-components) |
+| WorkspaceManager | 2 | Gallery demo | Saves the whole window's arrangement (docked panels, grid layouts) under a name and switches between saved arrangements. | dock layout, workspace transactions | [Workspace Manager](https://docs.devexpress.com/WindowsForms/17674/controls-and-libraries/form-layout-managers/workspace-manager) |
+| PersistentRepository | leave | | Leave: a designer artefact of their repository-item model. | | |
+| TaskbarAssistant | 3 | control | Puts progress, overlay icons, a jump list and thumbnail buttons on the app's taskbar or dock icon. | partial: host taskbar progress | [Taskbar Assistant](https://docs.devexpress.com/WindowsForms/114579/controls-and-libraries/forms-and-user-controls/taskbar-assistant) |
+| Adorner UI Manager (badges over controls) | have | | | Badge, Callout | [Adorner](https://docs.devexpress.com/WindowsForms/114584/controls-and-libraries/forms-and-user-controls/adorner-ui-manager) |
+| Adorner guides (guided tour) | 2 | Gallery demo | A first-run tour that dims the window and spotlights one control at a time with a note. | ModalLayer, Callout | same |
+| Behavior Manager, drag-and-drop behaviours | have | | | drag | [Grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
 
 ### 1.6 Navigation
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Accordion Control (hierarchical side menu, search, HTML items) | ExpandableSections, NavigationPane | take | M | [DX/114553](https://docs.devexpress.com/WindowsForms/114553/controls-and-libraries/navigation-controls/accordion-control) |
-| Hamburger menu style (accordion collapsed to icons) | NavigationPane (compact) | have | | [DX/120498](https://docs.devexpress.com/WindowsForms/120498/controls-and-libraries/navigation-controls/accordion-control/hamburger-menu-view-style) |
-| Office Navigation Bar (Mail, Calendar, People with peek) | none | take | S | [DX/114558](https://docs.devexpress.com/WindowsForms/114558/controls-and-libraries/navigation-controls/office-navigation-bar) |
-| Navigation Frame (SDI page switching with animation) | PageView | have | | [DX/114554](https://docs.devexpress.com/WindowsForms/114554/controls-and-libraries/navigation-controls/navigation-frame-and-tab-pane) |
-| Tab Pane | PageStrip with PageView | have | | same |
-| Navigation Pane (side tabs that expand) | NavigationPane | have | | [DX/114555](https://docs.devexpress.com/WindowsForms/114555/controls-and-libraries/navigation-controls/navigation-pane) |
-| Navigation Bar (Outlook-style groups) | NavigationPane, ExpandableSections | have | | [DX/4870](https://docs.devexpress.com/WindowsForms/4870/controls-and-libraries/navigation-controls/navigation-bar) |
-| Tile Bar (horizontal tile strip with drop-downs) | none | take | M | [DX/114556](https://docs.devexpress.com/WindowsForms/114556/controls-and-libraries/navigation-controls/tile-bar) |
-| Tile Navigation Pane | none | take | S | [DX/114557](https://docs.devexpress.com/WindowsForms/114557/controls-and-libraries/navigation-controls/tilenav-pane) |
-| Tile Control (live tiles, groups, drag reorder) | none | take | M | [P/tile](https://www.devexpress.com/products/net/controls/winforms/tile/) |
-| Toolbox Control (categorised item palette, search) | none (the WYSIWYG editor will need one) | take | S | [ToolboxControl](https://docs.devexpress.com/WindowsForms/DevExpress.XtraToolbox.ToolboxControl) |
-| WindowsUI Button Panel (flat round buttons) | CommandBar | have | | [DX/114583](https://docs.devexpress.com/WindowsForms/114583/controls-and-libraries/navigation-controls/windowsui-button-panel) |
-| Wizard Control (Aero and Wizard 97 styles) | Wizard, WizardPage | have | | [DX/4735](https://docs.devexpress.com/WindowsForms/4735/controls-and-libraries/form-layout-managers/wizard-control) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Accordion Control | 2 | Gallery demo | A side menu of collapsible groups and items, with a search box, that can shrink to icons. | ExpandableSections, NavigationPane | [Accordion](https://docs.devexpress.com/WindowsForms/114553/controls-and-libraries/navigation-controls/accordion-control) |
+| Hamburger menu style | have | | | NavigationPane (compact) | [Hamburger](https://docs.devexpress.com/WindowsForms/120498/controls-and-libraries/navigation-controls/accordion-control/hamburger-menu-view-style) |
+| Office Navigation Bar | 2 | Gallery demo | Outlook's bottom strip (Mail, Calendar, People, Tasks) that previews a module when hovered. | PageStrip, Callout | [Office Navigation Bar](https://docs.devexpress.com/WindowsForms/114558/controls-and-libraries/navigation-controls/office-navigation-bar) |
+| Navigation Frame, Tab Pane | have | | | PageView, PageStrip | [Navigation Frame](https://docs.devexpress.com/WindowsForms/114554/controls-and-libraries/navigation-controls/navigation-frame-and-tab-pane) |
+| Navigation Pane, Navigation Bar | have | | | NavigationPane, ExpandableSections | [Navigation Pane](https://docs.devexpress.com/WindowsForms/114555/controls-and-libraries/navigation-controls/navigation-pane) |
+| Tile Bar | 2 | Gallery demo | A horizontal strip of large coloured tiles across the top of a window, each opening a section or a drop-down. | Card, FlexPanel | [Tile Bar](https://docs.devexpress.com/WindowsForms/114556/controls-and-libraries/navigation-controls/tile-bar) |
+| Tile Navigation Pane | 2 | Gallery demo | A top navigation bar whose categories open full-width bands of tiles. | Card, FlexPanel | [TileNav Pane](https://docs.devexpress.com/WindowsForms/114557/controls-and-libraries/navigation-controls/tilenav-pane) |
+| Tile Control | 3 | control | A Windows-Start-style wall of live tiles in groups that users drag to reorder and resize. | none | [Tiles](https://www.devexpress.com/products/net/controls/winforms/tile/) |
+| Toolbox Control | 3 | control | A searchable palette of categorised items to drag onto a surface, as in a designer's toolbox. | none (the WYSIWYG editor will need one) | [ToolboxControl](https://docs.devexpress.com/WindowsForms/DevExpress.XtraToolbox.ToolboxControl) |
+| WindowsUI Button Panel | have | | | CommandBar | [Button Panel](https://docs.devexpress.com/WindowsForms/114583/controls-and-libraries/navigation-controls/windowsui-button-panel) |
+| Wizard Control | have | | | Wizard, WizardPage | [Wizard](https://docs.devexpress.com/WindowsForms/4735/controls-and-libraries/form-layout-managers/wizard-control) |
 
 ### 1.7 Ribbon, bars and menus
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Ribbon (styles: Office 2007 to 2019, Office Universal, Tablet) | Ribbon | have | | [Ribbon](https://www.devexpress.com/winforms/ribbon/) |
-| Simplified (single-line) ribbon style | none | take | S | [DX/14624](https://docs.devexpress.com/WindowsForms/14624/controls-and-libraries/ribbon-bars-and-menu/ribbon/ribbon-styles) |
-| Quick Access Toolbar | QuickAccessToolbar | have | | [DX/2496](https://docs.devexpress.com/WindowsForms/2496/controls-and-libraries/ribbon-bars-and-menu/ribbon/visual-elements/quick-access-toolbar) |
-| Backstage View | BackstageView | have | | [DX/11017](https://docs.devexpress.com/WindowsForms/11017/controls-and-libraries/ribbon-bars-and-menu/ribbon/main-menus/backstageview-control) |
-| Ribbon galleries (in-ribbon and drop-down) | RibbonGallery | have | | [DX/2641](https://docs.devexpress.com/WindowsForms/2641/controls-and-libraries/ribbon-bars-and-menu/ribbon/galleries) |
-| Contextual tabs (category colours) | Ribbon contextual tabs | have | | [DX/3327](https://docs.devexpress.com/WindowsForms/3327/controls-and-libraries/ribbon-bars-and-menu/ribbon/visual-elements/categories-and-contextual-tabs) |
-| Ribbon status bar | StatusStrip | have | | [DX/2498](https://docs.devexpress.com/WindowsForms/2498/controls-and-libraries/ribbon-bars-and-menu/ribbon/the-ribbon-ui/ribbon-status-bar) |
-| Mini Toolbar (fading toolbar at the selection) | none | take | S | [RibbonMiniToolbar](https://docs.devexpress.com/WindowsForms/DevExpress.XtraBars.Ribbon.RibbonMiniToolbar) |
-| Search menu (command search, "Tell me") | none | take | S | [DX/400621](https://docs.devexpress.com/WindowsForms/400621/controls-and-libraries/ribbon-bars-and-menu/ribbon/visual-elements/search-menu) |
-| Ribbon runtime customisation (users add groups, commands) | none | take | M | [DX/11528](https://docs.devexpress.com/WindowsForms/11528/controls-and-libraries/ribbon-bars-and-menu/ribbon/runtime-capabilities/runtime-customization) |
-| Ribbon and bar merging for MDI children | partial: MDI follow-ups in cp36 | take | S | [DX/3451](https://docs.devexpress.com/WindowsForms/3451/controls-and-libraries/ribbon-bars-and-menu/ribbon/runtime-capabilities/ribbon-merging) |
-| Bars (docked and floating toolbars, menus, customisation) | ToolStrip, ToolStripContainer, MenuStrip, CommandBar | have | | [P/bars](https://www.devexpress.com/products/net/controls/winforms/bars/) |
-| Toolbar customisation dialog (users rearrange toolbars) | none | take | S | [DX/5361](https://docs.devexpress.com/WindowsForms/5361/controls-and-libraries/ribbon-bars-and-menu/bars) |
-| Popup menus | ContextMenu | have | | [DX/1090](https://docs.devexpress.com/WindowsForms/1090/controls-and-libraries/ribbon-bars-and-menu/popup-menus) |
-| Radial Menu (circular, touch-friendly) | none | take | S | [DX/14628](https://docs.devexpress.com/WindowsForms/14628/controls-and-libraries/ribbon-bars-and-menu/radial-menu) |
-| Touch support (larger ribbon, touch mode) | touch (week plan 3.1) | have | | [DX/16870](https://docs.devexpress.com/WindowsForms/16870/controls-and-libraries/ribbon-bars-and-menu/ribbon/runtime-capabilities/touch-support) |
-| Side-strip layout (vertical toolbars) | ToolStripPanel (left and right) | have | | [DX/1095](https://docs.devexpress.com/WindowsForms/1095/controls-and-libraries/ribbon-bars-and-menu/bars/appearance-and-hotkeys/side-strip-appearance) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Ribbon, contextual tabs, galleries, Backstage, Quick Access Toolbar, status bar | have | | | Ribbon, RibbonGallery, BackstageView, QuickAccessToolbar, StatusStrip | [Ribbon](https://www.devexpress.com/winforms/ribbon/) |
+| Ribbon and bar merging for MDI children | 1 | feature | When a document window is active, its own ribbon tabs and toolbar buttons join the main window's ribbon and go away when it closes. | partial: MDI follow-ups in cp36 | [Ribbon merging](https://docs.devexpress.com/WindowsForms/3451/controls-and-libraries/ribbon-bars-and-menu/ribbon/runtime-capabilities/ribbon-merging) |
+| Simplified (single-line) ribbon | 3 | feature | A one-row ribbon, as in the newer Office, that the user switches to from the classic three-row one. | none | [Ribbon styles](https://docs.devexpress.com/WindowsForms/14624/controls-and-libraries/ribbon-bars-and-menu/ribbon/ribbon-styles) |
+| Mini Toolbar | 2 | Gallery demo | A small formatting toolbar that fades in beside selected text. | CommandBar, AnchoredOverlayLayer | [RibbonMiniToolbar](https://docs.devexpress.com/WindowsForms/DevExpress.XtraBars.Ribbon.RibbonMiniToolbar) |
+| Search menu ("Tell me") | 2 | Gallery demo | A box in the ribbon where the user types a command's name and runs it from the results. | SearchField, commands | [Search menu](https://docs.devexpress.com/WindowsForms/400621/controls-and-libraries/ribbon-bars-and-menu/ribbon/visual-elements/search-menu) |
+| Ribbon runtime customisation | 3 | feature | Users add their own tabs and groups and move commands into them, and the choice is saved. | none | [Customisation](https://docs.devexpress.com/WindowsForms/11528/controls-and-libraries/ribbon-bars-and-menu/ribbon/runtime-capabilities/runtime-customization) |
+| Bars, popup menus, side-strip toolbars, touch mode | have | | | ToolStrip, ToolStripContainer, ToolStripPanel, MenuStrip, ContextMenu, CommandBar | [Bars](https://www.devexpress.com/products/net/controls/winforms/bars/) |
+| Toolbar customisation dialog | 3 | feature | Users drag buttons on and off toolbars and create new toolbars from a dialog. | none | [Bars](https://docs.devexpress.com/WindowsForms/5361/controls-and-libraries/ribbon-bars-and-menu/bars) |
+| Radial Menu | 2 | Gallery demo | A round pop-up menu with commands around a centre button, for pen and touch. | DrawingSurface, commands | [Radial Menu](https://docs.devexpress.com/WindowsForms/14628/controls-and-libraries/ribbon-bars-and-menu/radial-menu) |
 
 ### 1.8 Forms
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| XtraForm (skinned title bar) | Window with custom chrome | have | | [DX/114560](https://docs.devexpress.com/WindowsForms/114560/controls-and-libraries/forms-and-user-controls/xtraform) |
-| DirectX Form (HTML/CSS-styled whole form) | Window, form documents | have | | [DX/403878](https://docs.devexpress.com/WindowsForms/403878/controls-and-libraries/forms-and-user-controls/direct-x-form) |
-| Ribbon Form (ribbon merged into the title bar) | Ribbon in custom chrome | have | | [DX/114562](https://docs.devexpress.com/WindowsForms/114562/controls-and-libraries/forms-and-user-controls/ribbon-form) |
-| Toolbar Form (toolbar in the title bar) | custom chrome | have | | [DX/401889](https://docs.devexpress.com/WindowsForms/401889/controls-and-libraries/forms-and-user-controls/toolbar-form) |
-| Tabbed Form (browser-style tabs in the title bar, tear off) | none | take | M | [DX/115183](https://docs.devexpress.com/WindowsForms/115183/controls-and-libraries/forms-and-user-controls/tabbed-form) |
-| Fluent Design Form (acrylic, reveal highlight, hamburger) | window backdrop (acrylic, mica) and NavigationPane | have | | [DX/120214](https://docs.devexpress.com/WindowsForms/120214/controls-and-libraries/forms-and-user-controls/fluent-design-form) |
-| XtraUserControl | UserControl | have | | [DX/114564](https://docs.devexpress.com/WindowsForms/114564/controls-and-libraries/forms-and-user-controls/xtrausercontrol) |
-| Form Assistant (turns a form into Ribbon or Fluent form) | none | leave | a designer conversion of a WinForms Form type; our forms choose chrome by property |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| XtraForm, DirectX Form, Ribbon Form, Toolbar Form | have | | | Window with custom chrome, form documents | [XtraForm](https://docs.devexpress.com/WindowsForms/114560/controls-and-libraries/forms-and-user-controls/xtraform) |
+| Tabbed Form | 3 | feature | A window whose title bar holds browser-style tabs that drag out into their own windows. | none | [Tabbed Form](https://docs.devexpress.com/WindowsForms/115183/controls-and-libraries/forms-and-user-controls/tabbed-form) |
+| Fluent Design Form | have | | | window backdrop (acrylic, mica), NavigationPane | [Fluent Form](https://docs.devexpress.com/WindowsForms/120214/controls-and-libraries/forms-and-user-controls/fluent-design-form) |
+| XtraUserControl | have | | | UserControl | [XtraUserControl](https://docs.devexpress.com/WindowsForms/114564/controls-and-libraries/forms-and-user-controls/xtrausercontrol) |
+| Form Assistant | leave | | Leave: converts a WinForms Form type at design time; our forms choose their chrome by property. | | |
 
 ### 1.9 Messages, notifications and dialogs
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| XtraMessageBox (skinned, auto-close, "do not show again") | MessageBox, TaskDialog | have | | [DX/114566](https://docs.devexpress.com/WindowsForms/114566/controls-and-libraries/messages-notifications-and-dialogs/xtramessagebox) |
-| XtraInputBox (one editor in a dialog) | none (TaskDialog has no editor) | take | S | [DX/117729](https://docs.devexpress.com/WindowsForms/117729/controls-and-libraries/messages-notifications-and-dialogs/input-box) |
-| XtraDialog (any user control as a dialog) | ModalLayer, Window | have | | [DX/114567](https://docs.devexpress.com/WindowsForms/114567/controls-and-libraries/messages-notifications-and-dialogs/xtradialog) |
-| File and folder dialogs (skinned) | OpenFileDialog, SaveFileDialog, FolderBrowserDialog | have | | [DX/403445](https://docs.devexpress.com/WindowsForms/403445/controls-and-libraries/messages-notifications-and-dialogs/file-and-folder-browsers) |
-| File Explorer Assistant (build an Explorer from grid, tree, breadcrumb) | file manager demoboard | have | | [DX/403431](https://docs.devexpress.com/WindowsForms/403431/controls-and-libraries/messages-notifications-and-dialogs/custom-folder-browsers) |
-| Flyout Dialog (dimmed overlay dialog) | ModalLayer | have | | [DX/114568](https://docs.devexpress.com/WindowsForms/114568/controls-and-libraries/messages-notifications-and-dialogs/flyout-dialog) |
-| Flyout Panel (slides from an edge, beak) | Callout, AnchoredOverlayLayer | have | | [DX/114578](https://docs.devexpress.com/WindowsForms/114578/controls-and-libraries/messages-notifications-and-dialogs/flyout-panel) |
-| HTML/CSS templates for message boxes and alerts | form documents | have | | [DX/404058](https://docs.devexpress.com/WindowsForms/404058/controls-and-libraries/messages-notifications-and-dialogs/html-and-css-templates-in-messages-and-dialogs) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| XtraMessageBox, XtraDialog, Flyout Dialog | have | | | MessageBox, TaskDialog, ModalLayer | [Message box](https://docs.devexpress.com/WindowsForms/114566/controls-and-libraries/messages-notifications-and-dialogs/xtramessagebox) |
+| XtraInputBox | 1 | control | A one-line "ask the user for a value" dialog: a prompt, one editor (text, number, date) and OK and Cancel. | none | [Input Box](https://docs.devexpress.com/WindowsForms/117729/controls-and-libraries/messages-notifications-and-dialogs/input-box) |
+| File and folder dialogs | have | | | OpenFileDialog, SaveFileDialog, FolderBrowserDialog | [File dialogs](https://docs.devexpress.com/WindowsForms/403445/controls-and-libraries/messages-notifications-and-dialogs/file-and-folder-browsers) |
+| File Explorer Assistant | have | | | file manager demoboard | [Folder browsers](https://docs.devexpress.com/WindowsForms/403431/controls-and-libraries/messages-notifications-and-dialogs/custom-folder-browsers) |
+| Flyout Panel | have | | | Callout, AnchoredOverlayLayer | [Flyout Panel](https://docs.devexpress.com/WindowsForms/114578/controls-and-libraries/messages-notifications-and-dialogs/flyout-panel) |
+| Templates for message boxes and alerts | have | | | form documents | [Templates](https://docs.devexpress.com/WindowsForms/404058/controls-and-libraries/messages-notifications-and-dialogs/html-and-css-templates-in-messages-and-dialogs) |
 
-### 1.10 Layout
+### 1.10 Layout, docking and the application UI manager
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Layout Control (auto-aligned labels, groups, tabs) | FormLayout, GridPanel, FlexPanel | have | | [DX/3407](https://docs.devexpress.com/WindowsForms/3407/controls-and-libraries/form-layout-managers/layout-and-data-layout-controls/layout-control/layout-control) |
-| Layout Control runtime customisation (users drag items, hide, save) | none | take | M | [P/layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
-| Flow layout mode | FlowLayoutPanelCompat, FlexPanel | have | | [DX/17548](https://docs.devexpress.com/WindowsForms/17548/controls-and-libraries/form-layout-managers/layout-and-data-layout-controls/flow-layout) |
-| Data Layout Control (generates an edit form from a data source) | partial: `<bind>` elements in form documents | take | M | [DX/4921](https://docs.devexpress.com/WindowsForms/4921/controls-and-libraries/form-layout-managers/layout-and-data-layout-controls/data-layout-control) |
-| Stack and Table panels | FlexPanel, TableLayoutPanelCompat, GridPanel | have | | [DX/402917](https://docs.devexpress.com/WindowsForms/402917/controls-and-libraries/form-layout-managers/simple-layout-containers/stack-and-table-panels) |
-| Responsive breakpoints (Blazor Layout Breakpoint) | ResponsiveTrackPanel | have | | [Blazor](https://docs.devexpress.com/Blazor/405072/components/layout/layout-breakpoint) |
-| Tabbed MDI Manager | DockWorkspace (tabbed documents) | have | | [DX/5486](https://docs.devexpress.com/WindowsForms/5486/controls-and-libraries/form-layout-managers/tabbed-mdi-manager) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Layout Control, flow layout, stack and table panels | have | | | FormLayout, GridPanel, FlexPanel, FlowLayoutPanelCompat, TableLayoutPanelCompat | [Layout Control](https://docs.devexpress.com/WindowsForms/3407/controls-and-libraries/form-layout-managers/layout-and-data-layout-controls/layout-control/layout-control) |
+| Layout runtime customisation | 3 | feature | Users drag fields around a finished form, hide some and save their arrangement. | none | [Layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
+| Data Layout Control | 3 | feature | Point a form at a data object and it lays out a labelled editor for every field. | partial: `<bind>` elements in form documents | [Data Layout](https://docs.devexpress.com/WindowsForms/4921/controls-and-libraries/form-layout-managers/layout-and-data-layout-controls/data-layout-control) |
+| Responsive breakpoints | have | | | ResponsiveTrackPanel | [Breakpoint](https://docs.devexpress.com/Blazor/405072/components/layout/layout-breakpoint) |
+| Docking, Tabbed MDI, Tabbed View, Native MDI View, document selector, deferred load | have | | | DockSite, DockWorkspace, DockNavigator | [Docking](https://www.devexpress.com/products/net/controls/winforms/docking/) |
+| WindowsUI View | 2 | Gallery demo | A full-window tablet-style app: a start screen of tiles, pages that slide in, and flyouts. | PageView, Card, ModalLayer | [WindowsUI View](https://docs.devexpress.com/WindowsForms/11854/controls-and-libraries/application-ui-manager/views/windowsui-view) |
+| Widget View | 2 | Gallery demo | A dashboard of resizable cards (widgets) that the user rearranges and maximises one at a time. | Card, GridPanel, DockWorkspace | [Widget View](https://docs.devexpress.com/WindowsForms/16239/controls-and-libraries/application-ui-manager/views/widget-view) |
 
-### 1.11 Application UI Manager and docking
+### 1.11 Data visualisation
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Docking Library (dock, float, auto-hide, tabbed panels, hints) | DockSite, DockWorkspace, DockNavigator | have | | [P/docking](https://www.devexpress.com/products/net/controls/winforms/docking/) |
-| Document Manager, Tabbed View (tab groups, float, pin) | DockWorkspace | have | | [DX/11355](https://docs.devexpress.com/WindowsForms/11355/controls-and-libraries/application-ui-manager/views/tabbed-view) |
-| Native MDI View | DockWorkspace MDI presentation | have | | [DX/11356](https://docs.devexpress.com/WindowsForms/11356/controls-and-libraries/application-ui-manager/views/native-mdi-view) |
-| WindowsUI View (tile container, page groups, flyouts) | none | take | L | [DX/11854](https://docs.devexpress.com/WindowsForms/11854/controls-and-libraries/application-ui-manager/views/windowsui-view) |
-| Widget View (documents as resizable cards, maximise) | none | take | M | [DX/16239](https://docs.devexpress.com/WindowsForms/16239/controls-and-libraries/application-ui-manager/views/widget-view) |
-| Deferred load of documents | page and document views load on show | have | | [DX/11619](https://docs.devexpress.com/WindowsForms/11619/controls-and-libraries/application-ui-manager/deferred-load/deferred-load) |
-| Document selector (Ctrl+Tab switcher with previews) | DockNavigator | have | | [DX/11363](https://docs.devexpress.com/WindowsForms/11363/controls-and-libraries/application-ui-manager/interaction-with-dock-panels/interaction-with-dock-panels) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Charts: line, spline, step, area, bar, scatter; crosshair, zoom, scroll | have | | | PlotView | [Charts](https://www.devexpress.com/products/net/controls/winforms/chart/) |
+| Charts: pie and doughnut | 1 | feature | Round charts showing each value as a slice of a whole, with labels and a legend. | none | [Charts](https://www.devexpress.com/products/net/controls/winforms/chart/) |
+| Charts: funnel, pyramid, nested doughnut | 3 | feature | Stage-by-stage shrinking shapes for sales funnels, and rings within rings. | none | [Charts](https://www.devexpress.com/products/net/controls/winforms/chart/) |
+| Charts: financial (candlestick, OHLC, indicators) | 3 | feature | Stock price charts with open, high, low and close per period, moving averages and trend lines. | none | [Sample apps: Finance](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
+| Charts: range bar, range area, bubble, box plot, error bars | 3 | feature | Charts that show spreads and uncertainty rather than single values. | partial: histogram | [Charts](https://www.devexpress.com/products/net/controls/winforms/chart/) |
+| Charts: polar and radar | 3 | feature | Values plotted around a circle, as in a wind rose or a skills spider chart. | none | [Blazor Polar Chart](https://docs.devexpress.com/Blazor/401769/components/charts/get-started-with-charts) |
+| Charts: 3D | have | | | Plot3DView | [Charts](https://www.devexpress.com/products/net/controls/winforms/chart/) |
+| Chart Designer | 3 | tool | A dialog where the end user changes a chart's type, series, colours and labels without code. | none | [Chart Control](https://docs.devexpress.com/WindowsForms/8117/controls-and-libraries/chart-control) |
+| Gauges: circular, linear, digital, state indicator | have | | | RadialGauge, LinearGauge, Dial, SevenSegmentDisplay, IndicatorLamp | [Gauges](https://www.devexpress.com/products/net/controls/winforms/gauges/) |
+| Gauge Designer | 3 | tool | A dialog with ready gauge presets and an editor for scales, needles and ranges. | none | [Gauges](https://docs.devexpress.com/WindowsForms/18218/controls-and-libraries/gauges) |
+| Diagram Control | 3 | control | A Visio-like canvas: drag shapes from a library, connect them with arrows, and let it lay out flowcharts and org charts. | NodeCanvas, node graph (nodes and links, no shapes library) | [Diagrams](https://www.devexpress.com/products/net/controls/winforms/diagrams/) |
+| Map Control | 3 | control | An interactive map with online tiles, markers, routes and shaded regions. | none | [Map](https://www.devexpress.com/products/net/controls/winforms/map/) |
+| TreeMap | 2 | Gallery demo | Nested rectangles sized by value, as in a disk-usage view. | DrawingSurface | [TreeMap](https://www.devexpress.com/products/net/controls/winforms/treemap/) |
+| Sunburst | 2 | Gallery demo | A hierarchy drawn as rings of slices around a centre. | DrawingSurface | [Sunburst](https://www.devexpress.com/products/net/controls/winforms/sunburst/) |
+| Sankey Diagram | 3 | control | Flows between stages drawn as bands whose width is the amount. | none | [Sankey](https://www.devexpress.com/winforms/sankey-diagram/) |
+| Heatmap | have | | | PlotHeatmapSeries | [HeatMap](https://www.devexpress.com/winforms/heatmap/) |
+| Range selector over a chart | have | | | RangeControl, SweepScope | [Range Selector](https://docs.devexpress.com/Blazor/405266/components/range-selector) |
 
-### 1.12 Data visualisation
+### 1.12 Office-inspired
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Charts: line, spline, step, area, bar, scatter, point | PlotView (lines, stairs, stems, bars, areas, scatter) | have | | [P/chart](https://www.devexpress.com/products/net/controls/winforms/chart/) |
-| Charts: pie, doughnut, nested doughnut, funnel, pyramid | none | take | M | [P/chart](https://www.devexpress.com/products/net/controls/winforms/chart/) |
-| Charts: financial (candlestick, OHLC, indicators, trend lines) | none | take | M | [Sample apps: Finance and Trading](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
-| Charts: range bar, range area, Gantt-style bars, bubble, box plot, error bars | partial: histogram | take | M | [P/chart](https://www.devexpress.com/products/net/controls/winforms/chart/) |
-| Charts: polar and radar | none | take | S | [Blazor Polar Chart](https://docs.devexpress.com/Blazor/401769/components/charts/get-started-with-charts) |
-| Charts: 3D bars, pies, areas | Plot3DView (surfaces) | have | | [P/chart](https://www.devexpress.com/products/net/controls/winforms/chart/) |
-| Chart crosshair, tooltips, zoom, scroll, selection | PlotView gestures, query, box zoom | have | | [P/chart](https://www.devexpress.com/products/net/controls/winforms/chart/) |
-| Chart Designer (run-time chart editing dialog) | none | take | M | [DX/8117](https://docs.devexpress.com/WindowsForms/8117/controls-and-libraries/chart-control) |
-| Gauges: circular, linear | RadialGauge, LinearGauge, Dial | have | | [P/gauges](https://www.devexpress.com/products/net/controls/winforms/gauges/) |
-| Gauges: digital (seven and fourteen segment, matrix) | SevenSegmentDisplay | have | | [P/gauges](https://www.devexpress.com/products/net/controls/winforms/gauges/) |
-| Gauges: state indicator | IndicatorLamp | have | | [P/gauges](https://www.devexpress.com/products/net/controls/winforms/gauges/) |
-| Gauge Designer (presets gallery, element editor) | none | take | S | [DX/18218](https://docs.devexpress.com/WindowsForms/18218/controls-and-libraries/gauges) |
-| Diagram Control (shapes, connectors, auto layout, org charts) | NodeCanvas, node graph (nodes and links, no shapes library) | take | L | [P/diagrams](https://www.devexpress.com/products/net/controls/winforms/diagrams/) |
-| Map Control (tile providers, vector layers, routes, bubbles) | none | take | L | [P/map](https://www.devexpress.com/products/net/controls/winforms/map/) |
-| TreeMap | none | take | S | [P/treemap](https://www.devexpress.com/products/net/controls/winforms/treemap/) |
-| Sunburst | none | take | S | [P/sunburst](https://www.devexpress.com/products/net/controls/winforms/sunburst/) |
-| Sankey Diagram | none | take | M | [Sankey](https://www.devexpress.com/winforms/sankey-diagram/) |
-| Heatmap Control | PlotHeatmapSeries | have | | [HeatMap](https://www.devexpress.com/winforms/heatmap/) |
-| Range selector over a chart (Blazor Range Selector) | RangeControl, SweepScope | have | | [Blazor](https://docs.devexpress.com/Blazor/405266/components/range-selector) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Rich Text Editor (Word-level) | 3 | control | A word processor in a control: pages, tables, styles, headers and footers, images, DOCX. | RichTextBox (WinForms parity), ContentTextEditor | [Rich Editor](https://www.devexpress.com/products/net/controls/winforms/rich_editor/) |
+| Spreadsheet | 3 | control | Excel in a control: sheets, formulas, formatting, charts in cells, XLSX. | none | [Spreadsheet](https://www.devexpress.com/products/net/controls/winforms/spreadsheet/) |
+| Scheduler | 3 | control | An Outlook-style calendar control with day, week, month and timeline views, appointments you drag and resize, and repeating events. | none | [Scheduler](https://www.devexpress.com/products/net/controls/winforms/scheduler/) |
+| Scheduler, Gallery version | 2 | Gallery demo | A week-view calendar page built from our grid panel and cards, to show the shape of a scheduler before the control exists. | GridPanel, Card, drag | [Sample apps: Calendar](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
+| Spell Checker | 3 | component | Red squiggles under misspelt words in text boxes as you type, with suggestions on right-click. | none | [Spell Checker](https://www.devexpress.com/products/net/controls/winforms/spell_checker/) |
+| Office File API | leave | | Leave: a document-processing library, not a toolkit. | | |
 
-### 1.13 Office-inspired
+### 1.13 Printing, reporting and documents
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Rich Text Editor (Word-like: pages, tables, styles, headers, mail merge) | RichTextBox (WinForms parity), ContentTextEditor | take | XL | [P/rich_editor](https://www.devexpress.com/products/net/controls/winforms/rich_editor/) |
-| Spreadsheet (formulas, charts in sheets, XLSX) | none | take | XL | [P/spreadsheet](https://www.devexpress.com/products/net/controls/winforms/spreadsheet/) |
-| Scheduler (day, week, month, timeline, agenda, Gantt views, recurrence) | none | take | L | [P/scheduler](https://www.devexpress.com/products/net/controls/winforms/scheduler/) |
-| Spell Checker (as-you-type, dictionaries) | none (the platform spell services are unused) | take | M | [P/spell_checker](https://www.devexpress.com/products/net/controls/winforms/spell_checker/) |
-| Office File API (DOCX, XLSX, PDF processing without UI) | none | leave | a document-processing library, not a toolkit; take only what the editors above need |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Printing and exporting (print preview, export of any control) | leave | | Leave: GUI.Forms uses the native print dialog (owner, 2026-11-22). | help printing | [Printing](https://www.devexpress.com/products/net/controls/winforms/printing/) |
+| Reporting: Report Viewer and banded reports | leave | | Leave: built on print preview and export, which are left. | | [Reporting](https://www.devexpress.com/subscriptions/reporting/) |
+| BI Dashboard | leave | | Leave: a separate BI product. | | |
+| PDF Viewer | 3 | control | Opens a PDF inside the app to read, search, zoom, and fill in its form fields. | none | [PDF Viewer](https://www.devexpress.com/products/net/controls/winforms/pdf-viewer/) |
 
-### 1.14 Reporting and analytics
+### 1.14 Cross-cutting technologies
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| PDF Viewer (view, search, forms, annotations) | none | take | L | [P/pdf-viewer](https://www.devexpress.com/products/net/controls/winforms/pdf-viewer/) |
-| Printing and exporting (print preview, PDF/XLSX export of any control) | partial: help printing | take | L | [P/printing](https://www.devexpress.com/products/net/controls/winforms/printing/) |
-| Reporting: Report Viewer (banded documents) | none | take | XL | [Reporting](https://www.devexpress.com/subscriptions/reporting/) |
-| BI Dashboard (viewer and end-user designer) | none | leave | a separate BI product; revisit after reporting |
-
-### 1.15 Cross-cutting technologies
-
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| Application skins (vector and raster), palettes | themes, user themes, surface materials | have | | [P/skins](https://www.devexpress.com/products/net/controls/winforms/skins/) |
-| Skin selector gallery and palette gallery (runtime theme switch) | partial: theme switching; no ready ribbon gallery item | take | S | [P/skins](https://www.devexpress.com/products/net/controls/winforms/skins/) |
-| HTML and CSS desktop UI | form documents (XML + CSS) | have | | [HTML & CSS](https://www.devexpress.com/winforms/html-css/) |
-| DirectX hardware acceleration | our own renderer and compositor | have | | [DirectX](https://www.devexpress.com/winforms/directx/) |
-| MVVM framework (commands, services, fluent binding) | commands, binding, BindingSource | have | | [DX/113955](https://docs.devexpress.com/WindowsForms/113955/cross-platform-app-development/winforms-mvvm) |
-| Accessibility (UI Automation, screen readers) | semantics (accessibility tree) | have | | [DX/404293](https://docs.devexpress.com/WindowsForms/404293/build-an-application/accessibility) |
-| High DPI and per-monitor scaling | scaling (library-wide) | have | | [DX/119441](https://docs.devexpress.com/WindowsForms/119441/common-features/graphics-performance-and-high-dpi/directx-hardware-acceleration) |
-| AI Chat control | chat stress demonstrator (a chat view under load) | take | M | [DX/405218](https://docs.devexpress.com/WindowsForms/405218/ai-powered-extensions/ai-chat-control) |
-| AI Assistant, Smart Paste, Smart Autocomplete, Smart Search, Semantic Search, Explain Formula, Image Description | none | take | M | [DX/405151](https://docs.devexpress.com/WindowsForms/405151/ai-powered-extensions) |
-| Coded UI test support | MCP automation (study G1 to G6) | have | | [Coded UI](https://www.devexpress.com/products/net/controls/winforms/coded-ui/) |
-| Localization (resource strings, satellite assemblies) | localizable text, locale files | have | | [Localization](https://docs.devexpress.com/GeneralInformation/404608/localization/localization) |
-| Icon library (thousands of SVG icons, context images) | stock icon generator | take | M | [DX/16864](https://docs.devexpress.com/WindowsForms/16864/devexpress-icon-library/image-gallery-and-context-dependent-images) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| Skins, HTML and CSS UI, DirectX rendering, MVVM, accessibility, high DPI, localisation, Coded UI | have | | | themes and surface materials, form documents, our renderer, commands and binding, semantics, scaling, localizable text, MCP automation | [Skins](https://www.devexpress.com/products/net/controls/winforms/skins/) |
+| Skin and palette selector galleries | 2 | Gallery demo | A ribbon gallery listing the themes and their colour palettes, so the user switches the app's look live. | RibbonGallery, user themes | [Skins](https://www.devexpress.com/products/net/controls/winforms/skins/) |
+| AI Chat control | 2 | Gallery demo | A chat panel with message bubbles, a typing box and streamed replies from a language model. | chat stress demonstrator, VirtualRowsView, TextBox | [AI Chat](https://docs.devexpress.com/WindowsForms/405218/ai-powered-extensions/ai-chat-control) |
+| AI extensions (smart paste, autocomplete, search, assistant) | 3 | feature | Editors gain model-backed helpers: paste a text and fields fill in, suggestions as you type, rewrite or translate a selection. | none | [AI extensions](https://docs.devexpress.com/WindowsForms/405151/ai-powered-extensions) |
+| Icon library | 3 | tool | Thousands of ready icons in one consistent style, picked by name or from a browser. | stock icon generator | [Icon Library](https://docs.devexpress.com/WindowsForms/16864/devexpress-icon-library/image-gallery-and-context-dependent-images) |
 
 ## 2. Notable WPF and Blazor items with no WinForms counterpart
 
-| DevExpress | Ours | Mark | Size | Best public page |
-|---|---|---|---|---|
-| WPF ThemedWindow | Window with custom chrome | have | | [ThemedWindow](https://docs.devexpress.com/WPF/DevExpress.Xpf.Core.ThemedWindow) |
-| WPF LoadingDecorator (wait indicator over any content) | ModalLayer, Spinner | have | | [LoadingDecorator](https://docs.devexpress.com/WPF/DevExpress.Xpf.Core.LoadingDecorator) |
-| WPF Badge | Badge | have | | [Badge](https://docs.devexpress.com/WPF/DevExpress.Xpf.Core.Badge) |
-| Blazor Carousel | none | take | S | [Carousel](https://docs.devexpress.com/Blazor/405183/components/layout/carousel) |
-| Blazor Drawer (side drawer over or beside content) | none | take | S | [Drawer](https://docs.devexpress.com/Blazor/404362/components/layout/drawer) |
-| Blazor HTML Editor (WYSIWYG HTML) | none | leave | the Rich Text Editor take covers rich editing; HTML output is a web concern |
-| Blazor Pager | none | take | S | [Pager](https://docs.devexpress.com/Blazor/405054/components/utility-controls/pager) |
-| Blazor Button Group, Split Button | ChoiceGroup (button style), DropDownButton | have | | [Button Group](https://docs.devexpress.com/Blazor/405195/components/utility-controls/button-group) |
-| Blazor Bar Gauge (concentric bars) | none | take | S | [Bar Gauge](https://docs.devexpress.com/Blazor/404946/components/bar-gauge) |
-| Blazor Color Palette | ColorPicker | have | | [Color Palette](https://docs.devexpress.com/Blazor/405229/components/data-editors/color-palette) |
-| Blazor Upload, File Input | file dialogs and drag | leave | web upload widgets; the desktop has file dialogs and drop |
-| Blazor Grid Layout | GridPanel | have | | [Grid Layout](https://docs.devexpress.com/Blazor/405071/components/layout/grid-layout) |
+| DevExpress | Mark | Kind | What | Ours | Page |
+|---|---|---|---|---|---|
+| WPF ThemedWindow, LoadingDecorator, Badge | have | | | Window, ModalLayer, Spinner, Badge | [ThemedWindow](https://docs.devexpress.com/WPF/DevExpress.Xpf.Core.ThemedWindow) |
+| Blazor Carousel | 2 | Gallery demo | Slides that rotate automatically or by arrows, with dots showing the position. | PageView, animation | [Carousel](https://docs.devexpress.com/Blazor/405183/components/layout/carousel) |
+| Blazor Drawer | 2 | Gallery demo | A side panel that slides over or pushes the content, opened by a menu button. | NavigationPane, animation | [Drawer](https://docs.devexpress.com/Blazor/404362/components/layout/drawer) |
+| Blazor Pager | 2 | Gallery demo | Page-number buttons (1 2 3 ... 10, next, previous) under a list. | Button, FlexPanel | [Pager](https://docs.devexpress.com/Blazor/405054/components/utility-controls/pager) |
+| Blazor Bar Gauge | 2 | Gallery demo | Several values as concentric arcs around a centre. | RadialGauge, DrawingSurface | [Bar Gauge](https://docs.devexpress.com/Blazor/404946/components/bar-gauge) |
+| Blazor Button Group, Split Button, Color Palette, Grid Layout | have | | | ChoiceGroup, DropDownButton, ColorPicker, GridPanel | [Button Group](https://docs.devexpress.com/Blazor/405195/components/utility-controls/button-group) |
+| Blazor HTML Editor | leave | | Leave: HTML output is a web concern; rich editing is the Rich Text Editor. | | |
+| Blazor Upload, File Input | leave | | Leave: web upload widgets; the desktop has file dialogs and drop. | | |
 
 ## 3. Demo applications
 
-| DevExpress demo | What it shows | Ours | Mark | Size | Best public page |
+| DevExpress demo | Mark | Kind | What | Ours | Page |
 |---|---|---|---|---|---|
-| Outlook-Inspired Application (mail, calendar, contacts, tasks) | Ribbon, grid views, scheduler, navigation bar, layout | file manager demoboard and Gallery cover parts | take | L | [Demos](https://www.devexpress.com/Support/Demos/) |
-| Outlook-Inspired Tasks module | grid with detail panel, Office Compact View | MasterDetailView in the Gallery | take | M | [Sample apps](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
-| Outlook-Inspired Calendar module | scheduler views, range control | none | take | M (after Scheduler) | same |
-| Outlook-Inspired Contacts module | layout view cards, field layout | none | take | M | same |
-| Dental Clinic Application | scheduler, modern UX, HTML templates | none | take | L (after Scheduler) | [Demos](https://www.devexpress.com/Support/Demos/) |
-| Stock Market Trader | financial charts, real-time grid, HTML templates | chat stress shows real-time load; no trading screen | take | M | [Demos](https://www.devexpress.com/Support/Demos/) |
-| HTML and CSS Templates demo | templated grid rows, Explorer view | form documents in the Gallery | take | S | same |
-| Touch-Enabled Hybrid Application | tiles, large touch targets, flyouts | none | take | M (with touch, 3.1) | same |
-| Fluent Mail Client | Fluent form, acrylic, hamburger accordion | window backdrop lab | take | M | same |
-| Excel-inspired Spreadsheet | spreadsheet with ribbon, charts | none | take | (with Spreadsheet) | [Sample apps](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
-| Excel-inspired Analytics | pivot grid with linked chart | none | take | (with Pivot Grid) | same |
-| Word-inspired Applications | rich text editor with ribbon | none | take | (with Rich Text) | same |
-| Microsoft CRM-inspired Applications | dashboards of grids and pie, funnel, bar charts | none | take | M | same |
-| CRUD Applications | form layout, masked editors, grid, ribbon | Gallery bound values, form documents | have | | same |
-| Reporting demo (viewer and end-user designer) | banded reports | none | take | (with Reporting) | [Reporting video](https://www.youtube.com/watch?v=oaXK-XhwF8g) |
-| Visio-inspired Applications | diagram editor with ribbon | node graph demonstrator | take | M (with Diagram) | [Sample apps](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
-| Touch-First Tablet Applications | tile control, button panel | none | take | (with Hybrid) | same |
-| Finance and Trading Applications | financial charting, grid, doughnut | none | take | (with Stock Market Trader) | same |
-| Adobe-inspired Applications (PDF) | PDF viewer, forms | none | take | (with PDF Viewer) | same |
-| Browser-like UI | tabbed form, dock panels | none | take | S (with Tabbed Form) | same |
-| File Explorer-like UI | Explorer view, accordion, breadcrumb, ribbon | file manager demoboard | have | | same |
-| GIS Applications | map layers, routes | none | take | (with Map) | same |
-| Visual Studio-inspired Docking | dock, float, auto-hide | DockWorkspace pages in the Gallery | have | | same |
-| WinForms Dashboard demos (sales overview) | BI dashboard | none | leave | BI dashboard left (1.14) | [Demos](https://www.devexpress.com/Support/Demos/) |
-| WinForms AI demos (AI rich edit) | AI assistant in editors | none | take | (with AI extensions) | same |
-| XAF Employee Management | generated CRUD application framework | none | leave | XAF is an application framework, not a toolkit item |
-| Per-control Main Demos in the Demo Center (Grid, Editors, Charts and so on) | one browsable module per feature | the Gallery | have | | [Demos](https://www.devexpress.com/Support/Demos/) |
-| Demo Center (browse, run, open the source of each demo) | launcher with search and a source button | the Gallery, without a "show the code" button | take | S | [DX/14962](https://docs.devexpress.com/WindowsForms/14962/whats-installed/demo-applications) |
+| Outlook-Inspired Application (mail, tasks, contacts) | 2 | demo app | An Outlook look-alike with mail, tasks and contacts modules switched from a navigation bar, built from our grid, ribbon and panes. | file manager demoboard and Gallery cover parts | [Demos](https://www.devexpress.com/Support/Demos/) |
+| Outlook-Inspired Calendar module, Dental Clinic | 3 | demo app | The calendar half of the Outlook demo and a clinic appointment book; both need the Scheduler control. | none | same |
+| Stock Market Trader, Finance and Trading | 3 | demo app | A live trading screen of price charts and ticking grids; needs the financial charts. | chat stress shows the real-time load | same |
+| HTML and CSS Templates demo | 2 | demo app | Records drawn as styled cards from markup templates, in an Explorer-style list. | form documents | same |
+| Touch-Enabled Hybrid, Touch-First Tablet | 2 | demo app | A tablet-style app with large tiles and touch targets; with the touch work (week plan 3.1). | WindowsUI View Gallery demo once built | same |
+| Fluent Mail Client | 2 | demo app | A Windows 11 Mail look-alike with an acrylic window and a collapsing side menu. | window backdrop, NavigationPane | same |
+| Microsoft CRM-inspired | 2 | demo app | A sales dashboard of grids and charts; pie and doughnut come with the tier-1 chart feature. | PlotView, DataGridView | [Sample apps](https://www.devexpress.com/winforms/sample-apps-winforms.xml) |
+| CRUD Applications | have | | | Gallery bound values, form documents | same |
+| Visio-inspired Applications | 2 | demo app | A flowchart editor; the node graph demonstrator is ours, and the full version waits for the Diagram control. | node graph demonstrator | same |
+| Browser-like UI | 3 | demo app | A web-browser look-alike with tabs in the title bar; needs the Tabbed Form. | none | same |
+| File Explorer-like UI | have | | | file manager demoboard | same |
+| Visual Studio-inspired Docking | have | | | DockWorkspace pages in the Gallery | same |
+| Excel-, Word-, Adobe- and GIS-inspired applications, Excel analytics | 3 | demo app | Showcases for the Spreadsheet, Rich Text Editor, PDF Viewer, Map and Pivot Grid; each follows its control. | none | same |
+| Reporting demo | leave | | Leave: reporting is left. | | |
+| Dashboard demos | leave | | Leave: the BI dashboard is left. | | |
+| AI demos (AI rich edit) | 3 | demo app | Editors with AI helpers; follows the AI extensions. | none | [Demos](https://www.devexpress.com/Support/Demos/) |
+| XAF Employee Management | leave | | Leave: XAF is an application framework, not a toolkit item. | | |
+| Per-control Main Demos | have | | | the Gallery | [Demos](https://www.devexpress.com/Support/Demos/) |
+| Demo Center "open the source" button | 2 | feature | Each Gallery page gets a button that shows the code (or form document) that builds it. | the Gallery, without a source button | [Demo apps](https://docs.devexpress.com/WindowsForms/14962/whats-installed/demo-applications) |
 
 ## 4. Design-time and productivity tools
 
-| DevExpress tool | What it does | Ours | Mark | Size | Best public page |
+| DevExpress tool | Mark | Kind | What | Ours | Page |
 |---|---|---|---|---|---|
-| WinForms Skin Editor | edits skins and exports a skin library | theme editor (T1, malkuth-tools) | have | | [Skin Editor](https://docs.devexpress.com/SkinEditor/1630/winforms-skin-editor) |
-| WPF Theme Designer (XAML editing, live preview) | standalone theme designer | theme editor (T1) | have | | [Theme Designer](https://docs.devexpress.com/WpfThemeDesigner/118707/wpf-theme-designer) |
-| Palette editor and custom palettes (vector skins) | swatch editing per skin | partial: theme editor; `theme_check` | take | S | [P/skins](https://www.devexpress.com/products/net/controls/winforms/skins/) |
-| Project Converter | upgrades DevExpress references between versions | none | leave | a version-upgrade tool for their own assemblies; our ABI and version policy does this job (G7 covers converting WinForms projects) |
-| Project Settings page (project-wide skin, font, DPI options) | one page of app-wide defaults | partial: build profile, theme defaults | take | S | [DX/120180](https://docs.devexpress.com/WindowsForms/120180/whats-installed/project-settings-page) |
-| Template Gallery and Cross-IDE Template Kit | new-project and new-item templates (Outlook-style, Ribbon app, Tabbed MDI) | none | take | M | [Template Kit](https://docs.devexpress.com/WindowsForms/405275/whats-installed/project-template-kit) |
-| WinForms UI Templates | ready screens (login, CRUD, dashboards) to paste into apps | none | take | M | [UI Templates](https://www.devexpress.com/ui-templates/winforms/) |
-| Instant Layout Assistant (VS extension to arrange controls in place) | quick layout at design time | WYSIWYG editor (T2) | take | (with T2) | [DX/116111](https://docs.devexpress.com/WindowsForms/116111/whats-installed/layout-assistant-extension) |
-| Layout Converter (turns a plain form into a Layout Control) | migrates absolute layouts | WinForms converter (G7) | take | (with G7) | [P/layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
-| Image Gallery and image picker (choose icons at design time) | browse and insert icons | stock icon generator | take | S | [DX/16864](https://docs.devexpress.com/WindowsForms/16864/devexpress-icon-library/image-gallery-and-context-dependent-images) |
-| SVG Icon Builder | builds SVG icons in DevExpress style | stock icon generator | have | | [Store page](https://www.microsoft.com/en-us/store/p/svg-icon-builder/9mxbbwvknrvr) |
-| Bar Manager and Ribbon designers | design toolbars and ribbons by drag | WYSIWYG editor (T2) | take | (with T2) | [DX/5353](https://docs.devexpress.com/WindowsForms/5353/controls-and-libraries/ribbon-bars-and-menu/bars/bar-manager-designer) |
-| Grid Designer, Document Manager designer, Layout customisation | per-control design dialogs | WYSIWYG editor (T2) | take | (with T2) | [P/grid](https://www.devexpress.com/products/net/controls/winforms/grid/) |
-| HTML and CSS Template Editor and template gallery | edit templates with live preview; reusable templates | form compiler; T2 | take | S | [HTML & CSS](https://www.devexpress.com/winforms/html-css/) |
-| Visual Studio, Rider and VS Code Report Designers | design reports in the IDE | none | take | (with Reporting) | [Reporting](https://www.devexpress.com/subscriptions/reporting/) |
-| End-User Report Designer | users design reports in the app | none | take | (with Reporting) | same |
-| Dashboard Designer (VS and end-user) | BI dashboards | none | leave | BI dashboard left (1.14) | [P winforms](https://www.devexpress.com/products/net/controls/winforms/) |
-| Data Source Wizard | binds controls to databases and services | binding | leave | data access belongs to the application; GUI.Forms binds to objects |
-| Scaffolding Wizard | generates CRUD views from a data model | none | take | M | [P winforms](https://www.devexpress.com/products/net/controls/winforms/) |
-| Online Localization Service and UI Localization Client | translators edit UI strings, with in-app capture | localizable text, locale files | take | M | [Localization service](https://localization.devexpress.com/) |
-| Documentation MCP Server | AI assistants query the docs | MCP study (G-stages); help book | take | S | [Docs MCP](https://docs.devexpress.com/GeneralInformation/405551/help-resources/dev-express-documentation-mcp-server-configure-an-ai-powered-assistant) |
-| F1 help on API in the designer and code | context help | API reference search, help book | have | | [DX/117844](https://docs.devexpress.com/WindowsForms/117844/whats-installed/getting-help-on-api) |
-| Toolbox integration (controls on the VS toolbox) | IDE toolbox | none | leave | Visual Studio integration is after 1.0 and belongs to the Windows coordinator |
-| CodeRush | IDE refactoring | none | leave | an IDE product, outside a UI toolkit |
-| Unified Component Installer | installs the suite | none | leave | ours ships as a source SDK |
+| WinForms Skin Editor, WPF Theme Designer | have | | | theme editor (malkuth-tools) | [Skin Editor](https://docs.devexpress.com/SkinEditor/1630/winforms-skin-editor) |
+| Palette editor | 3 | tool | Edit a theme's named colours and see every control recolour at once. | partial: theme editor, `theme_check` | [Skins](https://www.devexpress.com/products/net/controls/winforms/skins/) |
+| Project Converter | leave | | Leave: upgrades their own assembly versions; our version policy does that, and G7 converts WinForms projects. | | |
+| Project Settings page | 3 | tool | One page of app-wide defaults (theme, font, DPI behaviour) for a project. | partial: build profile, theme defaults | [Project Settings](https://docs.devexpress.com/WindowsForms/120180/whats-installed/project-settings-page) |
+| Template Gallery and Template Kit | 3 | tool | "New project" templates for typical app shapes (Ribbon app, Outlook-style, tabbed documents). | none | [Template Kit](https://docs.devexpress.com/WindowsForms/405275/whats-installed/project-template-kit) |
+| WinForms UI Templates | 2 | Gallery demo | Ready screens (sign-in, settings, record editor, dashboard) as form documents people copy into their apps. | form documents, Gallery | [UI Templates](https://www.devexpress.com/ui-templates/winforms/) |
+| Instant Layout Assistant, Bar and Ribbon designers, Grid and Document Manager designers | 3 | tool | Design a form, ribbon, toolbar or grid by dragging; all part of the WYSIWYG editor. | WYSIWYG editor (open) | [Bar Manager Designer](https://docs.devexpress.com/WindowsForms/5353/controls-and-libraries/ribbon-bars-and-menu/bars/bar-manager-designer) |
+| Layout Converter | 3 | tool | Turns a form of absolutely placed controls into a flowing layout; part of the WinForms converter (G7). | WinForms converter (G7) | [Layout](https://www.devexpress.com/products/net/controls/winforms/layout/) |
+| Image picker | 3 | tool | Browse and insert icons while designing. | stock icon generator | [Icon Library](https://docs.devexpress.com/WindowsForms/16864/devexpress-icon-library/image-gallery-and-context-dependent-images) |
+| SVG Icon Builder | have | | | stock icon generator | [Store page](https://www.microsoft.com/en-us/store/p/svg-icon-builder/9mxbbwvknrvr) |
+| HTML and CSS Template Editor | 3 | tool | Edit a form document's markup and styles with a live preview beside it. | form compiler; WYSIWYG editor | [HTML & CSS](https://www.devexpress.com/winforms/html-css/) |
+| Report designers (IDE and end-user) | leave | | Leave: reporting is left. | | |
+| Dashboard designers | leave | | Leave: the BI dashboard is left. | | |
+| Data Source Wizard | leave | | Leave: data access belongs to the application; GUI.Forms binds to objects. | | |
+| Scaffolding Wizard | 3 | tool | Generates list and edit screens from a data model. | none | [WinForms](https://www.devexpress.com/products/net/controls/winforms/) |
+| Online Localization Service and UI Localization Client | 3 | tool | Translators edit the app's strings in a web or in-app editor and see them in place. | localizable text, locale files | [Localization](https://localization.devexpress.com/) |
+| Documentation MCP Server | 3 | tool | AI assistants answer questions from GUI.Forms' own documentation; part of the MCP work. | MCP study, help book | [Docs MCP](https://docs.devexpress.com/GeneralInformation/405551/help-resources/dev-express-documentation-mcp-server-configure-an-ai-powered-assistant) |
+| F1 help on API | have | | | API reference search, help book | [F1 help](https://docs.devexpress.com/WindowsForms/117844/whats-installed/getting-help-on-api) |
+| Visual Studio toolbox integration | leave | | Leave: Visual Studio integration comes after 1.0, with the Windows coordinator. | | |
+| CodeRush | leave | | Leave: an IDE product. | | |
+| Unified Component Installer | leave | | Leave: GUI.Forms ships as a source SDK. | | |
 
 ## 5. Counts
 
-Take 129, have 128, leave 16 (counted from the Mark column of sections 1 to 4).
+Tier 1: 15. Tier 2: 42. Tier 3: 53. Have: 85. Leave: 21 (counted from the Mark column of sections 1 to 4; a row can group several DevExpress items).
 
-## 6. Ranked shortlist for the owner's pass
+## 6. Shortlist by tier, for the owner's pass
 
-Ranked by what a GUI.Forms user would miss soonest, weighted by how much
-they lift what we already have.
+**Tier 1: matters for 1.0** (library work application authors will expect):
 
-1. **Data grid views and features (1.1):** grouping with summaries, find
-   panel, auto-filter row and Excel-style filters, conditional formatting,
-   column chooser, banded and card or layout views. The grid is the centre of
-   most business apps.
-2. **Scheduler (1.13)** with its Outlook-style calendar module: day, week,
-   month, timeline and agenda views, recurrence.
-3. **Printing and export (1.14):** print preview and PDF/XLSX export of
-   grids, charts and documents. Also the base for reporting and PDF viewing.
-4. **Chart families (1.12):** pie, doughnut, funnel, financial
-   (candlestick, OHLC), range, bubble, box plot, polar and radar, plus a
-   chart designer.
-5. **Diagram control (1.12):** a shapes library, connectors, auto layout and
-   org charts on top of NodeCanvas and the node graph.
-6. **Rich lookup and drop-down editors (1.3):** GridLookUpEdit,
-   SearchLookUpEdit, CheckedComboBoxEdit, PopupContainerEdit, ButtonEdit,
-   CalcEdit, RatingControl.
-7. **Gantt control (1.2).**
-8. **Accordion and tile navigation (1.6):** Accordion Control, Office
-   Navigation Bar, Tile Bar and Tile Control.
-9. **Tabbed Form (1.8)** and the Browser-like UI demo.
-10. **Vertical Grid (1.2).**
-11. **Outlook-Inspired showcase (3):** one demo application that brings 1, 2
-    and 8 together.
-12. **Spell checker (1.13).**
-13. **Ribbon extras (1.7):** simplified ribbon, mini toolbar, search menu,
-    runtime customisation.
-14. **Template kit and UI templates (4)**, delivered with T2.
-15. **PDF viewer (1.14).**
-16. **Pivot grid, spreadsheet and Word-level rich text (1.2, 1.13):** the XL
-    products, each its own programme after 1.0.
+1. Grid grouping with group rows and the group-by panel.
+2. Grid total and group summaries.
+3. Grid find panel.
+4. Grid auto-filter row and Excel-style column filters.
+5. Any editor in any grid cell.
+6. Grid column chooser.
+7. Grid layout save and restore.
+8. Tree List filtering, summaries and node checkboxes.
+9. ButtonEdit, CheckedComboBoxEdit and PopupContainerEdit.
+10. Input box.
+11. Pie and doughnut charts.
+12. Operating-system toast notifications.
+13. Ribbon and toolbar merging for MDI children.
+
+**Tier 2: Gallery demos and demo applications** (no new library API; each
+notes the small gaps it finds), roughly in order of how much they show:
+
+1. Outlook-Inspired demo application (mail, tasks, contacts).
+2. Card, layout and tile views of records; Office compact task list.
+3. Accordion, Office navigation bar, tile bar and tile navigation pane.
+4. Grid and tree lookups in drop-downs.
+5. The Gallery source button.
+6. Widget View dashboard and WindowsUI View tablet app, with the touch and
+   hybrid demo applications.
+7. Scheduler, Gallery version (a week view from our parts).
+8. AI chat panel.
+9. UI templates (sign-in, settings, record editor, dashboard screens).
+10. CRM dashboard, Fluent Mail, HTML-template cards, flowchart editor.
+11. Small compositions: Vertical Grid, MemoEx, calculator, zoom slider,
+    duration box, date range, rating, image slider, thumbnail gallery,
+    transitions, workspaces, guided tour, mini toolbar, command search,
+    radial menu, treemap, sunburst, theme gallery, carousel, drawer, pager,
+    bar gauge.
+
+**Tier 3: after 1.0, each a programme of its own**, roughly by value:
+Scheduler control; Diagram control; Gantt; conditional formatting and banded
+views; more chart families (financial, funnel, range, polar) with a chart
+designer; Spell Checker; Tabbed Form; PDF Viewer; Map; Pivot Grid;
+Spreadsheet; Word-level Rich Text Editor; the tools (template kit, palette
+editor, localisation service, scaffolding, the WYSIWYG editor's designers).
+
+**Moved to leave in revision 2:** print preview, export of controls and grids
+to PDF, XLSX and CSV, reporting (viewer, designers, demo).
