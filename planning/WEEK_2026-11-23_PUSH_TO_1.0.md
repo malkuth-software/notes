@@ -264,6 +264,16 @@ It suits the same kind of research thread that produced the squircle.
 Folded into the MCP study (section 18.2). Its discussion item, better
 animation of ribbon transforms, goes to the ribbon stage.
 
+### Step 5 under way (coordinator, 2026-11-21 night)
+
+| Seat | What | Track (`projects`) |
+|---|---|---|
+| integration | checkpoint cp34: fold MDI and the `<bind>` elements, build and gate on the M4, push `checkpoint/2026-11-22-cp34` (no PR) | `tracks/gui_forms/checkpoint_cp34.md` |
+| docs-infra | numbers in one place, `[src]` links, the headless preview tool and page plumbing | `tracks/gui_forms/docs_1_0.md` |
+| docs-a, docs-b, docs-c | the documentation review's groups A (project pages), B (user guide), C (building, docstrings, wiki) | same |
+
+Still to hand out in step 5: the coders' small items (carbon fibre, the lamp radio look and pinpoint lamp, the menus audit and frame moves on macOS and Linux, the tooltip check), the MDI follow-ups, the theme editor's build and release, the three small gui_forms commits that no longer apply, and STXlib's queue.
+
 ## 4. Order
 
 The owner's order of operations to 1.0 (2026-11-19) governs; it is set out
