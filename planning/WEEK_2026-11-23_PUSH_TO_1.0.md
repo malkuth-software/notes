@@ -140,6 +140,25 @@ planning:
 | **Menus** | the owner's note "(menus?)" | audit menu behaviour against the harvest and the RB decisions (Backstage, no KeyTips, baked ribbon arrangement) |
 | **Memory re-sync** | harvest `insights.md` | 11 coordinator memory files differ between Shadow and the mirror; re-sync before Shadow is retired |
 
+### 2.1.1 Step 3 outcome (coordinator, 2026-11-21)
+
+Each item checked against the notes, the code on `main` (c0e1a31a8) and the
+harvest. Settled items need no owner time; the two marked **owner** are
+asked in plain text with options.
+
+| Item | Outcome |
+|---|---|
+| Repeated-item anatomy | **Settled 2026-10-13**, the same day as the open question: T1 decision 5, "repeated items are item systems, not controls" (one item anatomy per list, tree or grid; realized items as typed records; an item's identity is its semantic virtual child's stable ID). Built: VirtualRowsView, the DataGridView item records. |
+| Control ID question | **Settled 2026-10-13** by T1 decision 4: names and IDs are kebab-case identities that documents and tools address; C++ uses typed records with dot members. Stable control IDs are used throughout since (C ABI, accessibility IDs such as `<grid>.row_header.<row id>`, the composite language's registered control IDs). |
+| KeyTips | **Settled, no conflict.** Stage A's item 5 reads "Ribbon KeyTips = its mnemonics (the ribbon has no KeyTips, RB-16)": tabs and commands publish their mnemonic as `access_key` to assistive technology. No Office KeyTips are built (2026-10-14 decision stands); the design language specification says the same (RB-16). |
+| Memory re-sync | **Done.** The harvest's copy of the Shadow coordinator memory (`projects`, `desks/coordinator/memory/shadow/`) and the older mirror were compared with the Mac coordinator's live memory: 29 entries it lacked were added (among them batch hand-in, finish not increment, docs with checkpoints, questions in plain text, owner picks audit fixes, names match the mechanism, splash, backdrop and theme-variant directions). The three files that differ only in wording or in superseded resume notes keep the Mac version. |
+| Brushed metal and carbon fibre | **Brushed metal exists**: procedural pattern `brushed_metal` (T2 E10; `GF_PROCEDURAL_PATTERN_BRUSHED_METAL` in the C ABI). **Carbon fibre does not**: a twill-weave procedural pattern beside it, for step 5's work list (textures are a theme-language primitive, 2026-11-01). |
+| Frameless borders as effects | Direction only ("effects after the seal"); done with the MCP border glint (study 11.1) in step 7. |
+| The tooltip defect | The 2026-11-10 owner bugs fixed tooltip windows' dead margins and oversized shadows (1f0693fe7: hit-test-transparent margins, shadow reach 3.5 deviations). Whether the SDR# port still shows the "tooltip canvas" problem is unverified: a worker reproduces it on current `main` (Windows, SDR# swap-in) and fixes what remains (step 5). |
+| Menus | Audit for a worker (step 5), against the harvest and RB. One finding already: an open menu closes when its owner window moves only on Windows; macOS (`windowDidMove`, live resize start) and Linux (`ConfigureNotify`) do not report frame moves yet (queue items M1, M2, L1 of 2026-11-10). The panel width fix (120-unit default) landed. |
+| **MDI** (owner) | Admitted on 2026-11-02 (DK decisions 60-62: a presentation of the document area, WinForms' observable behaviour in full, menu merging as a ToolStrip feature) and not built; the API reference lists the MDI members as deferred. The open point is when: before 1.0 or after. |
+| **Lamps as a radio choice** (owner) | The lamp itself follows the decision (never clickable, no focus). The radio form (empty slots, click picks one) does not exist; its shape needs a choice, since the click cannot land on a lamp. |
+
 ### 2.2 Known gaps, for one discussion
 
 - Outbound drag (dragging out of a GUI.Forms window into other programs),
