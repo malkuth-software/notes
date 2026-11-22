@@ -1108,7 +1108,7 @@ SM gate F1) -> 356a9da4 (S4.6). 81be95fe = macOS IME caret + presented-frame rep
 plain and sanitized (macos_|correspondence|property_list|gallery_display_trace|gallery_pages), style, lifetime, SM gate.
 Windows: unverified (UIA/MSAA reruns, IME positioning), CI or a later Windows host. NEXT: await coordinator; rebase onto
 origin/main when cp18 lands (check cp18's own fix of macos_message_dialog_key_tests for a conflict); S6 registry finalisation.
-Superseded pointer: RESUME POINTER (2026-11-05, Mac resume): workspace now ~/Developer/gui_forms_workers/w5/gui_forms (laptop; builds on the M4
+Superseded pointer: RESUME POINTER (2026-11-05, Mac resume): workspace now ~/Developer/work/w5/gui_forms (laptop; builds on the M4
 via bin/m4run w5). Local branches restored from backup/: claude/subsurface-s4 356a9da4 (S4.6 on S4 f2e02872 on S3.3 6211b4eb);
 host-anatomy 575b580e still only as backup/claude/subsurface-host-anatomy. New branch claude/subsurface-mac on 356a9da4 (Mac
 handoff items): (1) macOS firstRectForCharacterRange reads Window::text_input_caret (test macos_text_input_caret_tests, new);

@@ -1,6 +1,6 @@
 # Families B: property capabilities, second family worker (w6)
 
-Workspace (since 2026-11-05) `~/Developer/gui_forms_workers/w6/gui_forms` on the Mac laptop, builds on the M4 via `bin/m4run w6`; formerly `D:/gui_forms_w6`. Scratch and
+Workspace (since 2026-11-05) `~/Developer/work/w6/gui_forms` on the Mac laptop, builds on the M4 via `bin/m4run w6`; formerly `D:/gui_forms_w6`. Scratch and
 logs under `D:/gui_forms_w6/dev/`, scripts under `D:/gui_forms_w6/dev/tools/` (`setter_survey.py` lists
 every `Class::set_x` with its invalidation kinds and events; output `dev/setters_short.txt`).
 Started 2026-11-05 by the coordinator. Sources read: PROPERTY_CAPABILITIES_STUDY.md 1-13 (desks/coordinator),
@@ -25,7 +25,7 @@ M1 read-only from `w2/m0-settle` (fetched from D:/gui_forms_w2/gui_forms; heads 
   (decided per family; TreeListView columns/nodes stay methods); scroll state clamped by layout
   (top_row, horizontal_offset) stays a method; a shared Text/Font `initial` is brace contents.
 - **RESUME POINTER (2026-11-08, code-only coder, w6).** Branch **`claude/families_b-queue`** in
-  `~/Developer/gui_forms_workers/w6/gui_forms` on cp20 815f7ae9 + W's codemod fix (1ae2f96f, selftest ok):
+  `~/Developer/work/w6/gui_forms` on cp20 815f7ae9 + W's codemod fix (1ae2f96f, selftest ok):
   bf79b2a0 B7 ListView, 3373da09 B9 TaskDialog, dfcb8a26 B2 GroupBox/ScaledPanel/ScaledGroupBox, b66ba5b5
   GroupBox TextChanged, a61537c5 B3 TextBox (ComboBox/DomainUpDown text() now return std::string),
   f8ddddb2 MaskedTextBox (text/set_text stay methods: MaskEditResult), 14363f52 RichTextBox (markdown/RTF
@@ -41,7 +41,7 @@ M1 read-only from `w2/m0-settle` (fetched from D:/gui_forms_w2/gui_forms; heads 
   constructor parameter is renamed initial_*; drop stale manual.json method notes), control_schema
   check/render, abi_event_catalog when events change. inventory.json needs clang (integrator).
 - **RESUME POINTER (2026-11-08, handover to a code-only coder; the integrator builds batches).**
-  Workspace `~/Developer/gui_forms_workers/w6/gui_forms`, branch **`claude/fb-families`** on cp19's
+  Workspace `~/Developer/work/w6/gui_forms`, branch **`claude/fb-families`** on cp19's
   `origin/checkpoint/2026-11-05-4` 835c3599; working tree clean. Rebase onto main once cp19 merges
   (drop what it contains). `claude/fb-tree-list-view` and `claude/families-b-base` are obsolete.
   **Done and verified** (all targets 0 errors; touched tests plain + sanitized; macOS a11y gallery

@@ -100,7 +100,7 @@ Verified each: touched tests plain + sanitized, house style, lifetime, state-mac
 (--changed-from origin/main). Gotcha: a switch over PointerAction needs a reasoned default (F1).
 
 ## RESUME POINTER (2026-11-08 coder; both items registered, nothing uncommitted)
-Workspace ~/Developer/gui_forms_workers/w8/gui_forms, base origin/checkpoint/2026-11-07-1 (815f7ae9).
+Workspace ~/Developer/work/w8/gui_forms, base origin/checkpoint/2026-11-07-1 (815f7ae9).
 - claude/effects_lane-fd5b 71dcbf0f: FD-5b was already in (af173593 colour, e417548c font; closure row stale);
   adds form_generator_tests test_presentation_refused_registry_wide. Queued.
 - claude/effects_lane-fd4-pages 118504bb: the seven FD-4 pages as .form (see queue entry). Laptop checks only:
@@ -108,7 +108,7 @@ Workspace ~/Developer/gui_forms_workers/w8/gui_forms, base origin/checkpoint/202
 - Next: take returns from the integrator.
 
 ## (old) RESUME POINTER (2026-11-08; HANDOVER to a code-only coder, owner decision; tree clean)
-Branch claude/fd-on-m3 in ~/Developer/gui_forms_workers/w8/gui_forms, head bc40b41f, on cp19 835c3599. Every commit is
+Branch claude/fd-on-m3 in ~/Developer/work/w8/gui_forms, head bc40b41f, on cp19 835c3599. Every commit is
 verified (last rounds: ct19/ct20 gallery, panels, forms, docs, schema plain + sanitize; abi1 abi_|schema plain + sanitize;
 state-machine gate clean). Commits: 99820100 child properties; abb4b354 panel settings as properties +
 retained-layout-panels.form; b7bf2037 GridPanel/FlexPanel/BlockPanel style + item_style, responsive-layouts.form,
@@ -292,7 +292,7 @@ PITFALLS
 - Deferred, in the report: auto-placement ignores spans; `area` is a quoted string in .form.
 
 ## (old) RESUME POINTER (2026-11-05, on the Mac; attached props + GridPanel spans WIP)
-- Workspace now ~/Developer/gui_forms_workers/w8/gui_forms (laptop). Branch claude/fd-on-m3 checked out from
+- Workspace now ~/Developer/work/w8/gui_forms (laptop). Branch claude/fd-on-m3 checked out from
   backup/claude/fd-on-m3 (base 27a0c7db, inside cp18 dfa4f9b5; cp18 not landed yet: main = cp17 ebb9fbf4).
   backup/claude/attached-props is the older pre-cp18 WIP (superseded by fd-on-m3).
 - Scripts: dev/tools/verify.sh (master copy) is copied to gui_forms/dev_w8/verify.sh (git-excluded via

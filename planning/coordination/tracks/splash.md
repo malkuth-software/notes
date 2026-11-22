@@ -1,6 +1,6 @@
 # Track: splash (Splash window kind, APP_WINDOW_RULES_DESIGN §S and K)
 
-Worker: w5 (`~/Developer/gui_forms_workers/w5`). The w5 tree has `claude/abi-application` checked out
+Worker: w5 (`~/Developer/work/w5`). The w5 tree has `claude/abi-application` checked out
 (the C ABI track's): leave it alone. Step 2 branches `claude/splash` from the base the coordinator names.
 
 ## State (2026-11-08, step 2)

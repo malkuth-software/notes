@@ -9,7 +9,7 @@ long-term record; the rows that are stale are listed below.
 
 The markdown stack is finished and verified, and it folds as one topic from
 its top branch. It is local to the w2 workspace
-(`~/Developer/gui_forms_workers/w2/gui_forms`), sits on `origin/main`
+(`~/Developer/work/w2/gui_forms`), sits on `origin/main`
 8cde98df (checkpoint 3), and goes to checkpoint 5.
 
 | Step | Branch | Head | What it holds |
@@ -50,7 +50,7 @@ Verified on the M4: 34 touched tests pass plain and under `--sanitize`; the stat
 - A RibbonToolTip mapping on a whole control blocks the plain tooltip on all its parts.
 - `SemanticNode::tool_tip` is a new semantic field, so the schema export changes.
 
-The mockup for the first two is `~/Developer/gui_forms_workers/mockups/cut-off-reveal-and-field-hints.html`.
+The mockup for the first two is `~/Developer/work/mockups/cut-off-reveal-and-field-hints.html`.
 
 ## Verified only on the M4 (macOS arm64)
 

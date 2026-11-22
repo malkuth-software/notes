@@ -17,7 +17,7 @@ old history (check `git merge-base --is-ancestor bc229b8 HEAD` before every push
   so, lower than what users have installed.
 
 ## Local checkouts (old history; keep until the coordinator says)
-- `C:/Users/Shadow/games`: main at c5ea5a6 (old), clean. Remote URL still
+- `C:/Users/Shadow/Developer/games`: main at c5ea5a6 (old), clean. Remote URL still
   falseywinchnet/games (redirects). Branch codex/cross-platform-cleanup (in old main). Stale
   remote-tracking refs (codex-handoff/stx-adoption, shell-gui-paradigms,
   codex/rock-stack-cache-fix: all in old main; trial/windows-overlays ceb3bd2: one trial commit
@@ -35,7 +35,7 @@ old history (check `git merge-base --is-ancestor bc229b8 HEAD` before every push
 - Prior notes: memory games-ui-rework.md and shadow-dev-environment.md (2026-10-02). The only
   transcript (b3077e57) covers 2026-10-02 only (round 2, committed as 0554156, in old main).
   Later work (to 2026-10-20) was done elsewhere: AGENTS.md names the M4 Mini checkout
-  `/Users/ultimussecundai/Developer/playsuite-games` as authoritative and "Astra" sessions as
+  `/Users/ultimussecundai/Developer/games` as authoritative and "Astra" sessions as
   release owners. Local-only work there cannot be seen from this machine.
 
 ## GUI.Forms changes vs PlaySuite (item 2)

@@ -2,7 +2,10 @@
 
 Written by the coordinator, 2026-11-21, from the owner's direction of the
 same day. Order of operations **step 2**, which must finish "before we touch
-anything new" (owner). Status: plan, with a first read-only inventory.
+anything new" (owner). Status: steps 1 to 6 and 8 done on 2026-11-21; the state,
+what was lost and what is open are in `STEP5_6_STATUS_2026-11-21.md` beside
+this file. The `inventory/` folder named below no longer exists (it was in a
+session's side notes and went when the session was archived).
 
 ## 1. The owner's direction (2026-11-21)
 
@@ -67,6 +70,14 @@ runs the deletion. Left for the owner: the rest of the report's "needs the
 owner's eye" list (repositories
 gone from GitHub, unpushed branches on one disk, orphaned worktrees, media
 too large to rescue, large folders outside the repositories).
+
+## 2.2 Steps 5, 6 and 8 done (2026-11-21, evening)
+
+The move, the reference update, the path fixes in tracked files and the
+branch cleanup (merged and patch-merged, local and GitHub, and the M4
+mirrors) are done. `projects` is reconciled on a local branch. Step 7's
+leftovers are copied to `~/Developer/work/kept`; the attic folder waits for
+the owner's `rm`. Everything is in `STEP5_6_STATUS_2026-11-21.md`.
 
 ## 3. The layout (owner, 2026-11-21: stays in `~/Developer`)
 

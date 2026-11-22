@@ -16,7 +16,7 @@ up the work from here without the earlier conversation.
 | P11 | Built, claude/t3-p11 a6c106dc | results/2026-11-01-t3-theme-language-gate; raster hashes with T4 (2a) |
 | User themes (`USER_THEMES.md`) | Designed, with the owner's decisions; no code | this directory |
 
-The gui_forms clone is `~/Developer/gui_forms_workers/w1/gui_forms`.
+The gui_forms clone is `~/Developer/work/w1/gui_forms`.
 `claude/t3-p12-custom` is rebased onto `origin/main` 7bca3c66 and holds only
 two commits above it: aba9d2a5, then 7b54b5b9.
 
@@ -161,12 +161,12 @@ numbers in PLAN.md section 1.11 when it runs.
 
 ## Resume steps
 
-1. In `~/Developer/gui_forms_workers/w1/gui_forms`, check out
+1. In `~/Developer/work/w1/gui_forms`, check out
    `claude/t3-p12-custom`. If `origin/main` has moved, run
    `git rebase --onto origin/main aba9d2a5` once the coordinator has landed
    aba9d2a5 (checkpoint 5); otherwise rebase the two commits.
 2. Build and run the touched tests on the M4 (from
-   `~/Developer/gui_forms_workers/w1`), then fix what the new file finds:
+   `~/Developer/work/w1`), then fix what the new file finds:
    `./../bin/m4ws w1 python3 tools/ci_build.py --jobs 8 --tests "'gui_forms_theme_|gui_forms_engine_|gui_forms_gallery_pages_tests'" > dev/logs/p12.log 2>&1`.
    Points to check first:
    - whether the token theme compiles with no diagnostics (literal colours
@@ -230,7 +230,7 @@ numbers in PLAN.md section 1.11 when it runs.
 
 ## Rules that still apply
 
-- Build only on the M4 through `~/Developer/gui_forms_workers/bin/m4ws`.
+- Build only on the M4 through `~/Developer/work/bin/m4ws`.
 - Never push. The coordinator lands checkpoints.
 - No agents.
 - Run the python-only generators on the laptop tree.

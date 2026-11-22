@@ -133,14 +133,14 @@ dfa4f9b5 (local only). Verified on the M4: plain --gallery 14/14 (sub_surface|se
 tests/macos_message_dialog_key_tests.mm come with cp18 (not S5). M8: action round trip 120.8 us, stitched snapshot read 4.8 us.
 Mac workflow notes: m4ws syncs only gui_forms/ and template_harness/ (put check scripts at gui_forms/.tmp_*.sh, excluded via
 .git/info/exclude; masters in w7/dev/tools/); generated files must be rsynced back from
-m4mini:Developer/Projects/gui_forms_workers/w7/gui_forms/ in the SAME step (the next m4ws sync overwrites them).
+m4mini:Developer/work/w7/gui_forms/ in the SAME step (the next m4ws sync overwrites them).
 Next: rebase onto main when cp18 lands, then onto w5's rebased S3.3-S4.6 when the coordinator says; open follow-ups:
 text layout for sub-surface nodes; UIA events from the sub-surface thread (design said so; snapshot model raises them on
 the window thread) - coordinator/owner call.
 
 2026-11-05 (Mac resume): W-5 is ALREADY ON MAIN (cp17, 4d502fee; backup e88b147a rebased away as applied;
 CLOSURE_0.5.md still lists it as unowned: stale). Started SS-5 (S5 accessibility) on branch
-claude/subsurface-s5 in ~/Developer/gui_forms_workers/w7/gui_forms, based on origin/checkpoint/2026-11-05-2
+claude/subsurface-s5 in ~/Developer/work/w7/gui_forms, based on origin/checkpoint/2026-11-05-2
 (cp18 dfa4f9b5, on auto-merge; it holds S2.1-S3.2 + host anatomy/semantic node). w5's S3.3/S4/S4.6
 (claude/subsurface-s4 356a9da4, on cp16) are NOT under it (cherry-picking them onto cp18 conflicts in 8 files;
 left to w5): when w5 rebases them onto main, rebase S5 onto their head (expect small conflicts in

@@ -998,7 +998,7 @@ Order: 1 notes repoint, 2 harness CRLF/Skia PR, 3 E2 repair queue by area, 4 (la
   hand on all-green; the second needs its CHANGELOG "### Changed" conflict resolved (keep both bullets). Then report
   counts and stand by for the 0.5 leg.
 
-## Queue (coordinator 2026-10-28; laptop workspace ~/Developer/gui_forms_workers/w3, build only via `m4ws w3 ...`)
+## Queue (coordinator 2026-10-28; laptop workspace ~/Developer/work/w3, build only via `m4ws w3 ...`)
 Order: 1 CodeQL alerts, 2 macOS dialog-key flake, 3 Windows compositor flake check, 4 E3 then E5 static half.
 - 1 DONE, pushed: gui_forms #443 claude/codeql-false-shapes 7de0e7e9 (no auto-merge; coordinator merges). Owner decision: patch
   false positives into equivalent forms, never dismiss. deflate.cpp cost sums widen to uint64 (alerts 4,5,6 + fixed distance sum);
@@ -1028,7 +1028,7 @@ Order: 1 CodeQL alerts, 2 macOS dialog-key flake, 3 Windows compositor flake che
   gui_forms_macos_accessibility_fixture_app at the same time (activation stolen across trees). Not a test defect; reported.
 - Next: 4 E3 (const/restrict candidates) then E5 static half, in template_harness (own branch worktree w3/th_dev).
 - m4ws now holds one M4 lock across workspaces (coordinator); GUI tests no longer collide. dialog-key-wait cfdbd9bf joins checkpoint 1.
-- 4 E3 DONE (local, not pushed): template_harness worktree ~/Developer/gui_forms_workers/w3/th_dev, branch claude/e3-const-restrict
+- 4 E3 DONE (local, not pushed): template_harness worktree ~/Developer/work/w3/th_dev, branch claude/e3-const-restrict
   d6796fe (on harness main 5256019). harness/check_const_restrict.py + test_const_restrict.py; clang_ast Node.parameters (per
   call argument parameter type, both backends; json member calls from the method's declaration); project.py
   [const_restrict] decisions (decisions_path helper shared with loop_branches); workflow reader step runs the new tests; CHANGELOG,
@@ -1296,7 +1296,7 @@ Order: 1 CodeQL alerts, 2 macOS dialog-key flake, 3 Windows compositor flake che
 - Head 4d4ec350 (on b3c50fd5). Verified: 125 tests plain and --sanitize pass, generate_library_docs --check
   PASS, house style + lifetime 0 on 31 files, state gate --changed-from origin/main exit 0. Not yet reported.
 - Tooling: m4ws's lock-wait loop eats stdin, so `m4ws w3 bash -s < script` runs nothing. Copy the script
-  with scp to Developer/Projects/gui_forms_workers/w3/<x>.sh and run `m4ws w3 bash ../<x>.sh`.
+  with scp to Developer/work/w3/<x>.sh and run `m4ws w3 bash ../<x>.sh`.
 
 ## 2026-10-29: localizable-literal Clang plugin + dogfood (owner assignment)
 
@@ -2241,7 +2241,7 @@ cp21 (#472) is to be closed in favour of cp22; cp21's CI failures are folded int
 - Still to come: W's scroll/double-click fixes and T4's batch9 fixes and inspection page when they register. Then the Linux VM ci_build (`ssh m4mini '~/bin/gfvm sync w3'`, then the command in gfvm's header), docs (sphinx -W), engine gate, re-pinned digests and schema.md, creation-gate baselines (Q-K1 (a)), and the checkpoint verify (plain plus one sanitizer run).
 - The ready report must list template_harness d423a57 (pinned by harness.lock, on no remote) as a push the owner approves first.
 - Lesson: never pass a `bash -c '...'` string through m4run (it ran a bare python3 that hung on stdin); put the commands in a dot script.
-- **Docs toolchain** (owner-approved 2026-11-08): the M4 venv ~/Developer/Projects/gui_forms_workers/docs-venv, built from the pinned docs/requirements.txt (sphinx 9.1.0). To run the docs job: `bash .docs_job.sh` via m4run, which calls `docs-venv/bin/sphinx-build -W --keep-going -b html docs ../dev/docs_html`. The same note is in env.sh's comments. Docs is green at c4496ef7.
+- **Docs toolchain** (owner-approved 2026-11-08): the M4 venv ~/Developer/work/venvs/docs, built from the pinned docs/requirements.txt (sphinx 9.1.0). To run the docs job: `bash .docs_job.sh` via m4run, which calls `docs-venv/bin/sphinx-build -W --keep-going -b html docs ../dev/docs_html`. The same note is in env.sh's comments. Docs is green at c4496ef7.
 - **batch11** (integration/batch11 on W's 8d4a3d75) is the cp22 candidate. The M4 plain suite is green apart from test_harness_shims, which fails at every base. Linux VM ci_build: 480/483.
   - splash_window: a warm show allocates 4 on Linux; returned to w5.
   - linux_accessibility and linux_accessibility_gallery: the VM lacks gsettings-desktop-schemas, so the at-spi bus launcher aborts. This is environmental.
@@ -2250,7 +2250,7 @@ cp21 (#472) is to be closed in favour of cp22; cp21's CI failures are folded int
   - Fixes: Panel accepts the editor visual role (dark grounds broke every form compile); digests are now 36.
   - It compiles on the M4 and the generated files are regenerated. No suite was run at the head (owner directive).
   - Pins: stx.lock 1f5c6f54ef474c3abfc2db2aa4331aaf1ba807f6 (w8's local stx claude/stx-move-sync; must be pushed first); harness.lock d423a57c1a49c691d0328205cec29b3c45f80db4 (template_harness claude/families_b-c10; must be pushed first).
-  - Local build note: an existing tree switching its stx source needs <tree>/stx-build and stx-prefix removed, or the stx configure fails with "does not match the source". My trees point at ~/Developer/Projects/gui_forms_workers/stx-move-src through FETCHCONTENT_SOURCE_DIR_GUI_FORMS_STX.
+  - Local build note: an existing tree switching its stx source needs <tree>/stx-build and stx-prefix removed, or the stx configure fails with "does not match the source". My trees point at ~/Developer/work/stx-move-src through FETCHCONTENT_SOURCE_DIR_GUI_FORMS_STX.
   - Open: rerun macos_damage_rectangles alone with M4WS_WAIT_IDLE=60; the Linux VM pass on batch12.
 
 ## 2026-11-08: cp22 landing on Windows (w3, D:/gui_forms_w3) — RESUME POINTER

@@ -2,7 +2,7 @@
 
 Requested 2026-11-03 by w4 (hot paths, Windows side) through the owner;
 item 4 of `handoffs/W4_MAC_HANDOFF_2026-11-03.md` in this repository.
-Workspace w4 (`~/Developer/gui_forms_workers/w4/gui_forms`), local branch
+Workspace w4 (`~/Developer/work/w4/gui_forms`), local branch
 `claude/macos-a11y-snapshot` off `origin/claude/page-cpu` 68059db0 (which
 contains the Windows reference fix 82aa7dc6). Build and test only on the M4
 through `bin/m4run w4` / `bin/m4ws w4`. Never push; the coordinator delivers.

@@ -431,7 +431,7 @@ gui_forms. Only this file is pushed (projects main).
 
 ### RESUME POINTER (2026-11-05 Mac, older)
 
-- Workspace now ~/Developer/gui_forms_workers/w1/gui_forms (Mac; builds on the M4 via
+- Workspace now ~/Developer/work/w1/gui_forms (Mac; builds on the M4 via
   bin/m4run w1). Branches restored from backup/<branch>: claude/t4-phase6, t4-relocate,
   t4-backdrop, t4-lowering (local, same heads as the backups except phase6).
 - PHASE 6 STEP 1 DONE: claude/t4-phase6 = 21641022 (one commit, WIP squashed) on
@@ -440,7 +440,7 @@ gui_forms. Only this file is pushed (projects main).
   --pages; 31 digests re-recorded (all pages differ, 15799 of 29716 lines, no text moved).
   Verified: 'gallery|specimen|doc_examples' 11/11 plain + sanitized, style, lifetime 0,
   census, gate. Nothing else needed pinning (Gallery-wide 17-test set passed).
-- Reference set (local): ~/Developer/gui_forms_workers/w1/dev/p6/refset/index.html
+- Reference set (local): ~/Developer/work/w1/dev/p6/refset/index.html
   (sheets light/dark/HC x 1x/2x, 93 page PNGs). Pixel contrast findings: light 18, dark
   959, HC 568. Dark Gallery looks mostly light: the Gallery's authored light grounds
   (page_style/form colours) stay light while theme text turns light. Decision sent to the
@@ -449,7 +449,7 @@ gui_forms. Only this file is pushed (projects main).
 - Tools (dev/tools, copied into gui_forms/dev_t4/ which is git-excluded because m4ws syncs
   only gui_forms/): p6_round.sh <name> (traces to build/p6/<name> on the M4, diff counts
   vs base), p6_new.sh, p6_classify.py (run in dev/p6 after rsync from
-  m4mini:Developer/Projects/gui_forms_workers/w1/gui_forms/build/p6/), digests.py
+  m4mini:Developer/work/w1/gui_forms/build/p6/), digests.py
   <digests.txt> <display_trace_tests.cpp>, t4_verify.sh 'REGEX' [nosan] (quote the regex
   as "'a|b'"), p6_refset.sh. Build tree on the M4: w1/.build/native-macos-arm64/gui-forms.
 - Waiting: cp18 to land (then restack t4-backdrop 58319f26, t4-lowering eb9f80c9,

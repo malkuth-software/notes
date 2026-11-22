@@ -413,8 +413,8 @@ Owner re-prioritised: local builds first, cloud pins later (PHASE_D_DESIGN.md "L
 
 ## RESUMED by worker w2 (2026-10-28, laptop + M4)
 
-Workspace ~/Developer/gui_forms_workers/w2/gui_forms; build/test only via
-`~/Developer/gui_forms_workers/bin/m4ws w2 <cmd>` (add --gallery for gallery tests).
+Workspace ~/Developer/work/w2/gui_forms; build/test only via
+`~/Developer/work/bin/m4ws w2 <cmd>` (add --gallery for gallery tests).
 OWNER RULE (2026-10-28): workers do not push or open PRs. Commit on local branches, pass
 locally on the M4 (touched tests plain + --sanitize, checkers), report branch/head/what ran.
 The coordinator folds local branches (template_harness checkpoint tool). Never auto-merge.
@@ -434,7 +434,7 @@ DG and DataLayout wait for owner interviews: do not start.
     control_registry check, generate_library_docs --check.
   - No registry entry (a function facade, no type), as the parked branch had it.
   - Notes: local branch claude/w-message-box-notes at 0a853da (W README rows MessageBox and
-    ThreadExceptionDialog), in worktree ~/Developer/gui_forms_workers/w2/notes. Not pushed.
+    ThreadExceptionDialog), in worktree ~/Developer/work/w2/notes. Not pushed.
 - Next: the link role and DataGridViewLinkColumn (link role #347 is already on main; check what
   is missing), on top of claude/w-message-box.
 - 2026-10-28 coordinator: claude/w-message-box b7ca4433 + notes 0a853da go into checkpoint 2.
@@ -888,7 +888,7 @@ Sequence now: finish TabControl events commit (clean, local) -> start (i).
 - M4: 34 touched tests plain and --sanitize pass; state-machine gate --changed-from origin/main
   passes (no F1/F2); house style, lifetime rules, docs --check, control_registry check/emit-cpp
   --check, control_schema check/render --check all clean. control-schema.json regenerated.
-- Mockup for the two open choices: ~/Developer/gui_forms_workers/mockups/cut-off-reveal-and-field-hints.html
+- Mockup for the two open choices: ~/Developer/work/mockups/cut-off-reveal-and-field-hints.html
 - Open owner decisions (reported): reveal timing (built: at once); hint on any focus (built) vs
   keyboard focus only; plus the design calls listed in the report.
 - Not done: editable ComboBox placeholder is not forwarded to its edit field (pre-existing);
@@ -896,7 +896,7 @@ Sequence now: finish TabControl events commit (clean, local) -> start (i).
 - Next: wait for the coordinator's decisions/checkpoint; rebase when told.
 
 ## RESUME POINTER (2026-10-31, owner stop at checkpoint 7, gui_forms #456)
-Workspace ~/Developer/gui_forms_workers/w2. All branches are local and the working trees are clean.
+Workspace ~/Developer/work/w2. All branches are local and the working trees are clean.
 - gui_forms `claude/w-tooltips` 2fc0ef95, VERIFIED: steps 3-10 of the resume plan. The owner accepted every
   recommendation: reveal at once, hint on any focus, and 3(a)-(i) as built. Goes into the next checkpoint.
 - gui_forms `claude/w-combo-placeholder` 6198108f (on w-tooltips), VERIFIED: the editable ComboBox passes its
@@ -940,7 +940,7 @@ Workspace ~/Developer/gui_forms_workers/w2. All branches are local and the worki
 - Tools (w2/dev/tools/): verify.py [--gallery] [--only build,san,gate,style,docs,schema] [--tests R]
   runs each check via m4run, one line each; default regex in tests_regex.txt.
 - Generated files (docs/api, schema JSON/md) are written on the M4 and must be scp'd back from
-  m4mini:Developer/Projects/gui_forms_workers/w2/gui_forms before the next sync. Schema JSON:
+  m4mini:Developer/work/w2/gui_forms before the next sync. Schema JSON:
   run ../.build/native-macos-arm64/gui-forms/gui_forms_gallery_pages_tests with
   GUI_FORMS_CONTROL_SCHEMA=$PWD/manifests/control-schema.json GUI_FORMS_CONTROL_SCHEMA_WRITE=1
   (needs a --gallery build), then control_schema.py render.
@@ -1081,7 +1081,7 @@ Workspace ~/Developer/gui_forms_workers/w2. All branches are local and the worki
   state + new row/delete rows + cell/row enter/leave; decisions B1-1..B1-3 sent. Batch 2 styles (theme), batch 3 sort/sizing/order.
 
 ## RESUME POINTER (2026-11-01, owner wind-down; final for this phase)
-Workspace ~/Developer/gui_forms_workers/w2. All branches local, working trees clean (gui_forms; notes_w).
+Workspace ~/Developer/work/w2. All branches local, working trees clean (gui_forms; notes_w).
 - gui_forms `claude/w-dgv-breadth` 4714c3cd (on origin/main e1262237), VERIFIED: DataGridView batch 1, the
   editing lifecycle (owner decisions B1-1..B1-3). verify --gallery-wide --tests
   'data_grid_view|part_painting|docking_vocabulary' (15 tests incl. gallery|doc_examples|binding) plain + san,
@@ -2035,7 +2035,7 @@ Workspace D:/gui_forms_w2, branch claude/m0-settle (local only, clean):
   RuntimeId keys, child_leaving). Codemod gains "child": true when the effects lane's first child table lands.
 - Never run native/foreground tests on the real desktop.
 
-## RESUME POINTER (2026-11-05, Mac resume; w2 = ~/Developer/gui_forms_workers/w2)
+## RESUME POINTER (2026-11-05, Mac resume; w2 = ~/Developer/work/w2)
 - Branch claude/m2-control-family (local, from backup ref) REBASED onto cp18 head dfa4f9b5 (cp18 holds M2a-M2d as
   6c56bf23..77732184). Stack: 53ca3d63 codemod, 678be61a M3, 194d169c G9 (docs regenerated per commit for cp18's
   :cpp:member: property links; M3 conflict in anchored-overlays test resolved to expanded_state.read()).
@@ -2049,7 +2049,7 @@ Workspace D:/gui_forms_w2, branch claude/m0-settle (local only, clean):
   Layout properties; effects as margin), control_property_count 25, test_self_alignment in
   property_capability_tests, Control.rst. GridPanel still reads GridItemLayout (not wired; documented).
   Edit script dev/tools/selfalign_edit.py. Next: schema render (pull manifests/control-schema.json back by scp
-  from m4mini:Developer/Projects/gui_forms_workers/w2/gui_forms/), docs regen, verify, commit, report.
+  from m4mini:Developer/work/w2/gui_forms/), docs regen, verify, commit, report.
 - Tools: dev/tools/verify.py (steps all, codemod, build, san, gate, style, docs, schema).
 - 2026-11-05 later (Mac): justify_self/align_self COMMITTED b8da9ad2 on G9 194d169c (branch
   claude/m2-control-family, on cp18 dfa4f9b5). Verified at b8da9ad2: all targets build; 32 touched tests plain +
@@ -2266,7 +2266,7 @@ H/VScrollBar: nothing of their own). No claude/p4-remaining branch was made.
 
 ## Gallery stack (2026-11-08)
 
-- Branch claude/gallery-stack @ 5b6f0235 on 37451ea6 (batch9 base), workspace ~/Developer/gui_forms_workers/w2/gui_forms. It holds my rewrite, w8's panes and w7's spinner/ring plus fixes. Registered in INTEGRATION_QUEUE; I own the Gallery stack and the integrator drops 96562665..13ee18cb.
+- Branch claude/gallery-stack @ 5b6f0235 on 37451ea6 (batch9 base), workspace ~/Developer/work/w2/gui_forms. It holds my rewrite, w8's panes and w7's spinner/ring plus fixes. Registered in INTEGRATION_QUEUE; I own the Gallery stack and the integrator drops 96562665..13ee18cb.
 - Decision in force: the Gallery uses generated Window subclasses and generated page classes only (no load_window until stage D). The form pages are a separate document (demo/gallery_form_pages.form) initialized from the model in make_gallery, and each control is attached once.
 - Open: the value-editors rack projection failure (base) and the display-trace digests to re-pin at the checkpoint; schema.md to regenerate at the fold.
 - Next: rebase when the coordinator lands the checkpoint; then sanitizer and checkers on the stack's touched tests if asked.

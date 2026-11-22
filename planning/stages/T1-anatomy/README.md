@@ -34,7 +34,7 @@ C++ dot API, form documents (FD), theme documents (T3), the C ABI (C) and
 the visual tools (D, V) are projections of it.
 
 What goes wrong without it, concretely: PlaySuite's `SettingSlider`
-(`~/Developer/playsuite-games/src/settings_sheet.cpp`) subclasses `TrackBar`
+(`~/Developer/games/src/settings_sheet.cpp`) subclasses `TrackBar`
 and repaints it, and to put its groove and thumb where the pointer mapping
 expects them it hard-codes "TrackBar maps the pointer across its width less
 ten points at each end" (`constexpr double inset = 10`). Private geometry
