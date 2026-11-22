@@ -184,3 +184,18 @@ buttons, dwell-to-activate, large steppers and jog wheels, guarded actions
 2. **Touch on the iPad and iPhone:** observation only, or should GUI.Forms
    gain an iOS surface host (the 2026-10-27 direction was "the right shaped
    surface" for Android and iOS, without the Java side)?
+
+
+## Owner additions, 2026-11-21 (later, towards 1.0)
+
+- **Touch demonstrators**, one or more, for tablet and touch work. The owner
+  sees a Windows 8 style start screen (a scrolling field of live tiles) as
+  the ideal one: it exercises telling a flick from a tap, so a flick pans
+  and a tap selects, with no accidental activation. An original design in
+  that style, not a copy of Windows.
+- **An e-ink theme** that uses dithering intelligently for good looks on a
+  few grey levels (ordered and error-diffusion dithering chosen per surface
+  kind: flat fills, gradients, images, text kept undithered), with e-ink's
+  slow, ghosting refresh in mind. The owner has no e-ink device, so the
+  work is checked through a simulated panel (a grey-level and refresh model
+  applied to captures) rather than hardware.
