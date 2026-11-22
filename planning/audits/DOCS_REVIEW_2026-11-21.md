@@ -659,3 +659,40 @@ nothing that a coder owns.
 | 4. D3 | not configured; 8 files to change |
 | 5. D4 | 7 items, 3 needing change now (version and ABI line, roadmap image, previews) |
 | 6. Work list | 30 items (A 8, B 8, C 7, D 4, E 3) |
+
+## 9. Owner decisions, 2026-11-21
+
+The work list is accepted. In addition:
+
+1. **Every number set in one place.** Version and ABI numbers (package
+   version, C ABI, host protocol, drawing ABI, and any count a page quotes)
+   are read at build time from their source of truth (CMake's project
+   version, `gf_abi.h`, the protocol and drawing headers) into one table in
+   `docs/conf.py`, exposed to pages as substitutions; pages never type a
+   number. `tools/make_roadmap_svg.py` reads the same table. The GitHub
+   README cannot run code, so its numbers come from a generator with a
+   `--check` in CI, so it cannot drift.
+2. **Previews in windows-professional**, for every capture of a window
+   (167+ images). The coordinator's plan, as the owner left it to the
+   coordinator:
+   - captured headless (offscreen raster, the Gallery's `--headless --capture`
+     or the stock-specimen catalogue), never a screen, so no desktop and no
+     personal detail can appear in an image;
+   - small: rendered at scale 2 and shown at half size, PNG through our own
+     codec, a palette image where it has 256 colours or fewer; a budget of
+     40 KB each, enforced by the capture script (about 7 MB for all);
+   - stored outside the library's repository, in a separate public
+     repository for previews, by GUI.Forms commit; pages reference them
+     through one base address kept in the same `docs/conf.py` table. The
+     documentation build downloads nothing and the library's history does not
+     grow with each re-capture. Step 10's embedded documentation fetches the
+     set when it packages.
+3. **`docs/library/captures/` deleted**: PR #487 (also the unused
+   `docs/images/correspondence-macos.png` and the manual's 111 capture
+   fields). Some captures showed the owner's legal name: their removal from
+   history is a separate decision (below).
+4. **The browser host, the MSVC target and high-integrity builds**: their
+   public documentation is staged to start once their design is final and
+   the work is done; tracked as an open item, not written now.
+5. **One 1.0**, declared at step 9 of the order of operations; the tools
+   follow as 1.x. The roadmap page, image and wiki say so.
