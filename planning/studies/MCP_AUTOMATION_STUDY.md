@@ -734,6 +734,7 @@ After the product releases, before the 1.0 freeze, not this week (ruling
 | G4 | GUI.Forms | the visible signs: the border glint on the active border and window band, the tag line | G2, the window band | 1 |
 | G5 | GUI.Forms | the C ABI (destructive marks, model-drivable dialogs, hidden commands, the identity) and the C# binding; retire the Windows channel and the X11 flag; convert the probes | G3 | 1.5-2 |
 | G6 | GUI.Forms | section 18: event propagation, layout reasons, resources and state summaries in `inspect`; `forms export`, `validate`, `apply`, `revert` and the build toggle to write out form documents | G2, FD | 2-3 |
+| G7 | GUI.Forms | the WinForms project converter as MCP tools (owner, 2026-11-22: "we have most of what we want from telerik, but not a converter tool integrated into mcp"): a model, through MCP, reads a WinForms project (`*.Designer.cs`, `.resx`, the form classes) and writes GUI.Forms form documents (XML structure, CSS layout, `<bind>` elements) and C# bindings; the tools are convert, validate (the form compiler's diagnostics), preview (a headless capture beside the original) and diff, with the model fixing what validate reports. Prior art: Telerik's AI-powered converter for classic WinForms (https://www.telerik.com/blogs/classic-winforms-telerik-minutes-meet-ai-powered-converter); ours also has `tools/winforms_catalogue`, `tools/winforms_divergences.py` and the SDR# compat capture (`tools/compat_capture`) | G2, G6, FD | 2-3 |
 
 About 12-17 U with G6. The ABI additions in G5 must land before the 1.0 freeze.
 
