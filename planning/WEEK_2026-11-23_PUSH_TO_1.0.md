@@ -274,6 +274,10 @@ animation of ribbon transforms, goes to the ribbon stage.
 
 Still to hand out in step 5: the coders' small items (carbon fibre, the lamp radio look and pinpoint lamp, the menus audit and frame moves on macOS and Linux, the tooltip check), the MDI follow-ups, the theme editor's build and release, the three small gui_forms commits that no longer apply, and STXlib's queue.
 
+Found by the documentation seats (2026-11-21), for coders: the renderer boundary audit includes `check_public_header_tokens.cmake`, which moved to gui_forms_tests, so `gui_forms_renderer_boundary_audit` is broken; `tools/abi_tsan.py` selects tests labelled `c_abi`/`tsan` that no longer exist in this tree (port it to gui_forms_tests); `tools/factory_bundle_sizes.py` crashes on the missing `NotoSansArabic-Regular.ttf`, and three groups' packed sizes need an M4 measurement; `native-platform.yml` still says the test programs share precompiled headers.
+
+Documentation branches written (not built, not pushed): `claude/docs-1-0-project` (A), `claude/docs-1-0-user` (B), `claude/docs-1-0-building` (C), `claude/docs-numbers-links-previews` (infra). Merge docs-infra first (it turns on the substitutions and regenerates every API page), then A, B, C, then rerun `generate_library_docs.py`. Previews repository: `malkuth-software/gui_forms_previews` (coordinator), created with the first images.
+
 ## 4. Order
 
 The owner's order of operations to 1.0 (2026-11-19) governs; it is set out
