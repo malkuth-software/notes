@@ -26,7 +26,7 @@ everything else has landed.
 | # | Item | What done looks like | Notes |
 |---|---|---|---|
 | R1 | Test apps and programs to their new repository | every test program, probe and test-only tool lives in `malkuth-software/gui_forms_tests`; this tree keeps the library, packaging and the installed reference examples (the `AGENTS.md` rule of 2026-11-17) | the split is under way (`tests-split` worktree; `gui_forms_tests` updated 2026-11-18); the week finishes what is left and removes the old copies |
-| R2 | BFFT: split the owner's experiments from the library; bring the library in house as a repository under malkuth-software | `malkuth-software/bfft` holds the library alone, with its history; the experiments stay in the owner's experiments repository; stx_auxlib's BFFT tiers point at it | owner creates the repository; then the line count of what we ship includes it (code-statistics tool, queued with #483 group 5) |
+| R2 | BFFT: copied into STXlib as `stx_fft`, not split (owner, 2026-11-22: BFFT hosts a cartoon decomposition and a Python front end that are never used) | the DIF and DIP kernels in float32 and float64 as rfft and irfft, with a flag for shifted DIP; twiddles from STXlib's half-turn functions; the BFFT repository is not changed | an STXlib coder (`tracks/stxlib/stx_fft.md` in projects); then an integrator builds it |
 | R3 | Milestone records rewritten | the stage index, `ROADMAP_TO_1.0.md` and `docs/dev/roadmap.md` say what is true after #483 and the product releases | one writer, after R1 |
 
 ### 1.2 Documentation and the public face
