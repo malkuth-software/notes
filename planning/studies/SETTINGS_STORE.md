@@ -1,9 +1,18 @@
 # Study: a settings store in STXlib, and its GUI.Forms layer
 
-Date: 2026-11-22, revision 1. Status: a study for the owner, who approved
+Date: 2026-11-22, revision 2. Status: a study for the owner, who approved
 the work ("a settings store is also stxlib centered, because it involves
 cross platform capability"). No code was written and nothing was built.
 Section 9 ends with the decisions for the owner.
+
+Revision history:
+- 1 (`4bdfd12`): the survey, the design and eight decisions. The owner
+  accepted it except for decision 1 and section 4.5. Decisions 2 to 8 are
+  accepted as recommended.
+- 2 (this one): section 4.5 and decision 1 rewritten against SwiftEdit's
+  canon on files someone else changed (section 4.5.1). A note on
+  section 4.6 and decision 2 records where the canon touches decisions
+  already accepted.
 
 Read against:
 - STXlib `2ac73e4`;
@@ -338,21 +347,133 @@ file whose checksum is wrong is still read (decision 4).
 
 ### 4.5 Several processes of one program
 
-Two windows of one program, or two copies of it, can save the same file.
-Proposed rules (decision 1):
-- A save takes an exclusive lock on `<identity>/.lock` for the read, merge
-  and write, never for longer. The lock is `LockFileEx` on Windows and
-  `F_OFD_SETLK` on Linux. On macOS and FreeBSD it is `flock`, where OFD
-  locks are missing. This is STXlib's new `FileLock`, a scope object as
-  house style §41 asks, with a timeout and a named failure.
-- Saving is a merge, not an overwrite. The store keeps the values it loaded
-  and the keys this process changed. Under the lock it reads the file
-  again, applies only its own changes and writes. Two processes that change
-  different keys both win. For the same key, the last save wins.
-- A process that cannot take the lock within the timeout (2 s) reports
-  `busy` and keeps its changes for the next save.
-- Reads take no lock: the rename means a reader sees the old file or the
-  new one.
+#### 4.5.1 The canon
+
+SwiftEdit's objective ledger (`docs/SWIFTEDIT_OBJECTIVES.md`, from the
+owner's interview of 2026-09-30) outranks its `DECISIONS.md`. It rules how
+a program treats a file someone else changed:
+- **External changes.** Views are frozen. A destructive save takes two
+  stages: first overwrite or a new copy, then an editable file name and
+  metadata, with an explicit warning. There is no compare and no merge.
+- **Copies.** A dot version goes before the extension, and an existing dot
+  number is incremented.
+- **Lifetime.** Document windows are independent. New Window launches the
+  same running executable as a separate process.
+
+`DECISIONS.md` rows 40, 43 and 44 give the mechanics:
+- On save, the program compares the file's identity, its timestamp and its
+  exact original bytes.
+- A changed or deleted target fails the save, and the edits stay in memory.
+- There is no automatic reload and no watcher.
+- The path is checked again immediately before the replacement is
+  published.
+
+Plan Paint's recovery leases (`docs/THEMES_AND_RECOVERY.md`, lines 43-47)
+apply the same idea between running sessions:
+- each live session holds a lease;
+- one session never takes another's file;
+- there is no guessing by PID or timeout.
+
+#### 4.5.2 What carries over to settings unchanged
+
+- **Detection.** When a store loads a file, it keeps:
+  - the file's identity (device and inode on POSIX; volume serial and file
+    index on Windows);
+  - its modification time;
+  - its exact bytes. They are bounded at 1 MiB, so the store keeps them
+    and does not need a hash.
+
+  Before it publishes, the store checks the file against what it keeps.
+  This happens under the lock, right before the rename, as row 44 asks.
+  A hand edit, another window, or a newer program writing the file is
+  "someone else" in the same way.
+- **Frozen view.** A process's values do not change under it. What it
+  loaded and what it changed stay as they are until the program asks.
+- **Never overwrite silently.** Whatever another writer put in the file
+  survives a save, or the save fails visibly.
+- **Copies.** Where something cannot be written to the file, it goes to a
+  dot-numbered copy (`preferences.1.settings`), never nowhere.
+
+#### 4.5.3 Where settings differ from documents
+
+These differences are real, and they are why decision 1 is a choice:
+1. **No dialog.** A document save is something the user does, so the
+   program can ask them. A settings save happens on its own, often while a
+   window closes. The two-stage dialog the canon prescribes has no moment
+   to appear.
+2. **Conflicts are routine.** Under the Lifetime rule every SwiftEdit
+   window is its own process, so every window is a settings writer. With
+   the strict document rule, the first window that saves makes every other
+   open window's view stale. From then on only one window's settings ever
+   reach the disk.
+3. **No authored text.** A settings file is a set of independent values,
+   not text the user wrote. Writing key A from one window and key B from
+   another loses nothing either window did. The canon forbids comparing
+   and merging an author's text, where a merge can silently produce
+   something nobody wrote. A per-key write cannot produce a value nobody
+   chose. Still, it is a merge of a kind, and the owner's ruling does not
+   say it excludes only text.
+4. **The cost of losing an update is small.** A lost settings change costs
+   a column width or a toolbar entry. A lost document edit costs work.
+   This argues for keeping the rule simple, not for overwriting.
+
+#### 4.5.4 The mechanism common to every option
+
+- **Lock.** A save takes an exclusive lock on `<identity>/.lock` for the
+  check and the write, never longer. The lock is `LockFileEx` on Windows,
+  `F_OFD_SETLK` on Linux, and `flock` on macOS and FreeBSD. It is STXlib's
+  new `FileLock`, a scope object (house style §41), with a timeout of 2 s
+  and a named failure, `busy`.
+
+  The lock is the "stronger reservation" that row 44 lists as work still to
+  do. It only binds processes that use the store. A hand edit is caught by
+  the check instead.
+- **Reads.** Reads take no lock. The rename guarantees that a reader sees
+  the old file or the new one.
+- **Pending changes.** A `busy` save, or one refused for a conflict, keeps
+  its changes in memory, as row 43 does for documents.
+
+The options differ in what a save does when the check finds the file
+changed (decision 1).
+
+- **a. Per key, refuse on a real conflict.** This is recommended. The
+  canon is applied to each key as its own small target.
+  - Under the lock, the store reads the file again. For each key this
+    process changed, it compares the file's current value with the exact
+    value it loaded.
+  - If the value is the same, nobody else touched that key, so the store
+    writes its change.
+  - If the value differs, another writer changed it. The file's value
+    stays, never overwritten. This process keeps its own value in memory
+    and records a diagnostic, `conflict` with the key.
+  - Keys this process did not change are taken from the file as they are.
+  - On a later save, the conflicting change is still refused. GUI.Forms
+    shows a non-modal notice ("settings changed in another window: keep
+    theirs or use yours"). The user's choice is a new, explicit change.
+  - At the last save of the process, any changes still in conflict go to a
+    dot-numbered copy. The next start reports that copy once.
+
+  Frozen view holds: `reload_if_changed()` (decision 7) adopts only keys
+  this process has not changed.
+- **b. Per key, the last save wins.** This was revision 1's rule. It works
+  as in option a, but a key changed by both writers takes this process's
+  value, with a diagnostic. It is simpler and needs no notice and no copy.
+  It overwrites another writer's change to that key: what the canon
+  forbids, limited to one key.
+- **c. The whole file, refuse and copy.** This is the document rule
+  without the dialog. If the file changed at all since this process loaded
+  it, the save writes this process's whole settings to the next
+  dot-numbered copy and leaves the file alone. No merge of any kind
+  happens. With several windows, though, every window after the first
+  writes a copy on every save, and the copies pile up until the user picks
+  one. That needs a settings chooser that no program has.
+- **d. The whole file, keyed by window.** Every process writes its own
+  file (`preferences.<process>.settings`). On a clean exit the process
+  publishes its file as the shared one only if the shared file is
+  unchanged since it loaded. No merge and no conflicts happen. But
+  settings scatter across processes, and a change made in one window
+  reaches the next start only if that window closes last with nobody
+  having saved meanwhile.
 
 ### 4.6 Change notification
 
@@ -367,6 +488,11 @@ The proposal is no watch in revision 1. Instead:
 
 Every program gets most of the benefit, and no watcher thread is needed
 (decision 7).
+
+The canon (section 4.5.1) says documents have no automatic reload and no
+watcher. Decision 7 is accepted and has no watcher. Its reload on window
+activation is limited by the frozen view: it adopts only keys this process
+has not changed, so a window never loses a change it made.
 
 ## 5. The STXlib interface, in outline
 
@@ -462,8 +588,14 @@ override in revision 1: a control's state is its own format.
   documented for NTFS on Windows 10 1709 and later. Older systems or other
   file systems take the fallback. The last good copy limits the loss.
 - **macOS `flock` across network homes.** A lock on an SMB or NFS home may
-  not hold. Merge-on-save still bounds the damage to the last save of one
-  key.
+  not hold. The check against the file's identity and bytes still catches
+  most races there. The window between the check and the rename stays open,
+  as row 44 says it does for documents.
+- **Windows replacement call.** SwiftEdit's `DECISIONS.md` row 40 publishes
+  documents with `ReplaceFile`. Accepted decision 2 uses Plan Paint's
+  `FileRenameInfoEx`. The two programs then replace files differently. That
+  is acceptable, because documents need their ACL and attributes kept and
+  settings do not, but the owner may want one call.
 - **Moving existing files.** Users of Plan Paint and the games keep their
   settings only if the import runs. It has to be tested against real old
   files (RSPS1 to RSPS8, `playsuite-settings-v1.txt`).
@@ -473,16 +605,33 @@ override in revision 1: a control's state is its own format.
 
 ## 9. Decisions for the owner
 
-1. **Several processes of one program.**
-   - a. Lock and merge per key (§4.5). Two windows never lose each other's
-     changes. Costs `FileLock` in STXlib and a re-read on save.
-   - b. Last writer wins, no lock. Simplest. Two windows can silently undo
-     each other's settings.
-   - c. One instance only. The second copy hands over to the first. This
-     changes how programs start, and the games and SwiftEdit allow several
-     windows today.
+1. **Several processes of one program** (held in revision 1; section 4.5).
+   Every option detects a change by identity, timestamp and exact bytes
+   under a lock, and keeps refused changes in memory. They differ in what a
+   save does when the file changed.
+   - a. Per key, refuse on a real conflict. Another writer's change to a
+     key is never overwritten. This process's conflicting change stays in
+     memory, is shown as a non-modal choice, and goes to a dot-numbered
+     copy at exit. Windows that change different keys both save. The
+     canon is applied per key: it departs from "no compare/merge" only in
+     treating a settings file as independent values (§4.5.3, point 3).
+     Costs a notice in GUI.Forms and a copy rule.
+   - b. Per key, the last save wins. Simplest of the keyed rules. For a key
+     changed by two windows, the later save silently replaces the earlier
+     one, which the canon forbids, even if limited to one key.
+   - c. The whole file, refuse and copy. Follows the document rule to the
+     letter, without the dialog. With SwiftEdit's independent windows,
+     every window after the first writes a copy on every save, and a user
+     needs a chooser no program has.
+   - d. One file per process, published only when the shared file is
+     unchanged. No merge and no conflicts, but most windows' changes never
+     reach the next start.
 
-   Recommendation: a.
+   Recommendation: a. It keeps everything the canon protects (detection by
+   bytes, a frozen view, no silent overwrite, copies with a dot number). It
+   departs only where settings have no author's text and no dialog. If the
+   owner reads "no compare/merge" as covering settings too, then c, with the
+   cost stated.
 2. **Atomic replace on Windows.**
    - a. `FileRenameInfoEx` with POSIX semantics, falling back to
      `MoveFileExW` write-through, and `atomic_replace` reported per host.
